@@ -50,7 +50,7 @@ public class CommandClan extends CommandBase {
             case "uc":
                 commands.get("unclaim").execute(server, sender, args);
                 return;
-            //Adding and Removing members
+            //Managing members
             case "invite":
             case "i":
                 commands.get("invite").execute(server, sender, args);
@@ -66,6 +66,12 @@ public class CommandClan extends CommandBase {
                 return;
             case "leave":
                 commands.get("leave").execute(server, sender, args);
+                return;
+            case "promote":
+                commands.get("promote").execute(server, sender, args);
+                return;
+            case "demote":
+                commands.get("demote").execute(server, sender, args);
                 return;
             //Setting and accessing clan constants: home and banner
             case "sethome":
@@ -94,6 +100,7 @@ public class CommandClan extends CommandBase {
                 return;
             //Help command
             case "help":
+                //TODO: Only show the commands the player can currently use
                 StringBuilder commandsHelp = new StringBuilder("/clan commands:\n" +
                         "help");
                 for(String command: commands.keySet())
