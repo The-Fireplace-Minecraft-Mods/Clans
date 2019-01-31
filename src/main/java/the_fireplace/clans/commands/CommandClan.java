@@ -11,88 +11,97 @@ import net.minecraft.util.text.TextComponentString;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.HashMap;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandClan extends CommandBase {
-    private static final CommandBase buy = new CommandBuy();
-    private static final CommandBase sell = new CommandSell();
-    private static final CommandBase identify = new CommandIdentify();
-    private static final CommandBase collect = new CommandCollect();
-    private static final CommandBase buyoffers = new CommandBuyOffers();
-    private static final CommandBase selloffers = new CommandSellOffers();
-    private static final CommandBase myoffers = new CommandMyOffers();
-    private static final CommandBase canceloffer = new CommandCancelOffer();
+    private static final HashMap<String, CommandBase> commands = new HashMap<String, CommandBase>() {{
+        put("claim", null);
+    }};
 
     @Override
     public String getName() {
-        return "ge";
+        return "clan";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/ge <command> [parameters]";
+        return "/clan <command> [parameters]";
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
-            throw new WrongUsageException("/ge <command> [parameters]");
+            throw new WrongUsageException("/clan <command> [parameters]");
         String tag = args[0];
         if(args.length > 1)
             args = Arrays.copyOfRange(args, 1, args.length);
         else
             args = new String[]{};
         switch(tag){
-            case "buy":
-            case "b":
-                buy.execute(server, sender, args);
-                return;
-            case "sell":
-            case "s":
-                sell.execute(server, sender, args);
-                return;
-            case "identify":
-            case "i":
-                identify.execute(server, sender, args);
-                return;
-            case "collect":
+            //Land Claiming
+            case "claim":
             case "c":
-                collect.execute(server, sender, args);
+                commands.get("claim").execute(server, sender, args);
                 return;
-            case "buyoffers":
-            case "bo":
-                buyoffers.execute(server, sender, args);
+            case "unclaim":
+            case "uc":
+                commands.get("unclaim").execute(server, sender, args);
                 return;
-            case "selloffers":
-            case "so":
-                selloffers.execute(server, sender, args);
+            //Adding and Removing members
+            case "invite":
+            case "i":
+                commands.get("invite").execute(server, sender, args);
                 return;
-            case "myoffers":
-            case "m":
-            case "mo":
-                myoffers.execute(server, sender, args);
+            case "kick":
+                commands.get("kick").execute(server, sender, args);
                 return;
-            case "canceloffer":
-            case "co":
-                canceloffer.execute(server, sender, args);
+            case "accept":
+                commands.get("accept").execute(server, sender, args);
                 return;
-            case "help":
+            case "decline":
+                commands.get("decline").execute(server, sender, args);
+                return;
+            case "leave":
+                commands.get("leave").execute(server, sender, args);
+                return;
+            //Setting and accessing clan constants: home and banner
+            case "sethome":
+                commands.get("sethome").execute(server, sender, args);
+                return;
+            case "home":
             case "h":
-                sender.sendMessage(new TextComponentString("/ge commands:\n" +
-                        "buy\n" +
-                        "sell\n" +
-                        "identify\n" +
-                        "collect\n" +
-                        "buyoffers\n" +
-                        "selloffers\n" +
-                        "myoffers\n" +
-                        "canceloffer\n" +
-                        "help"));
+                commands.get("home").execute(server, sender, args);
+                return;
+            case "banner":
+            case "b":
+                commands.get("banner").execute(server, sender, args);
+                return;
+            case "setbanner":
+                commands.get("setbanner").execute(server, sender, args);
+                return;
+            //Commands for wars and alliances
+            case "war":
+                commands.get("war").execute(server, sender, args);
+                return;
+            case "ally":
+                commands.get("ally").execute(server, sender, args);
+                return;
+            case "removeally":
+                commands.get("removeally").execute(server, sender, args);
+                return;
+            //Help command
+            case "help":
+                StringBuilder commandsHelp = new StringBuilder("/clan commands:\n" +
+                        "help");
+                for(String command: commands.keySet())
+                    commandsHelp.append("\n").append(command);
+                sender.sendMessage(new TextComponentString(commandsHelp.toString()));
                 return;
         }
-        throw new WrongUsageException("/ge <command> [parameters]");
+        throw new WrongUsageException("/clan <command> [parameters]");
     }
 
     @Override
