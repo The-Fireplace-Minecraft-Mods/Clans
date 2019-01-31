@@ -1,0 +1,13 @@
+[
+{
+  "modid": "clans",
+  "name": "Clans",
+  "description": "A server-side land protection system.",
+  "version": "${version}",
+  "mcversion": "",
+  "logoFile": "",
+  "url": "https://minecraft.curseforge.com/projects/grand-exchange",
+  "authorList": ["The_Fireplace"],
+  "screenshots": []
+}
+]
