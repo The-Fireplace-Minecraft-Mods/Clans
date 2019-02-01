@@ -13,6 +13,8 @@ public class Clan implements Serializable {
 	private HashMap<UUID, EnumRank> members;
 	private UUID clanId;
 	private float homeX, homeY, homeZ;
+	private boolean hasHome = false;
+	private int homeDimension;
 
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
@@ -27,6 +29,7 @@ public class Clan implements Serializable {
 		do{
 			this.clanId = UUID.randomUUID();
 		} while(!ClanDatabase.addClan(this.clanId, this));
+		ClanCache.purgePlayerCache(leader);
 	}
 
 	public HashMap<UUID, EnumRank> getMembers() {
@@ -57,13 +60,29 @@ public class Clan implements Serializable {
 		this.clanBanner = clanBanner;
 	}
 
-	public void setHome(BlockPos pos) {
+	public void setHome(BlockPos pos, int dimension) {
 		this.homeX = pos.getX();
 		this.homeY = pos.getY();
 		this.homeZ = pos.getZ();
+		this.hasHome = true;
+		this.homeDimension = dimension;
+	}
+
+	public boolean hasHome() {
+		return hasHome;
+	}
+
+	public void unsetHome() {
+		hasHome = false;
+		homeX = homeY = homeZ = 0;
+		homeDimension = 0;
 	}
 
 	public BlockPos getHome() {
 		return new BlockPos(homeX, homeY, homeZ);
+	}
+
+	public int getHomeDim() {
+		return homeDimension;
 	}
 }

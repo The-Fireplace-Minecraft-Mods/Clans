@@ -6,7 +6,6 @@ import net.minecraftforge.common.DimensionManager;
 import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public final class ClanDatabase implements Serializable {
@@ -41,6 +40,7 @@ public final class ClanDatabase implements Serializable {
 			ClanCache.addName(clan.getClanName());
 			if(clan.getClanBanner() != null)
 				ClanCache.addBanner(clan.getClanBanner());
+			save();
 			return true;
 		}
 		return false;
@@ -83,7 +83,7 @@ public final class ClanDatabase implements Serializable {
 			instance = new ClanDatabase();
 	}
 
-	private static void saveToFile() {
+	public static void save() {
 		try {
 			if (saveDir == null)
 				saveDir = DimensionManager.getCurrentSaveRootDirectory();

@@ -63,6 +63,7 @@ public class CommandForm extends ClanSubCommand {
 				}
 			}
 			new Clan(newClanName, sender.getUniqueID(), banner);
+			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN+"Clan formed!"));
 		}
 	}
 }

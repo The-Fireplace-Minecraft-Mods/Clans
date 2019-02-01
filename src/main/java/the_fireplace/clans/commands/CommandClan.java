@@ -30,8 +30,8 @@ public class CommandClan extends CommandBase {
         put("demote", null);
         //clan constants
         put("form", new CommandForm());
-        put("sethome", null);
-        put("home", null);
+        put("sethome", new CommandSetHome());
+        put("home", new CommandHome());
         put("setbanner", null);
         put("banner", null);
         //raiding parties

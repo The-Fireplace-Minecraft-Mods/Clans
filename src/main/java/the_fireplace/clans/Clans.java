@@ -3,10 +3,14 @@ package the_fireplace.clans;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.commands.*;
 import the_fireplace.clans.payment.IPaymentHandler;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
@@ -21,6 +25,9 @@ public final class Clans {
     @Mod.Instance(MODID)
     public static Clans instance;
 
+    @CapabilityInject(ClaimedLandCapability.class)
+    public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
+
     private IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
         return instance.paymentHandler;
@@ -28,6 +35,7 @@ public final class Clans {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event){
+        CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         if(Loader.isModLoaded("grandeconomy"))
             paymentHandler = new PaymentHandlerGE();
         else
