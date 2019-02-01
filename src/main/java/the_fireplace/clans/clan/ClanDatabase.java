@@ -48,6 +48,20 @@ public final class ClanDatabase implements Serializable {
 		return false;
 	}
 
+	public static boolean removeClan(UUID clanId){
+		if(getInstance().clans.containsKey(clanId)){
+			Clan clan = getInstance().clans.remove(clanId);
+			ClanCache.removeName(clan.getClanName());
+			if(clan.getClanBanner() != null)
+				ClanCache.removeBanner(clan.getClanBanner());
+			for(UUID member: clan.getMembers().keySet())
+				ClanCache.purgePlayerCache(member);
+			save();
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClan(UUID)}
 	 * @param player

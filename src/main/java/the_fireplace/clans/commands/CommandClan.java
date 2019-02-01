@@ -28,7 +28,7 @@ public class CommandClan extends CommandBase {
         put("leave", new CommandLeave());
         put("promote", new CommandPromote());
         put("demote", new CommandDemote());
-        put("disband", null);
+        put("disband", new CommandDisband());
         //clan constants
         put("form", new CommandForm());
         put("sethome", new CommandSetHome());
