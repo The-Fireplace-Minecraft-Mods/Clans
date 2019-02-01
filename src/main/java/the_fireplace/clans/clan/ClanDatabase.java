@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.common.DimensionManager;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public final class ClanDatabase implements Serializable {
@@ -27,6 +29,32 @@ public final class ClanDatabase implements Serializable {
 
 	public static Clan getClan(UUID clanId){
 		return getInstance().clans.get(clanId);
+	}
+
+	static Collection<Clan> getClans(){
+		return getInstance().clans.values();
+	}
+
+	static boolean addClan(UUID clanId, Clan clan){
+		if(!getInstance().clans.containsKey(clanId)){
+			getInstance().clans.put(clanId, clan);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClan(UUID)}
+	 * @param player
+	 * The player to get the clan of
+	 * @return
+	 * The player's clan, or null if it doesn't have one.
+	 */
+	static Clan lookupPlayerClan(UUID player){
+		for(Clan clan : getInstance().clans.values())
+			if(clan.getMembers().keySet().contains(player))
+				return clan;
+		return null;
 	}
 
 	private static void readFromFile() {

@@ -22,7 +22,9 @@ public class Clan implements Serializable {
 		this.members.put(leader, EnumRank.LEADER);
 		if(banner != null)
 			this.clanBanner = banner;
-		this.clanId = UUID.randomUUID();
+		do{
+			this.clanId = UUID.randomUUID();
+		} while(!ClanDatabase.addClan(this.clanId, this));
 	}
 
 	public HashMap<UUID, EnumRank> getMembers() {
@@ -38,6 +40,8 @@ public class Clan implements Serializable {
 	}
 
 	public void setClanName(String clanName) {
+		ClanCache.removeName(this.clanName);
+		ClanCache.addName(clanName);
 		this.clanName = clanName;
 	}
 
@@ -46,6 +50,8 @@ public class Clan implements Serializable {
 	}
 
 	public void setClanBanner(String clanBanner) {
+		ClanCache.removeBanner(this.clanBanner);
+		ClanCache.addBanner(clanBanner);
 		this.clanBanner = clanBanner;
 	}
 }

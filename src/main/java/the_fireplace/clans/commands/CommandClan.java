@@ -16,9 +16,29 @@ import java.util.HashMap;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandClan extends CommandBase {
-    private static final HashMap<String, CommandBase> commands = new HashMap<String, CommandBase>() {{
+    private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
+        //land claiming
         put("claim", null);
-    }};
+        put("unclaim", null);
+        //managing members
+        put("invite", null);
+        put("kick", null);
+        put("accept", null);
+        put("decline", null);
+        put("leave", null);
+        put("promote", null);
+        put("demote", null);
+        //clan constants
+        put("sethome", null);
+        put("home", null);
+        put("setbanner", null);
+        put("banner", null);
+        //raiding parties
+        put("makeparty", null);
+        put("joinparty", null);
+        put("inviteparty", null);
+        put("disbandparty", null);
+}};
 
     @Override
     public String getName() {
@@ -43,7 +63,7 @@ public class CommandClan extends CommandBase {
         switch(tag){
             //Land Claiming
             case "claim":
-            case "c":
+            case "c"://TODO: Verify that using execute for these checks permission first.
                 commands.get("claim").execute(server, sender, args);
                 return;
             case "unclaim":
@@ -88,15 +108,21 @@ public class CommandClan extends CommandBase {
             case "setbanner":
                 commands.get("setbanner").execute(server, sender, args);
                 return;
-            //Commands for wars and alliances
-            case "war":
-                commands.get("war").execute(server, sender, args);
+            //Commands for raiding parties
+            case "makeparty":
+            case "mp":
+                commands.get("makeparty").execute(server, sender, args);
                 return;
-            case "ally":
-                commands.get("ally").execute(server, sender, args);
+            case "joinparty":
+            case "jp":
+                commands.get("joinparty").execute(server, sender, args);
                 return;
-            case "removeally":
-                commands.get("removeally").execute(server, sender, args);
+            case "inviteparty":
+            case "ip":
+                commands.get("inviteparty").execute(server, sender, args);
+                return;
+            case "disbandparty":
+                commands.get("disbandparty").execute(server, sender, args);
                 return;
             //Help command
             case "help":
