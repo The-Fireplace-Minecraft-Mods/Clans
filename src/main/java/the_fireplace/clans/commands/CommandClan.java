@@ -21,10 +21,10 @@ public class CommandClan extends CommandBase {
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonclaim());
         //managing members
-        put("invite", null);
+        put("invite", new CommandInvite());
         put("kick", null);
-        put("accept", null);
-        put("decline", null);
+        put("accept", new CommandAccept());
+        put("decline", new CommandDecline());
         put("leave", null);
         put("promote", null);
         put("demote", null);
@@ -34,6 +34,7 @@ public class CommandClan extends CommandBase {
         put("home", new CommandHome());
         put("setbanner", null);
         put("banner", null);
+        put("setname", null);
         //raiding parties
         put("makeparty", null);
         put("joinparty", null);
@@ -110,6 +111,9 @@ public class CommandClan extends CommandBase {
                 return;
             case "setbanner":
                 commands.get("setbanner").execute(server, sender, args);
+                return;
+            case "setname":
+                commands.get("setname").execute(server, sender, args);
                 return;
             //Commands for raiding parties
             case "makeparty":

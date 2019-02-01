@@ -14,6 +14,7 @@ public final class ClanCache {
 	private static HashMap<UUID, EnumRank> playerRanks = Maps.newHashMap();
 	private static ArrayList<String> clanNames = Lists.newArrayList();
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
+	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 
 	@Nullable
 	public static Clan getClan(UUID clanID){
@@ -21,7 +22,7 @@ public final class ClanCache {
 	}
 
 	@Nullable
-	public static Clan getPlayerClan(UUID player){
+	public static Clan getPlayerClan(UUID player) {
 		if(playerClans.containsKey(player))
 			return playerClans.get(player);
 		playerClans.put(player, ClanDatabase.lookupPlayerClan(player));
@@ -29,7 +30,7 @@ public final class ClanCache {
 	}
 
 	@Nonnull
-	public static EnumRank getPlayerRank(UUID player){
+	public static EnumRank getPlayerRank(UUID player) {
 		if(playerRanks.get(player) != null)
 			return playerRanks.get(player);
 		Clan c = getPlayerClan(player);
@@ -40,14 +41,14 @@ public final class ClanCache {
 		return playerRanks.get(player);
 	}
 
-	public static boolean clanNameTaken(String clanName){
+	public static boolean clanNameTaken(String clanName) {
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.add(clan.getClanName());
 		return clanNames.contains(clanName);
 	}
 
-	public static boolean clanBannerTaken(String clanBanner){
+	public static boolean clanBannerTaken(String clanBanner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.getClanBanner() != null)
@@ -55,7 +56,7 @@ public final class ClanCache {
 		return clanBanners.contains(clanBanner);
 	}
 
-	static void addBanner(String banner){
+	static void addBanner(String banner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.getClanBanner() != null)
@@ -78,8 +79,26 @@ public final class ClanCache {
 		clanNames.remove(name);
 	}
 
-	public static void purgePlayerCache(UUID player){
+	public static boolean inviteToClan(UUID player, Clan clan) {
+		if(!clanInvites.containsKey(player)) {
+			clanInvites.put(player, clan);
+			return true;
+		}
+		return false;
+	}
+
+	@Nullable
+	public static Clan getInvite(UUID player) {
+		return clanInvites.get(player);
+	}
+
+	public static void purgePlayerCache(UUID player) {
 		playerClans.remove(player);
 		playerRanks.remove(player);
+		clanInvites.remove(player);
+	}
+
+	public static void removeInvite(UUID player) {
+		clanInvites.remove(player);
 	}
 }

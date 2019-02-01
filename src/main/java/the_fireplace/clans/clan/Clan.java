@@ -85,4 +85,9 @@ public class Clan implements Serializable {
 	public int getHomeDim() {
 		return homeDimension;
 	}
+
+	public void addMember(UUID player){
+		this.members.put(player, EnumRank.MEMBER);
+		ClanCache.purgePlayerCache(player);
+	}
 }
