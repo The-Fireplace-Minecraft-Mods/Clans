@@ -45,6 +45,8 @@ public class CommandClan extends CommandBase {
         put("setbanner", null);
         put("banner", null);
         put("setname", new CommandSetName());
+        put("details", null);
+        put("settagline", null);
         //raiding parties
         put("makeparty", null);
         put("joinparty", null);

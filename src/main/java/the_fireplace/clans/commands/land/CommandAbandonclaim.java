@@ -59,14 +59,14 @@ public class CommandAbandonclaim extends ClanSubCommand {
 						playerClan.unsetHome();
 					}
 
+					playerClan.subClaimCount();
 					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(null);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to you."));
 			} else
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land is not claimed."));
-		} else {
+		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
-		}
 	}
 }

@@ -55,6 +55,7 @@ public class CommandClaim extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
 			} else {
 				Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(playerClan.getClanId());
+				playerClan.addClaimCount();
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
 			}
 		} else {

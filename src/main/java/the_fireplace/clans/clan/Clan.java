@@ -12,11 +12,13 @@ public class Clan implements Serializable {
 	private static final long serialVersionUID = 0x2ACA77AC;
 
 	private String clanName, clanBanner;
+	private String tagline = "This is a new clan.";
 	private HashMap<UUID, EnumRank> members;
 	private UUID clanId;
 	private float homeX, homeY, homeZ;
 	private boolean hasHome = false;
 	private int homeDimension;
+	private int claimCount = 0;
 
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
@@ -89,6 +91,30 @@ public class Clan implements Serializable {
 
 	public int getHomeDim() {
 		return homeDimension;
+	}
+
+	public int getClaimCount() {
+		return claimCount;
+	}
+
+	public void addClaimCount() {
+		claimCount++;
+	}
+
+	public void subClaimCount() {
+		claimCount--;
+	}
+
+	public String getTagline() {
+		return tagline;
+	}
+
+	public void setTagline(String tagline) {
+		this.tagline = tagline;
+	}
+
+	public int getMemberCount(){
+		return members.size();
 	}
 
 	public void addMember(UUID player) {
