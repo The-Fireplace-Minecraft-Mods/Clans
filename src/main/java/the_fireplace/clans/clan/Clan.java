@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Clan implements Serializable {
+	private static final long serialVersionUID = 0x2ACA77AC;
+
 	private String clanName, clanBanner;
 	private HashMap<UUID, EnumRank> members;
 	private UUID clanId;

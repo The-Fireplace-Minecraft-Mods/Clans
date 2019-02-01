@@ -5,8 +5,12 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.MinecraftColors;
+import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.land.CommandAbandonclaim;
 import the_fireplace.clans.commands.land.CommandClaim;
@@ -46,6 +50,7 @@ public class CommandClan extends CommandBase {
         put("joinparty", null);
         put("inviteparty", null);
         put("disbandparty", null);
+	    put("raid", null);
 	}};
 
     @Override
@@ -100,13 +105,13 @@ public class CommandClan extends CommandBase {
             case "demote":
                 commands.get("demote").execute(server, sender, args);
                 return;
-            case "disband":
-                commands.get("disband").execute(server, sender, args);
-                return;
-            //Setting and accessing clan constants: home and banner
+            //Setting clan details and home
             case "form":
                 commands.get("form").execute(server, sender, args);
                 return;
+	        case "disband":
+		        commands.get("disband").execute(server, sender, args);
+		        return;
             case "sethome":
                 commands.get("sethome").execute(server, sender, args);
                 return;
@@ -137,16 +142,31 @@ public class CommandClan extends CommandBase {
             case "ip":
                 commands.get("inviteparty").execute(server, sender, args);
                 return;
-            case "disbandparty":
-                commands.get("disbandparty").execute(server, sender, args);
-                return;
+	        case "disbandparty":
+		        commands.get("disbandparty").execute(server, sender, args);
+		        return;
+	        case "raid":
+		        commands.get("raid").execute(server, sender, args);
+		        return;
             //Help command
             case "help":
-                //TODO: Only show the commands the player can currently use
-                StringBuilder commandsHelp = new StringBuilder("/clan commands:\n" +
+                StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/clan commands:\n" +
                         "help");
-                for(String command: commands.keySet())
-                    commandsHelp.append("\n").append(command);
+                if(sender instanceof EntityPlayer) {
+	                EnumRank playerRank = ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID());
+	                //Only append commands the player can use.
+	                for (String command : commands.keySet()) {
+	                    if(commands.get(command) == null)
+	                        continue;
+	                	EnumRank commandRank = commands.get(command).getRequiredClanRank();
+	                	if((commandRank == EnumRank.NOCLAN && playerRank != EnumRank.NOCLAN)
+			                || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRank == EnumRank.NOCLAN)
+			                || ((commandRank == EnumRank.ADMIN || commandRank == EnumRank.LEADER) && playerRank == EnumRank.MEMBER)
+			                || (commandRank == EnumRank.LEADER && playerRank == EnumRank.ADMIN))
+	                		continue;
+		                commandsHelp.append("\n").append(command);
+	                }
+                }
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()));
                 return;
         }
