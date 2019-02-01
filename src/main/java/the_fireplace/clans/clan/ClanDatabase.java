@@ -3,6 +3,7 @@ package the_fireplace.clans.clan;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.DimensionManager;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public final class ClanDatabase implements Serializable {
 		clans = Maps.newHashMap();
 	}
 
+	@Nullable
 	public static Clan getClan(UUID clanId){
 		return getInstance().clans.get(clanId);
 	}
@@ -53,6 +55,7 @@ public final class ClanDatabase implements Serializable {
 	 * @return
 	 * The player's clan, or null if it doesn't have one.
 	 */
+	@Nullable
 	static Clan lookupPlayerClan(UUID player){
 		for(Clan clan : getInstance().clans.values())
 			if(clan.getMembers().keySet().contains(player))

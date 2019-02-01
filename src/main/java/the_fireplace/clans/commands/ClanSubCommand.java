@@ -8,7 +8,9 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 
@@ -32,11 +34,13 @@ public abstract class ClanSubCommand extends CommandBase {
 				return true;
 			switch(playerRank){
 				case LEADER:
-					return true;
+					return getRequiredClanRank() != EnumRank.NOCLAN;
 				case ADMIN:
 					return getRequiredClanRank() != EnumRank.LEADER && getRequiredClanRank() != EnumRank.NOCLAN;
 				case MEMBER:
 					return getRequiredClanRank() == EnumRank.MEMBER;
+				case NOCLAN:
+					return getRequiredClanRank() == EnumRank.NOCLAN;
 				default:
 					return false;
 			}
@@ -58,7 +62,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				if(checkPermission(server, sender))
 					run(server, (EntityPlayerMP) sender, args);
 				else
-					sender.sendMessage(new TextComponentTranslation("commands.generic.permission"));
+					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
 			} else
 				throwWrongUsage(sender);
 		} else

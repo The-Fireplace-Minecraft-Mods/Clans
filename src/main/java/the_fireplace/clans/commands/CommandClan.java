@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class CommandClan extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
-        put("claim", null);
+        put("claim", new CommandClaim());
         put("unclaim", null);
         //managing members
         put("invite", null);

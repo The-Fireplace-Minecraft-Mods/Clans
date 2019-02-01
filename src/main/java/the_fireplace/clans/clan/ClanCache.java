@@ -3,6 +3,8 @@ package the_fireplace.clans.clan;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -13,10 +15,12 @@ public final class ClanCache {
 	private static ArrayList<String> clanNames = Lists.newArrayList();
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 
+	@Nullable
 	public static Clan getClan(UUID clanID){
 		return ClanDatabase.getClan(clanID);
 	}
 
+	@Nullable
 	public static Clan getPlayerClan(UUID player){
 		if(playerClans.containsKey(player))
 			return playerClans.get(player);
@@ -24,10 +28,15 @@ public final class ClanCache {
 		return playerClans.get(player);
 	}
 
+	@Nonnull
 	public static EnumRank getPlayerRank(UUID player){
 		if(playerRanks.get(player) != null)
 			return playerRanks.get(player);
-		playerRanks.put(player, getPlayerClan(player).getMembers().get(player));
+		Clan c = getPlayerClan(player);
+		if(c != null)
+			playerRanks.put(player, c.getMembers().get(player));
+		else
+			playerRanks.put(player, EnumRank.NOCLAN);
 		return playerRanks.get(player);
 	}
 

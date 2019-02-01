@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public interface ClaimedLandCapability {
 
-	UUID getFaction();
-	void setClaimingFaction(UUID faction);
+	UUID getClan();
+	void setClan(UUID faction);
 
 	class Default implements ClaimedLandCapability {
 		private UUID claimingFaction;
@@ -21,12 +21,12 @@ public interface ClaimedLandCapability {
 		}
 
 		@Override
-		public void setClaimingFaction(UUID faction){
+		public void setClan(UUID faction){
 			claimingFaction = faction;
 		}
 
 		@Override
-		public UUID getFaction(){
+		public UUID getClan(){
 			return claimingFaction;
 		}
 	}
@@ -36,13 +36,13 @@ public interface ClaimedLandCapability {
 		@Nullable
 		@Override
 		public NBTBase writeNBT(Capability<ClaimedLandCapability> capability, ClaimedLandCapability instance, EnumFacing side) {
-			return new NBTTagString(instance.getFaction() != null ? instance.getFaction().toString() : "");
+			return new NBTTagString(instance.getClan() != null ? instance.getClan().toString() : "");
 		}
 
 		@Override
 		public void readNBT(Capability<ClaimedLandCapability> capability, ClaimedLandCapability instance, EnumFacing side, NBTBase nbt) {
 			if(nbt instanceof NBTTagString && !((NBTTagString) nbt).getString().isEmpty())
-				instance.setClaimingFaction(UUID.fromString(((NBTTagString) nbt).getString()));
+				instance.setClan(UUID.fromString(((NBTTagString) nbt).getString()));
 		}
 	}
 }
