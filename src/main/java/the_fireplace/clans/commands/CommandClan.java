@@ -29,6 +29,7 @@ public class CommandClan extends CommandBase {
         put("promote", null);
         put("demote", null);
         //clan constants
+        put("form", new CommandForm());
         put("sethome", null);
         put("home", null);
         put("setbanner", null);
@@ -94,6 +95,9 @@ public class CommandClan extends CommandBase {
                 commands.get("demote").execute(server, sender, args);
                 return;
             //Setting and accessing clan constants: home and banner
+            case "form":
+                commands.get("form").execute(server, sender, args);
+                return;
             case "sethome":
                 commands.get("sethome").execute(server, sender, args);
                 return;

@@ -5,4 +5,5 @@ public class MinecraftColors {
 	public static final String PURPLE = "§5";
 	public static final String YELLOW = "§e";
 	public static final String GREEN = "§a";
+	public static final String RED = "§c";
 }

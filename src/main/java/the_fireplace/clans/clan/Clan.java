@@ -1,6 +1,7 @@
 package the_fireplace.clans.clan;
 
 import com.google.common.collect.Maps;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ public class Clan implements Serializable {
 	private String clanName, clanBanner;
 	private HashMap<UUID, EnumRank> members;
 	private UUID clanId;
+	private float homeX, homeY, homeZ;
 
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
@@ -53,5 +55,15 @@ public class Clan implements Serializable {
 		ClanCache.removeBanner(this.clanBanner);
 		ClanCache.addBanner(clanBanner);
 		this.clanBanner = clanBanner;
+	}
+
+	public void setHome(BlockPos pos) {
+		this.homeX = pos.getX();
+		this.homeY = pos.getY();
+		this.homeZ = pos.getZ();
+	}
+
+	public BlockPos getHome() {
+		return new BlockPos(homeX, homeY, homeZ);
 	}
 }

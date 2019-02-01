@@ -5,5 +5,7 @@ import java.io.Serializable;
 public enum EnumRank implements Serializable {
 	LEADER,
 	ADMIN,
-	MEMBER
+	MEMBER,
+	NOCLAN,
+	ANY
 }
