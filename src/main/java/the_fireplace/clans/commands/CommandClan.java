@@ -51,7 +51,6 @@ public class CommandClan extends CommandBase {
         return "/clan <command> [parameters]";
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
@@ -64,7 +63,7 @@ public class CommandClan extends CommandBase {
         switch(tag){
             //Land Claiming
             case "claim":
-            case "c"://TODO: Verify that using execute for these checks permission first.
+            case "c":
                 commands.get("claim").execute(server, sender, args);
                 return;
             case "unclaim":
