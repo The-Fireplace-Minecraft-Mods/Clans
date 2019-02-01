@@ -7,6 +7,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.commands.details.*;
+import the_fireplace.clans.commands.land.CommandAbandonclaim;
+import the_fireplace.clans.commands.land.CommandClaim;
+import the_fireplace.clans.commands.members.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,6 +24,7 @@ public class CommandClan extends CommandBase {
         //land claiming
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonclaim());
+	    put("map", null);
         //managing members
         put("invite", new CommandInvite());
         put("kick", new CommandKick());
@@ -28,9 +33,9 @@ public class CommandClan extends CommandBase {
         put("leave", new CommandLeave());
         put("promote", new CommandPromote());
         put("demote", new CommandDemote());
-        put("disband", new CommandDisband());
         //clan constants
         put("form", new CommandForm());
+	    put("disband", new CommandDisband());
         put("sethome", new CommandSetHome());
         put("home", new CommandHome());
         put("setbanner", null);
@@ -41,7 +46,7 @@ public class CommandClan extends CommandBase {
         put("joinparty", null);
         put("inviteparty", null);
         put("disbandparty", null);
-}};
+	}};
 
     @Override
     public String getName() {

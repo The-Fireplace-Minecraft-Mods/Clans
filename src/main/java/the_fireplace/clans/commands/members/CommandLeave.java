@@ -1,8 +1,7 @@
-package the_fireplace.clans.commands;
+package the_fireplace.clans.commands.members;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -12,11 +11,11 @@ import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.commands.ClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault

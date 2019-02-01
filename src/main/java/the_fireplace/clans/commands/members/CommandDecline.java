@@ -1,7 +1,6 @@
-package the_fireplace.clans.commands;
+package the_fireplace.clans.commands.members;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -11,13 +10,14 @@ import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.commands.ClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandAccept extends ClanSubCommand {
+public class CommandDecline extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.NOCLAN;
@@ -35,15 +35,15 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan accept";
+		return "/clan decline";
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan acceptClan = ClanCache.getInvite(sender.getUniqueID());
-		if(acceptClan != null){
-			acceptClan.addMember(sender.getUniqueID());
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You joined %s.", acceptClan.getClanName()));
+		Clan declineClan = ClanCache.getInvite(sender.getUniqueID());
+		if(declineClan != null){
+			ClanCache.removeInvite(sender.getUniqueID());
+			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You declined the invitation to join %s.", declineClan.getClanName()));
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You don't have any pending invites."));
 	}

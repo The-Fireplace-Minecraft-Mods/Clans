@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands;
+package the_fireplace.clans.commands.members;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
@@ -10,6 +10,7 @@ import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.commands.ClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
