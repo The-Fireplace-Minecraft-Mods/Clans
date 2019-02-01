@@ -19,7 +19,7 @@ public class CommandClan extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
         put("claim", new CommandClaim());
-        put("unclaim", null);
+        put("abandonclaim", new CommandAbandonclaim());
         //managing members
         put("invite", null);
         put("kick", null);
@@ -66,9 +66,9 @@ public class CommandClan extends CommandBase {
             case "c":
                 commands.get("claim").execute(server, sender, args);
                 return;
-            case "unclaim":
-            case "uc":
-                commands.get("unclaim").execute(server, sender, args);
+            case "abandonclaim":
+            case "ac":
+                commands.get("abandonclaim").execute(server, sender, args);
                 return;
             //Managing members
             case "invite":
