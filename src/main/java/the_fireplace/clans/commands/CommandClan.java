@@ -22,7 +22,7 @@ public class CommandClan extends CommandBase {
         put("abandonclaim", new CommandAbandonclaim());
         //managing members
         put("invite", new CommandInvite());
-        put("kick", null);
+        put("kick", new CommandKick());
         put("accept", new CommandAccept());
         put("decline", new CommandDecline());
         put("leave", null);
@@ -34,7 +34,7 @@ public class CommandClan extends CommandBase {
         put("home", new CommandHome());
         put("setbanner", null);
         put("banner", null);
-        put("setname", null);
+        put("setname", new CommandSetName());
         //raiding parties
         put("makeparty", null);
         put("joinparty", null);

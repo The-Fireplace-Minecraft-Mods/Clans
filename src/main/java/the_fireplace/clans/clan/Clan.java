@@ -48,6 +48,7 @@ public class Clan implements Serializable {
 		ClanCache.removeName(this.clanName);
 		ClanCache.addName(clanName);
 		this.clanName = clanName;
+		ClanDatabase.save();
 	}
 
 	public String getClanBanner() {
@@ -58,6 +59,7 @@ public class Clan implements Serializable {
 		ClanCache.removeBanner(this.clanBanner);
 		ClanCache.addBanner(clanBanner);
 		this.clanBanner = clanBanner;
+		ClanDatabase.save();
 	}
 
 	public void setHome(BlockPos pos, int dimension) {
@@ -66,6 +68,7 @@ public class Clan implements Serializable {
 		this.homeZ = pos.getZ();
 		this.hasHome = true;
 		this.homeDimension = dimension;
+		ClanDatabase.save();
 	}
 
 	public boolean hasHome() {
@@ -86,8 +89,60 @@ public class Clan implements Serializable {
 		return homeDimension;
 	}
 
-	public void addMember(UUID player){
+	public void addMember(UUID player) {
 		this.members.put(player, EnumRank.MEMBER);
 		ClanCache.purgePlayerCache(player);
+		ClanDatabase.save();
+	}
+
+	public boolean removeMember(UUID player) {
+		boolean removed = this.members.remove(player) != null;
+		if(removed) {
+			ClanCache.purgePlayerCache(player);
+			ClanDatabase.save();
+		}
+		return removed;
+	}
+
+	public boolean demoteMember(UUID player) {
+		if(!members.containsKey(player))
+			return false;
+		else {
+			if(members.get(player) == EnumRank.ADMIN){
+				members.put(player, EnumRank.MEMBER);
+				ClanCache.updateRank(player, EnumRank.MEMBER);
+				ClanDatabase.save();
+				return true;
+			} else return false;
+		}
+	}
+
+	public boolean promoteMember(UUID player) {
+		if(!members.containsKey(player))
+			return false;
+		else {
+			if(members.get(player) == EnumRank.ADMIN) {
+				//TODO: Perhaps a config option to restrict clans to one leader, disabled by default
+				/*UUID leader = null;
+				for(UUID member: members.keySet())
+					if(members.get(member) == EnumRank.LEADER) {
+						leader = member;
+						break;
+					}
+				if(leader != null) {
+					members.put(leader, EnumRank.ADMIN);
+					ClanCache.updateRank(leader, EnumRank.ADMIN);
+				}*/
+				members.put(player, EnumRank.LEADER);
+				ClanCache.updateRank(player, EnumRank.LEADER);
+				ClanDatabase.save();
+				return true;
+			} else if(members.get(player) == EnumRank.MEMBER) {
+				members.put(player, EnumRank.ADMIN);
+				ClanCache.updateRank(player, EnumRank.ADMIN);
+				ClanDatabase.save();
+				return true;
+			} return false;
+		}
 	}
 }

@@ -98,6 +98,10 @@ public final class ClanCache {
 		clanInvites.remove(player);
 	}
 
+	public static void updateRank(UUID player, EnumRank newRank) {
+		playerRanks.put(player, newRank);
+	}
+
 	public static void removeInvite(UUID player) {
 		clanInvites.remove(player);
 	}
