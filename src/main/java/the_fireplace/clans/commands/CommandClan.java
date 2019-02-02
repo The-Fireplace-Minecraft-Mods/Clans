@@ -43,7 +43,7 @@ public class CommandClan extends CommandBase {
         put("sethome", new CommandSetHome());
         put("home", new CommandHome());
         put("setbanner", new CommandSetBanner());
-        put("banner", null);
+        put("banner", new CommandBanner());
         put("setname", new CommandSetName());
         put("details", null);
         put("settagline", null);

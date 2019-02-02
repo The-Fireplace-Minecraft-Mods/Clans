@@ -9,11 +9,8 @@ import net.minecraft.item.ItemBanner;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -22,7 +19,6 @@ import the_fireplace.clans.commands.ClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -66,20 +62,20 @@ public class CommandSetBanner extends ClanSubCommand {
 			}
 		} else if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
 			NBTTagCompound tags = sender.getHeldItemMainhand().getSubCompound("BlockEntityTag");
+			if(tags != null)
+				tags.setShort("ClanBaseColor", (short) sender.getHeldItemMainhand().getMetadata());
 			setClanBannerFromItem(sender, playerClan, tags);
 		} else if(sender.getHeldItemOffhand().getItem() instanceof ItemBanner) {
 			NBTTagCompound tags = sender.getHeldItemOffhand().getSubCompound("BlockEntityTag");
+			if(tags != null)
+				tags.setShort("ClanBaseColor", (short) sender.getHeldItemOffhand().getMetadata());
 			setClanBannerFromItem(sender, playerClan, tags);
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not holding a banner!"));
 	}
 
 	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
-		String banner = "";
-		if(tags != null && tags.hasKey("Patterns")) {
-			NBTTagList nbttaglist = tags.getTagList("Patterns", 10);
-			banner = nbttaglist.toString();
-		}
+		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED+"The clan banner you have specified is already taken."));
 		else {
