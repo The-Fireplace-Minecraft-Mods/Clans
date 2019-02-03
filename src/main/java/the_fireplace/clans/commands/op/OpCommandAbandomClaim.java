@@ -58,6 +58,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 						}
 
 						targetClan.subClaimCount();
+						Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 					}
 					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(null);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));

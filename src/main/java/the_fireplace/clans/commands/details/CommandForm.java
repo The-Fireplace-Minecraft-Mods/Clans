@@ -4,13 +4,12 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -63,8 +62,11 @@ public class CommandForm extends ClanSubCommand {
 					throw new SyntaxErrorException("Invalid Banner NBT: "+args[1]);
 				}
 			}
-			new Clan(newClanName, sender.getUniqueID(), banner);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN+"Clan formed!"));
+			if(Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, sender.getUniqueID())) {
+				new Clan(newClanName, sender.getUniqueID(), banner);
+				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan formed!"));
+			} else
+				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form clan. It costs "+ Clans.cfg.formClanCost+' '+Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)));
 		}
 	}
 }

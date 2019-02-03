@@ -54,9 +54,12 @@ public class CommandClaim extends ClanSubCommand {
 				else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
 			} else {
-				Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(playerClan.getClanId());
-				playerClan.addClaimCount();
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+				if(Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, playerClan.getClanId())) {
+					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(playerClan.getClanId());
+					playerClan.addClaimCount();
+					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+				} else
+					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds in clan account to claim chunk. It costs "+ Clans.cfg.claimChunkCost+' '+Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)));
 			}
 		} else {
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));

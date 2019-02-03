@@ -100,7 +100,7 @@ public final class Clans {
     }
 
     @Config(modid = MODID)
-    public static class ConfigValues{
+    public static class cfg {
         //General clan config
         @Config.Comment("Allow clans to have multiple leaders.")
         public static boolean multipleClanLeaders = true;
@@ -108,10 +108,13 @@ public final class Clans {
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int formClanCost = 0;
+        @Config.Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
+        @Config.RangeInt(min=0)
+        public static int formClanBankAmount = 0;
         @Config.Comment("Cost of claiming a chunk. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int claimChunkCost = 0;
-        @Config.Comment("Cost of starting a raid. This requires a compatible economy to be installed.")
+        @Config.Comment("Cost of forming a new raiding party. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int startRaidCost = 0;
         @Config.Comment("Multiply the cost of starting a raid by the number of enemy claims. This requires a compatible economy to be installed.")

@@ -41,6 +41,7 @@ public class CommandAbandonclaim extends ClanSubCommand {
 		return "/clan abandonclaim";
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
@@ -60,6 +61,7 @@ public class CommandAbandonclaim extends ClanSubCommand {
 					}
 
 					playerClan.subClaimCount();
+					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, playerClan.getClanId());
 					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(null);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else

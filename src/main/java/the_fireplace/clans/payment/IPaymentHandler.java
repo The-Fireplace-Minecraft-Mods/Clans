@@ -51,4 +51,6 @@ public interface IPaymentHandler {
 	 * The account balance. Returns -1 if account not found.
 	 */
 	long getBalance(UUID account);
+
+	String getCurrencyName(long amount);
 }

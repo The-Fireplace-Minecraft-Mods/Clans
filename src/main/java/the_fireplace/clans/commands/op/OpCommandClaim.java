@@ -52,6 +52,10 @@ public class OpCommandClaim extends OpClanSubCommand {
 				else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land. To take this land from "+targetClan.getClanName()+", use /opclan claim force"));
 			} else {
+				if(targetClan != null) {
+					targetClan.subClaimCount();
+					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
+				}
 				Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(opClan.getClanId());
 				opClan.addClaimCount();
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));

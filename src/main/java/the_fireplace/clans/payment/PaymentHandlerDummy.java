@@ -5,7 +5,7 @@ import java.util.UUID;
 public class PaymentHandlerDummy implements IPaymentHandler {
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -15,7 +15,7 @@ public class PaymentHandlerDummy implements IPaymentHandler {
 
 	@Override
 	public boolean addAmount(long amount, UUID account) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -26,5 +26,10 @@ public class PaymentHandlerDummy implements IPaymentHandler {
 	@Override
 	public long getBalance(UUID account) {
 		return 0;
+	}
+
+	@Override
+	public String getCurrencyName(long amount) {
+		return "";
 	}
 }

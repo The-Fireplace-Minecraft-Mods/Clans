@@ -42,4 +42,9 @@ public class PaymentHandlerGE implements IPaymentHandler {
 		Account acct = Account.get(account);
 		return acct != null ? acct.getBalance() : -1;
 	}
+
+	@Override
+	public String getCurrencyName(long amount) {
+		return GrandEconomyApi.getCurrencyName(amount);
+	}
 }

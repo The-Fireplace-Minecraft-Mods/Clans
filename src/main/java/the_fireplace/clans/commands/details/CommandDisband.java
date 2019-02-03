@@ -50,7 +50,19 @@ public class CommandDisband extends ClanSubCommand {
 		Clan senderClan = ClanCache.getClan(sender.getUniqueID());
 		assert senderClan != null;
 		if(ClanDatabase.removeClan(senderClan.getClanId())) {
+			long distFunds = Clans.getPaymentHandler().getBalance(senderClan.getClanId());
+			distFunds += Clans.cfg.claimChunkCost * senderClan.getClaimCount();
+			if(Clans.cfg.leaderRecieveDisbandFunds) {
+				Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
+				distFunds = 0;
+			} else {
+				Clans.getPaymentHandler().addAmount(distFunds % senderClan.getMemberCount(), sender.getUniqueID());
+				distFunds /= senderClan.getMemberCount();
+			}
 			for(UUID member: senderClan.getMembers().keySet()) {
+				Clans.getPaymentHandler().ensureAccountExists(member);
+				if(!Clans.getPaymentHandler().addAmount(distFunds, member))
+					Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
 				EntityPlayerMP player;
 				try {
 					player = getPlayer(server, sender, member.toString());
@@ -60,8 +72,9 @@ public class CommandDisband extends ClanSubCommand {
 				if(player != null && !player.getUniqueID().equals(sender.getUniqueID()))
 					player.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Your clan has been disbanded by %s.", sender.getName()));
 			}
+			Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(senderClan.getClanId()), senderClan.getClanId());
 			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have disbanded your clan."));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan home can only be set in clan territory!"));
+			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Unable to disband clan."));
 	}
 }

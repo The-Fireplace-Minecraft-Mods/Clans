@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -44,8 +45,14 @@ public class CommandCreateRaid extends RaidSubCommand {
 			if(!RaidingParties.getRaidingPlayers().contains(sender)) {
 				if (!RaidingParties.getRaids().containsKey(name)) {
 					if (target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).size() > 0) {
-						new Raid(name, sender, target);
-						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
+						long raidCost = Clans.cfg.startRaidCost;
+						if(Clans.cfg.startRaidMultiplier)
+							raidCost *= target.getClaimCount();
+						if(Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
+							new Raid(name, sender, target);
+							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
+						} else
+							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form raiding party against "+target.getClanName()+". It costs "+raidCost+' '+Clans.getPaymentHandler().getCurrencyName(raidCost)));
 					} else
 						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan has no online members!"));
 				} else

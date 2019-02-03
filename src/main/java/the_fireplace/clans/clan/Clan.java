@@ -26,6 +26,7 @@ public class Clan implements Serializable {
 	private boolean hasHome = false;
 	private int homeDimension;
 	private int claimCount = 0;
+	private boolean isOpclan = false;
 
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
@@ -40,6 +41,8 @@ public class Clan implements Serializable {
 		do{
 			this.clanId = UUID.randomUUID();
 		} while(!ClanDatabase.addClan(this.clanId, this));
+		Clans.getPaymentHandler().ensureAccountExists(clanId);
+		Clans.getPaymentHandler().addAmount(Clans.cfg.formClanBankAmount, clanId);
 		ClanCache.purgePlayerCache(leader);
 	}
 
@@ -53,6 +56,7 @@ public class Clan implements Serializable {
 		this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
 		while(!ClanDatabase.addClan(this.clanId, this))
 			this.clanId = UUID.randomUUID();
+		this.isOpclan = true;
 	}
 
 	public HashMap<UUID, EnumRank> getMembers() {
@@ -61,6 +65,8 @@ public class Clan implements Serializable {
 
 	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers(MinecraftServer server, ICommandSender sender) {
 		HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
+		if(isOpclan)
+			return online;
 		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
 			EntityPlayerMP memberMP;
 			try {
@@ -93,6 +99,8 @@ public class Clan implements Serializable {
 	}
 
 	public void setClanBanner(String clanBanner) {
+		if(isOpclan)
+			return;
 		ClanCache.removeBanner(this.clanBanner);
 		ClanCache.addBanner(clanBanner);
 		this.clanBanner = clanBanner;
@@ -100,6 +108,8 @@ public class Clan implements Serializable {
 	}
 
 	public void setHome(BlockPos pos, int dimension) {
+		if(isOpclan)
+			return;
 		this.homeX = pos.getX();
 		this.homeY = pos.getY();
 		this.homeZ = pos.getZ();
@@ -155,12 +165,16 @@ public class Clan implements Serializable {
 	}
 
 	public void addMember(UUID player) {
+		if(isOpclan)
+			return;
 		this.members.put(player, EnumRank.MEMBER);
 		ClanCache.purgePlayerCache(player);
 		ClanDatabase.save();
 	}
 
 	public boolean removeMember(UUID player) {
+		if(isOpclan)
+			return false;
 		boolean removed = this.members.remove(player) != null;
 		if(removed) {
 			ClanCache.purgePlayerCache(player);
@@ -170,7 +184,7 @@ public class Clan implements Serializable {
 	}
 
 	public boolean demoteMember(UUID player) {
-		if(!members.containsKey(player))
+		if(isOpclan || !members.containsKey(player))
 			return false;
 		else {
 			if(members.get(player) == EnumRank.ADMIN){
@@ -183,11 +197,11 @@ public class Clan implements Serializable {
 	}
 
 	public boolean promoteMember(UUID player) {
-		if(!members.containsKey(player))
+		if(isOpclan || !members.containsKey(player))
 			return false;
 		else {
 			if(members.get(player) == EnumRank.ADMIN) {
-				if(!Clans.ConfigValues.multipleClanLeaders) {
+				if(!Clans.cfg.multipleClanLeaders) {
 					UUID leader = null;
 					for(UUID member: members.keySet())
 						if(members.get(member) == EnumRank.LEADER) {
@@ -210,5 +224,9 @@ public class Clan implements Serializable {
 				return true;
 			} return false;
 		}
+	}
+
+	public boolean isOpclan(){
+		return isOpclan;
 	}
 }
