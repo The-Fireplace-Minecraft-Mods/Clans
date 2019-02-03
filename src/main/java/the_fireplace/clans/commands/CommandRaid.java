@@ -8,10 +8,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.MinecraftColors;
-import the_fireplace.clans.commands.raiding.CommandCreateRaid;
-import the_fireplace.clans.commands.raiding.CommandInviteRaid;
-import the_fireplace.clans.commands.raiding.CommandJoinRaid;
-import the_fireplace.clans.commands.raiding.CommandLeaveRaid;
+import the_fireplace.clans.commands.raiding.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +24,7 @@ public class CommandRaid extends CommandBase {
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
         put("invite", new CommandInviteRaid());
-	    put("start", null);
+	    put("start", new CommandStartRaid());
 	}};
 
     @Override

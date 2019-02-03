@@ -28,8 +28,8 @@ public final class RaidingParties {
 		return raidingPlayers.keySet();
 	}
 
-	public static HashMap<Clan, Raid> getActiveraids() {
-		return activeraids;
+	public static boolean hasActiveRaid(Clan clan){
+		return activeraids.containsKey(clan);
 	}
 
 	static void addRaid(String name, Raid raid){
@@ -46,5 +46,10 @@ public final class RaidingParties {
 
 	public static void removeRaider(EntityPlayerMP raider){
 		raidingPlayers.remove(raider);
+	}
+
+	public static void initRaid(String raidName){
+		Raid startingRaid = raids.remove(raidName);
+		activeraids.put(startingRaid.getTarget(), startingRaid);
 	}
 }
