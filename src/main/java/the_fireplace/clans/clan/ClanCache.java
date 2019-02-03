@@ -12,13 +12,21 @@ import java.util.UUID;
 public final class ClanCache {
 	private static HashMap<UUID, Clan> playerClans = Maps.newHashMap();
 	private static HashMap<UUID, EnumRank> playerRanks = Maps.newHashMap();
-	private static ArrayList<String> clanNames = Lists.newArrayList();
+	private static HashMap<String, Clan> clanNames = Maps.newHashMap();
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 
 	@Nullable
 	public static Clan getClan(UUID clanID){
 		return ClanDatabase.getClan(clanID);
+	}
+
+	@Nullable
+	public static Clan getClan(String clanName){
+		if(clanNames.isEmpty())
+			for(Clan clan: ClanDatabase.getClans())
+				clanNames.put(clan.getClanName(), clan);
+		return clanNames.get(clanName);
 	}
 
 	@Nullable
@@ -44,8 +52,8 @@ public final class ClanCache {
 	public static boolean clanNameTaken(String clanName) {
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.add(clan.getClanName());
-		return clanNames.contains(clanName);
+				clanNames.put(clan.getClanName(), clan);
+		return clanNames.containsKey(clanName);
 	}
 
 	public static boolean clanBannerTaken(String clanBanner) {
@@ -68,11 +76,11 @@ public final class ClanCache {
 		clanBanners.remove(banner);
 	}
 
-	static void addName(String name){
+	static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.add(clan.getClanName());
-		clanNames.add(name);
+				clanNames.put(clan.getClanName(), clan);
+		clanNames.put(nameClan.getClanName(), nameClan);
 	}
 
 	static void removeName(String name){

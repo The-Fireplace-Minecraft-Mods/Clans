@@ -40,7 +40,7 @@ public final class ClanDatabase implements Serializable {
 	static boolean addClan(UUID clanId, Clan clan){
 		if(!getInstance().clans.containsKey(clanId)){
 			getInstance().clans.put(clanId, clan);
-			ClanCache.addName(clan.getClanName());
+			ClanCache.addName(clan);
 			if(clan.getClanBanner() != null)
 				ClanCache.addBanner(clan.getClanBanner());
 			save();

@@ -50,8 +50,8 @@ public class Clan implements Serializable {
 
 	public void setClanName(String clanName) {
 		ClanCache.removeName(this.clanName);
-		ClanCache.addName(clanName);
 		this.clanName = clanName;
+		ClanCache.addName(this);
 		ClanDatabase.save();
 	}
 
