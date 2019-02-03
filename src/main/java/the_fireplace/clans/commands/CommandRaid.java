@@ -5,16 +5,13 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.MinecraftColors;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.commands.details.*;
-import the_fireplace.clans.commands.land.CommandAbandonclaim;
-import the_fireplace.clans.commands.land.CommandClaim;
-import the_fireplace.clans.commands.members.*;
+import the_fireplace.clans.commands.raiding.CommandCreateRaid;
+import the_fireplace.clans.commands.raiding.CommandInviteRaid;
+import the_fireplace.clans.commands.raiding.CommandJoinRaid;
+import the_fireplace.clans.commands.raiding.CommandLeaveRaid;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,11 +23,11 @@ import java.util.HashMap;
 public class CommandRaid extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //raiding parties
-        put("makeparty", null);
-        put("joinparty", null);
-        put("inviteparty", null);
-        put("disbandparty", null);
-	    put("raid", null);
+        put("create", new CommandCreateRaid());
+        put("join", new CommandJoinRaid());
+        put("leave", new CommandLeaveRaid());
+        put("invite", new CommandInviteRaid());
+	    put("start", null);
 	}};
 
     @Override
@@ -54,23 +51,25 @@ public class CommandRaid extends CommandBase {
             args = new String[]{};
         switch(tag){
             //Commands for raiding parties
-            case "makeparty":
-            case "mp":
-                commands.get("makeparty").execute(server, sender, args);
+            case "create":
+            case "form":
+            case "c":
+                commands.get("create").execute(server, sender, args);
                 return;
-            case "joinparty":
-            case "jp":
-                commands.get("joinparty").execute(server, sender, args);
+            case "join":
+            case "j":
+                commands.get("join").execute(server, sender, args);
                 return;
-            case "inviteparty":
-            case "ip":
-                commands.get("inviteparty").execute(server, sender, args);
+            case "leave":
+            case "l":
+                commands.get("leave").execute(server, sender, args);
                 return;
-	        case "disbandparty":
-		        commands.get("disbandparty").execute(server, sender, args);
-		        return;
-	        case "raid":
-		        commands.get("raid").execute(server, sender, args);
+            case "invite":
+            case "i":
+                commands.get("invite").execute(server, sender, args);
+                return;
+	        case "start":
+		        commands.get("start").execute(server, sender, args);
 		        return;
             //Help command
             case "help":

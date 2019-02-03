@@ -70,22 +70,16 @@ public class CommandDetails extends ClanSubCommand {
 		List<EntityPlayerMP> leaders = Lists.newArrayList();
 		List<EntityPlayerMP> admins = Lists.newArrayList();
 		List<EntityPlayerMP> members = Lists.newArrayList();
-		for(Map.Entry<UUID, EnumRank> member: clan.getMembers().entrySet()) {
-			EntityPlayerMP memberMP;
-			try {
-				memberMP = getPlayer(server, sender, member.getKey().toString());
-			} catch(CommandException e) {
-				continue;
-			}
+		for(Map.Entry<EntityPlayerMP, EnumRank> member: clan.getOnlineMembers(server, sender).entrySet()) {
 			switch(member.getValue()){
 				case LEADER:
-					leaders.add(memberMP);
+					leaders.add(member.getKey());
 					break;
 				case ADMIN:
-					admins.add(memberMP);
+					admins.add(member.getKey());
 					break;
 				case MEMBER:
-					members.add(memberMP);
+					members.add(member.getKey());
 					break;
 			}
 		}

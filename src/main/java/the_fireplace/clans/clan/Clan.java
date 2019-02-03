@@ -1,11 +1,17 @@
 package the_fireplace.clans.clan;
 
 import com.google.common.collect.Maps;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Clan implements Serializable {
@@ -50,6 +56,20 @@ public class Clan implements Serializable {
 
 	public HashMap<UUID, EnumRank> getMembers() {
 		return members;
+	}
+
+	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers(MinecraftServer server, ICommandSender sender) {
+		HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
+		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
+			EntityPlayerMP memberMP;
+			try {
+				memberMP = CommandBase.getPlayer(server, sender, member.getKey().toString());
+			} catch(CommandException e) {
+				continue;
+			}
+			online.put(memberMP, member.getValue());
+		}
+		return online;
 	}
 
 	public UUID getClanId() {
