@@ -22,12 +22,12 @@ import java.util.Objects;
 @MethodsReturnNonnullByDefault
 public abstract class ClanSubCommand extends CommandBase {
 	@Override
-	public final String getName() {
+	public String getName() {
 		return "clan";
 	}
 
 	@Override
-	public final boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
 		if(sender instanceof Entity) {
 			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID());
 			if(getRequiredClanRank() == EnumRank.ANY)

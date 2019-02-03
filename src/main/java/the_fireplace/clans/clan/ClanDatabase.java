@@ -23,9 +23,20 @@ public final class ClanDatabase implements Serializable {
 	}
 
 	private HashMap<UUID, Clan> clans;
+	private Clan opclan;
 
 	private ClanDatabase(){
 		clans = Maps.newHashMap();
+		opclan = new Clan();
+	}
+
+	public static Clan getOpClan() {
+		Clan out = getInstance().opclan;
+		if(out == null) {
+			getInstance().opclan = new Clan();
+			out = getInstance().opclan;
+		}
+		return out;
 	}
 
 	@Nullable

@@ -36,6 +36,18 @@ public class Clan implements Serializable {
 		ClanCache.purgePlayerCache(leader);
 	}
 
+	/**
+	 * Generate OpClan
+	 */
+	Clan(){
+		this.clanName = "Server";
+		this.description = "Server Operator Clan";
+		this.members = Maps.newHashMap();
+		this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+		while(!ClanDatabase.addClan(this.clanId, this))
+			this.clanId = UUID.randomUUID();
+	}
+
 	public HashMap<UUID, EnumRank> getMembers() {
 		return members;
 	}
@@ -83,6 +95,7 @@ public class Clan implements Serializable {
 		hasHome = false;
 		homeX = homeY = homeZ = 0;
 		homeDimension = 0;
+		//No need to save here because subClaimCount is always called after this.
 	}
 
 	public BlockPos getHome() {
@@ -99,10 +112,12 @@ public class Clan implements Serializable {
 
 	public void addClaimCount() {
 		claimCount++;
+		ClanDatabase.save();
 	}
 
 	public void subClaimCount() {
 		claimCount--;
+		ClanDatabase.save();
 	}
 
 	public String getDescription() {

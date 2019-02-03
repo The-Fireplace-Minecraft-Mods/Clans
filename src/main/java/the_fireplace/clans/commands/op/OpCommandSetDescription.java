@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.details;
+package the_fireplace.clans.commands.op;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
@@ -7,8 +7,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.commands.OpClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,12 +18,7 @@ import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSetDescription extends ClanSubCommand {
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.LEADER;
-	}
-
+public class OpCommandSetDescription extends OpClanSubCommand {
 	@Override
 	public int getMinArgs() {
 		return 1;
@@ -34,7 +31,7 @@ public class CommandSetDescription extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setdescription <new description>";
+		return "/opclan setdescription <new description>";
 	}
 
 	@Override
@@ -42,7 +39,7 @@ public class CommandSetDescription extends ClanSubCommand {
 		StringBuilder newTagline = new StringBuilder();
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
-		Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).setDescription(newTagline.toString());
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description set!"));
+		ClanDatabase.getOpClan().setDescription(newTagline.toString());
+		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan description set!"));
 	}
 }

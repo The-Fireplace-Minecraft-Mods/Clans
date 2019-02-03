@@ -63,6 +63,8 @@ public final class Clans {
         ICommandManager command = server.getCommandManager();
         ServerCommandManager manager = (ServerCommandManager) command;
         manager.registerCommand(new CommandClan());
+        manager.registerCommand(new CommandOpClan());
+        manager.registerCommand(new CommandRaid());
     }
 
     @SubscribeEvent

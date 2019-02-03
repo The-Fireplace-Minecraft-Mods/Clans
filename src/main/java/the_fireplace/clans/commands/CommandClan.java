@@ -47,12 +47,6 @@ public class CommandClan extends CommandBase {
         put("setname", new CommandSetName());
         put("details", new CommandDetails());
         put("setdescription", new CommandSetDescription());
-        //raiding parties
-        put("makeparty", null);
-        put("joinparty", null);
-        put("inviteparty", null);
-        put("disbandparty", null);
-	    put("raid", null);
 	}};
 
     @Override
@@ -140,44 +134,11 @@ public class CommandClan extends CommandBase {
             case "setdesc":
                 commands.get("setdescription").execute(server, sender, args);
                 return;
-            //Commands for raiding parties
-            case "makeparty":
-            case "mp":
-                commands.get("makeparty").execute(server, sender, args);
-                return;
-            case "joinparty":
-            case "jp":
-                commands.get("joinparty").execute(server, sender, args);
-                return;
-            case "inviteparty":
-            case "ip":
-                commands.get("inviteparty").execute(server, sender, args);
-                return;
-	        case "disbandparty":
-		        commands.get("disbandparty").execute(server, sender, args);
-		        return;
-	        case "raid":
-		        commands.get("raid").execute(server, sender, args);
-		        return;
             //Help command
             case "help":
                 StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/clan commands:\n" +
                         "help");
-                if(sender instanceof EntityPlayer) {
-	                EnumRank playerRank = ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID());
-	                //Only append commands the player can use.
-	                for (String command : commands.keySet()) {
-	                    if(commands.get(command) == null)
-	                        continue;
-	                	EnumRank commandRank = commands.get(command).getRequiredClanRank();
-	                	if((commandRank == EnumRank.NOCLAN && playerRank != EnumRank.NOCLAN)
-			                || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRank == EnumRank.NOCLAN)
-			                || ((commandRank == EnumRank.ADMIN || commandRank == EnumRank.LEADER) && playerRank == EnumRank.MEMBER)
-			                || (commandRank == EnumRank.LEADER && playerRank == EnumRank.ADMIN))
-	                		continue;
-		                commandsHelp.append("\n").append(command);
-	                }
-                }
+                buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()));
                 return;
         }
@@ -187,5 +148,23 @@ public class CommandClan extends CommandBase {
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
+    }
+
+    static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
+        if(sender instanceof EntityPlayer) {
+            EnumRank playerRank = ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID());
+            //Only append commands the player can use.
+            for (String command : commands.keySet()) {
+                if(commands.get(command) == null)
+                    continue;
+                EnumRank commandRank = commands.get(command).getRequiredClanRank();
+                if((commandRank == EnumRank.NOCLAN && playerRank != EnumRank.NOCLAN)
+                        || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRank == EnumRank.NOCLAN)
+                        || ((commandRank == EnumRank.ADMIN || commandRank == EnumRank.LEADER) && playerRank == EnumRank.MEMBER)
+                        || (commandRank == EnumRank.LEADER && playerRank == EnumRank.ADMIN))
+                    continue;
+                commandsHelp.append("\n").append(command);
+            }
+        }
     }
 }
