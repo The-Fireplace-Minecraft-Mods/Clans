@@ -7,6 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -186,17 +187,18 @@ public class Clan implements Serializable {
 			return false;
 		else {
 			if(members.get(player) == EnumRank.ADMIN) {
-				//TODO: Perhaps a config option to restrict clans to one leader, disabled by default
-				/*UUID leader = null;
-				for(UUID member: members.keySet())
-					if(members.get(member) == EnumRank.LEADER) {
-						leader = member;
-						break;
+				if(!Clans.ConfigValues.multipleClanLeaders) {
+					UUID leader = null;
+					for(UUID member: members.keySet())
+						if(members.get(member) == EnumRank.LEADER) {
+							leader = member;
+							break;
+						}
+					if(leader != null) {
+						members.put(leader, EnumRank.ADMIN);
+						ClanCache.updateRank(leader, EnumRank.ADMIN);
 					}
-				if(leader != null) {
-					members.put(leader, EnumRank.ADMIN);
-					ClanCache.updateRank(leader, EnumRank.ADMIN);
-				}*/
+				}
 				members.put(player, EnumRank.LEADER);
 				ClanCache.updateRank(player, EnumRank.LEADER);
 				ClanDatabase.save();
