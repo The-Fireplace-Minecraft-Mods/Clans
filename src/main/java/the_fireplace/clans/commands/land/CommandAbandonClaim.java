@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandAbandonclaim extends ClanSubCommand {
+public class CommandAbandonClaim extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ADMIN;

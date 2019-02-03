@@ -104,6 +104,8 @@ public final class Clans {
         //General clan config
         @Config.Comment("Allow clans to have multiple leaders.")
         public static boolean multipleClanLeaders = true;
+        @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
+        public static int maxRaidersOffset = 0;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -152,6 +154,6 @@ public final class Clans {
         @Config.RangeInt(min=0)
         public static int maxRent = 0;
         @Config.Comment("Multiply the max rent by the number of claims. This requires a compatible economy to be installed.")
-        public static boolean multiplyRentClaims = true;
+        public static boolean multiplyMaxRentClaims = true;
     }
 }

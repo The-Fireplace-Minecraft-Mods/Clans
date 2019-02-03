@@ -27,6 +27,7 @@ public class Clan implements Serializable {
 	private int homeDimension;
 	private int claimCount = 0;
 	private boolean isOpclan = false;
+	private int rent = 0;
 
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
@@ -228,5 +229,13 @@ public class Clan implements Serializable {
 
 	public boolean isOpclan(){
 		return isOpclan;
+	}
+
+	public int getRent() {
+		return rent;
+	}
+
+	public void setRent(int rent) {
+		this.rent = rent;
 	}
 }

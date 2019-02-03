@@ -8,13 +8,16 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.details.*;
-import the_fireplace.clans.commands.land.CommandAbandonclaim;
+import the_fireplace.clans.commands.finance.*;
+import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
 import the_fireplace.clans.commands.members.*;
+import the_fireplace.clans.payment.PaymentHandlerDummy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +30,7 @@ public class CommandClan extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
         put("claim", new CommandClaim());
-        put("abandonclaim", new CommandAbandonclaim());
+        put("abandonclaim", new CommandAbandonClaim());
 	    put("map", null);
         //managing members
         put("invite", new CommandInvite());
@@ -47,6 +50,17 @@ public class CommandClan extends CommandBase {
         put("setname", new CommandSetName());
         put("details", new CommandDetails());
         put("setdescription", new CommandSetDescription());
+        //clan finances
+        if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
+            put("balance", new CommandBalance());
+            put("addfunds", new CommandAddFunds());
+            if(Clans.cfg.leaderWithdrawFunds)
+                put("takefunds", new CommandTakeFunds());
+            if(Clans.cfg.chargeRentDays > 0)
+                put("setrent", new CommandSetRent());
+            if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
+                put("finances", new CommandFinances());
+        }
 	}};
 
     @Override
@@ -141,6 +155,38 @@ public class CommandClan extends CommandBase {
                 buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()));
                 return;
+        }
+        //Payment commands
+        if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
+            switch(tag){
+                case "balance":
+                    commands.get("balance").execute(server, sender, args);
+                    return;
+                case "addfunds":
+                case "deposit":
+                case "af":
+                    commands.get("addfunds").execute(server, sender, args);
+                    return;
+                case "takefunds":
+                case "withdraw":
+                    if(Clans.cfg.leaderWithdrawFunds)
+                        commands.get("takefunds").execute(server, sender, args);
+                    else
+                        throw new CommandException("/clan takefunds is disabled on this server.");
+                    return;
+                case "setrent":
+                    if(Clans.cfg.chargeRentDays > 0)
+                        commands.get("setrent").execute(server, sender, args);
+                    else
+                        throw new CommandException("/clan setrent is disabled on this server.");
+                    return;
+                case "finances":
+                    if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
+                        commands.get("finances").execute(server, sender, args);
+                    else
+                        throw new CommandException("/clan finances is disabled on this server.");
+                    return;
+            }
         }
         throw new WrongUsageException("/clan <command> [parameters]");
     }
