@@ -46,7 +46,7 @@ public class CommandClan extends CommandBase {
         put("banner", new CommandBanner());
         put("setname", new CommandSetName());
         put("details", new CommandDetails());
-        put("settagline", null);
+        put("setdescription", new CommandSetDescription());
         //raiding parties
         put("makeparty", null);
         put("joinparty", null);
@@ -130,6 +130,15 @@ public class CommandClan extends CommandBase {
                 return;
             case "setname":
                 commands.get("setname").execute(server, sender, args);
+                return;
+            case "details":
+            case "info":
+            case "d":
+                commands.get("details").execute(server, sender, args);
+                return;
+            case "setdescription":
+            case "setdesc":
+                commands.get("setdescription").execute(server, sender, args);
                 return;
             //Commands for raiding parties
             case "makeparty":

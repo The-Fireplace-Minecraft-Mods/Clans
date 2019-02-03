@@ -6,7 +6,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
@@ -65,7 +64,8 @@ public class CommandDetails extends ClanSubCommand {
 
 	private void showDetails(MinecraftServer server, EntityPlayerMP sender, Clan clan) {
 		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan name: "+clan.getClanName()));
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description: "+clan.getTagline()));
+		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description: "+clan.getDescription()));
+		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Number of claims: "+clan.getClaimCount()));
 		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Number of members: "+clan.getMemberCount()));
 		List<EntityPlayerMP> leaders = Lists.newArrayList();
 		List<EntityPlayerMP> admins = Lists.newArrayList();

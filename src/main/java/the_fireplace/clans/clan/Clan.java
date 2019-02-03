@@ -12,7 +12,7 @@ public class Clan implements Serializable {
 	private static final long serialVersionUID = 0x2ACA77AC;
 
 	private String clanName, clanBanner;
-	private String tagline = "This is a new clan.";
+	private String description = "This is a new clan.";
 	private HashMap<UUID, EnumRank> members;
 	private UUID clanId;
 	private float homeX, homeY, homeZ;
@@ -105,12 +105,13 @@ public class Clan implements Serializable {
 		claimCount--;
 	}
 
-	public String getTagline() {
-		return tagline;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setTagline(String tagline) {
-		this.tagline = tagline;
+	public void setDescription(String description) {
+		this.description = description;
+		ClanDatabase.save();
 	}
 
 	public int getMemberCount(){
