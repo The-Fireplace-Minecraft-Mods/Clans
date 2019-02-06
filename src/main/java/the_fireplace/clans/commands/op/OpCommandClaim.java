@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.ChunkUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
@@ -44,7 +45,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 		Clan opClan = ClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
-			UUID claimFaction = Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan();
+			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			Clan targetClan = ClanCache.getClan(claimFaction);
 			if(claimFaction != null && targetClan != null && ((args.length != 1 || !args[0].toLowerCase().equals("force")) || claimFaction.equals(opClan.getClanId()))) {
 				if(claimFaction.equals(opClan.getClanId()))
@@ -56,7 +57,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 					targetClan.subClaimCount();
 					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 				}
-				Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(opClan.getClanId());
+				ChunkUtils.setChunkOwner(c, opClan.getClanId());
 				opClan.addClaimCount();
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
 			}

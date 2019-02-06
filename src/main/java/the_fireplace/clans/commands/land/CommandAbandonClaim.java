@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.ChunkUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
@@ -48,7 +49,7 @@ public class CommandAbandonClaim extends ClanSubCommand {
 		assert playerClan != null;
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
-			UUID claimFaction = Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan();
+			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(playerClan.getClanId())) {
 					//Unset clan home if it is in the chunk
@@ -62,7 +63,7 @@ public class CommandAbandonClaim extends ClanSubCommand {
 
 					playerClan.subClaimCount();
 					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, playerClan.getClanId());
-					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(null);
+					ChunkUtils.setChunkOwner(c, null);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to you."));

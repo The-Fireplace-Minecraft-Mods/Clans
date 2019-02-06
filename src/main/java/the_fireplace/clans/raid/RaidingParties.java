@@ -1,6 +1,7 @@
 package the_fireplace.clans.raid;
 
 import com.google.common.collect.Maps;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.clan.Clan;
 
@@ -30,6 +31,11 @@ public final class RaidingParties {
 
 	public static boolean hasActiveRaid(Clan clan){
 		return activeraids.containsKey(clan);
+	}
+
+	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
+		//noinspection SuspiciousMethodCalls
+		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
 	}
 
 	static void addRaid(String name, Raid raid){

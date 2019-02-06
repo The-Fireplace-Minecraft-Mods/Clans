@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.ChunkUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
@@ -47,7 +48,7 @@ public class CommandClaim extends ClanSubCommand {
 		assert playerClan != null;
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
-			UUID claimFaction = Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan();
+			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(playerClan.getClanId()))
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Your clan has already claimed this land."));
@@ -55,7 +56,7 @@ public class CommandClaim extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
 			} else {
 				if(Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, playerClan.getClanId())) {
-					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(playerClan.getClanId());
+					ChunkUtils.setChunkOwner(c, playerClan.getClanId());
 					playerClan.addClaimCount();
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
 				} else
