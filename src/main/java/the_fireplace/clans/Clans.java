@@ -106,6 +106,9 @@ public final class Clans {
         public static boolean multipleClanLeaders = true;
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;
+        @Config.Comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type to avoid getting raided. Set to 0 for no limit.")
+        @Config.RangeInt(min=0)
+        public static int maxNameLength = 32;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)

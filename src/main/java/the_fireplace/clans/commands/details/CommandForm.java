@@ -45,7 +45,9 @@ public class CommandForm extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		String newClanName = args[0];
-		if(ClanCache.clanNameTaken(newClanName))
+		if(Clans.cfg.maxNameLength > 0 && newClanName.length() > Clans.cfg.maxNameLength)
+			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is too long. This server's maximum name length is: "+Clans.cfg.maxNameLength));
+		else if(ClanCache.clanNameTaken(newClanName))
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED+"The clan name you have specified is already taken."));
 		else {
 			String banner = null;
