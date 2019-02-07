@@ -34,6 +34,10 @@ public final class RaidingParties {
 		return activeraids.containsKey(clan);
 	}
 
+	public static Raid getActiveRaid(Clan clan){
+		return activeraids.get(clan);
+	}
+
 	public static Collection<Raid> getActiveRaids() {
 		return activeraids.values();
 	}
@@ -61,6 +65,7 @@ public final class RaidingParties {
 
 	public static void initRaid(String raidName){
 		Raid startingRaid = raids.remove(raidName);
+		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 	}
 

@@ -159,7 +159,7 @@ public final class Clans {
         @Config.RangeInt(min=0)
         public static int winRaidAmount = 0;
         @Config.Comment("Multiply the reward for winning a raid by the number of enemy claims. This requires a compatible economy to be installed.")
-        public static boolean winRaidMultiplier = true;
+        public static boolean winRaidMultiplierClaims = true;
         @Config.Comment("Multiply the reward for winning a raid by the number of online enemy players. This requires a compatible economy to be installed.")
         public static boolean winRaidMultiplierPlayers = false;
         @Config.Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")

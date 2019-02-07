@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -40,7 +41,7 @@ public class CommandStartRaid extends RaidSubCommand {
 			if (raid != null) {
 				assert server != null;
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
-				if(clanPlayers.size() >= raid.getMemberCount()) {//TODO config option to control the offset here
+				if(clanPlayers.size() >= raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						RaidingParties.initRaid(raid.getRaidName());
 						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully started the raid!"));

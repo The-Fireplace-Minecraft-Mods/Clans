@@ -1,6 +1,8 @@
 package the_fireplace.clans.event;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,6 +33,18 @@ public class RaidEvents {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 				ChunkUtils.setChunkOwner(c, null);
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onPlayerDeath(LivingDeathEvent event) {
+		if(event.getEntityLiving() instanceof EntityPlayerMP) {
+			EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
+			Clan clan = ClanCache.getPlayerClan(player.getUniqueID());
+			if(clan != null && RaidingParties.hasActiveRaid(clan))
+				RaidingParties.getActiveRaid(clan).addDeadDefender(player);
+			if(RaidingParties.getRaidingPlayers().contains(player) && RaidingParties.getRaid(player).isActive())
+				RaidingParties.getRaid(player).removeMember(player);
 		}
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -42,7 +43,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 				assert server != null;
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, args[0]);
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
-				if(clanPlayers.size() > raid.getMemberCount()) {//TODO config option to control the offset here
+				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
 						targetPlayer.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have been invited to a raid against " + raid.getTarget().getClanName() + "! To join, type /raid join " + raid.getRaidName()));
 						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully invited " + targetPlayer.getName() + " to the raid!"));

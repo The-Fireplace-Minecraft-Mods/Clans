@@ -29,15 +29,9 @@ public class Timer {
 			executing = true;
 			ticks -= 20;
 
-			for (Raid raid: RaidingParties.getActiveRaids()) {
-				if(raid.checkRaidEndTimer()) {
-					RaidingParties.endRaid(raid.getTarget());
-					//Reward the defenders the cost of the raid
-					Clans.getPaymentHandler().addAmount(raid.getCost(), raid.getTarget().getClanId());
-					//TODO give the defenders their shield
-					//TODO record this as a successful defense
-				}
-			}
+			for (Raid raid: RaidingParties.getActiveRaids())
+				if(raid.checkRaidEndTimer())
+					raid.defenderVictory();
 
 			if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
 				for(Clan clan: ClanDatabase.getClans()) {
