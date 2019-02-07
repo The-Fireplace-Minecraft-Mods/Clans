@@ -3,6 +3,10 @@ package the_fireplace.clans.raid;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import the_fireplace.clans.clan.Clan;
 
 import java.util.Collection;
@@ -73,5 +77,11 @@ public final class RaidingParties {
 		Raid raid = activeraids.remove(targetClan);
 		for(EntityPlayerMP player: raid.getMembers())
 			removeRaider(player);
+		for(int id: DimensionManager.getIDs())
+			for(Chunk c: FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(id).getChunkProvider().getLoadedChunks()) {
+				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
+				if(data != null)
+					data.restore(c);
+			}
 	}
 }

@@ -42,7 +42,7 @@ public class LandProtectionEvents {
 							event.setCanceled(true);
 							breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block while in another clan's territory."));
 						} else
-							RaidRestoreDatabase.addBlock(c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
+							RaidRestoreDatabase.addBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 					}
 				}
 			} else {

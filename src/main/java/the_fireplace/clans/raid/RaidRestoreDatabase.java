@@ -23,18 +23,18 @@ public final class RaidRestoreDatabase implements Serializable {
 		return instance;
 	}
 
-	private HashMap<Pair<Integer, Integer>, ChunkRestoreData> raidedChunks = Maps.newHashMap();
+	private HashMap<Pair<Integer, Pair<Integer, Integer>>, ChunkRestoreData> raidedChunks = Maps.newHashMap();
 
-	public static void addBlock(Chunk c, BlockPos pos, String block) {
-		Pair<Integer, Integer> coords = new Pair<>(c.x, c.z);
+	public static void addBlock(int dim, Chunk c, BlockPos pos, String block) {
+		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
 		getInstance().raidedChunks.get(coords).addBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		save();
 	}
 
-	public static ChunkRestoreData popChunkRestoreData(Chunk c) {
-		return getInstance().raidedChunks.remove(new Pair<>(c.x, c.z));
+	public static ChunkRestoreData popChunkRestoreData(int dim, Chunk c) {
+		return getInstance().raidedChunks.remove(new Pair<>(dim, new Pair<>(c.x, c.z)));
 	}
 
 	private static void load() {

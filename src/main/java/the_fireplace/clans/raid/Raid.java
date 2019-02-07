@@ -9,17 +9,18 @@ import java.util.ArrayList;
 
 public class Raid {
 	private String raidName;
-	private ArrayList<EntityPlayerMP> members, initMembers;
+	private ArrayList<EntityPlayerMP> members, initMembers, deadDefenders;
 	private Clan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
 	private int attackerAbandonmentTime = 0, defenderAbandonmentTime = 0;
-	private ArrayList<EntityPlayerMP> deadDefenders;
 	private long cost;
 	private boolean isActive;
 
 	public Raid(String raidName, EntityPlayerMP starter, Clan targetClan, long raidCost){
 		this.raidName = raidName;
-		members = initMembers = Lists.newArrayList();
+		members = Lists.newArrayList();
+		initMembers = Lists.newArrayList();
+		deadDefenders = Lists.newArrayList();
 		addMember(starter);
 		this.target = targetClan;
 		cost = raidCost;
@@ -127,7 +128,7 @@ public class Raid {
 		return isActive;
 	}
 
-	public void activate() {
+	void activate() {
 		isActive = true;
 	}
 }
