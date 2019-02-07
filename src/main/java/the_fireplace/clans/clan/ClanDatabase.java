@@ -17,8 +17,10 @@ public final class ClanDatabase implements Serializable {
 	private static File saveDir = DimensionManager.getCurrentSaveRootDirectory();
 
 	public static ClanDatabase getInstance() {
-		if(instance == null)
+		if(instance == null) {
 			readFromFile();
+			instance.opclan = new Clan();
+		}
 		return instance;
 	}
 
@@ -27,7 +29,6 @@ public final class ClanDatabase implements Serializable {
 
 	private ClanDatabase(){
 		clans = Maps.newHashMap();
-		opclan = new Clan();
 	}
 
 	public static Clan getOpClan() {
@@ -44,7 +45,7 @@ public final class ClanDatabase implements Serializable {
 		return getInstance().clans.get(clanId);
 	}
 
-	static Collection<Clan> getClans(){
+	public static Collection<Clan> getClans(){
 		return getInstance().clans.values();
 	}
 

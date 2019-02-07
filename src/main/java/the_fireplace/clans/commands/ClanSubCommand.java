@@ -29,18 +29,18 @@ public abstract class ClanSubCommand extends CommandBase {
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
 		if(sender instanceof Entity) {
-			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID());
 			if(getRequiredClanRank() == EnumRank.ANY)
 				return true;
+			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID());
 			switch(playerRank){
 				case LEADER:
-					return getRequiredClanRank() != EnumRank.NOCLAN;
+					return !getRequiredClanRank().equals(EnumRank.NOCLAN);
 				case ADMIN:
-					return getRequiredClanRank() != EnumRank.LEADER && getRequiredClanRank() != EnumRank.NOCLAN;
+					return !getRequiredClanRank().equals(EnumRank.LEADER) && !getRequiredClanRank().equals(EnumRank.NOCLAN);
 				case MEMBER:
-					return getRequiredClanRank() == EnumRank.MEMBER;
+					return getRequiredClanRank().equals(EnumRank.MEMBER);
 				case NOCLAN:
-					return getRequiredClanRank() == EnumRank.NOCLAN;
+					return getRequiredClanRank().equals(EnumRank.NOCLAN);
 				default:
 					return false;
 			}
@@ -57,7 +57,7 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if(sender instanceof EntityPlayerMP){
+		if(sender instanceof EntityPlayerMP) {
 			if(args.length >= getMinArgs() && args.length <= getMaxArgs()) {
 				if(checkPermission(server, sender))
 					run(server, (EntityPlayerMP) sender, args);

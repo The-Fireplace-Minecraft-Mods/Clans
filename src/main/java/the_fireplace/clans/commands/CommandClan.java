@@ -192,8 +192,9 @@ public class CommandClan extends CommandBase {
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
     }
 
     static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
