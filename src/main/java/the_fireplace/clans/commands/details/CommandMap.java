@@ -52,7 +52,7 @@ public class CommandMap extends ClanSubCommand {
 
 		Map<UUID, Character> symbolMap = Maps.newHashMap();
 		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "====================================================="));
-		for(int z=center.z-5; z <= center.x + 5; z++) {
+		for(int z=center.z-5; z <= center.z + 5; z++) {
 			StringBuilder row = new StringBuilder();
 			for (int x = center.x - 26; x <= center.x + 26; x++) {
 				Chunk c = w.getChunk(x, z);
