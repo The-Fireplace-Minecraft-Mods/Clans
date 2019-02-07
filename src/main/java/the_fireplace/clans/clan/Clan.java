@@ -29,6 +29,8 @@ public class Clan implements Serializable {
 	private boolean isOpclan = false;
 	private int rent = 0;
 
+	private long rentTimeStamp = System.currentTimeMillis(), upkeepTimeStamp = System.currentTimeMillis();
+
 	public Clan(String clanName, UUID leader){
 		this(clanName, leader, null);
 	}
@@ -237,5 +239,21 @@ public class Clan implements Serializable {
 
 	public void setRent(int rent) {
 		this.rent = rent;
+	}
+
+	public long getRentTimeStamp() {
+		return rentTimeStamp;
+	}
+
+	public void updateRentTimeStamp() {
+		this.rentTimeStamp = System.currentTimeMillis();
+	}
+
+	public long getUpkeepTimeStamp() {
+		return upkeepTimeStamp;
+	}
+
+	public void updateUpkeepTimeStamp() {
+		this.upkeepTimeStamp = System.currentTimeMillis();
 	}
 }

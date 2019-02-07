@@ -50,9 +50,11 @@ public class CommandDisband extends ClanSubCommand {
 			long distFunds = Clans.getPaymentHandler().getBalance(senderClan.getClanId());
 			distFunds += Clans.cfg.claimChunkCost * senderClan.getClaimCount();
 			if(Clans.cfg.leaderRecieveDisbandFunds) {
+				//TODO if multiple leaders, split among them
 				Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
 				distFunds = 0;
 			} else {
+				//TODO if multiple leaders, split among them
 				Clans.getPaymentHandler().addAmount(distFunds % senderClan.getMemberCount(), sender.getUniqueID());
 				distFunds /= senderClan.getMemberCount();
 			}

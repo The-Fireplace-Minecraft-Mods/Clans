@@ -45,11 +45,12 @@ public class CommandCreateRaid extends RaidSubCommand {
 			if(!RaidingParties.getRaidingPlayers().contains(sender)) {
 				if (!RaidingParties.getRaids().containsKey(name)) {
 					if (target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).size() > 0) {
+						//TODO check that no raiding party exists against target clan
 						long raidCost = Clans.cfg.startRaidCost;
 						if(Clans.cfg.startRaidMultiplier)
 							raidCost *= target.getClaimCount();
 						if(Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
-							new Raid(name, sender, target);
+							new Raid(name, sender, target, raidCost);
 							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
 						} else
 							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form raiding party against "+target.getClanName()+". It costs "+raidCost+' '+Clans.getPaymentHandler().getCurrencyName(raidCost)));

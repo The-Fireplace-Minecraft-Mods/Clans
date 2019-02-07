@@ -2,6 +2,7 @@ package the_fireplace.clans;
 
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -70,6 +71,15 @@ public final class Clans {
 
     @SubscribeEvent
     public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){
+        attachClanTagCap(e);
+    }
+
+    @SubscribeEvent
+    public static void attachPlayerCaps(AttachCapabilitiesEvent<EntityPlayer> e){
+        attachClanTagCap(e);
+    }
+
+    private static void attachClanTagCap(AttachCapabilitiesEvent e) {
         //noinspection ConstantConditions
         assert CLAIMED_LAND != null;
         e.addCapability(new ResourceLocation("clans", "claimData"), new ICapabilitySerializable() {
@@ -104,11 +114,27 @@ public final class Clans {
         //General clan config
         @Config.Comment("Allow clans to have multiple leaders.")
         public static boolean multipleClanLeaders = true;
-        @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
-        public static int maxRaidersOffset = 0;
         @Config.Comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type to avoid getting raided. Set to 0 for no limit.")
         @Config.RangeInt(min=0)
         public static int maxNameLength = 32;
+        @Config.Comment("Minimum number of blocks between clan homes.")
+        @Config.RangeInt(min=0)
+        public static int minClanHomeDist = 1000;
+        //Raid configuration
+        @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
+        public static int maxRaidersOffset = 0;
+        @Config.Comment("Maximum duration a raid can last for, in minutes.")
+        @Config.RangeInt(min=0)
+        public static int maxRaidDuration = 30;
+        @Config.Comment("Maximum amount of consecutive time raiding parties can remain outside their target's territory, in seconds.")
+        @Config.RangeInt(min=0)
+        public static int maxAttackerAbandonmentTime = 30;
+        @Config.Comment("Maximum amount of consecutive time defending clans can remain outside their territory during a raid, in seconds.")
+        @Config.RangeInt(min=0)
+        public static int maxClanDesertionTime = 60;
+        @Config.Comment("Amount of shield given to the defending clan for defending against a raid, in hours.")
+        @Config.RangeInt(min=0)
+        public static int defenseWinShield = 24*5;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -141,6 +167,8 @@ public final class Clans {
         public static boolean multiplyUpkeepClaims = true;
         @Config.Comment("Multiply the clan upkeep by the number of members. This requires a compatible economy to be installed.")
         public static boolean multiplyUpkeepMembers = false;
+        @Config.Comment("Disband the clan when it can't afford upkeep. This requires a compatible economy to be installed.")
+        public static boolean disbandNoUpkeep = false;
         //Clan finance management
         @Config.Comment("Allow the clan leader to withdraw funds from the clan bank account. This requires a compatible economy to be installed.")
         public static boolean leaderWithdrawFunds = false;

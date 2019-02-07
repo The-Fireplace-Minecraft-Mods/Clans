@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.clan.Clan;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -33,6 +34,10 @@ public final class RaidingParties {
 		return activeraids.containsKey(clan);
 	}
 
+	public static Collection<Raid> getActiveRaids() {
+		return activeraids.values();
+	}
+
 	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
 		//noinspection SuspiciousMethodCalls
 		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
@@ -57,5 +62,11 @@ public final class RaidingParties {
 	public static void initRaid(String raidName){
 		Raid startingRaid = raids.remove(raidName);
 		activeraids.put(startingRaid.getTarget(), startingRaid);
+	}
+
+	public static void endRaid(Clan targetClan) {
+		Raid raid = activeraids.remove(targetClan);
+		for(EntityPlayerMP player: raid.getMembers())
+			removeRaider(player);
 	}
 }
