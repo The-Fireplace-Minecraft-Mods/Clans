@@ -2,7 +2,9 @@ package the_fireplace.clans;
 
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -75,14 +77,17 @@ public final class Clans {
     }
 
     @SubscribeEvent
-    public static void attachPlayerCaps(AttachCapabilitiesEvent<EntityPlayer> e){
-        attachClanTagCap(e);
+    public static void attachPlayerCaps(AttachCapabilitiesEvent<Entity> e){
+        if(e.getObject() instanceof EntityPlayer)
+            attachClanTagCap(e);//TODO find out why this doesn't seem to be working
     }
+
+    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
 
     private static void attachClanTagCap(AttachCapabilitiesEvent e) {
         //noinspection ConstantConditions
         assert CLAIMED_LAND != null;
-        e.addCapability(new ResourceLocation("clans", "claimData"), new ICapabilitySerializable() {
+        e.addCapability(claimed_land_res, new ICapabilitySerializable() {
             ClaimedLandCapability inst = CLAIMED_LAND.getDefaultInstance();
 
             @Override

@@ -86,7 +86,7 @@ public class Timer {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
+		if(event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
 			//noinspection ConstantConditions
 			assert Clans.CLAIMED_LAND != null;
 			if(event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
@@ -95,8 +95,8 @@ public class Timer {
 				if((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 					event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
 					String color = MinecraftColors.GREEN;
-					UUID playerClanId = ClanCache.getClan(event.player.getUniqueID()).getClanId();
-					if((playerClanId != null && !playerClanId.equals(chunkClan)) || (playerClanId == null && chunkClan != null))
+					Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
+					if((playerClan != null && !playerClan.getClanId().equals(chunkClan)) || (playerClan == null && chunkClan != null))
 						color = MinecraftColors.YELLOW;
 					if(chunkClan == null)
 						color = MinecraftColors.DARK_GREEN;
