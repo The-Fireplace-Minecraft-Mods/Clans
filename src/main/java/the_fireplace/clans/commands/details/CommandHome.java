@@ -6,10 +6,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.MinecraftColors;
+import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 

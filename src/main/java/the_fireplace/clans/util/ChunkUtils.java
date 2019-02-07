@@ -1,6 +1,7 @@
-package the_fireplace.clans;
+package the_fireplace.clans.util;
 
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 
 import javax.annotation.Nullable;

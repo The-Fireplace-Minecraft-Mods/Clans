@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.MinecraftColors;
+import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.commands.raiding.*;
 
 import javax.annotation.Nullable;

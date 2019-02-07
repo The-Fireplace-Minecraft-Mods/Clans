@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
-import the_fireplace.clans.MinecraftColors;
+import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;

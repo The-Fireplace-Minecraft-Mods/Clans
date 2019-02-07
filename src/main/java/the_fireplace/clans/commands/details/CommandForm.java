@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.MinecraftColors;
+import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;

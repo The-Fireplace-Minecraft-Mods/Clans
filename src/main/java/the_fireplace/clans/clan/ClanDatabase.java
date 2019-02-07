@@ -112,6 +112,7 @@ public final class ClanDatabase implements Serializable {
 			instance = new ClanDatabase();
 	}
 
+	@SuppressWarnings("Duplicates")
 	public static void save() {
 		try {
 			if (saveDir == null)

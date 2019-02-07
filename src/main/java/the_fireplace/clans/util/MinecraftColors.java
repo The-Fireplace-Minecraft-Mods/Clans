@@ -1,4 +1,4 @@
-package the_fireplace.clans;
+package the_fireplace.clans.util;
 
 public class MinecraftColors {
 	public static final String BOLD = "§l";
