@@ -79,7 +79,7 @@ public final class Clans {
     @SubscribeEvent
     public static void attachPlayerCaps(AttachCapabilitiesEvent<Entity> e){
         if(e.getObject() instanceof EntityPlayer)
-            attachClanTagCap(e);//TODO find out why this doesn't seem to be working
+            attachClanTagCap(e);
     }
 
     private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
