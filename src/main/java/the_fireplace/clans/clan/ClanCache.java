@@ -2,6 +2,7 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ public final class ClanCache {
 	private static HashMap<String, Clan> clanNames = Maps.newHashMap();
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
+	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
 
 	@Nullable
 	public static Clan getClan(UUID clanID){
@@ -112,5 +114,23 @@ public final class ClanCache {
 
 	public static void removeInvite(UUID player) {
 		clanInvites.remove(player);
+	}
+
+	public static HashMap<Clan, BlockPos> getClanHomes() {
+		if(clanHomes.isEmpty())
+			for(Clan clan: ClanDatabase.getClans())
+				clanHomes.put(clan, clan.getHome());
+		return clanHomes;
+	}
+
+	public static void setClanHome(Clan c, BlockPos home) {
+		if(clanHomes.isEmpty())
+			for(Clan clan: ClanDatabase.getClans())
+				clanHomes.put(clan, clan.getHome());
+		clanHomes.put(c, home);
+	}
+
+	public static void clearClanHome(Clan c) {
+		clanHomes.remove(c);
 	}
 }

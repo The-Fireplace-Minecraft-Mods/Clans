@@ -119,6 +119,7 @@ public class Clan implements Serializable {
 		this.hasHome = true;
 		this.homeDimension = dimension;
 		ClanDatabase.save();
+		ClanCache.setClanHome(this, pos);
 	}
 
 	public boolean hasHome() {
@@ -129,6 +130,7 @@ public class Clan implements Serializable {
 		hasHome = false;
 		homeX = homeY = homeZ = 0;
 		homeDimension = 0;
+		ClanCache.clearClanHome(this);
 		//No need to save here because subClaimCount is always called after this.
 	}
 
