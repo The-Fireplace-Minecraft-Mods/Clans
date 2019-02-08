@@ -1,26 +1,31 @@
 package the_fireplace.clans.raid;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.util.MinecraftColors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Raid {
 	private String raidName;
-	private ArrayList<EntityPlayerMP> members, initMembers, deadDefenders;
+	private ArrayList<EntityPlayerMP> initMembers;
+	private HashMap<EntityPlayerMP, Integer> members, defenders;
 	private Clan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
-	private int attackerAbandonmentTime = 0, defenderAbandonmentTime = 0;
 	private long cost;
 	private boolean isActive;
 
 	public Raid(String raidName, EntityPlayerMP starter, Clan targetClan, long raidCost){
 		this.raidName = raidName;
-		members = Lists.newArrayList();
+		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
-		deadDefenders = Lists.newArrayList();
+		defenders = Maps.newHashMap();
 		addMember(starter);
 		this.target = targetClan;
 		cost = raidCost;
@@ -33,7 +38,7 @@ public class Raid {
 		if(Clans.cfg.winRaidMultiplierClaims)
 			reward *= target.getClaimCount();
 		if(Clans.cfg.winRaidMultiplierPlayers)
-			reward *= deadDefenders.size();
+			reward *= defenders.size();
 		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getClanId());
 		long remainder = reward % initMembers.size();
 		reward /= initMembers.size();
@@ -55,8 +60,8 @@ public class Raid {
 		target.addWin();
 	}
 
-	public ArrayList<EntityPlayerMP> getMembers() {
-		return members;
+	public Set<EntityPlayerMP> getMembers() {
+		return members.keySet();
 	}
 
 	public String getRaidName() {
@@ -68,13 +73,13 @@ public class Raid {
 	}
 
 	public void addMember(EntityPlayerMP player) {
-		this.members.add(player);
+		this.members.put(player, 0);
 		this.initMembers.add(player);
 		RaidingParties.addRaider(player, this);
 	}
 
 	public boolean removeMember(EntityPlayerMP player) {
-		boolean rm = this.members.remove(player);
+		boolean rm = this.members.remove(player) != null;
 		if(rm) {
 			RaidingParties.removeRaider(player);
 			if(this.members.isEmpty()) {
@@ -100,24 +105,48 @@ public class Raid {
 		return remainingSeconds <= 0;
 	}
 
-	public int getAttackerAbandonmentTime() {
-		return attackerAbandonmentTime;
+	public int getAttackerAbandonmentTime(EntityPlayerMP member) {
+		return members.get(member);
 	}
 
-	public void incrementAttackerAbandonmentTime() {
-		attackerAbandonmentTime += 1;
+	public void incrementAttackerAbandonmentTime(EntityPlayerMP member) {
+		members.put(member, members.get(member) + 1);
+		if(members.get(member) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
+			removeMember(member);
+			member.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You have been removed from your raid because you spent too long outside the target's territory."));
+		} else if(members.get(member) == 1)
+			member.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You are not in the target clan's territory. If you stay outside it for longer than "+Clans.cfg.maxAttackerAbandonmentTime+" seconds, you will be removed from the raiding party."));
 	}
 
-	public int getDefenderAbandonmentTime() {
-		return defenderAbandonmentTime;
+	public void resetAttackerAbandonmentTime(EntityPlayerMP member) {
+		members.put(member, 0);
 	}
 
-	public void addDeadDefender(EntityPlayerMP player) {
-		if(!deadDefenders.contains(player)) {
-			deadDefenders.add(player);
-			if(deadDefenders.size() >= target.getOnlineMembers(player.server, player).size())
-				raiderVictory();
-		}
+	public int getDefenderAbandonmentTime(EntityPlayerMP member) {
+		return defenders.get(member);
+	}
+
+	public void incrementDefenderAbandonmentTime(EntityPlayerMP defender) {
+		defenders.put(defender, members.get(defender) + 1);
+		if(defenders.get(defender) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
+			removeDefender(defender);
+		else if(defenders.get(defender) == 1)
+			defender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You have left your clan's territory. If you stay outside it for longer than "+Clans.cfg.maxClanDesertionTime+" seconds, you will be considered dead when determining if your clan wins the raid."));
+	}
+
+	public void resetDefenderAbandonmentTime(EntityPlayerMP defender) {
+		defenders.put(defender, 0);
+	}
+
+	public void setDefenders(Iterable<EntityPlayerMP> defenders) {
+		for(EntityPlayerMP defender: defenders)
+			this.defenders.put(defender, 0);
+	}
+
+	public void removeDefender(EntityPlayerMP player) {
+		defenders.remove(player);
+		if(defenders.size() <= 0)
+			raiderVictory();
 	}
 
 	public long getCost() {
