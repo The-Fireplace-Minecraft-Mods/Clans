@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.util.MinecraftColors;
@@ -159,5 +160,6 @@ public class Raid {
 
 	void activate() {
 		isActive = true;
+		setDefenders(target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), null).keySet());//TODO test that this works
 	}
 }

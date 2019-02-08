@@ -89,19 +89,38 @@ public class Timer {
 		if(event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
 			//noinspection ConstantConditions
 			assert Clans.CLAIMED_LAND != null;
+			UUID chunkClan = event.player.getEntityWorld().getChunk(event.player.getPosition()).getCapability(Clans.CLAIMED_LAND, null).getClan();
+			Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
 			if(event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
-				UUID chunkClan = event.player.getEntityWorld().getChunk(event.player.getPosition()).getCapability(Clans.CLAIMED_LAND, null).getClan();
 				UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
 				if((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 					event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
 					String color = MinecraftColors.GREEN;
-					Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
 					if((playerClan != null && !playerClan.getClanId().equals(chunkClan)) || (playerClan == null && chunkClan != null))
 						color = MinecraftColors.YELLOW;
 					if(chunkClan == null)
 						color = MinecraftColors.DARK_GREEN;
 
 					event.player.sendMessage(new TextComponentString(color + "You are now entering " + (chunkClan == null ? "Wilderness." : ClanCache.getClan(chunkClan).getClanName()+"'s territory.")));
+				}
+			}
+			EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP)event.player : null;
+			if(player != null) {
+				if (RaidingParties.hasActiveRaid(playerClan)) {
+					Raid r = RaidingParties.getActiveRaid(playerClan);
+					if (playerClan.getClanId().equals(chunkClan))
+						r.resetDefenderAbandonmentTime(player);
+					else
+						r.incrementDefenderAbandonmentTime(player);
+				}
+				if(RaidingParties.getRaidingPlayers().contains(player)) {
+					Raid r = RaidingParties.getRaid(player);
+					if(r.isActive()) {
+						if(r.getTarget().getClanId().equals(chunkClan))
+							r.resetAttackerAbandonmentTime(player);
+						else
+							r.incrementAttackerAbandonmentTime(player);
+					}
 				}
 			}
 		}
