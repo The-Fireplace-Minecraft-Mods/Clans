@@ -201,6 +201,11 @@ public class CommandClan extends CommandBase {
         return 0;
     }
 
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return sender instanceof EntityPlayer;
+    }
+
     static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
         if(sender instanceof EntityPlayer) {
             EnumRank playerRank = ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID());
