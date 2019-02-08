@@ -33,4 +33,11 @@ public class ChunkUtils {
 		cap.setClan(newOwner);
 		return oldOwner;
 	}
+
+	public static void clearChunkOwner(Chunk c){
+		ClaimedLandCapability cap = c.getCapability(Clans.CLAIMED_LAND, null);
+		if(cap == null)
+			return;
+		cap.setClan(null);
+	}
 }

@@ -47,7 +47,7 @@ public class LandProtectionEvents {
 				}
 			} else {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-				ChunkUtils.setChunkOwner(c, null);
+				ChunkUtils.clearChunkOwner(c);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ public class LandProtectionEvents {
 				}
 			} else {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-				ChunkUtils.setChunkOwner(c, null);
+				ChunkUtils.clearChunkOwner(c);
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class LandProtectionEvents {
 				}
 			} else {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-				ChunkUtils.setChunkOwner(c, null);
+				ChunkUtils.clearChunkOwner(c);
 			}
 		}
 	}

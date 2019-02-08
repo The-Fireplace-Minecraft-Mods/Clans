@@ -62,7 +62,7 @@ public class CommandAbandonClaim extends ClanSubCommand {
 
 					playerClan.subClaimCount();
 					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, playerClan.getClanId());
-					ChunkUtils.setChunkOwner(c, null);
+					ChunkUtils.clearChunkOwner(c);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to you."));

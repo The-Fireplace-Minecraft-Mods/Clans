@@ -61,7 +61,7 @@ public class CommandMap extends ClanSubCommand {
 					row.append('#');
 				else {
 					if(ClanCache.getClan(chunkOwner) == null) {
-						ChunkUtils.setChunkOwner(c, null);
+						ChunkUtils.clearChunkOwner(c);
 						row.append('#');
 					} else {
 						if (!symbolMap.containsKey(chunkOwner))
