@@ -119,7 +119,8 @@ public final class ClanCache {
 	public static HashMap<Clan, BlockPos> getClanHomes() {
 		if(clanHomes.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanHomes.put(clan, clan.getHome());
+				if(clan.hasHome())
+					clanHomes.put(clan, clan.getHome());
 		return clanHomes;
 	}
 

@@ -140,6 +140,8 @@ public class Clan implements Serializable {
 	}
 
 	public BlockPos getHome() {
+		if(!hasHome)
+			return null;
 		return new BlockPos(homeX, homeY, homeZ);
 	}
 

@@ -44,7 +44,7 @@ public class CommandSetHome extends ClanSubCommand {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null) && Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
 			for(BlockPos pos: ClanCache.getClanHomes().values())
-				if(pos.getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
+				if(pos != null && pos.getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are too close to another clan's home! You must be at least "+Clans.cfg.minClanHomeDist+" blocks away from other clans' homes to set your clan home."));
 					return;
 				}
