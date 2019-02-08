@@ -1,15 +1,25 @@
 package the_fireplace.clans.payment;
 
+import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;
 import the_fireplace.grandeconomy.economy.Account;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
-		return GrandEconomyApi.takeFromBalance(account, amount, false);
+		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, false);
+		if(ret && ClanCache.getClan(account) != null)
+			try {
+				Objects.requireNonNull(Account.get(account)).writeIfChanged();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		return ret;
 	}
 
 	@Override
@@ -29,6 +39,12 @@ public class PaymentHandlerGE implements IPaymentHandler {
 		if(Account.get(account) == null)
 			return false;
 		GrandEconomyApi.addToBalance(account, amount, false);
+		if(ClanCache.getClan(account) != null)
+			try {
+				Objects.requireNonNull(Account.get(account)).writeIfChanged();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		return true;
 	}
 
