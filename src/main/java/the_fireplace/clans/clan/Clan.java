@@ -28,6 +28,11 @@ public class Clan implements Serializable {
 	private int claimCount = 0;
 	private boolean isOpclan = false;
 	private int rent = 0;
+	private int wins = 0;
+
+	private int losses = 0;
+
+	private long shield = Clans.cfg.initialShield * 60;
 
 	private long rentTimeStamp = System.currentTimeMillis(), upkeepTimeStamp = System.currentTimeMillis();
 
@@ -257,5 +262,42 @@ public class Clan implements Serializable {
 
 	public void updateUpkeepTimeStamp() {
 		this.upkeepTimeStamp = System.currentTimeMillis();
+	}
+
+	/**
+	 * Add minutes to the clan's shield
+	 * @param shield
+	 * number of minutes of shield
+	 */
+	public void addShield(long shield) {
+		this.shield += shield;
+	}
+
+	/**
+	 * This should be called once a minute
+	 */
+	public void decrementShield() {
+		if(shield > 0)
+			shield--;
+	}
+
+	public boolean isShielded() {
+		return shield > 0;
+	}
+
+	public int getWins() {
+		return wins;
+	}
+
+	public int getLosses() {
+		return losses;
+	}
+
+	public void addWin() {
+		wins++;
+	}
+
+	public void addLoss() {
+		losses++;
 	}
 }

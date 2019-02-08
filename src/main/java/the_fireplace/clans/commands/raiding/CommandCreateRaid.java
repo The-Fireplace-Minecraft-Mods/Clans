@@ -44,18 +44,23 @@ public class CommandCreateRaid extends RaidSubCommand {
 			String name = args[0];
 			if(!RaidingParties.getRaidingPlayers().contains(sender)) {
 				if (!RaidingParties.getRaids().containsKey(name)) {
-					if (target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).size() > 0) {
-						//TODO check that no raiding party exists against target clan
-						long raidCost = Clans.cfg.startRaidCost;
-						if(Clans.cfg.startRaidMultiplier)
-							raidCost *= target.getClaimCount();
-						if(Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
-							new Raid(name, sender, target, raidCost);
-							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
+					if(!target.isShielded()) {
+						if (target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).size() > 0) {
+							if (!RaidingParties.getRaidedClans().contains(target)) {
+								long raidCost = Clans.cfg.startRaidCost;
+								if (Clans.cfg.startRaidMultiplier)
+									raidCost *= target.getClaimCount();
+								if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
+									new Raid(name, sender, target, raidCost);
+									sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
+								} else
+									sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form raiding party against " + target.getClanName() + ". It costs " + raidCost + ' ' + Clans.getPaymentHandler().getCurrencyName(raidCost)));
+							} else
+								sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan already has a party preparing to raid it or currently raiding it!"));
 						} else
-							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form raiding party against "+target.getClanName()+". It costs "+raidCost+' '+Clans.getPaymentHandler().getCurrencyName(raidCost)));
+							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan has no online members!"));
 					} else
-						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan has no online members!"));
+						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan is currently shielded!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Raid name is already taken!"));
 			} else

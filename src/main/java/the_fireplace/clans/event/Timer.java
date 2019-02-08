@@ -22,59 +22,65 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = Clans.MODID)
 public class Timer {
 	private static byte ticks = 0;
+	private static int minuteCounter = 0;
 	private static boolean executing = false;
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
-		if(!executing && ++ticks >= 20) {
-			executing = true;
-			ticks -= 20;
+		if(!executing) {
+			if(++minuteCounter >= 20*60)
+				for(Clan clan: ClanDatabase.getClans())
+					clan.decrementShield();
+			if (++ticks >= 20) {
+				executing = true;
+				ticks -= 20;
 
-			for (Raid raid: RaidingParties.getActiveRaids())
-				if(raid.checkRaidEndTimer())
-					raid.defenderVictory();
+				for (Raid raid : RaidingParties.getActiveRaids())
+					if (raid.checkRaidEndTimer())
+						raid.defenderVictory();
 
-			if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-				for(Clan clan: ClanDatabase.getClans()) {
-					if(Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getRentTimeStamp()) {
-						for(Map.Entry<UUID, EnumRank> member: clan.getMembers().entrySet()) {
-							if(Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
-								Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
-							else if(Clans.cfg.evictNonpayers)
-								if(member.getValue() != EnumRank.LEADER && (Clans.cfg.evictNonpayerAdmins || member.getValue() == EnumRank.MEMBER))
-									clan.removeMember(member.getKey());//TODO: If member is online, send the member a message saying they were evicted due to not being able to pay rent.
-						}
-						clan.updateRentTimeStamp();
-					}
-					if(Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getUpkeepTimeStamp()) {
-						int upkeep = Clans.cfg.clanUpkeepCost;
-						if(Clans.cfg.multiplyUpkeepMembers)
-							upkeep *= clan.getMemberCount();
-						if(Clans.cfg.multiplyUpkeepClaims)
-							upkeep *= clan.getClaimCount();
-						if(Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getClanId()) > 0 && Clans.cfg.disbandNoUpkeep) {
-							long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
-							distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
-							if(Clans.cfg.leaderRecieveDisbandFunds) {
-								//TODO pay leaders
-								//Clans.getPaymentHandler().addAmount(distFunds, clan.getMembers().getUniqueID());
-								distFunds = 0;
-							} else {
-								//TODO pay leaders
-								//Clans.getPaymentHandler().addAmount(distFunds % clan.getMemberCount(), sender.getUniqueID());
-								distFunds /= clan.getMemberCount();
+				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
+					for (Clan clan : ClanDatabase.getClans()) {
+						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getRentTimeStamp()) {
+							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
+								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
+									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
+								else if (Clans.cfg.evictNonpayers)
+									if (member.getValue() != EnumRank.LEADER && (Clans.cfg.evictNonpayerAdmins || member.getValue() == EnumRank.MEMBER))
+										clan.removeMember(member.getKey());//TODO: If member is online, send the member a message saying they were evicted due to not being able to pay rent.
 							}
-							for(UUID member: clan.getMembers().keySet()) {
-								Clans.getPaymentHandler().ensureAccountExists(member);
-								if(!Clans.getPaymentHandler().addAmount(distFunds, member));//TODO pay leaders
+							clan.updateRentTimeStamp();
+						}
+						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getUpkeepTimeStamp()) {
+							int upkeep = Clans.cfg.clanUpkeepCost;
+							if (Clans.cfg.multiplyUpkeepMembers)
+								upkeep *= clan.getMemberCount();
+							if (Clans.cfg.multiplyUpkeepClaims)
+								upkeep *= clan.getClaimCount();
+							if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getClanId()) > 0 && Clans.cfg.disbandNoUpkeep) {
+								long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
+								distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
+								if (Clans.cfg.leaderRecieveDisbandFunds) {
+									//TODO pay leaders
+									//Clans.getPaymentHandler().addAmount(distFunds, clan.getMembers().getUniqueID());
+									distFunds = 0;
+								} else {
+									//TODO pay leaders
+									//Clans.getPaymentHandler().addAmount(distFunds % clan.getMemberCount(), sender.getUniqueID());
+									distFunds /= clan.getMemberCount();
+								}
+								for (UUID member : clan.getMembers().keySet()) {
+									Clans.getPaymentHandler().ensureAccountExists(member);
+									if (!Clans.getPaymentHandler().addAmount(distFunds, member)) ;//TODO pay leaders
 									//Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
-								//TODO send message to member saying it was disbanded.
+									//TODO send message to member saying it was disbanded.
+								}
 							}
+							clan.updateUpkeepTimeStamp();
 						}
-						clan.updateUpkeepTimeStamp();
 					}
-				}
 
-			executing = false;
+				executing = false;
+			}
 		}
 	}
 

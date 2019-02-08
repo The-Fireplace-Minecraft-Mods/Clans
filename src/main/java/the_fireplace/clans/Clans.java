@@ -4,7 +4,6 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -137,9 +136,12 @@ public final class Clans {
         @Config.Comment("Maximum amount of consecutive time defending clans can remain outside their territory during a raid, in seconds.")
         @Config.RangeInt(min=0)
         public static int maxClanDesertionTime = 60;
-        @Config.Comment("Amount of shield given to the defending clan for defending against a raid, in hours.")
+        @Config.Comment("Amount of shield given to the defending clan after a raid, in hours.")
         @Config.RangeInt(min=0)
-        public static int defenseWinShield = 24*5;
+        public static int defenseShield = 24*5;
+        @Config.Comment("Amount of shield given to newly formed clans, in hours.")
+        @Config.RangeInt(min=0)
+        public static int initialShield = 24*3;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)

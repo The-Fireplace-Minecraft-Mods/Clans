@@ -43,16 +43,16 @@ public class Raid {
 			if(remainder-- > 0)
 				Clans.getPaymentHandler().addAmount(1, player.getUniqueID());
 		}
-		//TODO give the defenders their shield
-		//TODO record this as a failed defense
+		target.addShield(Clans.cfg.defenseShield * 60);
+		target.addLoss();
 	}
 
 	public void defenderVictory() {
 		RaidingParties.endRaid(target);
 		//Reward the defenders the cost of the raid
 		Clans.getPaymentHandler().addAmount(cost, target.getClanId());
-		//TODO give the defenders their shield
-		//TODO record this as a successful defense
+		target.addShield(Clans.cfg.defenseShield * 60);
+		target.addWin();
 	}
 
 	public ArrayList<EntityPlayerMP> getMembers() {

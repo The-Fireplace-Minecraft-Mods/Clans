@@ -1,5 +1,6 @@
 package the_fireplace.clans.raid;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,6 +9,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.clan.Clan;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
@@ -15,6 +17,7 @@ import java.util.Set;
 public final class RaidingParties {
 	private static HashMap<String, Raid> raids = Maps.newHashMap();
 	private static HashMap<EntityPlayerMP, Raid> raidingPlayers = Maps.newHashMap();
+	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
 	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
 
 	public static HashMap<String, Raid> getRaids() {
@@ -52,10 +55,12 @@ public final class RaidingParties {
 
 	static void addRaid(String name, Raid raid){
 		raids.put(name, raid);
+		raidedClans.add(raid.getTarget());
 	}
 
 	static void removeRaid(Raid raid) {
 		raids.remove(raid.getRaidName());
+		raidedClans.remove(raid.getTarget());
 	}
 
 	public static void addRaider(EntityPlayerMP raider, Raid raid){
@@ -76,11 +81,16 @@ public final class RaidingParties {
 		Raid raid = activeraids.remove(targetClan);
 		for(EntityPlayerMP player: raid.getMembers())
 			removeRaider(player);
+		raidedClans.remove(targetClan);
 		for(int id: DimensionManager.getIDs())
 			for(Chunk c: FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(id).getChunkProvider().getLoadedChunks()) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
 				if(data != null)
 					data.restore(c);
 			}
+	}
+
+	public static ArrayList<Clan> getRaidedClans() {
+		return raidedClans;
 	}
 }
