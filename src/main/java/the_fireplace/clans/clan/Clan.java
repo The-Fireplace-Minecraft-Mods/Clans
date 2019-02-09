@@ -1,5 +1,6 @@
 package the_fireplace.clans.clan;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -11,6 +12,7 @@ import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -69,6 +71,25 @@ public class Clan implements Serializable {
 
 	public HashMap<UUID, EnumRank> getMembers() {
 		return members;
+	}
+
+	public ArrayList<UUID> getLeaders() {
+		ArrayList<UUID> leaders = Lists.newArrayList();
+		for(Map.Entry<UUID, EnumRank> member: members.entrySet())
+			if(member.getValue().equals(EnumRank.LEADER))
+				leaders.add(member.getKey());
+		return leaders;
+	}
+
+	public void payLeaders(long totalAmount) {
+		ArrayList<UUID> leaders = getLeaders();
+		long remainder = totalAmount % leaders.size();
+		totalAmount /= leaders.size();
+		for(UUID leader: leaders) {
+			Clans.getPaymentHandler().addAmount(totalAmount, leader);
+			if(remainder-- > 0)
+				Clans.getPaymentHandler().addAmount(1, leader);
+		}
 	}
 
 	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers(MinecraftServer server, ICommandSender sender) {

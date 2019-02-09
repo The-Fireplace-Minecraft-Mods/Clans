@@ -62,18 +62,16 @@ public class Timer {
 								long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
 								distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
 								if (Clans.cfg.leaderRecieveDisbandFunds) {
-									//TODO pay leaders
-									//Clans.getPaymentHandler().addAmount(distFunds, clan.getMembers().getUniqueID());
+									clan.payLeaders(distFunds);
 									distFunds = 0;
 								} else {
-									//TODO pay leaders
-									//Clans.getPaymentHandler().addAmount(distFunds % clan.getMemberCount(), sender.getUniqueID());
+									clan.payLeaders(distFunds % clan.getMemberCount());
 									distFunds /= clan.getMemberCount();
 								}
 								for (UUID member : clan.getMembers().keySet()) {
 									Clans.getPaymentHandler().ensureAccountExists(member);
-									if (!Clans.getPaymentHandler().addAmount(distFunds, member)) ;//TODO pay leaders
-									//Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
+									if (!Clans.getPaymentHandler().addAmount(distFunds, member))
+										clan.payLeaders(distFunds);
 									//TODO send message to member saying it was disbanded.
 								}
 							}

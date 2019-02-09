@@ -50,18 +50,16 @@ public class CommandDisband extends ClanSubCommand {
 			long distFunds = Clans.getPaymentHandler().getBalance(senderClan.getClanId());
 			distFunds += Clans.cfg.claimChunkCost * senderClan.getClaimCount();
 			if(Clans.cfg.leaderRecieveDisbandFunds) {
-				//TODO if multiple leaders, split among them
-				Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
+				senderClan.payLeaders(distFunds);
 				distFunds = 0;
 			} else {
-				//TODO if multiple leaders, split among them
-				Clans.getPaymentHandler().addAmount(distFunds % senderClan.getMemberCount(), sender.getUniqueID());
+				senderClan.payLeaders(distFunds % senderClan.getMemberCount());
 				distFunds /= senderClan.getMemberCount();
 			}
 			for(UUID member: senderClan.getMembers().keySet()) {
 				Clans.getPaymentHandler().ensureAccountExists(member);
 				if(!Clans.getPaymentHandler().addAmount(distFunds, member))
-					Clans.getPaymentHandler().addAmount(distFunds, sender.getUniqueID());
+					senderClan.payLeaders(distFunds);
 				EntityPlayerMP player;
 				try {
 					player = getPlayer(server, sender, member.toString());
