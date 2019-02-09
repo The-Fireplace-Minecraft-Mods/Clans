@@ -124,6 +124,11 @@ public final class Clans {
         @Config.Comment("Minimum number of blocks between clan homes.")
         @Config.RangeInt(min=0)
         public static int minClanHomeDist = 1000;
+        //Wilderness guard
+        @Config.Comment("Protect the wilderness from damage above a specific Y level")
+        public static boolean protectWilderness = true;
+        @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
+        public static int minWildernessY = -1;
         //Raid configuration
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;

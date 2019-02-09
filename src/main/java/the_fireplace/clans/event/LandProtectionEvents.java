@@ -54,10 +54,15 @@ public class LandProtectionEvents {
 							RaidRestoreDatabase.addBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 					}
 				}
+				return;
 			} else {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 				ChunkUtils.clearChunkOwner(c);
 			}
+		}
+		if(Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+			event.setCanceled(true);
+			event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break blocks in Wilderness."));
 		}
 	}
 
@@ -100,10 +105,15 @@ public class LandProtectionEvents {
 						placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in your territory while you are being raided."));
 					}
 				}
+				return;
 			} else {
 				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 				ChunkUtils.clearChunkOwner(c);
 			}
+		}
+		if(Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+			event.setCanceled(true);
+			event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in Wilderness."));
 		}
 	}
 
@@ -163,6 +173,8 @@ public class LandProtectionEvents {
 				} else {
 					removeBlocks.add(pos);
 				}
+			} else if(Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY)) {
+				removeBlocks.add(pos);
 			}
 		}
 		for(BlockPos pos: removeBlocks)
