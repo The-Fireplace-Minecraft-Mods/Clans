@@ -1,5 +1,7 @@
 package the_fireplace.clans.event;
 
+import com.google.common.collect.Maps;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
@@ -15,6 +17,7 @@ import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.MinecraftColors;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -83,6 +86,8 @@ public class Timer {
 		}
 	}
 
+	private static HashMap<EntityPlayer, Integer> prevYs = Maps.newHashMap();
+
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
@@ -109,15 +114,16 @@ public class Timer {
 						endMsg = ClanCache.getClan(chunkClan).getClanName()+"'s territory.";
 
 					event.player.sendMessage(new TextComponentString(color + "You are now entering " + endMsg));
-				}/* else if(Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
-					int curY = (int)Math.floor(event.player.posY);
-					int prevY = (int)Math.floor(event.player.prevPosY);
+				} else if(Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 15 == 0) {
+					int curY = (int)Math.round(event.player.posY);
+					int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
 					int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
 					if(curY >= yBound && prevY < yBound)
 						event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Wilderness."));
 					else if(prevY >= yBound && curY < yBound)
 						event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Underground."));
-				}*/
+					prevYs.put(event.player, curY);
+				}
 			}
 			EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP)event.player : null;
 			if(player != null) {
