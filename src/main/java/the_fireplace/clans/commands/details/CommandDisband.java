@@ -44,7 +44,7 @@ public class CommandDisband extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan senderClan = ClanCache.getClan(sender.getUniqueID());
+		Clan senderClan = ClanCache.getPlayerClan(sender.getUniqueID());
 		assert senderClan != null;
 		if(ClanDatabase.removeClan(senderClan.getClanId())) {
 			long distFunds = Clans.getPaymentHandler().getBalance(senderClan.getClanId());

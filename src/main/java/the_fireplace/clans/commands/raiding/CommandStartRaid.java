@@ -36,7 +36,7 @@ public class CommandStartRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!RaidingParties.getRaidingPlayers().contains(sender)) {
+		if(RaidingParties.getRaidingPlayers().contains(sender)) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				assert server != null;
