@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +16,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
+import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.MinecraftColors;
 
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public class Timer {
 	private static byte ticks = 0;
 	private static int minuteCounter = 0;
 	private static boolean executing = false;
+	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
@@ -88,57 +91,64 @@ public class Timer {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
-			//noinspection ConstantConditions
-			assert Clans.CLAIMED_LAND != null;
-			UUID chunkClan = event.player.getEntityWorld().getChunk(event.player.getPosition()).getCapability(Clans.CLAIMED_LAND, null).getClan();
-			Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
-			if(event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
-				UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
-				if((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
-					event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
-					String color = MinecraftColors.GREEN;
-					if((playerClan != null && !playerClan.getClanId().equals(chunkClan)) || (playerClan == null && chunkClan != null))
-						color = MinecraftColors.YELLOW;
-					if(chunkClan == null)
-						color = MinecraftColors.DARK_GREEN;
-					String endMsg;
-					if(chunkClan == null) {
-						if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY))
-							endMsg = "Underground.";
-						else
-							endMsg = "Wilderness.";
-					} else
-						endMsg = ClanCache.getClan(chunkClan).getClanName()+"'s territory.";
+		if(!event.player.getEntityWorld().isRemote) {
+			if (event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
+				//noinspection ConstantConditions
+				assert Clans.CLAIMED_LAND != null;
+				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
+				UUID chunkClan = ChunkUtils.getChunkOwner(c);
+				Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
+				if (event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
+					UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
+					if (chunkClan != null && ClanCache.getClan(chunkClan) == null) {
+						ChunkUtils.clearChunkOwner(c);
+						chunkClan = null;
+					}
+					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
+						event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
+						String color = MinecraftColors.GREEN;
+						if ((playerClan != null && !playerClan.getClanId().equals(chunkClan)) || (playerClan == null && chunkClan != null))
+							color = MinecraftColors.YELLOW;
+						if (chunkClan == null)
+							color = MinecraftColors.DARK_GREEN;
+						String endMsg;
+						if (chunkClan == null) {
+							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY))
+								endMsg = "Underground.";
+							else
+								endMsg = "Wilderness.";
+						} else
+							endMsg = ClanCache.getClan(chunkClan).getClanName() + "'s territory.";
 
-					event.player.sendMessage(new TextComponentString(color + "You are now entering " + endMsg));
-				} else if(Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 15 == 0) {
-					int curY = (int)Math.round(event.player.posY);
-					int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
-					int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
-					if(curY >= yBound && prevY < yBound)
-						event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Wilderness."));
-					else if(prevY >= yBound && curY < yBound)
-						event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Underground."));
-					prevYs.put(event.player, curY);
+						event.player.sendMessage(new TextComponentString(color + "You are now entering " + endMsg));
+					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 15 == 0) {
+						int curY = (int) Math.round(event.player.posY);
+						int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
+						int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
+						if (curY >= yBound && prevY < yBound)
+							event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Wilderness."));
+						else if (prevY >= yBound && curY < yBound)
+							event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Underground."));
+						prevYs.put(event.player, curY);
+					}
 				}
-			}
-			EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP)event.player : null;
-			if(player != null) {
-				if (RaidingParties.hasActiveRaid(playerClan)) {
-					Raid r = RaidingParties.getActiveRaid(playerClan);
-					if (playerClan.getClanId().equals(chunkClan))
-						r.resetDefenderAbandonmentTime(player);
-					else
-						r.incrementDefenderAbandonmentTime(player);
-				}
-				if(RaidingParties.getRaidingPlayers().contains(player)) {
-					Raid r = RaidingParties.getRaid(player);
-					if(r.isActive()) {
-						if(r.getTarget().getClanId().equals(chunkClan))
-							r.resetAttackerAbandonmentTime(player);
+				EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP) event.player : null;
+				if (player != null) {
+					if (RaidingParties.hasActiveRaid(playerClan)) {
+						Raid r = RaidingParties.getActiveRaid(playerClan);
+						if (playerClan.getClanId().equals(chunkClan))
+							r.resetDefenderAbandonmentTime(player);
 						else
-							r.incrementAttackerAbandonmentTime(player);
+							r.incrementDefenderAbandonmentTime(player);
+					}
+					if (RaidingParties.getRaidingPlayers().contains(player)) {
+						Raid r = RaidingParties.getRaid(player);
+						if (r.isActive()) {
+							if (r.getTarget().getClanId().equals(chunkClan))
+								r.resetAttackerAbandonmentTime(player);
+							else
+								r.incrementAttackerAbandonmentTime(player);
+						}
 					}
 				}
 			}

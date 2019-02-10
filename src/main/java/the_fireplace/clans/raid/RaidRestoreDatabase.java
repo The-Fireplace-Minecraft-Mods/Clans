@@ -25,7 +25,7 @@ public final class RaidRestoreDatabase implements Serializable {
 
 	private HashMap<Pair<Integer, Pair<Integer, Integer>>, ChunkRestoreData> raidedChunks = Maps.newHashMap();
 
-	public static void addBlock(int dim, Chunk c, BlockPos pos, String block) {
+	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
 		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
@@ -33,7 +33,7 @@ public final class RaidRestoreDatabase implements Serializable {
 		save();
 	}
 
-	public static String popBlock(int dim, Chunk c, BlockPos pos) {
+	public static String popRestoreBlock(int dim, Chunk c, BlockPos pos) {
 		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
 		if(!getInstance().raidedChunks.containsKey(coords))
 			return null;
@@ -43,8 +43,29 @@ public final class RaidRestoreDatabase implements Serializable {
 		return block;
 	}
 
+	public static void addRemoveBlock(int dim, Chunk c, BlockPos pos) {
+		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
+		if(!getInstance().raidedChunks.containsKey(coords))
+			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
+		getInstance().raidedChunks.get(coords).addRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
+		save();
+	}
+
+	public static boolean delRemoveBlock(int dim, Chunk c, BlockPos pos) {
+		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
+		if(!getInstance().raidedChunks.containsKey(coords))
+			return false;
+		boolean block = getInstance().raidedChunks.get(coords).delRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
+		if(block)
+			save();
+		return block;
+	}
+
 	public static ChunkRestoreData popChunkRestoreData(int dim, Chunk c) {
-		return getInstance().raidedChunks.remove(new Pair<>(dim, new Pair<>(c.x, c.z)));
+		ChunkRestoreData d = getInstance().raidedChunks.remove(new Pair<>(dim, new Pair<>(c.x, c.z)));
+		if(d != null)
+			save();
+		return d;
 	}
 
 	private static void load() {

@@ -52,7 +52,8 @@ public class CommandAbandonClaim extends ClanSubCommand {
 			if(claimFaction != null) {
 				if(claimFaction.equals(playerClan.getClanId())) {
 					//Unset clan home if it is in the chunk
-					if(sender.dimension == playerClan.getHomeDim()
+					if(playerClan.hasHome()
+							&& sender.dimension == playerClan.getHomeDim()
 							&& playerClan.getHome().getX() >= c.getPos().getXStart()
 							&& playerClan.getHome().getX() <= c.getPos().getXEnd()
 							&& playerClan.getHome().getZ() >= c.getPos().getZStart()

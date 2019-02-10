@@ -7,11 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.commands.op.*;
 import the_fireplace.clans.util.MinecraftColors;
-import the_fireplace.clans.commands.op.OpCommandAbandomClaim;
-import the_fireplace.clans.commands.op.OpCommandClaim;
-import the_fireplace.clans.commands.op.OpCommandSetDescription;
-import the_fireplace.clans.commands.op.OpCommandSetName;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,6 +25,8 @@ public class CommandOpClan extends CommandBase {
         //clan constants
         put("setname", new OpCommandSetName());
         put("setdescription", new OpCommandSetDescription());
+        //Adjust other clans
+        put("setshield", new OpCommandSetShield());
 	}};
 
     @Override
@@ -66,6 +65,11 @@ public class CommandOpClan extends CommandBase {
             case "setdescription":
             case "setdesc":
                 commands.get("setdescription").execute(server, sender, args);
+                return;
+            //Adjust other clans
+            case "setshield":
+            case "shield":
+                commands.get("setshield").execute(server, sender, args);
                 return;
             //Help command
             case "help":

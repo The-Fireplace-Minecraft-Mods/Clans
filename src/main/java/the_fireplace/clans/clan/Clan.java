@@ -296,6 +296,10 @@ public class Clan implements Serializable {
 		this.shield += shield;
 	}
 
+	public void setShield(long shield) {
+		this.shield = shield;
+	}
+
 	/**
 	 * This should be called once a minute
 	 */

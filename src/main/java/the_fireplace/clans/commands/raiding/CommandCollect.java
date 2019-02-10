@@ -5,6 +5,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -36,10 +38,17 @@ public class CommandCollect extends RaidSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID())){
-			List<ItemStack> removeItems = Lists.newArrayList();
-			for(ItemStack stack: RaidBlockPlacementDatabase.getPlacedBlocks(sender.getUniqueID()))
-				if(sender.addItemStackToInventory(stack))
-					removeItems.add(stack);
+			List<String> removeItems = Lists.newArrayList();
+			for(String string: RaidBlockPlacementDatabase.getPlacedBlocks(sender.getUniqueID())) {
+				ItemStack stack;
+				try {
+					stack = new ItemStack(JsonToNBT.getTagFromJson(string));
+				} catch (NBTException e) {
+					stack = null;
+				}
+				if (stack == null || sender.addItemStackToInventory(stack))
+					removeItems.add(string);
+			}
 			RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(sender.getUniqueID(), removeItems);
 			if(RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID()))
 				sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You have run out of room for collection. Make room in your inventory and try again."));

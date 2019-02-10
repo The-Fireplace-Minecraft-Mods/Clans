@@ -29,7 +29,7 @@ public class ChunkRestoreData implements Serializable {
 			replaceBlocks.put(pos, block);
 	}
 
-	public void addRemoveBlock(int x, int y, int z, String block) {
+	public void addRemoveBlock(int x, int y, int z) {
 		SerialBlockPos pos = new SerialBlockPos(x, y, z);
 		if(replaceBlocks.remove(pos) == null)
 			removeBlocks.add(pos);

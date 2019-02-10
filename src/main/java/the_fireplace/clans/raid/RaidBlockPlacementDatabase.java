@@ -3,6 +3,7 @@ package the_fireplace.clans.raid;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 
 import java.io.*;
@@ -21,11 +22,11 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 		return instance;
 	}
 
-	public static HashMap<UUID, List<ItemStack>> getPlacedBlocks() {
+	public static HashMap<UUID, List<String>> getPlacedBlocks() {
 		return getInstance().placedBlocks;
 	}
 
-	private HashMap<UUID, List<ItemStack>> placedBlocks = Maps.newHashMap();
+	private HashMap<UUID, List<String>> placedBlocks = Maps.newHashMap();
 
 	public static boolean hasPlacedBlocks(UUID player){
 		return getPlacedBlocks().containsKey(player) && !getPlacedBlocks().get(player).isEmpty();
@@ -34,15 +35,15 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 	public void addPlacedBlock(UUID player, ItemStack payout){
 		if(!placedBlocks.containsKey(player))
 			placedBlocks.put(player, Lists.newArrayList());
-		placedBlocks.get(player).add(payout);
+		placedBlocks.get(player).add(payout.writeToNBT(new NBTTagCompound()).toString());
 		saveToFile();
 	}
 
-	public static List<ItemStack> getPlacedBlocks(UUID player){
+	public static List<String> getPlacedBlocks(UUID player){
 		return hasPlacedBlocks(player) ? getInstance().placedBlocks.get(player) : Lists.newArrayList();
 	}
 
-	public void removePlacedBlocks(UUID player, Collection<ItemStack> toRemove){
+	public void removePlacedBlocks(UUID player, Collection<String> toRemove){
 		placedBlocks.get(player).removeAll(toRemove);
 	}
 
