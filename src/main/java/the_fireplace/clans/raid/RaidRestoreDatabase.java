@@ -29,7 +29,7 @@ public final class RaidRestoreDatabase implements Serializable {
 		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
-		getInstance().raidedChunks.get(coords).addBlock(pos.getX(), pos.getY(), pos.getZ(), block);
+		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		save();
 	}
 
@@ -37,7 +37,7 @@ public final class RaidRestoreDatabase implements Serializable {
 		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
 		if(!getInstance().raidedChunks.containsKey(coords))
 			return null;
-		String block = getInstance().raidedChunks.get(coords).popBlock(pos.getX(), pos.getY(), pos.getZ());
+		String block = getInstance().raidedChunks.get(coords).popRestoreBlock(pos.getX(), pos.getY(), pos.getZ());
 		if(block != null)
 			save();
 		return block;

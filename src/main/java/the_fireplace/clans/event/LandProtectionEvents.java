@@ -11,6 +11,7 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
@@ -19,6 +20,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.Clans;
@@ -99,12 +101,13 @@ public class LandProtectionEvents {
 				EntityPlayer placingPlayer = event.getPlayer();
 				if(placingPlayer != null) {
 					Clan playerClan = ClanCache.getPlayerClan(placingPlayer.getUniqueID());
-					if(playerClan == null || !playerClan.getClanId().equals(chunkClan.getClanId())) {
+					if(playerClan == null || (!playerClan.getClanId().equals(chunkClan.getClanId()) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer))) {
 						event.setCanceled(true);
 						placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in another clan's territory."));
-					} else if(RaidingParties.isRaidedBy(chunkClan, placingPlayer)) {
-						event.setCanceled(true);
-						placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in your territory while you are being raided."));
+					} else {
+						ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
+						out.setCount(1);
+						RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
 					}
 				}
 				return;
@@ -168,6 +171,7 @@ public class LandProtectionEvents {
 	private static void cancelBlockInteraction(PlayerInteractEvent.RightClickBlock event, EntityPlayer placingPlayer, IBlockState targetState) {
 		event.setCanceled(true);
 		placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot interact with blocks in another clan's territory."));
+		//Update the client informing it the interaction did not happen. Go in all directions in case surrounding blocks would have been affected.
 		event.getWorld().notifyBlockUpdate(event.getPos(), targetState, targetState, 2);
 		event.getWorld().notifyBlockUpdate(event.getPos().up(), targetState, targetState, 2);
 		event.getWorld().notifyBlockUpdate(event.getPos().down(), targetState, targetState, 2);

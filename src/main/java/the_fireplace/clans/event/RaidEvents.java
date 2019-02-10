@@ -78,11 +78,11 @@ public class RaidEvents {
 
 				if(facing instanceof EnumFacing && extended instanceof Boolean) {
 					switch ((EnumFacing) facing) {
-						case NORTH:
-							if ((Boolean) extended) {
+						case NORTH://TODO handle blocks when pushing slime block
+							if ((Boolean) extended) {//TODO extend the reach further out when extended because it pushes more than one block
 								newPos = newPos.north(2);
 								oldPos = oldPos.north();
-							} else {
+							} else {//TODO make sure this only gets called if the piston is sticky
 								oldPos = oldPos.north(2);
 								newPos = newPos.north();
 							}

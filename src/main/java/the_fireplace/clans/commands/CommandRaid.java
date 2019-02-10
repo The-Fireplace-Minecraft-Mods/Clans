@@ -21,11 +21,12 @@ import java.util.HashMap;
 public class CommandRaid extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //raiding parties
-        put("create", new CommandCreateRaid());
+        put("form", new CommandCreateRaid());
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
         put("invite", new CommandInviteRaid());
 	    put("start", new CommandStartRaid());
+        put("collect", new CommandCollect());
 	}};
 
     @Override
@@ -51,8 +52,8 @@ public class CommandRaid extends CommandBase {
             //Commands for raiding parties
             case "create":
             case "form":
-            case "c":
-                commands.get("create").execute(server, sender, args);
+            case "f":
+                commands.get("form").execute(server, sender, args);
                 return;
             case "join":
             case "j":
@@ -69,6 +70,10 @@ public class CommandRaid extends CommandBase {
 	        case "start":
 		        commands.get("start").execute(server, sender, args);
 		        return;
+            case "collect":
+            case "c":
+                commands.get("collect").execute(server, sender, args);
+                return;
             //Help command
             case "help":
                 StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/raid commands:\n" +

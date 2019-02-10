@@ -32,7 +32,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid create <name> <target clan>";
+		return "/raid form <name> <target clan>";
 	}
 
 	@Override
