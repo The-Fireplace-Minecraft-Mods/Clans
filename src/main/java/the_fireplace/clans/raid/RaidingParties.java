@@ -8,6 +8,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.ClanCache;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,17 +16,17 @@ import java.util.HashMap;
 import java.util.Set;
 
 public final class RaidingParties {
-	private static HashMap<String, Raid> raids = Maps.newHashMap();
+	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
 	private static HashMap<EntityPlayerMP, Raid> raidingPlayers = Maps.newHashMap();
 	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
 	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
 
-	public static HashMap<String, Raid> getRaids() {
+	public static HashMap<Clan, Raid> getRaids() {
 		return raids;
 	}
 
 	public static Raid getRaid(String name){
-		return raids.get(name);
+		return raids.get(ClanCache.getClan(name));
 	}
 
 	public static Raid getRaid(EntityPlayerMP player){
@@ -53,13 +54,13 @@ public final class RaidingParties {
 		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
 	}
 
-	static void addRaid(String name, Raid raid){
-		raids.put(name, raid);
+	static void addRaid(Clan clan, Raid raid){
+		raids.put(clan, raid);
 		raidedClans.add(raid.getTarget());
 	}
 
 	static void removeRaid(Raid raid) {
-		raids.remove(raid.getRaidName());
+		raids.remove(raid.getTarget());
 		raidedClans.remove(raid.getTarget());
 	}
 
@@ -71,8 +72,8 @@ public final class RaidingParties {
 		raidingPlayers.remove(raider);
 	}
 
-	public static void initRaid(String raidName){
-		Raid startingRaid = raids.remove(raidName);
+	public static void initRaid(Clan raidTarget){
+		Raid startingRaid = raids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 	}

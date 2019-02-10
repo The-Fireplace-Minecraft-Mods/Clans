@@ -1,5 +1,6 @@
 package the_fireplace.clans.commands;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -13,8 +14,10 @@ import the_fireplace.clans.commands.raiding.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -94,5 +97,15 @@ public class CommandRaid extends CommandBase {
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return sender instanceof EntityPlayer;
+    }
+
+    private static final ArrayList<String> aliases = Lists.newArrayList();
+    static {
+        aliases.add("r");
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return aliases;
     }
 }

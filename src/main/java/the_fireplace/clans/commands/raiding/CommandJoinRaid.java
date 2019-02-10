@@ -31,14 +31,14 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid join <name>";
+		return "/raid join <clan name>";
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!RaidingParties.getRaidingPlayers().contains(sender)) {
-			String name = args[0];
-			Raid raid = RaidingParties.getRaid(name);
+			String targetName = args[0];
+			Raid raid = RaidingParties.getRaid(targetName);
 			if (raid != null) {
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {

@@ -1,5 +1,6 @@
 package the_fireplace.clans.commands;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -12,8 +13,10 @@ import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -84,5 +87,15 @@ public class CommandOpClan extends CommandBase {
                 return;
         }
         throw new WrongUsageException("/opclan <command> [parameters]");
+    }
+
+    private static final ArrayList<String> aliases = Lists.newArrayList();
+    static {
+        aliases.add("oc");
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return aliases;
     }
 }

@@ -45,7 +45,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
-						targetPlayer.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have been invited to a raid against " + raid.getTarget().getClanName() + "! To join, type /raid join " + raid.getRaidName()));
+						targetPlayer.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have been invited to a raid against " + raid.getTarget().getClanName() + "! To join, type /raid join " + raid.getTarget().getClanName()));
 						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully invited " + targetPlayer.getName() + " to the raid!"));
 					} else
 						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot invite someone to raid their own clan!"));

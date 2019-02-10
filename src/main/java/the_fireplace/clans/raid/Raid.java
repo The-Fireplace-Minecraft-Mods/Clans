@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Raid {
-	private String raidName;
 	private ArrayList<EntityPlayerMP> initMembers;
 	private HashMap<EntityPlayerMP, Integer> members, defenders;
 	private Clan target;
@@ -22,15 +21,14 @@ public class Raid {
 	private long cost;
 	private boolean isActive;
 
-	public Raid(String raidName, EntityPlayerMP starter, Clan targetClan, long raidCost){
-		this.raidName = raidName;
+	public Raid(EntityPlayerMP starter, Clan targetClan, long raidCost){
 		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
 		addMember(starter);
 		this.target = targetClan;
 		cost = raidCost;
-		RaidingParties.addRaid(raidName, this);
+		RaidingParties.addRaid(target, this);
 	}
 
 	public void raiderVictory() {
@@ -63,10 +61,6 @@ public class Raid {
 
 	public Set<EntityPlayerMP> getMembers() {
 		return members.keySet();
-	}
-
-	public String getRaidName() {
-		return raidName;
 	}
 
 	public int getMemberCount(){

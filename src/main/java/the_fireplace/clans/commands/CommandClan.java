@@ -1,5 +1,6 @@
 package the_fireplace.clans.commands;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,8 +22,10 @@ import the_fireplace.clans.payment.PaymentHandlerDummy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -199,6 +202,16 @@ public class CommandClan extends CommandBase {
     public int getRequiredPermissionLevel()
     {
         return 0;
+    }
+
+    private static final ArrayList<String> aliases = Lists.newArrayList();
+    static {
+        aliases.add("c");
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return aliases;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class CommandStartRaid extends RaidSubCommand {
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
 				if(clanPlayers.size() >= raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
-						RaidingParties.initRaid(raid.getRaidName());
+						RaidingParties.initRaid(raid.getTarget());
 						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully started the raid!"));
 					} else
 						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another raiding party is raiding this clan right now. Try again later."));//TODO: Display remaining time until raid ends
