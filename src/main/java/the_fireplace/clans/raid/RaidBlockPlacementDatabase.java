@@ -45,6 +45,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 
 	public void removePlacedBlocks(UUID player, Collection<String> toRemove){
 		placedBlocks.get(player).removeAll(toRemove);
+		saveToFile();
 	}
 
 	private static void readFromFile() {
