@@ -93,9 +93,9 @@ public class RaidEvents {
 							}
 						//TODO handle blocks when pushing slime block
 						if ((Boolean) extended) {
-							for(int i=pushRange-1;i>0;i++) {
-								newPos = newPos.offset((EnumFacing) facing, i);
-								oldPos = oldPos.offset((EnumFacing) facing, i-1);
+							for(int i=pushRange-1;i>1;i--) {
+								newPos = event.getPos().offset((EnumFacing) facing, i);
+								oldPos = event.getPos().offset((EnumFacing) facing, i-1);
 								Chunk oldChunk = event.getWorld().getChunk(oldPos);
 								Chunk newChunk = event.getWorld().getChunk(newPos);
 								shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
