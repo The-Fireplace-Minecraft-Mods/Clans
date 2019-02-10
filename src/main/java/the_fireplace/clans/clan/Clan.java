@@ -312,6 +312,10 @@ public class Clan implements Serializable {
 		return shield > 0;
 	}
 
+	public long getShield() {
+		return shield;
+	}
+
 	public int getWins() {
 		return wins;
 	}

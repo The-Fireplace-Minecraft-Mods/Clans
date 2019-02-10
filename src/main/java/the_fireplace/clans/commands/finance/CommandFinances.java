@@ -63,8 +63,18 @@ public class CommandFinances extends ClanSubCommand {
 			upkeep /= Clans.cfg.clanUpkeepDays;
 			rent /= Clans.cfg.chargeRentDays;
 			sender.sendMessage(new TextComponentString((rent >= upkeep ? MinecraftColors.GREEN : MinecraftColors.YELLOW) + "Approximate financial balance is "+(rent-upkeep)+' '+Clans.getPaymentHandler().getCurrencyName(rent-upkeep)+" each day."));
-			if(upkeep > rent)
-				sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent or find a way to reduce upkeep."));//TODO: Suggest increasing rent if it is less than the server limit.
+			if(upkeep > rent) {
+				long maxRent = Clans.cfg.maxRent;
+				if(Clans.cfg.multiplyMaxRentClaims)
+					maxRent *= playerClan.getClaimCount();
+				if(playerClan.getRent() < maxRent) {
+					if(maxRent/Clans.cfg.chargeRentDays < upkeep)
+						sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent to "+maxRent+" and/or find a way to reduce upkeep."));
+					else
+						sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent to "+Clans.cfg.chargeRentDays*upkeep/playerClan.getMemberCount()+" and/or find a way to reduce upkeep."));
+				} else
+					sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to find a way to reduce upkeep."));
+			}
 		}
 	}
 }

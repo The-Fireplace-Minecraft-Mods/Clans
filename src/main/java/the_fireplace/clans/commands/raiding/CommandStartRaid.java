@@ -46,7 +46,7 @@ public class CommandStartRaid extends RaidSubCommand {
 						RaidingParties.initRaid(raid.getTarget());
 						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully started the raid!"));
 					} else
-						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another raiding party is raiding this clan right now. Try again later."));//TODO: Display remaining time until raid ends
+						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another raiding party is raiding this clan right now. Try again in "+(Math.round(100f*(Clans.cfg.defenseShield*60f*60f+raid.getRemainingSeconds())/60f/60f)/100f)+" hours."));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Your raid has too many people!"));
 			} else//Internal error because we should not reach this point
