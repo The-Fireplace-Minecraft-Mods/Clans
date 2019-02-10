@@ -2,6 +2,7 @@ package the_fireplace.clans.event;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -163,10 +164,10 @@ public class LandProtectionEvents {
 					if (placingPlayer != null) {
 						Clan playerClan = ClanCache.getPlayerClan(placingPlayer.getUniqueID());
 						IBlockState targetState = event.getWorld().getBlockState(event.getPos());
-						if ((playerClan == null || !playerClan.getClanId().equals(chunkClan.getClanId())) && (!RaidingParties.isRaidedBy(chunkClan, placingPlayer) || !(targetState.getBlock() instanceof BlockDoor))) {
+						if ((playerClan == null || !playerClan.getClanId().equals(chunkClan.getClanId())) && (!RaidingParties.isRaidedBy(chunkClan, placingPlayer) || !(targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate))) {
 							if (!(event.getItemStack().getItem() instanceof ItemBlock)) {
 								cancelBlockInteraction(event, placingPlayer, targetState);
-							} else if (targetState.getBlock().hasTileEntity(targetState) || targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor) {
+							} else if (targetState.getBlock().hasTileEntity(targetState) || targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate) {
 								cancelBlockInteraction(event, placingPlayer, targetState);
 							}
 						}
