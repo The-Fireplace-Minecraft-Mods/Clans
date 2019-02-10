@@ -1,8 +1,10 @@
 package the_fireplace.clans.event;
 
 import net.minecraft.block.BlockPistonBase;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
@@ -82,70 +84,40 @@ public class RaidEvents {
 					BlockPos newPos = event.getPos();
 
 					if (facing instanceof EnumFacing && extended instanceof Boolean) {
-						switch ((EnumFacing) facing) {
-							case NORTH://TODO handle blocks when pushing slime block
-								if ((Boolean) extended) {//TODO extend the reach further out when extended because it pushes more than one block
-									newPos = newPos.north(2);
-									oldPos = oldPos.north();
-								} else {//TODO make sure this only gets called if the piston is sticky
-									oldPos = oldPos.north(2);
-									newPos = newPos.north();
-								}
+						int pushRange = 0;
+						BlockPos testPos = event.getPos();
+						for(int i=1;i<14;i++)
+							if(event.getWorld().getBlockState(testPos.offset((EnumFacing) facing, i)).getBlock() == Blocks.AIR || event.getWorld().getBlockState(testPos.offset((EnumFacing) facing, i)).getPushReaction().equals(EnumPushReaction.DESTROY)) {
+								pushRange = i;
 								break;
-							case SOUTH:
-								if ((Boolean) extended) {
-									newPos = newPos.south(2);
-									oldPos = oldPos.south();
-								} else {
-									oldPos = oldPos.south(2);
-									newPos = newPos.south();
-								}
-								break;
-							case EAST:
-								if ((Boolean) extended) {
-									newPos = newPos.east(2);
-									oldPos = oldPos.east();
-								} else {
-									oldPos = oldPos.east(2);
-									newPos = newPos.east();
-								}
-								break;
-							case WEST:
-								if ((Boolean) extended) {
-									newPos = newPos.west(2);
-									oldPos = oldPos.west();
-								} else {
-									oldPos = oldPos.west(2);
-									newPos = newPos.west();
-								}
-								break;
-							case UP:
-								if ((Boolean) extended) {
-									newPos = newPos.up(2);
-									oldPos = oldPos.up();
-								} else {
-									oldPos = oldPos.up(2);
-									newPos = newPos.up();
-								}
-								break;
-							case DOWN:
-								if ((Boolean) extended) {
-									newPos = newPos.down(2);
-									oldPos = oldPos.down();
-								} else {
-									oldPos = oldPos.down(2);
-									newPos = newPos.down();
-								}
-								break;
+							}
+						//TODO handle blocks when pushing slime block
+						if ((Boolean) extended) {
+							for(int i=pushRange-1;i>0;i++) {
+								newPos = newPos.offset((EnumFacing) facing, i);
+								oldPos = oldPos.offset((EnumFacing) facing, i-1);
+								Chunk oldChunk = event.getWorld().getChunk(oldPos);
+								Chunk newChunk = event.getWorld().getChunk(newPos);
+								shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
+							}
+						} else if(state.getBlock().equals(Blocks.STICKY_PISTON)) {
+							oldPos = oldPos.offset((EnumFacing) facing, 2);
+							newPos = newPos.offset((EnumFacing) facing);
+							Chunk oldChunk = event.getWorld().getChunk(oldPos);
+							Chunk newChunk = event.getWorld().getChunk(newPos);
+							shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
 						}
-						Chunk oldChunk = event.getWorld().getChunk(oldPos);
-						Chunk newChunk = event.getWorld().getChunk(newPos);
-						String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
-						if (oldBlock != null)
-							RaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
 					}
 				}
 			}
 		}
+	}
+
+	private static void shiftBlocks(BlockEvent.NeighborNotifyEvent event, BlockPos oldPos, BlockPos newPos, Chunk oldChunk, Chunk newChunk) {
+		String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
+		if (oldBlock != null)
+			RaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
+		if(RaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
+			RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
 	}
 }
