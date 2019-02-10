@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -191,6 +192,7 @@ public class LandProtectionEvents {
 		event.getWorld().notifyBlockUpdate(event.getPos().south(), targetState, targetState, 2);
 	}
 
+	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onDetonate(ExplosionEvent.Detonate event) {
 		if(!event.getWorld().isRemote) {
@@ -225,6 +227,25 @@ public class LandProtectionEvents {
 			}
 			for (Entity entity : removeEntities)
 				event.getAffectedEntities().remove(entity);
+		}
+	}
+
+	@SuppressWarnings("Duplicates")
+	@SubscribeEvent
+	public static void onLivingDamage(LivingDamageEvent event) {
+		Entity entity = event.getEntityLiving();
+		if(!entity.getEntityWorld().isRemote) {
+			if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
+				Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
+				UUID chunkOwner = ChunkUtils.getChunkOwner(c);
+				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan entityClan = entity instanceof EntityPlayer ? ClanCache.getPlayerClan(entity.getUniqueID()) : ClanCache.getPlayerClan(((EntityTameable) entity).getOwnerId());
+				Entity source = event.getSource().getTrueSource();
+				if (chunkClan != null && entityClan != null && chunkClan.getClanId().equals(entityClan.getClanId()) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)))
+					event.setCanceled(true);
+				else if(RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)) && !RaidingParties.isRaidedBy(entityClan, source instanceof EntityPlayer ? (EntityPlayer) source : (((EntityTameable) source).getOwner() instanceof EntityPlayer ? (EntityPlayer)((EntityTameable) source).getOwner() : null)))
+					event.setCanceled(true);
+			}
 		}
 	}
 }
