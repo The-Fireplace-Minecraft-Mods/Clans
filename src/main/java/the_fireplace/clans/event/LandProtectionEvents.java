@@ -106,7 +106,7 @@ public class LandProtectionEvents {
 						if (playerClan == null || (!playerClan.getClanId().equals(chunkClan.getClanId()) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer))) {
 							event.setCanceled(true);
 							placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in another clan's territory."));
-						} else {
+						} else if(RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
 							RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);

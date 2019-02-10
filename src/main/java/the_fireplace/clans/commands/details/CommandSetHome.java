@@ -14,6 +14,7 @@ import the_fireplace.clans.commands.ClanSubCommand;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
@@ -43,8 +44,8 @@ public class CommandSetHome extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null) && Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
-			for(BlockPos pos: ClanCache.getClanHomes().values())
-				if(pos != null && pos.getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
+			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
+				if(pos.getValue() != null && pos.getKey() != ClanCache.getPlayerClan(sender.getUniqueID()) && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are too close to another clan's home! You must be at least "+Clans.cfg.minClanHomeDist+" blocks away from other clans' homes to set your clan home."));
 					return;
 				}
