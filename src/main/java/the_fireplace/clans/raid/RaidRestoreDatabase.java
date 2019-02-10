@@ -33,6 +33,16 @@ public final class RaidRestoreDatabase implements Serializable {
 		save();
 	}
 
+	public static String popBlock(int dim, Chunk c, BlockPos pos) {
+		Pair<Integer, Pair<Integer, Integer>> coords = new Pair<>(dim, new Pair<>(c.x, c.z));
+		if(!getInstance().raidedChunks.containsKey(coords))
+			return null;
+		String block = getInstance().raidedChunks.get(coords).popBlock(pos.getX(), pos.getY(), pos.getZ());
+		if(block != null)
+			save();
+		return block;
+	}
+
 	public static ChunkRestoreData popChunkRestoreData(int dim, Chunk c) {
 		return getInstance().raidedChunks.remove(new Pair<>(dim, new Pair<>(c.x, c.z)));
 	}

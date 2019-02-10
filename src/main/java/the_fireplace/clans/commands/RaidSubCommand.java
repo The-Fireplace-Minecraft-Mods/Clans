@@ -16,11 +16,6 @@ public abstract class RaidSubCommand extends ClanSubCommand {
 	}
 
 	@Override
-	public final boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return sender.canUseCommand(0, this.getName());
-	}
-
-	@Override
 	public final EnumRank getRequiredClanRank(){
 		return EnumRank.ANY;
 	}

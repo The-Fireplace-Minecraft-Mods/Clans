@@ -3,12 +3,14 @@ package the_fireplace.clans.event;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
@@ -147,9 +149,13 @@ public class LandProtectionEvents {
 				EntityPlayer placingPlayer = event.getEntityPlayer();
 				if(placingPlayer != null) {
 					Clan playerClan = ClanCache.getPlayerClan(placingPlayer.getUniqueID());
-					if((playerClan == null || !playerClan.getClanId().equals(chunkClan.getClanId())) && (!RaidingParties.isRaidedBy(chunkClan, placingPlayer) || !(event.getWorld().getBlockState(event.getPos()).getBlock() instanceof BlockDoor))) {
-						event.setCanceled(true);
-						placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot interact with blocks in another clan's territory."));
+					IBlockState targetState = event.getWorld().getBlockState(event.getPos());
+					if((playerClan == null || !playerClan.getClanId().equals(chunkClan.getClanId())) && (!RaidingParties.isRaidedBy(chunkClan, placingPlayer) || !(targetState.getBlock() instanceof BlockDoor))) {
+						if(!(event.getItemStack().getItem() instanceof ItemBlock)) {
+							cancelBlockInteraction(event, placingPlayer, targetState);
+						} else if(targetState.getBlock().hasTileEntity(targetState) || targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor) {
+							cancelBlockInteraction(event, placingPlayer, targetState);
+						}
 					}
 				}
 			} else {
@@ -157,6 +163,18 @@ public class LandProtectionEvents {
 				ChunkUtils.clearChunkOwner(c);
 			}
 		}
+	}
+
+	private static void cancelBlockInteraction(PlayerInteractEvent.RightClickBlock event, EntityPlayer placingPlayer, IBlockState targetState) {
+		event.setCanceled(true);
+		placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot interact with blocks in another clan's territory."));
+		event.getWorld().notifyBlockUpdate(event.getPos(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().up(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().down(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().east(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().west(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().north(), targetState, targetState, 2);
+		event.getWorld().notifyBlockUpdate(event.getPos().south(), targetState, targetState, 2);
 	}
 
 	@SubscribeEvent

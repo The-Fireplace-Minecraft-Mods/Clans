@@ -24,6 +24,10 @@ public class ChunkRestoreData implements Serializable {
 		blocks.put(new SerialBlockPos(x, y, z), block);
 	}
 
+	public String popBlock(int x, int y, int z) {
+		return blocks.get(new SerialBlockPos(x, y, z));
+	}
+
 	public void restore(Chunk c) {
 		//TODO teleport all players out of the chunk
 		for(Map.Entry<SerialBlockPos, String> entry: blocks.entrySet())
