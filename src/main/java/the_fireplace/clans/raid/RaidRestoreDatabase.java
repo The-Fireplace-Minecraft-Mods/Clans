@@ -1,11 +1,11 @@
 package the_fireplace.clans.raid;
 
 import com.google.common.collect.Maps;
-import javafx.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.Pair;
 
 import java.io.*;
 import java.util.HashMap;
