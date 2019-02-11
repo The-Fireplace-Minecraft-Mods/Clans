@@ -47,16 +47,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
 					if(targetClan != null) {
 						//Unset clan home if it is in the chunk
-						if (sender.dimension == targetClan.getHomeDim()
-								&& targetClan.getHome().getX() >= c.getPos().getXStart()
-								&& targetClan.getHome().getX() <= c.getPos().getXEnd()
-								&& targetClan.getHome().getZ() >= c.getPos().getZStart()
-								&& targetClan.getHome().getZ() <= c.getPos().getZEnd()) {
-							targetClan.unsetHome();
-						}
-
-						targetClan.subClaimCount();
-						Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
+						abandonClaim(sender, c, targetClan);
 					}
 					Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).setClan(null);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
@@ -66,5 +57,19 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land is not claimed."));
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
+	}
+
+	public static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
+		if (targetClan.hasHome()
+				&& sender.dimension == targetClan.getHomeDim()
+				&& targetClan.getHome().getX() >= c.getPos().getXStart()
+				&& targetClan.getHome().getX() <= c.getPos().getXEnd()
+				&& targetClan.getHome().getZ() >= c.getPos().getZStart()
+				&& targetClan.getHome().getZ() <= c.getPos().getZEnd()) {
+			targetClan.unsetHome();
+		}
+
+		targetClan.subClaimCount();
+		Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 	}
 }

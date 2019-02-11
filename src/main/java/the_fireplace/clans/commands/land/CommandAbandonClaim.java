@@ -11,6 +11,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.commands.op.OpCommandAbandomClaim;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.MinecraftColors;
 
@@ -52,18 +53,8 @@ public class CommandAbandonClaim extends ClanSubCommand {
 			if(claimFaction != null) {
 				if(claimFaction.equals(playerClan.getClanId())) {
 					//Unset clan home if it is in the chunk
-					if(playerClan.hasHome()
-							&& sender.dimension == playerClan.getHomeDim()
-							&& playerClan.getHome().getX() >= c.getPos().getXStart()
-							&& playerClan.getHome().getX() <= c.getPos().getXEnd()
-							&& playerClan.getHome().getZ() >= c.getPos().getZStart()
-							&& playerClan.getHome().getZ() <= c.getPos().getZEnd()){
-						playerClan.unsetHome();
-					}
-
-					playerClan.subClaimCount();
-					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, playerClan.getClanId());
-					ChunkUtils.clearChunkOwner(c);
+                    OpCommandAbandomClaim.abandonClaim(sender, c, playerClan);
+                    ChunkUtils.clearChunkOwner(c);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to you."));
