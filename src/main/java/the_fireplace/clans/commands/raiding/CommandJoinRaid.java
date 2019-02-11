@@ -1,11 +1,16 @@
 package the_fireplace.clans.commands.raiding;
 
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
@@ -14,7 +19,7 @@ import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
+import java.util.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,5 +58,15 @@ public class CommandJoinRaid extends RaidSubCommand {
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target raid does not exist!"));
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are already in a raid!"));
+	}
+
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		HashMap<Clan, Raid> raids = RaidingParties.getRaids();
+		ArrayList<String> targetClanNames = Lists.newArrayList();
+		for(Map.Entry<Clan, Raid> entry: raids.entrySet())
+			if(sender.getCommandSenderEntity() != null && !entry.getKey().getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()))
+				targetClanNames.add(entry.getKey().getClanName());
+		return args.length == 1 ? targetClanNames : Collections.emptyList();
 	}
 }
