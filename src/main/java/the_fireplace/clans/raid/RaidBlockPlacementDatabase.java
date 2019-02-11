@@ -7,7 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public final class RaidBlockPlacementDatabase implements Serializable {
 	private static final long serialVersionUID = 0xFADE;
