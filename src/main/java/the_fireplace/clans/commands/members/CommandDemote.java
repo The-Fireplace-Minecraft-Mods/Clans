@@ -1,10 +1,13 @@
 package the_fireplace.clans.commands.members;
 
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -14,6 +17,9 @@ import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
@@ -43,7 +49,7 @@ public class CommandDemote extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
 		assert playerClan != null;
-		EntityPlayerMP target = getPlayer(server, sender, args[0]);
+		EntityPlayerMP target = getPlayer(server, sender, args[0]);//TODO support demoting offline players
 		if(ClanCache.getPlayerClan(target.getUniqueID()) != null) {
 			if(Objects.requireNonNull(ClanCache.getPlayerClan(target.getUniqueID())).getClanId().equals(playerClan.getClanId())) {
 				if(playerClan.demoteMember(target.getUniqueID())) {
@@ -55,5 +61,17 @@ public class CommandDemote extends ClanSubCommand {
 				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
 		} else
 			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
+	}
+
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
+		if(sender instanceof EntityPlayerMP) {//TODO support demoting offline players
+			players.removeIf(s -> (!Objects.equals(ClanCache.getPlayerClan(((EntityPlayerMP) sender).getUniqueID()), ClanCache.getPlayerClan(s.getId())) || Objects.requireNonNull(ClanCache.getPlayerClan(((EntityPlayerMP) sender).getUniqueID())).getMembers().get(s.getId()).equals(EnumRank.MEMBER)));
+		}
+		ArrayList<String> playerNames = Lists.newArrayList();
+		for(GameProfile profile: players)
+			playerNames.add(profile.getName());
+		return args.length == 1 ? playerNames : Collections.emptyList();
 	}
 }

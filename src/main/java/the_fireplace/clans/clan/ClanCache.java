@@ -78,6 +78,10 @@ public final class ClanCache {
 		clanBanners.remove(banner);
 	}
 
+	public static HashMap<String, Clan> getClanNames() {
+		return clanNames;
+	}
+
 	static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())

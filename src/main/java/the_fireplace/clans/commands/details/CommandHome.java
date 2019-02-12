@@ -41,6 +41,7 @@ public class CommandHome extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
+		assert playerClan != null;
 		BlockPos home = playerClan.getHome();
 		int playerDim = sender.dimension;
 		if(!playerClan.hasHome())
