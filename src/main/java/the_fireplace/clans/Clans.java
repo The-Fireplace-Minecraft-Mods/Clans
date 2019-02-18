@@ -129,6 +129,10 @@ public final class Clans {
         @Config.Comment("Minimum number of blocks between clan homes.")
         @Config.RangeInt(min=0)
         public static int minClanHomeDist = 1000;
+        @Config.Comment("Force clans to have connected claims.")
+        public static boolean forceConnectedClaims = true;
+        @Config.Comment("Allow players to be a member of multiple clans at once.")
+        public static boolean allowMultiClanMembership = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
@@ -140,6 +144,9 @@ public final class Clans {
         @Config.Comment("Maximum duration a raid can last for, in minutes.")
         @Config.RangeInt(min=0)
         public static int maxRaidDuration = 30;
+        @Config.Comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
+        @Config.RangeInt(min=0)
+        public static int remainingTimeToGlow = 10;
         @Config.Comment("Maximum amount of consecutive time raiding parties can remain outside their target's territory, in seconds.")
         @Config.RangeInt(min=0)
         public static int maxAttackerAbandonmentTime = 30;
