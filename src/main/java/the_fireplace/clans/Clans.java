@@ -113,7 +113,7 @@ public final class Clans {
             @Override
             public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                 //noinspection unchecked
-                return (T) inst;
+                return capability == CLAIMED_LAND ? (T) inst : null;
             }
         });
     }
