@@ -28,6 +28,7 @@ import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.payment.IPaymentHandler;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
 import the_fireplace.clans.payment.PaymentHandlerGE;
+import the_fireplace.clans.util.ClanHomeCapability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +47,8 @@ public final class Clans {
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
+    @CapabilityInject(ClanHomeCapability.class)
+    public static final Capability<ClanHomeCapability> CLAN_HOME = null;
 
     private IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
@@ -75,6 +78,9 @@ public final class Clans {
         manager.registerCommand(new CommandRaid());
     }
 
+    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
+    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
+
     @SubscribeEvent
     public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){
         attachClanTagCap(e);
@@ -82,11 +88,38 @@ public final class Clans {
 
     @SubscribeEvent
     public static void attachPlayerCaps(AttachCapabilitiesEvent<Entity> e){
-        if(e.getObject() instanceof EntityPlayer)
+        if(e.getObject() instanceof EntityPlayer) {
             attachClanTagCap(e);
-    }
+            //noinspection ConstantConditions
+            assert CLAN_HOME != null;
+            e.addCapability(clan_home_res, new ICapabilitySerializable() {
+                ClanHomeCapability inst = CLAN_HOME.getDefaultInstance();
 
-    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
+                @Override
+                public NBTBase serializeNBT() {
+                    return CLAN_HOME.getStorage().writeNBT(CLAN_HOME, inst, null);
+                }
+
+                @Override
+                public void deserializeNBT(NBTBase nbt) {
+                    CLAN_HOME.getStorage().readNBT(CLAN_HOME, inst, null, nbt);
+                }
+
+                @Override
+                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+                    return capability == CLAN_HOME;
+                }
+
+                @SuppressWarnings("Duplicates")
+                @Nullable
+                @Override
+                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                    //noinspection unchecked
+                    return capability == CLAN_HOME ? (T) inst : null;
+                }
+            });
+        }
+    }
 
     private static void attachClanTagCap(AttachCapabilitiesEvent e) {
         //noinspection ConstantConditions
@@ -133,6 +166,12 @@ public final class Clans {
         public static boolean forceConnectedClaims = true;
         @Config.Comment("Allow players to be a member of multiple clans at once.")
         public static boolean allowMultiClanMembership = true;
+        @Config.Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported.")
+        @Config.RangeInt(min=0)
+        public static int clanHomeWarmupTime = 0;
+        @Config.Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
+        @Config.RangeInt(min=0)
+        public static int clanHomeCooldownTime = 0;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;

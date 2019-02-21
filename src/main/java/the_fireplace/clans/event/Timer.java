@@ -13,13 +13,16 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.commands.details.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.ClanHomeCapability;
 import the_fireplace.clans.util.MinecraftColors;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
@@ -27,6 +30,7 @@ public class Timer {
 	private static byte ticks = 0;
 	private static int minuteCounter = 0;
 	private static boolean executing = false;
+	public static HashMap<EntityPlayerMP, Integer> clanHomeWarmups = Maps.newHashMap();
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
@@ -37,6 +41,17 @@ public class Timer {
 			if (++ticks >= 20) {
 				executing = true;
 				ticks -= 20;
+
+				for(Map.Entry<EntityPlayerMP, Integer> entry : clanHomeWarmups.entrySet())
+					if (entry.getValue() == 1) {
+						Clan c = ClanCache.getPlayerClan(entry.getKey().getUniqueID());
+						if(c != null)
+							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
+					}
+				Set<EntityPlayerMP> players = clanHomeWarmups.keySet();
+				for(EntityPlayerMP player: players)
+					if(clanHomeWarmups.get(player) > 0)
+						clanHomeWarmups.put(player, clanHomeWarmups.get(player) - 1);
 
 				for (Raid raid : RaidingParties.getActiveRaids())
 					if (raid.checkRaidEndTimer())
@@ -91,6 +106,12 @@ public class Timer {
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(!event.player.getEntityWorld().isRemote) {
+			if (event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
+				//noinspection ConstantConditions
+				ClanHomeCapability c = event.player.getCapability(Clans.CLAN_HOME, null);
+				if(c.getCooldown() > 0)
+					c.setCooldown(c.getCooldown() - 1);
+			}
 			if (event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
 				//noinspection ConstantConditions
 				assert Clans.CLAIMED_LAND != null;
