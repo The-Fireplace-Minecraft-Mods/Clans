@@ -3,6 +3,8 @@ package the_fireplace.clans.raid;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
@@ -96,7 +98,9 @@ public class Raid {
 	}
 
 	public boolean checkRaidEndTimer() {
-		remainingSeconds -= 1;
+		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
+			for(EntityPlayerMP defender: defenders.keySet())
+				defender.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
 		return remainingSeconds <= 0;
 	}
 

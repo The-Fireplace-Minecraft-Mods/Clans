@@ -109,7 +109,7 @@ public class Timer {
 			if (event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
 				//noinspection ConstantConditions
 				ClanHomeCapability c = event.player.getCapability(Clans.CLAN_HOME, null);
-				if(c.getCooldown() > 0)
+				if(c != null && c.getCooldown() > 0)
 					c.setCooldown(c.getCooldown() - 1);
 			}
 			if (event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
