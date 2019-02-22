@@ -13,6 +13,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,7 +55,7 @@ public class CommandHome extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Error: Your clan does not have a set home. The clan leader should use /clan sethome to set one."));
 				else {
 					if(Clans.cfg.clanHomeWarmupTime > 0)
-						Timer.clanHomeWarmups.put(sender, Clans.cfg.clanHomeWarmupTime);
+						Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
 					else
 						teleportHome(sender, selectedClan, home, playerDim);
 				}

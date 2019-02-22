@@ -58,11 +58,12 @@ public class RaidEvents {
 		if(!event.getEntity().getEntityWorld().isRemote) {
 			if (event.getEntityLiving() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-				Clan clan = ClanCache.getPlayerClans(player.getUniqueID());
-				if (clan != null && RaidingParties.hasActiveRaid(clan))
-					RaidingParties.getActiveRaid(clan).removeDefender(player);
-				if (RaidingParties.getRaidingPlayers().contains(player) && RaidingParties.getRaid(player).isActive())
-					RaidingParties.getRaid(player).removeMember(player);
+				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
+					if (clan != null && RaidingParties.hasActiveRaid(clan))
+						RaidingParties.getActiveRaid(clan).removeDefender(player);
+					if (RaidingParties.getRaidingPlayers().contains(player) && RaidingParties.getRaid(player).isActive())
+						RaidingParties.getRaid(player).removeMember(player);
+				}
 			}
 		}
 	}
