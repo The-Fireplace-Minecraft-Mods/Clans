@@ -28,7 +28,7 @@ import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.payment.IPaymentHandler;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
 import the_fireplace.clans.payment.PaymentHandlerGE;
-import the_fireplace.clans.util.ClanHomeCapability;
+import the_fireplace.clans.util.PlayerClanCapability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,8 +47,8 @@ public final class Clans {
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
-    @CapabilityInject(ClanHomeCapability.class)
-    public static final Capability<ClanHomeCapability> CLAN_HOME = null;
+    @CapabilityInject(PlayerClanCapability.class)
+    public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
 
     private IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
@@ -58,6 +58,7 @@ public final class Clans {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
+        CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
     }
 
     @Mod.EventHandler
@@ -91,23 +92,23 @@ public final class Clans {
         if(e.getObject() instanceof EntityPlayer) {
             attachClanTagCap(e);
             //noinspection ConstantConditions
-            assert CLAN_HOME != null;
+            assert CLAN_DATA_CAP != null;
             e.addCapability(clan_home_res, new ICapabilitySerializable() {
-                ClanHomeCapability inst = CLAN_HOME.getDefaultInstance();
+                PlayerClanCapability inst = CLAN_DATA_CAP.getDefaultInstance();
 
                 @Override
                 public NBTBase serializeNBT() {
-                    return CLAN_HOME.getStorage().writeNBT(CLAN_HOME, inst, null);
+                    return CLAN_DATA_CAP.getStorage().writeNBT(CLAN_DATA_CAP, inst, null);
                 }
 
                 @Override
                 public void deserializeNBT(NBTBase nbt) {
-                    CLAN_HOME.getStorage().readNBT(CLAN_HOME, inst, null, nbt);
+                    CLAN_DATA_CAP.getStorage().readNBT(CLAN_DATA_CAP, inst, null, nbt);
                 }
 
                 @Override
                 public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == CLAN_HOME;
+                    return capability == CLAN_DATA_CAP;
                 }
 
                 @SuppressWarnings("Duplicates")
@@ -115,7 +116,7 @@ public final class Clans {
                 @Override
                 public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                     //noinspection unchecked
-                    return capability == CLAN_HOME ? (T) inst : null;
+                    return capability == CLAN_DATA_CAP ? (T) inst : null;
                 }
             });
         }

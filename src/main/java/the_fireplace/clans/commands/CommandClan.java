@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.details.*;
@@ -28,7 +29,7 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandClan extends CommandBase {
-    private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
+    public static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonClaim());
@@ -51,6 +52,7 @@ public class CommandClan extends CommandBase {
         put("setname", new CommandSetName());
         put("details", new CommandDetails());
         put("setdescription", new CommandSetDescription());
+        put("setdefault", new CommandSetDefault());
         //clan finances
         if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
             put("balance", new CommandBalance());
@@ -153,6 +155,9 @@ public class CommandClan extends CommandBase {
             case "setdesc":
                 commands.get("setdescription").execute(server, sender, args);
                 return;
+            case "setdefault":
+                commands.get("setdefault").execute(server, sender, args);
+                return;
             //Help command
             case "help":
                 StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/clan commands:\n" +
@@ -193,7 +198,7 @@ public class CommandClan extends CommandBase {
                     return;
             }
         }
-        throw new WrongUsageException("/clan <command> [parameters]");
+        throw new WrongUsageException("/clan [clan] <command> [parameters]");
     }
 
     @Override
@@ -230,16 +235,18 @@ public class CommandClan extends CommandBase {
 
     static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
         if(sender instanceof EntityPlayer) {
-            EnumRank playerRank = ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID());
+            ArrayList<EnumRank> playerRanks = Lists.newArrayList();
+            for(Clan c: ClanCache.getPlayerClans(((EntityPlayer) sender).getUniqueID()))
+                playerRanks.add(ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID(), c));
             //Only append commands the player can use.
             for (String command : commands.keySet()) {
                 if(commands.get(command) == null)
                     continue;
                 EnumRank commandRank = commands.get(command).getRequiredClanRank();
-                if((commandRank == EnumRank.NOCLAN && playerRank != EnumRank.NOCLAN)
-                        || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRank == EnumRank.NOCLAN)
-                        || ((commandRank == EnumRank.ADMIN || commandRank == EnumRank.LEADER) && playerRank == EnumRank.MEMBER)
-                        || (commandRank == EnumRank.LEADER && playerRank == EnumRank.ADMIN))
+                if((commandRank == EnumRank.NOCLAN && !playerRanks.isEmpty())
+                        || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRanks.isEmpty())
+                        || (commandRank == EnumRank.ADMIN && !playerRanks.contains(EnumRank.ADMIN) && !playerRanks.contains(EnumRank.LEADER))
+                        || (commandRank == EnumRank.LEADER && !playerRanks.contains(EnumRank.LEADER)))
                     continue;
                 commandsHelp.append("\n").append(command);
             }

@@ -71,12 +71,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 		if(sender instanceof EntityPlayerMP) {
 			Raid r = RaidingParties.getRaid((EntityPlayerMP)sender);
 			if (r != null)
-				players.removeIf(s -> {
-					Clan c = ClanCache.getPlayerClan(s.getId());
-					if(c == null)
-						return false;
-					return r.getTarget().getClanId().equals(c.getClanId());
-				});
+				players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(r.getTarget()));
 		}
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)

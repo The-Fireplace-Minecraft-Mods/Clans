@@ -45,13 +45,13 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null) && Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
+		if(c.hasCapability(Clans.CLAIMED_LAND, null) && selectedClan.getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
 			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
-				if(pos.getValue() != null && pos.getKey() != ClanCache.getPlayerClan(sender.getUniqueID()) && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
+				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are too close to another clan's home! You must be at least "+Clans.cfg.minClanHomeDist+" blocks away from other clans' homes to set your clan home."));
 					return;
 				}
-			Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).setHome(sender.getPosition(), sender.dimension);
+			selectedClan.setHome(sender.getPosition(), sender.dimension);
 			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan home set!"));
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan home can only be set in clan territory!"));

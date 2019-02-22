@@ -40,15 +40,13 @@ public class CommandSetRent extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		int newRent = Integer.valueOf(args[0]);
 		if(newRent >= 0) {
 			long maxRent = Clans.cfg.maxRent;
 			if(Clans.cfg.multiplyMaxRentClaims)
-				maxRent *= playerClan.getClaimCount();
+				maxRent *= selectedClan.getClaimCount();
 			if(maxRent <= 0 || newRent <= maxRent) {
-				playerClan.setRent(newRent);
+				selectedClan.setRent(newRent);
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan rent set!"));
 			} else
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Cannot set rent above your maximum("+maxRent+' '+Clans.getPaymentHandler().getCurrencyName(maxRent)+")!"));

@@ -43,14 +43,12 @@ public class CommandTakeFunds extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(!Clans.cfg.leaderWithdrawFunds)
 			throw new CommandException("/clan takefunds is disabled on this server.");
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		long amount = Long.valueOf(args[0]);
-		if(Clans.getPaymentHandler().deductAmount(amount, playerClan.getClanId())) {
+		if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
 			if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID()))
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Successfully took " + amount + ' ' + Clans.getPaymentHandler().getCurrencyName(amount) + " from your clan's balance."));
 			else {
-				Clans.getPaymentHandler().addAmount(amount, playerClan.getClanId());
+				Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Your account not found."));
 			}
 		} else

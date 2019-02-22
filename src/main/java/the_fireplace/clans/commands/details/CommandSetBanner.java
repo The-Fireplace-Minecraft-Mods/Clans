@@ -45,8 +45,6 @@ public class CommandSetBanner extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		if(args.length == 1){
 			try {
 				JsonToNBT.getTagFromJson(args[0]);
@@ -54,7 +52,7 @@ public class CommandSetBanner extends ClanSubCommand {
 				if(ClanCache.clanBannerTaken(args[0]))
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED+"The clan banner you have specified is already taken."));
 				else {
-					playerClan.setClanBanner(args[0]);
+					selectedClan.setClanBanner(args[0]);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan banner set!"));
 				}
 			} catch(NBTException e){
@@ -64,12 +62,12 @@ public class CommandSetBanner extends ClanSubCommand {
 			NBTTagCompound tags = sender.getHeldItemMainhand().getSubCompound("BlockEntityTag");
 			if(tags != null)
 				tags.setShort("ClanBaseColor", (short) sender.getHeldItemMainhand().getMetadata());
-			setClanBannerFromItem(sender, playerClan, tags);
+			setClanBannerFromItem(sender, selectedClan, tags);
 		} else if(sender.getHeldItemOffhand().getItem() instanceof ItemBanner) {
 			NBTTagCompound tags = sender.getHeldItemOffhand().getSubCompound("BlockEntityTag");
 			if(tags != null)
 				tags.setShort("ClanBaseColor", (short) sender.getHeldItemOffhand().getMetadata());
-			setClanBannerFromItem(sender, playerClan, tags);
+			setClanBannerFromItem(sender, selectedClan, tags);
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not holding a banner!"));
 	}

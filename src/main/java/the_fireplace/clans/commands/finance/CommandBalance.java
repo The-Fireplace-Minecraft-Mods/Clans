@@ -40,9 +40,7 @@ public class CommandBalance extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
-		long balance = Clans.getPaymentHandler().getBalance(playerClan.getClanId());
+		long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
 		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan balance: " + balance + ' ' + Clans.getPaymentHandler().getCurrencyName(balance)));
 	}
 }

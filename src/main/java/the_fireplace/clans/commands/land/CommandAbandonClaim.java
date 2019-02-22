@@ -45,15 +45,13 @@ public class CommandAbandonClaim extends ClanSubCommand {
 	@SuppressWarnings("Duplicates")
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
-				if(claimFaction.equals(playerClan.getClanId())) {
+				if(claimFaction.equals(selectedClan.getClanId())) {
 					//Unset clan home if it is in the chunk
-                    OpCommandAbandomClaim.abandonClaim(sender, c, playerClan);
+                    OpCommandAbandomClaim.abandonClaim(sender, c, selectedClan);
                     ChunkUtils.clearChunkOwner(c);
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
 				} else

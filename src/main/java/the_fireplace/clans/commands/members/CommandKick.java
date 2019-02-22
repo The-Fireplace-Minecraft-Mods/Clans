@@ -48,18 +48,16 @@ public class CommandKick extends ClanSubCommand {
 	@SuppressWarnings("Duplicates")
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		assert server != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);//TODO support kicking offline players
-		if(ClanCache.getPlayerClan(target.getUniqueID()) != null) {
-			if(Objects.requireNonNull(ClanCache.getPlayerClan(target.getUniqueID())).getClanId().equals(playerClan.getClanId())) {
-				EnumRank senderRank = playerClan.getMembers().get(sender.getUniqueID());
-				EnumRank targetRank = playerClan.getMembers().get(target.getUniqueID());
+		if(!ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+			if(ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {//TODO verify
+				EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
+				EnumRank targetRank = selectedClan.getMembers().get(target.getUniqueID());
 				if(senderRank == EnumRank.LEADER) {
-					removeMember(sender, playerClan, target);
+					removeMember(sender, selectedClan, target);
 				} else if(targetRank == EnumRank.MEMBER) {
-					removeMember(sender, playerClan, target);
+					removeMember(sender, selectedClan, target);
 				} else
 					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "You do not have the authority to kick out %s.", target.getName()));
 			} else
@@ -72,7 +70,7 @@ public class CommandKick extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 		if(sender instanceof EntityPlayerMP) {//TODO support kicking offline players
-			players.removeIf(s -> !Objects.equals(ClanCache.getPlayerClan(((EntityPlayerMP) sender).getUniqueID()), ClanCache.getPlayerClan(s.getId())));
+			players.removeIf(s -> !selectedClan.getMembers().containsKey(s.getId()));
 		}
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)

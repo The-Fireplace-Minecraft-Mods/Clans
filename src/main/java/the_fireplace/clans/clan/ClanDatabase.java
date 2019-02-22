@@ -1,10 +1,12 @@
 package the_fireplace.clans.clan;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
@@ -76,18 +78,18 @@ public final class ClanDatabase implements Serializable {
 	}
 
 	/**
-	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClan(UUID)}
+	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClans(UUID)}
 	 * @param player
 	 * The player to get the clan of
 	 * @return
-	 * The player's clan, or null if it doesn't have one.
+	 * The player's clans, or an empty list if the player isn't in any
 	 */
-	@Nullable
-	static Clan lookupPlayerClan(UUID player){
+	static ArrayList<Clan> lookupPlayerClans(UUID player){
+		ArrayList<Clan> clans = Lists.newArrayList();
 		for(Clan clan : getInstance().clans.values())
 			if(clan.getMembers().keySet().contains(player))
-				return clan;
-		return null;
+				clans.add(clan);
+		return clans;
 	}
 
 	private static void readFromFile() {

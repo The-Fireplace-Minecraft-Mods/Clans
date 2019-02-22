@@ -46,11 +46,10 @@ public class CommandDetails extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		assert server != null;
 		if(args.length == 0) {
-			Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-			if(playerClan == null) {
+			if(selectedClan == null) {
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in a clan. Use /clan details [clan] to get the details of another clan."));
 			} else {
-				showDetails(server, sender, playerClan);
+				showDetails(server, sender, selectedClan);
 			}
 		} else {
 			Clan targetClan = ClanCache.getClan(args[0]);

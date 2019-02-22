@@ -44,7 +44,7 @@ public class CommandSetName extends ClanSubCommand {
 		if(Clans.cfg.maxNameLength > 0 && newName.length() > Clans.cfg.maxNameLength)
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is too long. This server's maximum name length is: "+Clans.cfg.maxNameLength));
 		else if(!ClanCache.clanNameTaken(newName)) {
-			Objects.requireNonNull(ClanCache.getPlayerClan(sender.getUniqueID())).setClanName(newName);
+			selectedClan.setClanName(newName);
 			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan name set!"));
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is already taken."));

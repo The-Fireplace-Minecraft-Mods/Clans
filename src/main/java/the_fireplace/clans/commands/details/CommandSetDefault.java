@@ -4,22 +4,25 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSetDescription extends ClanSubCommand {
+public class CommandSetDefault extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
-		return EnumRank.LEADER;
+		return EnumRank.MEMBER;
 	}
 
 	@Override
@@ -29,20 +32,26 @@ public class CommandSetDescription extends ClanSubCommand {
 
 	@Override
 	public int getMaxArgs() {
-		return Integer.MAX_VALUE;
+		return 1;
 	}
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setdescription <new description>";
+		return "/clan setdefault <clan>";
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		StringBuilder newTagline = new StringBuilder();
-		for(String arg: args)
-			newTagline.append(arg).append(' ');
-		selectedClan.setDescription(newTagline.toString());
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description set!"));
+		Clan def = ClanCache.getClan(args[0]);
+		if(def != null) {
+			if(def.getMembers().containsKey(sender.getUniqueID())) {
+				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null))
+					sender.getCapability(Clans.CLAN_DATA_CAP, null).setDefaultClan(def.getClanId());
+				else
+					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Player cannot set default clan."));
+			} else
+				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
+		} else
+			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan you have specified does not exist."));
 	}
 }

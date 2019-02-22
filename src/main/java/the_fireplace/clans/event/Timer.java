@@ -17,20 +17,18 @@ import the_fireplace.clans.commands.details.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.ClanHomeCapability;
+import the_fireplace.clans.util.Pair;
+import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.MinecraftColors;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
 public class Timer {
 	private static byte ticks = 0;
 	private static int minuteCounter = 0;
 	private static boolean executing = false;
-	public static HashMap<EntityPlayerMP, Integer> clanHomeWarmups = Maps.newHashMap();
+	public static HashMap<EntityPlayerMP, Pair<Integer, Integer>> clanHomeWarmups = Maps.newHashMap();
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
@@ -42,16 +40,16 @@ public class Timer {
 				executing = true;
 				ticks -= 20;
 
-				for(Map.Entry<EntityPlayerMP, Integer> entry : clanHomeWarmups.entrySet())
-					if (entry.getValue() == 1) {
-						Clan c = ClanCache.getPlayerClan(entry.getKey().getUniqueID());
+				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
+					if (entry.getValue().getValue1() == 1) {
+						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null)
 							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
 					}
 				Set<EntityPlayerMP> players = clanHomeWarmups.keySet();
 				for(EntityPlayerMP player: players)
-					if(clanHomeWarmups.get(player) > 0)
-						clanHomeWarmups.put(player, clanHomeWarmups.get(player) - 1);
+					if(clanHomeWarmups.get(player).getValue1() > 0)
+						clanHomeWarmups.put(player, new Pair<>(clanHomeWarmups.get(player).getValue1() - 1, clanHomeWarmups.get(player).getValue2()));
 
 				for (Raid raid : RaidingParties.getActiveRaids())
 					if (raid.checkRaidEndTimer())
@@ -108,7 +106,7 @@ public class Timer {
 		if(!event.player.getEntityWorld().isRemote) {
 			if (event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
 				//noinspection ConstantConditions
-				ClanHomeCapability c = event.player.getCapability(Clans.CLAN_HOME, null);
+				PlayerClanCapability c = event.player.getCapability(Clans.CLAN_DATA_CAP, null);
 				if(c != null && c.getCooldown() > 0)
 					c.setCooldown(c.getCooldown() - 1);
 			}
@@ -117,7 +115,7 @@ public class Timer {
 				assert Clans.CLAIMED_LAND != null;
 				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
 				UUID chunkClan = ChunkUtils.getChunkOwner(c);
-				Clan playerClan = ClanCache.getPlayerClan(event.player.getUniqueID());
+				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
 				if (event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
 					UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
 					if (chunkClan != null && ClanCache.getClan(chunkClan) == null) {
@@ -127,7 +125,7 @@ public class Timer {
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 						event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
 						String color = MinecraftColors.GREEN;
-						if ((playerClan != null && !playerClan.getClanId().equals(chunkClan)) || (playerClan == null && chunkClan != null))
+						if ((!playerClans.isEmpty() && !playerClans.contains(ClanCache.getClan(chunkClan))) || (playerClans.isEmpty() && chunkClan != null))
 							color = MinecraftColors.YELLOW;
 						if (chunkClan == null)
 							color = MinecraftColors.DARK_GREEN;
@@ -154,13 +152,14 @@ public class Timer {
 				}
 				EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP) event.player : null;
 				if (player != null) {
-					if (RaidingParties.hasActiveRaid(playerClan)) {
-						Raid r = RaidingParties.getActiveRaid(playerClan);
-						if (playerClan.getClanId().equals(chunkClan))
-							r.resetDefenderAbandonmentTime(player);
-						else
-							r.incrementDefenderAbandonmentTime(player);
-					}
+					for(Clan pc: playerClans)
+						if (RaidingParties.hasActiveRaid(pc)) {
+							Raid r = RaidingParties.getActiveRaid(pc);
+							if (pc.getClanId().equals(chunkClan))
+								r.resetDefenderAbandonmentTime(player);
+							else
+								r.incrementDefenderAbandonmentTime(player);
+						}
 					if (RaidingParties.getRaidingPlayers().contains(player)) {
 						Raid r = RaidingParties.getRaid(player);
 						if (r.isActive()) {

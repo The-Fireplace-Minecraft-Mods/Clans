@@ -47,12 +47,10 @@ public class CommandPromote extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);//TODO support promoting offline players
-		if(ClanCache.getPlayerClan(target.getUniqueID()) != null) {
-			if(Objects.requireNonNull(ClanCache.getPlayerClan(target.getUniqueID())).getClanId().equals(playerClan.getClanId())) {
-				if(playerClan.promoteMember(target.getUniqueID())) {
+		if(!ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+			if(ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {//TODO verify
+				if(selectedClan.promoteMember(target.getUniqueID())) {
 					sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have promoted %s.", target.getName()));
 					target.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been promoted by %s.", sender.getName()));
 				} else
@@ -67,7 +65,7 @@ public class CommandPromote extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 		if(sender instanceof EntityPlayerMP) {//TODO support promoting offline players
-			players.removeIf(s -> (!Objects.equals(ClanCache.getPlayerClan(((EntityPlayerMP) sender).getUniqueID()), ClanCache.getPlayerClan(s.getId())) || Objects.requireNonNull(ClanCache.getPlayerClan(((EntityPlayerMP) sender).getUniqueID())).getMembers().get(s.getId()).equals(EnumRank.LEADER)));
+			players.removeIf(s -> (!selectedClan.getMembers().containsKey(s.getId()) || selectedClan.getMembers().get(s.getId()).equals(EnumRank.LEADER)));
 		}
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)

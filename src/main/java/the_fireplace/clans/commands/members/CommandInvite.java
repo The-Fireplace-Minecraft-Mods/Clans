@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -48,12 +49,10 @@ public class CommandInvite extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);
-		if(ClanCache.getPlayerClan(target.getUniqueID()) == null) {
-			if(ClanCache.inviteToClan(target.getUniqueID(), playerClan))
-				target.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", playerClan.getClanName()));
+		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+			if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan))
+				target.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", selectedClan.getClanName()));
 			else
 				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName()));
 		} else
@@ -63,7 +62,8 @@ public class CommandInvite extends ClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-		players.removeIf(s -> ClanCache.getPlayerClan(s.getId()) != null);//TODO only remove if multiple clans not allowed
+		if(!Clans.cfg.allowMultiClanMembership)
+			players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)
 			playerNames.add(profile.getName());

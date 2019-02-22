@@ -40,11 +40,9 @@ public class CommandAddFunds extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
-			if(Clans.getPaymentHandler().addAmount(amount, playerClan.getClanId()))
+			if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId()))
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Successfully added " + amount + ' ' + Clans.getPaymentHandler().getCurrencyName(amount) + " to your clan's balance."));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());

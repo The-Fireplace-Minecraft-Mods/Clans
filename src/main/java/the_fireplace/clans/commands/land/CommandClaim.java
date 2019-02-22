@@ -43,20 +43,18 @@ public class CommandClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
-				if(claimFaction.equals(playerClan.getClanId()))
+				if(claimFaction.equals(selectedClan.getClanId()))
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Your clan has already claimed this land."));
 				else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
 			} else {
-				if(Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, playerClan.getClanId())) {
-					ChunkUtils.setChunkOwner(c, playerClan.getClanId());
-					playerClan.addClaimCount();
+				if(Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
+					ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
+					selectedClan.addClaimCount();
 					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds in clan account to claim chunk. It costs "+ Clans.cfg.claimChunkCost+' '+Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)));

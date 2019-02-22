@@ -9,13 +9,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
@@ -26,12 +32,14 @@ public abstract class ClanSubCommand extends CommandBase {
 		return "clan";
 	}
 
+	protected Clan selectedClan;
+
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
 		if(sender instanceof Entity) {
 			if(getRequiredClanRank() == EnumRank.ANY)
 				return true;
-			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID());
+			EnumRank playerRank = ClanCache.getPlayerRank(sender.getCommandSenderEntity().getUniqueID(), selectedClan);
 			switch(playerRank){
 				case LEADER:
 					return !getRequiredClanRank().equals(EnumRank.NOCLAN);
@@ -58,9 +66,27 @@ public abstract class ClanSubCommand extends CommandBase {
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(sender instanceof EntityPlayerMP) {
-			if(args.length >= getMinArgs() && args.length <= getMaxArgs()) {
+			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
+				Clan playerClan;
+				if(args.length == getMaxArgs()+1)
+					playerClan = ClanCache.getClan(args[0]);
+				else
+					playerClan = ClanCache.getClan(((EntityPlayerMP) sender).getCapability(Clans.CLAN_DATA_CAP, null).getDefaultClan());
+				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+				if(!playerClans.contains(playerClan)) {
+					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
+					return;
+				}
+				this.selectedClan = playerClan;
+				String[] args2 = args;
+				if(args.length == getMaxArgs()+1) {
+					if (args.length > 1)
+						args2 = Arrays.copyOfRange(args, 1, args.length);
+					else
+						args2 = new String[]{};
+				}
 				if(checkPermission(server, sender))
-					run(server, (EntityPlayerMP) sender, args);
+					run(server, (EntityPlayerMP) sender, args2);
 				else
 					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
 			} else

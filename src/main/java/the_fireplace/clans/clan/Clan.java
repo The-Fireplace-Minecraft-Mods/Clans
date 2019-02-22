@@ -222,7 +222,6 @@ public class Clan implements Serializable {
 		else {
 			if(members.get(player) == EnumRank.ADMIN){
 				members.put(player, EnumRank.MEMBER);
-				ClanCache.updateRank(player, EnumRank.MEMBER);
 				ClanDatabase.save();
 				return true;
 			} else return false;
@@ -243,16 +242,13 @@ public class Clan implements Serializable {
 						}
 					if(leader != null) {
 						members.put(leader, EnumRank.ADMIN);
-						ClanCache.updateRank(leader, EnumRank.ADMIN);
 					}
 				}
 				members.put(player, EnumRank.LEADER);
-				ClanCache.updateRank(player, EnumRank.LEADER);
 				ClanDatabase.save();
 				return true;
 			} else if(members.get(player) == EnumRank.MEMBER) {
 				members.put(player, EnumRank.ADMIN);
-				ClanCache.updateRank(player, EnumRank.ADMIN);
 				ClanDatabase.save();
 				return true;
 			} return false;

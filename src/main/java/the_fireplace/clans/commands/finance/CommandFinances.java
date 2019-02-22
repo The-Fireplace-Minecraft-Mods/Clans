@@ -40,22 +40,20 @@ public class CommandFinances extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan playerClan = ClanCache.getPlayerClan(sender.getUniqueID());
-		assert playerClan != null;
 		long upkeep = 0;
 		long rent = 0;
 		if(Clans.cfg.clanUpkeepDays > 0) {
 			upkeep += Clans.cfg.clanUpkeepCost;
 			if(Clans.cfg.multiplyUpkeepClaims)
-				upkeep *= playerClan.getClaimCount();
+				upkeep *= selectedClan.getClaimCount();
 			if(Clans.cfg.multiplyUpkeepMembers)
-				upkeep *= playerClan.getMemberCount();
+				upkeep *= selectedClan.getMemberCount();
 			if(upkeep > 0)
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Upkeep (expenses) is "+upkeep+' '+Clans.getPaymentHandler().getCurrencyName(upkeep)+" every "+Clans.cfg.clanUpkeepDays+" days."));
 		}
 		if(Clans.cfg.chargeRentDays > 0) {
-			rent += playerClan.getRent();
-			rent *= playerClan.getMemberCount();
+			rent += selectedClan.getRent();
+			rent *= selectedClan.getMemberCount();
 			if(rent > 0)
 				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Rent (income) is "+rent+' '+Clans.getPaymentHandler().getCurrencyName(rent)+" every "+Clans.cfg.chargeRentDays+" days."));
 		}
@@ -66,12 +64,12 @@ public class CommandFinances extends ClanSubCommand {
 			if(upkeep > rent) {
 				long maxRent = Clans.cfg.maxRent;
 				if(Clans.cfg.multiplyMaxRentClaims)
-					maxRent *= playerClan.getClaimCount();
-				if(playerClan.getRent() < maxRent) {
+					maxRent *= selectedClan.getClaimCount();
+				if(selectedClan.getRent() < maxRent) {
 					if(maxRent/Clans.cfg.chargeRentDays < upkeep)
 						sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent to "+maxRent+" and/or find a way to reduce upkeep."));
 					else
-						sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent to "+Clans.cfg.chargeRentDays*upkeep/playerClan.getMemberCount()+" and/or find a way to reduce upkeep."));
+						sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to increase rent to "+Clans.cfg.chargeRentDays*upkeep/selectedClan.getMemberCount()+" and/or find a way to reduce upkeep."));
 				} else
 					sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You may want to find a way to reduce upkeep."));
 			}
