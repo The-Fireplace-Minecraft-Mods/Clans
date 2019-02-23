@@ -73,7 +73,7 @@ public class CommandClan extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/clan <command> [parameters]";
+        return "/clan [clan] <command> [parameters]";
     }
 
     @Override

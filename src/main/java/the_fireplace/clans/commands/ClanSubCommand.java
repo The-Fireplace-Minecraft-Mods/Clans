@@ -73,7 +73,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				else
 					playerClan = ClanCache.getClan(((EntityPlayerMP) sender).getCapability(Clans.CLAN_DATA_CAP, null).getDefaultClan());
 				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
-				if(!playerClans.contains(playerClan)) {
+				if(playerClan != null && !playerClans.contains(playerClan)) {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
 					return;
 				}
