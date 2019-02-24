@@ -52,15 +52,17 @@ public class CommandClaim extends ClanSubCommand {
 				else
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
 			} else {
-				if(Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
-					ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
-					selectedClan.addClaimCount();
-					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
+					if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
+						ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
+						selectedClan.addClaimCount();
+						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+					} else
+						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds in clan account to claim chunk. It costs " + Clans.cfg.claimChunkCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)));
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds in clan account to claim chunk. It costs "+ Clans.cfg.claimChunkCost+' '+Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)));
+					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot claim this chunk of land because it is not next to another of "+selectedClan.getClanName()+"'s claims."));
 			}
-		} else {
+		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
-		}
 	}
 }

@@ -1,5 +1,6 @@
 package the_fireplace.clans.commands.land;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -50,12 +51,17 @@ public class CommandAbandonClaim extends ClanSubCommand {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId())) {
-					//Unset clan home if it is in the chunk
-                    OpCommandAbandomClaim.abandonClaim(sender, c, selectedClan);
-                    ChunkUtils.clearChunkOwner(c);
-					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+					if(!Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId())) {
+						//Unset clan home if it is in the chunk
+						OpCommandAbandomClaim.abandonClaim(sender, c, selectedClan);
+						ChunkUtils.clearChunkOwner(c);
+						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+					} else {//We are forcing connected claims and there is a claim connected
+						//Prevent creation of disconnected claims
+						OpCommandAbandomClaim.abandonClaimWithAdjacencyCheck(sender, c, selectedClan);
+					}
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to you."));
+					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to "+selectedClan.getClanName()));
 			} else
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land is not claimed."));
 		} else

@@ -1,10 +1,14 @@
 package the_fireplace.clans.util;
 
+import com.google.common.collect.Lists;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
+import the_fireplace.clans.clan.Clan;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class ChunkUtils {
@@ -40,4 +44,37 @@ public class ChunkUtils {
 			return;
 		cap.setClan(null);
 	}
+
+	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
+		if(checkOwner == null)
+			checkOwner = getChunkOwner(c);
+		if(checkOwner == null)
+			return false;
+		ChunkPos cPos = c.getPos();
+        Chunk checkChunk;
+        for(int i=-1;i<2;i+=2)
+            for(int j=-1;j<2;j+=2) {
+                checkChunk = c.getWorld().getChunk(cPos.x + i, cPos.z + j);
+                if (checkOwner.equals(getChunkOwner(checkChunk)))
+                    return true;
+            }
+        return false;
+	}
+
+    public static ArrayList<Chunk> getConnectedClaims(Chunk c, @Nullable UUID checkOwner) {
+	    ArrayList<Chunk> adjacent = Lists.newArrayList();
+        if(checkOwner == null)
+            checkOwner = getChunkOwner(c);
+        if(checkOwner == null)
+            return adjacent;
+        ChunkPos cPos = c.getPos();
+        Chunk checkChunk;
+        for(int i=-1;i<2;i+=2)
+            for(int j=-1;j<2;j+=2) {
+                checkChunk = c.getWorld().getChunk(cPos.x + i, cPos.z + j);
+                if (checkOwner.equals(getChunkOwner(checkChunk)))
+                    adjacent.add(checkChunk);
+            }
+        return adjacent;
+    }
 }
