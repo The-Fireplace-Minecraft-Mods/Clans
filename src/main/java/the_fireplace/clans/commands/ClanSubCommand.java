@@ -65,6 +65,8 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(server == null)
+			throw new WrongUsageException("Internal error: The server must not be null!");
 		if(sender instanceof EntityPlayerMP) {
 			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
 				Clan playerClan;
@@ -95,5 +97,5 @@ public abstract class ClanSubCommand extends CommandBase {
 			throw new WrongUsageException("You must be a player to do this");
 	}
 
-	protected abstract void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException;
+	protected abstract void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException;
 }
