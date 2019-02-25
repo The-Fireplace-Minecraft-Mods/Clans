@@ -173,6 +173,9 @@ public final class Clans {
         @Config.Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
         @Config.RangeInt(min=0)
         public static int clanHomeCooldownTime = 0;
+        @Config.Comment("Max claims per player per clan. Set to 0 for infinite.")
+        @Config.RangeInt(min=0)
+        public static int maxClanPlayerClaims = 0;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;

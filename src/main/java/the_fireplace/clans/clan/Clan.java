@@ -174,6 +174,10 @@ public class Clan implements Serializable {
 		return claimCount;
 	}
 
+	public int getMaxClaimCount() {
+		return getMemberCount() * Clans.cfg.maxClanPlayerClaims;
+	}
+
 	public void addClaimCount() {
 		claimCount++;
 		ClanDatabase.save();
