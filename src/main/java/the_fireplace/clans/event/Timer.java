@@ -13,7 +13,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.commands.details.CommandHome;
+import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;

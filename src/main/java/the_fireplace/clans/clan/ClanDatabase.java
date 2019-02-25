@@ -43,7 +43,7 @@ public final class ClanDatabase implements Serializable {
 	}
 
 	@Nullable
-	public static Clan getClan(UUID clanId){
+	public static Clan getClan(@Nullable UUID clanId){
 		return getInstance().clans.get(clanId);
 	}
 

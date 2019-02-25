@@ -19,6 +19,9 @@ import the_fireplace.clans.commands.finance.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
 import the_fireplace.clans.commands.members.*;
+import the_fireplace.clans.commands.teleportation.CommandHome;
+import the_fireplace.clans.commands.teleportation.CommandSetHome;
+import the_fireplace.clans.commands.teleportation.CommandTrapped;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
 import the_fireplace.clans.util.MinecraftColors;
 
@@ -46,13 +49,15 @@ public class CommandClan extends CommandBase {
         put("form", new CommandForm());
 	    put("disband", new CommandDisband());
         put("sethome", new CommandSetHome());
-        put("home", new CommandHome());
         put("setbanner", new CommandSetBanner());
         put("banner", new CommandBanner());
         put("setname", new CommandSetName());
         put("details", new CommandDetails());
         put("setdescription", new CommandSetDescription());
         put("setdefault", new CommandSetDefault());
+        //teleportation related
+        put("home", new CommandHome());
+        put("trapped", new CommandTrapped());
         //clan finances
         if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
             put("balance", new CommandBalance());
@@ -132,10 +137,6 @@ public class CommandClan extends CommandBase {
             case "sethome":
                 commands.get("sethome").execute(server, sender, args);
                 return;
-            case "home":
-            case "h":
-                commands.get("home").execute(server, sender, args);
-                return;
             case "banner":
             case "b":
                 commands.get("banner").execute(server, sender, args);
@@ -157,6 +158,15 @@ public class CommandClan extends CommandBase {
                 return;
             case "setdefault":
                 commands.get("setdefault").execute(server, sender, args);
+                return;
+            //Teleportation related
+            case "home":
+            case "h":
+                commands.get("home").execute(server, sender, args);
+                return;
+            case "trapped":
+            case "t":
+                commands.get("trapped").execute(server, sender, args);
                 return;
             //Help command
             case "help":

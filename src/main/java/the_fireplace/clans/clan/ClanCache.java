@@ -24,7 +24,7 @@ public final class ClanCache {
 	private static ArrayList<EntityPlayerMP> claimAdmins = Lists.newArrayList();
 
 	@Nullable
-	public static Clan getClan(UUID clanID){
+	public static Clan getClan(@Nullable UUID clanID){
 		return ClanDatabase.getClan(clanID);
 	}
 
