@@ -1,0 +1,19 @@
+Added configs:
+Warmup period at the start of raids, so defenders get a chance to prepare.
+Make defenders glow when the end of the raid is approaching, to prevent them from hiding to run out the clock.
+Force clans to have connected claims, to prevent defenders from hiding and running out the clock.
+Limit a clan's maximum claims based on the number of players in the clan.
+Be a member of multiple clans at once.
+Set a warmup and/or cooldown for /clan home
+
+Added commands:
+/clan trapped - teleport out of another clan's territory, or back to spawn if trapped in the Wilderness.
+/clan setdefault - set which clan to default to when using /clan commands without specifying the clan name. See details below.
+/opclan promote/demote/kick/disband/addfunds - ways for admins to modify other clans
+/opclan buildadmin - allows ops to toggle on and off the ability to place/break/interact with blocks in any claim
+
+Changes and fixes:
+Because players are now able to be members of multiple clans, all /clan commands, as well as /opclan setname and setdescription, allow you to insert a clan name between the command name (clan/opclan) and the subcommand you are using. If one is not included, your default clan will be used. You can set your default clan at any time with /clan setdefault. The default for opclan commands is opclan.
+All commands now support using tab autocomplete
+Fixed an error when using /opclan abandonclaim
+Players can now be promoted/demoted/kicked when they are offline
