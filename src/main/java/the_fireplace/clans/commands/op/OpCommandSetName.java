@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
@@ -28,15 +29,21 @@ public class OpCommandSetName extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan setname <newname>";
+		return "/opclan [target clan] setname <newname>";
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
 		if(!ClanCache.clanNameTaken(newName)) {
-			ClanDatabase.getOpClan().setClanName(newName);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan name set!"));
+			if(opSelectedClan == null) {
+				ClanDatabase.getOpClan().setClanName(newName);
+				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan name set!"));
+			} else {
+				String oldName = opSelectedClan.getClanName();
+				opSelectedClan.setClanName(newName);
+				sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "%s renamed to %s!", oldName, newName));
+			}
 		} else
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is already taken."));
 	}

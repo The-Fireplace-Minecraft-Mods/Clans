@@ -60,9 +60,9 @@ public class CommandKick extends ClanSubCommand {
 					} else
 						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "You do not have the authority to kick out %s.", target.getName()));
 				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
+					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
 			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
+				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
 		} else
 			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", args[0]));
 	}
@@ -78,12 +78,12 @@ public class CommandKick extends ClanSubCommand {
 		return args.length == 1 ? playerNames : Collections.emptyList();
 	}
 
-	private void removeMember(MinecraftServer server, EntityPlayerMP sender, Clan playerClan, GameProfile target) throws CommandException {
+	public static void removeMember(MinecraftServer server, EntityPlayerMP sender, Clan playerClan, GameProfile target) throws CommandException {
 		if(playerClan.removeMember(target.getId())) {
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have kicked %s out of the clan.", target.getName()));
+			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have kicked %s out of %s.", target.getName(), playerClan.getClanName()));
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
 				getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()));
-		} else //Internal error because this should be unreachable
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "Internal Error: The player %s is not in your clan.", target.getName()));
+		} else
+			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName()));
 	}
 }

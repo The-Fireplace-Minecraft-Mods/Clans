@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -43,7 +44,7 @@ public class CommandAddFunds extends ClanSubCommand {
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 			if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId()))
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Successfully added " + amount + ' ' + Clans.getPaymentHandler().getCurrencyName(amount) + " to your clan's balance."));
+				sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
 				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Clan account not found."));

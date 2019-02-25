@@ -33,6 +33,7 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	protected Clan selectedClan;
+	protected Clan opSelectedClan = null;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
@@ -70,12 +71,13 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(sender instanceof EntityPlayerMP) {
 			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
 				Clan playerClan;
-				if(args.length == getMaxArgs()+1)
+				if(args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClan(args[0]);
-				else
+					opSelectedClan = playerClan;
+				} else
 					playerClan = ClanCache.getClan(((EntityPlayerMP) sender).getCapability(Clans.CLAN_DATA_CAP, null).getDefaultClan());
 				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
-				if(playerClan != null && !playerClans.contains(playerClan)) {
+				if(playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
 					return;
 				}

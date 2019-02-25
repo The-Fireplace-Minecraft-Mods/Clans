@@ -208,6 +208,8 @@ public class Clan implements Serializable {
 	public boolean removeMember(UUID player) {
 		if(isOpclan)
 			return false;
+		if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
+			return false;
 		boolean removed = this.members.remove(player) != null;
 		if(removed) {
 			ClanCache.purgePlayerCache(player);
@@ -220,8 +222,14 @@ public class Clan implements Serializable {
 		if(isOpclan || !members.containsKey(player))
 			return false;
 		else {
+			if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
+				return false;
 			if(members.get(player) == EnumRank.ADMIN){
 				members.put(player, EnumRank.MEMBER);
+				ClanDatabase.save();
+				return true;
+			} else if(members.get(player) == EnumRank.LEADER){
+				members.put(player, EnumRank.ADMIN);
 				ClanDatabase.save();
 				return true;
 			} else return false;

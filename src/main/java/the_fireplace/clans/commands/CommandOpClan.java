@@ -28,6 +28,12 @@ public class CommandOpClan extends CommandBase {
         put("setdescription", new OpCommandSetDescription());
         //Adjust other clans
         put("setshield", new OpCommandSetShield());
+        put("addfunds", new OpCommandAddFunds());
+        put("promote", new OpCommandPromote());
+        put("demote", new OpCommandDemote());
+        put("kick", new OpCommandKick());
+        put("disband", new OpCommandDisband());
+        //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
 	}};
 
@@ -73,6 +79,24 @@ public class CommandOpClan extends CommandBase {
             case "shield":
                 commands.get("setshield").execute(server, sender, args);
                 return;
+            case "addfunds":
+            case "deposit":
+            case "af":
+                commands.get("addfunds").execute(server, sender, args);
+                return;
+            case "demote":
+                commands.get("demote").execute(server, sender, args);
+                return;
+            case "promote":
+                commands.get("promote").execute(server, sender, args);
+                return;
+            case "disband":
+                commands.get("disband").execute(server, sender, args);
+                return;
+            case "kick":
+                commands.get("kick").execute(server, sender, args);
+                return;
+            //Op tools
             case "buildadmin":
             case "ba":
                 commands.get("buildadmin").execute(server, sender, args);

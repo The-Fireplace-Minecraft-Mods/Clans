@@ -14,6 +14,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.members.CommandLeave;
+import the_fireplace.clans.commands.op.OpCommandDisband;
 import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
@@ -44,36 +45,10 @@ public class CommandDisband extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if (ClanDatabase.removeClan(selectedClan.getClanId())) {
-			long distFunds = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
-			distFunds += Clans.cfg.claimChunkCost * selectedClan.getClaimCount();
-			if (Clans.cfg.leaderRecieveDisbandFunds) {
-				selectedClan.payLeaders(distFunds);
-				distFunds = 0;
-			} else {
-				selectedClan.payLeaders(distFunds % selectedClan.getMemberCount());
-				distFunds /= selectedClan.getMemberCount();
-			}
-			for (UUID member : selectedClan.getMembers().keySet()) {
-				Clans.getPaymentHandler().ensureAccountExists(member);
-				if (!Clans.getPaymentHandler().addAmount(distFunds, member))
-					selectedClan.payLeaders(distFunds);
-				EntityPlayerMP player;
-				try {
-					player = getPlayer(server, sender, member.toString());
-				} catch (CommandException e) {
-					player = null;
-				}
-				if(player != null) {
-                    CommandLeave.updateDefaultClan(player, selectedClan);
-                    if (!player.getUniqueID().equals(sender.getUniqueID()))
-                        player.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Your clan has been disbanded by %s.", sender.getName()));
-                }
-			}
-			Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(selectedClan.getClanId()), selectedClan.getClanId());
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have disbanded your clan."));
-		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Unable to disband clan."));
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
+			OpCommandDisband.disbandClan(server, sender, selectedClan);
+		else
+			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not a leader of " + selectedClan.getClanName()));
 	}
 }

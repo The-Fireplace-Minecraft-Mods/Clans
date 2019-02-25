@@ -8,12 +8,15 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.commands.op.OpCommandDemote;
+import the_fireplace.clans.commands.op.OpCommandPromote;
 import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
@@ -45,23 +48,10 @@ public class CommandDemote extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
-
-		if(target != null) {
-			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-				if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
-					if (selectedClan.demoteMember(target.getId())) {
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have demoted %s.", target.getName()));
-						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been demoted by %s.", sender.getName()));
-					} else
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s could not be demoted.", target.getName()));
-				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
-			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
-		} else
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", args[0]));
+		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
+			OpCommandDemote.demoteClanMember(server, sender, args[0], selectedClan);
+		else
+			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not a leader of " + selectedClan.getClanName()));
 	}
 
 	@Override

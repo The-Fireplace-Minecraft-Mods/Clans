@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.MinecraftColors;
@@ -32,10 +33,15 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		StringBuilder newTagline = new StringBuilder();
+		StringBuilder newDescription = new StringBuilder();
 		for(String arg: args)
-			newTagline.append(arg).append(' ');
-		ClanDatabase.getOpClan().setDescription(newTagline.toString());
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan description set!"));
+			newDescription.append(arg).append(' ');
+		if(opSelectedClan == null) {
+			ClanDatabase.getOpClan().setDescription(newDescription.toString());
+			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan description set!"));
+		} else {
+			opSelectedClan.setDescription(newDescription.toString());
+			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "%s description set!", opSelectedClan.getClanName()));
+		}
 	}
 }
