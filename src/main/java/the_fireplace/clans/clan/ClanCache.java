@@ -3,6 +3,7 @@ package the_fireplace.clans.clan;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.commands.CommandClan;
 
@@ -20,6 +21,7 @@ public final class ClanCache {
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
+	private static ArrayList<EntityPlayerMP> claimAdmins = Lists.newArrayList();
 
 	@Nullable
 	public static Clan getClan(UUID clanID){
@@ -126,5 +128,19 @@ public final class ClanCache {
 
 	public static void clearClanHome(Clan c) {
 		clanHomes.remove(c);
+	}
+
+	public static boolean toggleClaimAdmin(EntityPlayerMP admin){
+		if(claimAdmins.contains(admin)) {
+			claimAdmins.remove(admin);
+			return false;
+		} else {
+			claimAdmins.add(admin);
+			return true;
+		}
+	}
+
+	public static boolean isClaimAdmin(EntityPlayerMP admin) {
+		return claimAdmins.contains(admin);
 	}
 }

@@ -28,6 +28,7 @@ public class CommandOpClan extends CommandBase {
         put("setdescription", new OpCommandSetDescription());
         //Adjust other clans
         put("setshield", new OpCommandSetShield());
+        put("buildadmin", new OpCommandBuildAdmin());
 	}};
 
     @Override
@@ -71,6 +72,10 @@ public class CommandOpClan extends CommandBase {
             case "setshield":
             case "shield":
                 commands.get("setshield").execute(server, sender, args);
+                return;
+            case "buildadmin":
+            case "ba":
+                commands.get("buildadmin").execute(server, sender, args);
                 return;
             //Help command
             case "help":

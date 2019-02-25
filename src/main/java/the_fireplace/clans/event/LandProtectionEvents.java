@@ -8,6 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -43,17 +44,20 @@ public class LandProtectionEvents {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
 				if (chunkClan != null) {
 					EntityPlayer breakingPlayer = event.getPlayer();
-					if (breakingPlayer != null) {
+					if (breakingPlayer instanceof EntityPlayerMP) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
 						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
-						if ((playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided) {
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided) {
 							event.setCanceled(true);
 							breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break blocks in another clan's territory."));
 						} else if (isRaided) {
 							IBlockState targetState = event.getWorld().getBlockState(event.getPos());
 							if (targetState.getBlock().hasTileEntity(targetState)) {
 								event.setCanceled(true);
-								breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block while in another clan's territory."));
+								if(ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer))
+									breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block during a raid. Please wait until the raid is completed and try again."));
+								else
+									breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block while in another clan's territory."));
 							} else
 								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 						}
@@ -64,7 +68,7 @@ public class LandProtectionEvents {
 					ChunkUtils.clearChunkOwner(c);
 				}
 			}
-			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && (!(event.getPlayer() instanceof EntityPlayerMP) || !ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()))) {
 				event.setCanceled(true);
 				event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break blocks in Wilderness."));
 			}
@@ -103,9 +107,9 @@ public class LandProtectionEvents {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
 				if (chunkClan != null) {
 					EntityPlayer placingPlayer = event.getPlayer();
-					if (placingPlayer != null) {
+					if (placingPlayer instanceof EntityPlayerMP) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
-						if (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer))) {
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) {
 							event.setCanceled(true);
 							placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in another clan's territory."));
 						} else if(RaidingParties.hasActiveRaid(chunkClan)) {
@@ -161,15 +165,15 @@ public class LandProtectionEvents {
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
 				if (chunkClan != null) {
-					EntityPlayer placingPlayer = event.getEntityPlayer();
-					if (placingPlayer != null) {
-						ArrayList<Clan> playerClan = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
+					EntityPlayer interactingPlayer = event.getEntityPlayer();
+					if (interactingPlayer instanceof EntityPlayerMP) {
+						ArrayList<Clan> playerClan = ClanCache.getPlayerClans(interactingPlayer.getUniqueID());
 						IBlockState targetState = event.getWorld().getBlockState(event.getPos());
-						if ((playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, placingPlayer) || !(targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate))) {
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) interactingPlayer) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, interactingPlayer) || !(targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate))) {
 							if (!(event.getItemStack().getItem() instanceof ItemBlock)) {
-								cancelBlockInteraction(event, placingPlayer, targetState);
+								cancelBlockInteraction(event, interactingPlayer, targetState);
 							} else if (targetState.getBlock().hasTileEntity(targetState) || targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate) {
-								cancelBlockInteraction(event, placingPlayer, targetState);
+								cancelBlockInteraction(event, interactingPlayer, targetState);
 							}
 						}
 					}
