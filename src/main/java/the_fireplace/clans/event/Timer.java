@@ -40,6 +40,7 @@ public class Timer {
 				executing = true;
 				ticks -= 20;
 
+				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
 					if (entry.getValue().getValue1() == 1) {
 						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());

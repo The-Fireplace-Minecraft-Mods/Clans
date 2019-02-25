@@ -2,24 +2,26 @@ package the_fireplace.clans.raid;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public final class RaidingParties {
 	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
 	private static HashMap<EntityPlayerMP, Raid> raidingPlayers = Maps.newHashMap();
 	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
 	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
+	private static HashMap<Clan, Integer> bufferTimes = Maps.newHashMap();
 
 	public static HashMap<Clan, Raid> getRaids() {
 		return raids;
@@ -72,7 +74,27 @@ public final class RaidingParties {
 		raidingPlayers.remove(raider);
 	}
 
-	public static void initRaid(Clan raidTarget){
+	public static void decrementBuffers() {
+		for(Map.Entry<Clan, Integer> entry : bufferTimes.entrySet()) {
+			if(entry.getValue() <= 1) {
+				bufferTimes.remove(entry.getKey());
+				activateRaid(entry.getKey());
+			} else
+				bufferTimes.put(entry.getKey(), entry.getValue() - 1);
+		}
+	}
+
+	public static boolean isPreparingRaid(Clan targetClan) {
+	    return bufferTimes.containsKey(targetClan);
+    }
+
+	public static void initRaid(ICommandSender sender, Clan raidTarget){
+		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
+		for(EntityPlayerMP member: raidTarget.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).keySet())
+			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
+	}
+
+	private static void activateRaid(Clan raidTarget) {
 		Raid startingRaid = raids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);

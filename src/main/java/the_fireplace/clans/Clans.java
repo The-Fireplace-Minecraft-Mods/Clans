@@ -184,6 +184,9 @@ public final class Clans {
         @Config.Comment("Maximum duration a raid can last for, in minutes.")
         @Config.RangeInt(min=0)
         public static int maxRaidDuration = 30;
+        @Config.Comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
+        @Config.RangeInt(min=0)
+        public static int raidBufferTime = 90;
         @Config.Comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
         @Config.RangeInt(min=0)
         public static int remainingTimeToGlow = 10;
