@@ -12,12 +12,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityPiston;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -34,8 +34,8 @@ import java.util.UUID;
 public class RaidEvents {
 	@SubscribeEvent
 	public static void onBlockDrops(BlockEvent.HarvestDropsEvent event) {
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
@@ -70,9 +70,9 @@ public class RaidEvents {
 
 	@SubscribeEvent
 	public static void onChunkLoaded(ChunkEvent.Load event) {
-		if(!event.getWorld().isRemote) {
-			if (!RaidingParties.hasActiveRaid(ClanCache.getClan(Objects.requireNonNull(event.getChunk().getCapability(Clans.CLAIMED_LAND, null)).getClan()))) {
-				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
+		if(!event.getWorld().isRemote()) {
+			if (!RaidingParties.hasActiveRaid(ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk())))) {
+				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(Objects.requireNonNull(event.getChunk().getWorldForge()).getDimension().getType().getId(), event.getChunk());
 				if (data != null)
 					data.restore(event.getChunk());
 			}
@@ -83,18 +83,18 @@ public class RaidEvents {
 
 	@SubscribeEvent
 	public static void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
-		if(!event.getWorld().isRemote) {
+		if(!event.getWorld().isRemote()) {
 			IBlockState state = event.getState();
 			if (state.getBlock() instanceof BlockPistonBase) {
-				if (event.getState().getProperties().containsKey(BlockPistonBase.FACING) && event.getState().getProperties().containsKey(BlockPistonBase.EXTENDED)) {
-					Comparable facing = event.getState().getProperties().get(BlockPistonBase.FACING);
-					Comparable extended = event.getState().getProperties().get(BlockPistonBase.EXTENDED);
+				if (event.getState().has(BlockPistonBase.FACING) && event.getState().has(BlockPistonBase.EXTENDED)) {
+					Comparable facing = event.getState().get(BlockPistonBase.FACING);
+					Comparable extended = event.getState().get(BlockPistonBase.EXTENDED);
 					BlockPos oldPos = event.getPos();
 					BlockPos newPos = event.getPos();
 					if(!phases.containsKey(event.getPos()))
 						phases.put(event.getPos(), !(Boolean) extended);
 
-					if (facing instanceof EnumFacing && extended instanceof Boolean && phases.get(event.getPos()) == extended) {
+					if (phases.get(event.getPos()) == extended) {
 						if ((Boolean) extended) {
 							int pushRange = 0;
 							BlockPos testPos = event.getPos();
@@ -106,8 +106,8 @@ public class RaidEvents {
 							for(int i=pushRange-1;i>1;i--) {
 								newPos = event.getPos().offset((EnumFacing) facing, i);
 								oldPos = event.getPos().offset((EnumFacing) facing, i-1);
-								Chunk oldChunk = event.getWorld().getChunk(oldPos);
-								Chunk newChunk = event.getWorld().getChunk(newPos);
+								IChunk oldChunk = event.getWorld().getChunkDefault(oldPos);
+								IChunk newChunk = event.getWorld().getChunkDefault(newPos);
 								shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
 								TileEntity piston = event.getWorld().getTileEntity(newPos);
 								if(piston instanceof TileEntityPiston && ((TileEntityPiston)piston).getPistonState().getBlock() instanceof BlockSlime) {
@@ -133,8 +133,8 @@ public class RaidEvents {
 						} else if(state.getBlock().equals(Blocks.STICKY_PISTON)) {
 							oldPos = oldPos.offset((EnumFacing) facing, 2);
 							newPos = newPos.offset((EnumFacing) facing);
-							Chunk oldChunk = event.getWorld().getChunk(oldPos);
-							Chunk newChunk = event.getWorld().getChunk(newPos);
+							IChunk oldChunk = event.getWorld().getChunkDefault(oldPos);
+							IChunk newChunk = event.getWorld().getChunkDefault(newPos);
 							shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
 							if(event.getWorld().getBlockState(newPos) instanceof BlockSlime) {
 								switch((EnumFacing) facing) {
@@ -177,8 +177,8 @@ public class RaidEvents {
 		for(int j=pushRange2;j>0;j--) {
 			newPos = testPos.offset(facing, j - 1);
 			oldPos = testPos.offset(facing, j - 2);
-			Chunk oldChunk2 = event.getWorld().getChunk(oldPos);
-			Chunk newChunk2 = event.getWorld().getChunk(newPos);
+			IChunk oldChunk2 = event.getWorld().getChunkDefault(oldPos);
+			IChunk newChunk2 = event.getWorld().getChunkDefault(newPos);
 			shiftBlocks(event, oldPos, newPos, oldChunk2, newChunk2);
 		}
 	}
@@ -190,16 +190,16 @@ public class RaidEvents {
 			return;
 		newPos = testPos.offset(facing);
 		oldPos = testPos.offset(facing, 2);
-		Chunk oldChunk2 = event.getWorld().getChunk(oldPos);
-		Chunk newChunk2 = event.getWorld().getChunk(newPos);
-		shiftBlocks(event, oldPos, newPos, oldChunk2, newChunk2);
+		IChunk oldChunk = event.getWorld().getChunkDefault(oldPos);
+		IChunk newChunk = event.getWorld().getChunkDefault(newPos);
+		shiftBlocks(event, oldPos, newPos, oldChunk, newChunk);
 	}
 
-	private static void shiftBlocks(BlockEvent.NeighborNotifyEvent event, BlockPos oldPos, BlockPos newPos, Chunk oldChunk, Chunk newChunk) {
-		String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
+	private static void shiftBlocks(BlockEvent.NeighborNotifyEvent event, BlockPos oldPos, BlockPos newPos, IChunk oldChunk, IChunk newChunk) {
+		String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().getDimension().getType().getId(), oldChunk, oldPos);
 		if (oldBlock != null)
-			RaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
-		if(RaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
-			RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
+			RaidRestoreDatabase.addRestoreBlock(event.getWorld().getDimension().getType().getId(), newChunk, newPos, oldBlock);
+		if(RaidRestoreDatabase.delRemoveBlock(event.getWorld().getDimension().getType().getId(), oldChunk, oldPos))
+			RaidRestoreDatabase.addRemoveBlock(event.getWorld().getDimension().getType().getId(), newChunk, newPos);
 	}
 }

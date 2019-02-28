@@ -1,6 +1,6 @@
 package the_fireplace.clans.util;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -49,17 +49,17 @@ public interface PlayerClanCapability {
 
 		@Nullable
 		@Override
-		public NBTBase writeNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side) {
+		public INBTBase writeNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side) {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("cooldown", instance.getCooldown());
-			tag.setUniqueId("defaultClan", instance.getDefaultClan());
+			tag.putInt("cooldown", instance.getCooldown());
+			tag.putUniqueId("defaultClan", instance.getDefaultClan());
 			return tag;
 		}
 
 		@Override
-		public void readNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side, NBTBase nbt) {
+		public void readNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side, INBTBase nbt) {
 			if(nbt instanceof NBTTagCompound) {
-				instance.setCooldown(((NBTTagCompound) nbt).getInteger("cooldown"));
+				instance.setCooldown(((NBTTagCompound) nbt).getInt("cooldown"));
 				instance.setDefaultClan(((NBTTagCompound) nbt).getUniqueId("defaultClan"));
 			}
 		}

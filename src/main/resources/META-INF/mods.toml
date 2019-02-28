@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[24,)"
+issueTrackerURL="https://github.com/The-Fireplace-Minecraft-Mods/Clans/issues"
+displayURL="https://minecraft.curseforge.com/projects/clans"
+credits="Thanks to koshkayaguau for the idea and motivation to make this."
+authors="The_Fireplace"
+
+[[mods]]
+modId="clans"
+version="${file.jarVersion}"
+displayName="Clans"
+description='''
+A server-side land protection and PVP system.
+'''
+
+[[dependencies.clans]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="SERVER"
+[[dependencies.clans]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13.2,1.14)"
+    ordering="NONE"
+    side="SERVER"
+[[dependencies.clans]]
+    modId="grandeconomy"
+    mandatory=false
+    versionRange="[1.1.0,)"
+    ordering="AFTER"
+    side="SERVER"

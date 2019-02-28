@@ -17,12 +17,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -31,17 +32,18 @@ import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid=Clans.MODID)
 public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
@@ -52,17 +54,17 @@ public class LandProtectionEvents {
 						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
 						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided) {
 							event.setCanceled(true);
-							breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break blocks in another clan's territory."));
+							breakingPlayer.sendMessage(new TextComponentString("You cannot break blocks in another clan's territory.").setStyle(TextStyles.RED));
 						} else if (isRaided) {
 							IBlockState targetState = event.getWorld().getBlockState(event.getPos());
 							if (targetState.getBlock().hasTileEntity(targetState)) {
 								event.setCanceled(true);
 								if(ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer))
-									breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block during a raid. Please wait until the raid is completed and try again."));
+									breakingPlayer.sendMessage(new TextComponentString("You cannot break this block during a raid. Please wait until the raid is completed and try again.").setStyle(TextStyles.RED));
 								else
-									breakingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break this block while in another clan's territory."));
+									breakingPlayer.sendMessage(new TextComponentString("You cannot break this block while in another clan's territory.").setStyle(TextStyles.RED));
 							} else
-								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
+								RaidRestoreDatabase.addRestoreBlock(Objects.requireNonNull(c.getWorldForge()).getDimension().getType().getId(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 						}
 					}
 					return;
@@ -73,15 +75,15 @@ public class LandProtectionEvents {
 			}
 			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && (!(event.getPlayer() instanceof EntityPlayerMP) || !ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()))) {
 				event.setCanceled(true);
-				event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot break blocks in Wilderness."));
+				event.getPlayer().sendMessage(new TextComponentString("You cannot break blocks in Wilderness.").setStyle(TextStyles.RED));
 			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClan(chunkOwner);
@@ -104,8 +106,8 @@ public class LandProtectionEvents {
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			EntityPlayer placingPlayer = event.getPlayer();
 			if (placingPlayer instanceof EntityPlayerMP) {
@@ -117,12 +119,12 @@ public class LandProtectionEvents {
 							event.setCanceled(true);
 							EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 							((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
-							placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in another clan's territory."));
+							placingPlayer.sendMessage(new TextComponentString("You cannot place blocks in another clan's territory.").setStyle(TextStyles.RED));
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
 							RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
-							RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
+							RaidRestoreDatabase.addRemoveBlock(event.getWorld().getDimension().getType().getId(), c, event.getPos());
 						}
 					}
 					return;
@@ -135,7 +137,7 @@ public class LandProtectionEvents {
 					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 					((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
 					event.getPlayer().inventory.markDirty();
-					event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in Wilderness."));
+					event.getPlayer().sendMessage(new TextComponentString("You cannot place blocks in Wilderness.").setStyle(TextStyles.RED));
 				}
 			}
 		}
@@ -143,11 +145,11 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Chunk sourceChunk = event.getWorld().getChunk(event.getLiquidPos());
+				IChunk sourceChunk = event.getWorld().getChunkDefault(event.getLiquidPos());
 				UUID sourceChunkOwner = ChunkUtils.getChunkOwner(sourceChunk);
 				if (!chunkOwner.equals(sourceChunkOwner))
 					event.setCanceled(true);
@@ -157,8 +159,8 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onPortalPlace(BlockEvent.PortalSpawnEvent event) {//TODO: Ensure that no part of the portal can enter a claimed chunk
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		if(!event.getWorld().isRemote()) {
+			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null)
 				event.setCanceled(true);
@@ -195,7 +197,7 @@ public class LandProtectionEvents {
 
 	private static void cancelBlockInteraction(PlayerInteractEvent.RightClickBlock event, EntityPlayer placingPlayer, IBlockState targetState) {
 		event.setCanceled(true);
-		placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot interact with blocks in another clan's territory."));
+		placingPlayer.sendMessage(new TextComponentString("You cannot interact with blocks in another clan's territory.").setStyle(TextStyles.RED));
 		//Update the client informing it the interaction did not happen. Go in all directions in case surrounding blocks would have been affected.
 		event.getWorld().notifyBlockUpdate(event.getPos(), targetState, targetState, 2);
 		event.getWorld().notifyBlockUpdate(event.getPos().up(), targetState, targetState, 2);
@@ -218,7 +220,7 @@ public class LandProtectionEvents {
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState)) {
-						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
+						RaidRestoreDatabase.addRestoreBlock(c.getWorld().getDimension().getType().getId(), c, pos, BlockSerializeUtil.blockToString(targetState));
 					} else {
 						removeBlocks.add(pos);
 					}

@@ -2,13 +2,12 @@ package the_fireplace.clans.raid;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -87,9 +86,9 @@ public final class RaidingParties {
 	    return bufferTimes.containsKey(targetClan);
     }
 
-	public static void initRaid(ICommandSender sender, Clan raidTarget){
+	public static void initRaid(Clan raidTarget) {
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
-		for(EntityPlayerMP member: raidTarget.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).keySet())
+		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
 			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
 	}
 
@@ -104,9 +103,9 @@ public final class RaidingParties {
 		for(EntityPlayerMP player: raid.getMembers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
-		for(int id: DimensionManager.getIDs())
-			for(Chunk c: FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(id).getChunkProvider().getLoadedChunks()) {
-				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
+		for(DimensionType dimType: DimensionManager.getRegistry())//TODO Find out if this works on modded dimensions
+			for(Chunk c: Clans.minecraftServer.getWorld(dimType).getChunkProvider().getLoadedChunks()) {
+				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(dimType.getId(), c);
 				if(data != null)
 					data.restore(c);
 			}

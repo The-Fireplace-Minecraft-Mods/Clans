@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
+import the_fireplace.clans.Clans;
 
 import java.io.*;
 import java.util.Collection;
@@ -17,7 +18,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 
 	private static RaidBlockPlacementDatabase instance = null;
 	private static final String dataFileName = "raidblockplacement.dat";
-	private static File saveDir = DimensionManager.getCurrentSaveRootDirectory();
+	private static File saveDir = Clans.getWorldDir();
 
 	public static RaidBlockPlacementDatabase getInstance() {
 		if(instance == null)
@@ -38,7 +39,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 	public void addPlacedBlock(UUID player, ItemStack payout){
 		if(!placedBlocks.containsKey(player))
 			placedBlocks.put(player, Lists.newArrayList());
-		placedBlocks.get(player).add(payout.writeToNBT(new NBTTagCompound()).toString());
+		placedBlocks.get(player).add(payout.write(new NBTTagCompound()).toString());
 		saveToFile();
 	}
 
@@ -53,11 +54,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 
 	private static void readFromFile() {
 		if (saveDir == null)
-			saveDir = DimensionManager.getCurrentSaveRootDirectory();
-		if (saveDir == null) {
-			instance = new RaidBlockPlacementDatabase();
-			return;
-		}
+			saveDir = Clans.getWorldDir();
 		File f = new File(saveDir, dataFileName);
 		if (f.exists()) {
 			try {
@@ -78,7 +75,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 	private static void saveToFile() {
 		try {
 			if (saveDir == null)
-				saveDir = DimensionManager.getCurrentSaveRootDirectory();
+				saveDir = Clans.getWorldDir();
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(saveDir, dataFileName)));
 			out.writeObject(instance);
 			out.close();

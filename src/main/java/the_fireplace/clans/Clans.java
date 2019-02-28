@@ -1,26 +1,34 @@
 package the_fireplace.clans;
 
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.commons.lang3.tuple.Pair;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
@@ -33,50 +41,58 @@ import the_fireplace.clans.util.PlayerClanCapability;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.io.File;
+
 import static the_fireplace.clans.Clans.MODID;
 
 @SuppressWarnings("WeakerAccess")
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*")
+@Mod(MODID)
 public final class Clans {
     public static final String MODID = "clans";
-    public static final String MODNAME = "Clans";
-    public static final String VERSION = "${version}";
-    @Mod.Instance(MODID)
-    public static Clans instance;
+
+    public static MinecraftServer minecraftServer;
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
     @CapabilityInject(PlayerClanCapability.class)
     public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
 
-    private IPaymentHandler paymentHandler;
+    private static IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
-        return instance.paymentHandler;
+        return paymentHandler;
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event){
+    public Clans() {
+        MinecraftForge.EVENT_BUS.register(this);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverConfig);
+    }
+
+    public void serverConfig(ModConfig.ModConfigEvent event) {
+        if (event.getConfig().getType() == ModConfig.Type.SERVER)
+            cfg.load();
+    }
+
+    public void preInit(FMLCommonSetupEvent event){
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
     }
 
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event){
-        if(Loader.isModLoaded("grandeconomy"))
+    public void postInit(FMLLoadCompleteEvent event){
+        if(ModList.get().isLoaded("grandeconomy"))
             paymentHandler = new PaymentHandlerGE();
         else
             paymentHandler = new PaymentHandlerDummy();
     }
 
-    @Mod.EventHandler
+    @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
-        MinecraftServer server = event.getServer();
-        ICommandManager command = server.getCommandManager();
-        ServerCommandManager manager = (ServerCommandManager) command;
-        manager.registerCommand(new CommandClan());
-        manager.registerCommand(new CommandOpClan());
-        manager.registerCommand(new CommandRaid());
+        minecraftServer = event.getServer();
+        //manager.registerCommand(new CommandClan());
+        //manager.registerCommand(new CommandOpClan());
+        //manager.registerCommand(new CommandRaid());
     }
 
     private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
@@ -97,26 +113,19 @@ public final class Clans {
                 PlayerClanCapability inst = CLAN_DATA_CAP.getDefaultInstance();
 
                 @Override
-                public NBTBase serializeNBT() {
+                public INBTBase serializeNBT() {
                     return CLAN_DATA_CAP.getStorage().writeNBT(CLAN_DATA_CAP, inst, null);
                 }
 
                 @Override
-                public void deserializeNBT(NBTBase nbt) {
+                public void deserializeNBT(INBTBase nbt) {
                     CLAN_DATA_CAP.getStorage().readNBT(CLAN_DATA_CAP, inst, null, nbt);
                 }
 
                 @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == CLAN_DATA_CAP;
-                }
-
-                @SuppressWarnings("Duplicates")
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                     //noinspection unchecked
-                    return capability == CLAN_DATA_CAP ? (T) inst : null;
+                    return capability == CLAN_DATA_CAP ? LazyOptional.of(() -> (T) inst): LazyOptional.empty();
                 }
             });
         }
@@ -129,132 +138,341 @@ public final class Clans {
             ClaimedLandCapability inst = CLAIMED_LAND.getDefaultInstance();
 
             @Override
-            public NBTBase serializeNBT() {
+            public INBTBase serializeNBT() {
                 return CLAIMED_LAND.getStorage().writeNBT(CLAIMED_LAND, inst, null);
             }
 
             @Override
-            public void deserializeNBT(NBTBase nbt) {
+            public void deserializeNBT(INBTBase nbt) {
                 CLAIMED_LAND.getStorage().readNBT(CLAIMED_LAND, inst, null, nbt);
             }
 
+            @Nonnull
             @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                return capability == CLAIMED_LAND;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
                 //noinspection unchecked
-                return capability == CLAIMED_LAND ? (T) inst : null;
+                return capability == CLAIMED_LAND ? LazyOptional.of(() -> (T) inst) : LazyOptional.empty();
             }
         });
     }
 
-    @Config(modid = MODID)
+    public static File getWorldDir() {
+        return minecraftServer.getWorld(DimensionType.OVERWORLD).getSaveHandler().getWorldDirectory();
+    }
+
     public static class cfg {
+        public static final ServerConfig SERVER;
+        public static final ForgeConfigSpec SERVER_SPEC;
+        static {
+            final Pair<ServerConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ServerConfig::new);
+            SERVER_SPEC = specPair.getRight();
+            SERVER = specPair.getLeft();
+        }
         //General clan config
-        @Config.Comment("Allow clans to have multiple leaders.")
-        public static boolean multipleClanLeaders = true;
-        @Config.Comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type to avoid getting raided. Set to 0 for no limit.")
-        @Config.RangeInt(min=0)
-        public static int maxNameLength = 32;
-        @Config.Comment("Minimum number of blocks between clan homes.")
-        @Config.RangeInt(min=0)
-        public static int minClanHomeDist = 1000;
-        @Config.Comment("Force clans to have connected claims.")
-        public static boolean forceConnectedClaims = true;
-        @Config.Comment("Allow players to be a member of multiple clans at once.")
-        public static boolean allowMultiClanMembership = true;
-        @Config.Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported.")
-        @Config.RangeInt(min=0)
-        public static int clanHomeWarmupTime = 0;
-        @Config.Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
-        @Config.RangeInt(min=0)
-        public static int clanHomeCooldownTime = 0;
-        @Config.Comment("Max claims per player per clan. Set to 0 for infinite.")
-        @Config.RangeInt(min=0)
-        public static int maxClanPlayerClaims = 0;
+        public static boolean multipleClanLeaders;
+        public static int maxNameLength;
+        public static int minClanHomeDist;
+        public static boolean forceConnectedClaims;
+        public static boolean allowMultiClanMembership;
+        public static int clanHomeWarmupTime;
+        public static int clanHomeCooldownTime;
+        public static int maxClanPlayerClaims;
         //Wilderness guard
-        @Config.Comment("Protect the wilderness from damage above a specific Y level")
-        public static boolean protectWilderness = true;
-        @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
-        public static int minWildernessY = -1;
+        public static boolean protectWilderness;
+        public static int minWildernessY;
         //Raid configuration
-        @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
-        public static int maxRaidersOffset = 0;
-        @Config.Comment("Maximum duration a raid can last for, in minutes.")
-        @Config.RangeInt(min=0)
-        public static int maxRaidDuration = 30;
-        @Config.Comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
-        @Config.RangeInt(min=0)
-        public static int raidBufferTime = 90;
-        @Config.Comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
-        @Config.RangeInt(min=0)
-        public static int remainingTimeToGlow = 10;
-        @Config.Comment("Maximum amount of consecutive time raiding parties can remain outside their target's territory, in seconds.")
-        @Config.RangeInt(min=0)
-        public static int maxAttackerAbandonmentTime = 30;
-        @Config.Comment("Maximum amount of consecutive time defending clans can remain outside their territory during a raid, in seconds.")
-        @Config.RangeInt(min=0)
-        public static int maxClanDesertionTime = 60;
-        @Config.Comment("Amount of shield given to the defending clan after a raid, in hours.")
-        @Config.RangeInt(min=0)
-        public static int defenseShield = 24*5;
-        @Config.Comment("Amount of shield given to newly formed clans, in hours.")
-        @Config.RangeInt(min=0)
-        public static int initialShield = 24*3;
+        public static int maxRaidersOffset;
+        public static int maxRaidDuration;
+        public static int raidBufferTime;
+        public static int remainingTimeToGlow;
+        public static int maxAttackerAbandonmentTime;
+        public static int maxClanDesertionTime;
+        public static int defenseShield;
+        public static int initialShield;
         //Costs, rewards, and multipliers
-        @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int formClanCost = 0;
-        @Config.Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int formClanBankAmount = 0;
-        @Config.Comment("Cost of claiming a chunk. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int claimChunkCost = 0;
-        @Config.Comment("Cost of forming a new raiding party. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int startRaidCost = 0;
-        @Config.Comment("Multiply the cost of starting a raid by the number of enemy claims. This requires a compatible economy to be installed.")
-        public static boolean startRaidMultiplier = true;
-        @Config.Comment("Reward for winning a raid. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int winRaidAmount = 0;
-        @Config.Comment("Multiply the reward for winning a raid by the number of enemy claims. This requires a compatible economy to be installed.")
-        public static boolean winRaidMultiplierClaims = true;
-        @Config.Comment("Multiply the reward for winning a raid by the number of online enemy players. This requires a compatible economy to be installed.")
-        public static boolean winRaidMultiplierPlayers = false;
-        @Config.Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int clanUpkeepDays = 0;
-        @Config.Comment("Amount to charge a clan for upkeep. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int clanUpkeepCost = 0;
-        @Config.Comment("Multiply the clan upkeep by the number of claims. This requires a compatible economy to be installed.")
-        public static boolean multiplyUpkeepClaims = true;
-        @Config.Comment("Multiply the clan upkeep by the number of members. This requires a compatible economy to be installed.")
-        public static boolean multiplyUpkeepMembers = false;
-        @Config.Comment("Disband the clan when it can't afford upkeep. This requires a compatible economy to be installed.")
-        public static boolean disbandNoUpkeep = false;
+        public static int formClanCost;
+        public static int formClanBankAmount;
+        public static int claimChunkCost;
+        public static int startRaidCost;
+        public static boolean startRaidMultiplier;
+        public static int winRaidAmount;
+        public static boolean winRaidMultiplierClaims;
+        public static boolean winRaidMultiplierPlayers;
+        public static int clanUpkeepDays;
+        public static int clanUpkeepCost;
+        public static boolean multiplyUpkeepClaims;
+        public static boolean multiplyUpkeepMembers;
+        public static boolean disbandNoUpkeep;
         //Clan finance management
-        @Config.Comment("Allow the clan leader to withdraw funds from the clan bank account. This requires a compatible economy to be installed.")
-        public static boolean leaderWithdrawFunds = false;
-        @Config.Comment("When enabled, remaining clan funds go to the clan leader when the clan is disbanded. When disabled, remaining clan funds get split evenly among all clan members when the clan is disbanded. This requires a compatible economy to be installed.")
-        public static boolean leaderRecieveDisbandFunds = true;
-        @Config.Comment("Frequency to charge clan members rent to go into the clan bank account (in days). If enabled, allows clan leaders to set the amount for their clans. Set to 0 to disable clan rent. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int chargeRentDays = 0;
-        @Config.Comment("Kick clan members out who can't afford rent. This will not kick out leaders. This requires a compatible economy to be installed.")
-        public static boolean evictNonpayers = false;
-        @Config.Comment("Kick clan admins out who can't afford rent. This will not kick out leaders. This requires a compatible economy to be installed.")
-        public static boolean evictNonpayerAdmins = false;
-        @Config.Comment("Maximum amount of rent a clan can charge. Set to 0 for no maximum. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int maxRent = 0;
-        @Config.Comment("Multiply the max rent by the number of claims. This requires a compatible economy to be installed.")
-        public static boolean multiplyMaxRentClaims = true;
+        public static boolean leaderWithdrawFunds;
+        public static boolean leaderRecieveDisbandFunds;
+        public static int chargeRentDays;
+        public static boolean evictNonpayers;
+        public static boolean evictNonpayerAdmins;
+        public static int maxRent;
+        public static boolean multiplyMaxRentClaims;
+
+        public static void load() {
+            //General clan config
+            multipleClanLeaders = SERVER.multipleClanLeaders.get();
+            maxNameLength = SERVER.maxNameLength.get();
+            minClanHomeDist = SERVER.minClanHomeDist.get();
+            forceConnectedClaims = SERVER.forceConnectedClaims.get();
+            allowMultiClanMembership = SERVER.allowMultiClanMembership.get();
+            clanHomeWarmupTime = SERVER.clanHomeWarmupTime.get();
+            clanHomeCooldownTime = SERVER.clanHomeCooldownTime.get();
+            maxClanPlayerClaims = SERVER.maxClanPlayerClaims.get();
+            //Wilderness guard
+            protectWilderness = SERVER.protectWilderness.get();
+            minWildernessY = SERVER.minWildernessY.get();
+            //Raid configuration
+            maxRaidersOffset = SERVER.maxRaidersOffset.get();
+            maxRaidDuration = SERVER.maxRaidDuration.get();
+            raidBufferTime = SERVER.raidBufferTime.get();
+            remainingTimeToGlow = SERVER.remainingTimeToGlow.get();
+            maxAttackerAbandonmentTime = SERVER.maxAttackerAbandonmentTime.get();
+            maxClanDesertionTime = SERVER.maxClanDesertionTime.get();
+            defenseShield = SERVER.defenseShield.get();
+            initialShield = SERVER.initialShield.get();
+            //Costs, rewards, and multipliers
+            formClanCost = SERVER.formClanCost.get();
+            formClanBankAmount = SERVER.formClanBankAmount.get();
+            claimChunkCost = SERVER.claimChunkCost.get();
+            startRaidCost = SERVER.startRaidCost.get();
+            startRaidMultiplier = SERVER.startRaidMultiplier.get();
+            winRaidAmount = SERVER.winRaidAmount.get();
+            winRaidMultiplierClaims = SERVER.winRaidMultiplierClaims.get();
+            winRaidMultiplierPlayers = SERVER.winRaidMultiplierPlayers.get();
+            clanUpkeepDays = SERVER.clanUpkeepDays.get();
+            clanUpkeepCost = SERVER.clanUpkeepCost.get();
+            multiplyUpkeepClaims = SERVER.multiplyUpkeepClaims.get();
+            multiplyUpkeepMembers = SERVER.multiplyUpkeepMembers.get();
+            disbandNoUpkeep = SERVER.disbandNoUpkeep.get();
+            //Clan finance management
+            leaderWithdrawFunds = SERVER.leaderWithdrawFunds.get();
+            leaderRecieveDisbandFunds = SERVER.leaderRecieveDisbandFunds.get();
+            chargeRentDays = SERVER.chargeRentDays.get();
+            evictNonpayers = SERVER.evictNonpayers.get();
+            evictNonpayerAdmins = SERVER.evictNonpayerAdmins.get();
+            maxRent = SERVER.maxRent.get();
+            multiplyMaxRentClaims = SERVER.multiplyMaxRentClaims.get();
+        }
+
+        public static class ServerConfig {
+            //General clan config
+            public ForgeConfigSpec.BooleanValue multipleClanLeaders;
+            public ForgeConfigSpec.IntValue maxNameLength;
+            public ForgeConfigSpec.IntValue minClanHomeDist;
+            public ForgeConfigSpec.BooleanValue forceConnectedClaims;
+            public ForgeConfigSpec.BooleanValue allowMultiClanMembership;
+            public ForgeConfigSpec.IntValue clanHomeWarmupTime;
+            public ForgeConfigSpec.IntValue clanHomeCooldownTime;
+            public ForgeConfigSpec.IntValue maxClanPlayerClaims;
+            //Wilderness guard
+            public ForgeConfigSpec.BooleanValue protectWilderness;
+            public ForgeConfigSpec.IntValue minWildernessY;
+            //Raid configuration
+            public ForgeConfigSpec.IntValue maxRaidersOffset;
+            public ForgeConfigSpec.IntValue maxRaidDuration;
+            public ForgeConfigSpec.IntValue raidBufferTime;
+            public ForgeConfigSpec.IntValue remainingTimeToGlow;
+            public ForgeConfigSpec.IntValue maxAttackerAbandonmentTime;
+            public ForgeConfigSpec.IntValue maxClanDesertionTime;
+            public ForgeConfigSpec.IntValue defenseShield;
+            public ForgeConfigSpec.IntValue initialShield;
+            //Costs, rewards, and multipliers
+            public ForgeConfigSpec.IntValue formClanCost;
+            public ForgeConfigSpec.IntValue formClanBankAmount;
+            public ForgeConfigSpec.IntValue claimChunkCost;
+            public ForgeConfigSpec.IntValue startRaidCost;
+            public ForgeConfigSpec.BooleanValue startRaidMultiplier;
+            public ForgeConfigSpec.IntValue winRaidAmount;
+            public ForgeConfigSpec.BooleanValue winRaidMultiplierClaims;
+            public ForgeConfigSpec.BooleanValue winRaidMultiplierPlayers;
+            public ForgeConfigSpec.IntValue clanUpkeepDays;
+            public ForgeConfigSpec.IntValue clanUpkeepCost;
+            public ForgeConfigSpec.BooleanValue multiplyUpkeepClaims;
+            public ForgeConfigSpec.BooleanValue multiplyUpkeepMembers;
+            public ForgeConfigSpec.BooleanValue disbandNoUpkeep;
+            //Clan finance management
+            public ForgeConfigSpec.BooleanValue leaderWithdrawFunds;
+            public ForgeConfigSpec.BooleanValue leaderRecieveDisbandFunds;
+            public ForgeConfigSpec.IntValue chargeRentDays;
+            public ForgeConfigSpec.BooleanValue evictNonpayers;
+            public ForgeConfigSpec.BooleanValue evictNonpayerAdmins;
+            public ForgeConfigSpec.IntValue maxRent;
+            public ForgeConfigSpec.BooleanValue multiplyMaxRentClaims;
+
+            ServerConfig(ForgeConfigSpec.Builder builder) {
+                builder.push("general");
+                multipleClanLeaders = builder
+                        .comment("Allow clans to have multiple leaders.")
+                        .translation("Multiple Clan Leaders")
+                        .define("multipleClanLeaders", true);
+                maxNameLength = builder
+                        .comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type to avoid getting raided. Set to 0 for no limit.")
+                        .translation("Max Clan Name Length")
+                        .defineInRange("maxNameLength", 32, 0, Integer.MAX_VALUE);
+                minClanHomeDist = builder
+                        .comment("Minimum number of blocks between clan homes.")
+                        .translation("Minimum Clan Home Separation Distance")
+                        .defineInRange("minClanHomeDist", 500, 0, Integer.MAX_VALUE);
+                forceConnectedClaims = builder
+                        .comment("Force clans to have connected claims.")
+                        .translation("Force Connected Claims")
+                        .define("forceConnectedClaims", true);
+                allowMultiClanMembership = builder
+                        .comment("Allow players to be a member of multiple clans at once.")
+                        .translation("Allow Multi Clan Membership")
+                        .define("allowMultiClanMembership", true);
+                clanHomeWarmupTime = builder
+                        .comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported.")
+                        .translation("Clan Home Warmup Time")
+                        .defineInRange("clanHomeWarmupTime", 0, 0, Integer.MAX_VALUE);
+                clanHomeCooldownTime = builder
+                        .comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
+                        .translation("Clan Home Cooldown Time")
+                        .defineInRange("clanHomeCooldownTime", 0, 0, Integer.MAX_VALUE);
+                maxClanPlayerClaims = builder
+                        .comment("Max claims per player per clan. Set to 0 for infinite.")
+                        .translation("Max claims per player per clan")
+                        .defineInRange("maxClanPlayerClaims", 0, 0, Integer.MAX_VALUE);
+                builder.pop();
+
+                builder.push("wilderness");
+                protectWilderness = builder
+                        .comment("Protect the wilderness from damage above a specific Y level.")
+                        .translation("Protect Wilderness")
+                        .define("protectWilderness", true);
+                minWildernessY = builder
+                        .comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
+                        .translation("Minimum Wilderness Y Level")
+                        .defineInRange("minWildernessY", -1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                builder.pop();
+
+                builder.push("raid");
+                maxRaidersOffset = builder
+                        .comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
+                        .translation("Maximum Raider Count Offset")
+                        .defineInRange("maxRaidersOffset", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                maxRaidDuration = builder
+                        .comment("Maximum duration a raid can last for, in minutes.")
+                        .translation("Maximum Raid Duration")
+                        .defineInRange("maxRaidDuration", 20, 0, Integer.MAX_VALUE);
+                raidBufferTime = builder
+                        .comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
+                        .translation("Raid Preparation Time")
+                        .defineInRange("raidBufferTime", 120, 0, Integer.MAX_VALUE);
+                remainingTimeToGlow = builder
+                        .comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
+                        .translation("Remaining Time To Glow")
+                        .defineInRange("remainingTimeToGlow", 10, 0, Integer.MAX_VALUE);
+                maxAttackerAbandonmentTime = builder
+                        .comment("Maximum amount of consecutive time members of raiding parties can remain outside their target's territory, in seconds.")
+                        .translation("Maximum Raider Abandonment Time")
+                        .defineInRange("maxAttackerAbandonmentTime", 30, 0, Integer.MAX_VALUE);
+                maxClanDesertionTime = builder
+                        .comment("Maximum amount of consecutive time defending clan members can remain outside their territory during a raid, in seconds.")
+                        .translation("Maximum Defender Desertion Time")
+                        .defineInRange("maxClanDesertionTime", 30, 0, Integer.MAX_VALUE);
+                defenseShield = builder
+                        .comment("Amount of shield given to the defending clan after a raid, in hours.")
+                        .translation("Post-Raid Shield")
+                        .defineInRange("defenseShield", 24*5, 0, Integer.MAX_VALUE);
+                initialShield = builder
+                        .comment("Amount of shield given to newly formed clans, in hours.")
+                        .translation("New Clan Shield")
+                        .defineInRange("initialShield", 24*3, 0, Integer.MAX_VALUE);
+                builder.pop();
+
+                String economyNotice = " This requires a compatible economy to be installed.";
+
+                builder.push("pricing");
+                formClanCost = builder
+                        .comment("Cost of forming a clan."+economyNotice)
+                        .translation("Clan Formation Cost")
+                        .defineInRange("formClanCost", 0, 0, Integer.MAX_VALUE);
+                formClanBankAmount = builder
+                        .comment("Initial amount in a clan account's balance when it is formed."+economyNotice)
+                        .translation("Initial Clan Bank Amount")
+                        .defineInRange("formClanBankAmount", 0, 0, Integer.MAX_VALUE);
+                claimChunkCost = builder
+                        .comment("Cost of claiming a chunk of land."+economyNotice)
+                        .translation("Claim Chunk Cost")
+                        .defineInRange("claimChunkCost", 0, 0, Integer.MAX_VALUE);
+                startRaidCost = builder
+                        .comment("Cost of forming a new raiding party."+economyNotice)
+                        .translation("Form Raid Cost")
+                        .defineInRange("startRaidCost", 0, 0, Integer.MAX_VALUE);
+                startRaidMultiplier = builder
+                        .comment("Multiply the cost of forming a raid by the number of enemy claims."+economyNotice)
+                        .translation("Form Raid Cost Claim Multiplier")
+                        .define("startRaidMultiplier", true);
+                winRaidAmount = builder
+                        .comment("Reward for winning a raid. This gets taken out of the raid target's bank account."+economyNotice)
+                        .translation("Win Raid Amount")
+                        .defineInRange("winRaidAmount", 0, 0, Integer.MAX_VALUE);
+                winRaidMultiplierClaims = builder
+                        .comment("Multiply the reward for winning a raid by the number of enemy claims."+economyNotice)
+                        .translation("Win Raid Amount Claim Multiplier")
+                        .define("winRaidMultiplierClaims", true);
+                winRaidMultiplierPlayers = builder
+                        .comment("Multiply the reward for winning a raid by the number of online enemy players."+economyNotice)
+                        .translation("Win Raid Amount Defender Multiplier")
+                        .define("winRaidMultiplierPlayers", false);
+                clanUpkeepDays = builder
+                        .comment("How often to charge clans upkeep (in days). Set to 0 to disable the need for upkeep."+economyNotice)
+                        .translation("Clan Upkeep Time")
+                        .defineInRange("clanUpkeepDays", 0, 0, Integer.MAX_VALUE);
+                clanUpkeepCost = builder
+                        .comment("Amount to charge a clan for upkeep."+economyNotice)
+                        .translation("Clan Upkeep Cost")
+                        .defineInRange("clanUpkeepCost", 0, 0, Integer.MAX_VALUE);
+                multiplyUpkeepClaims = builder
+                        .comment("Multiply the clan upkeep by the number of claims."+economyNotice)
+                        .translation("Clan Upkeep Cost Claim Multiplier")
+                        .define("multiplyUpkeepClaims", true);
+                multiplyUpkeepMembers = builder
+                        .comment("Multiply the clan upkeep by the number of members."+economyNotice)
+                        .translation("Clan Upkeep Cost Player Multiplier")
+                        .define("multiplyUpkeepMembers", false);
+                disbandNoUpkeep = builder
+                        .comment("Disband the clan when it can't afford upkeep."+economyNotice)
+                        .translation("Disband Nonpaying Clans")
+                        .define("disbandNoUpkeep", false);
+                builder.pop();
+
+                builder.push("finances");
+                leaderWithdrawFunds = builder
+                        .comment("Allow the clan leader to withdraw funds from the clan bank account."+economyNotice)
+                        .translation("Leaders Can Withdraw Funds")
+                        .define("leaderWithdrawFunds", false);
+                leaderRecieveDisbandFunds = builder
+                        .comment("When enabled, remaining clan funds go to the clan leader when the clan is disbanded. When disabled, remaining clan funds get split evenly among all clan members when the clan is disbanded."+economyNotice)
+                        .translation("Leaders Recieve Disband Funds")
+                        .define("leaderRecieveDisbandFunds", true);
+                chargeRentDays = builder
+                        .comment("Frequency to charge clan members rent to go into the clan bank account (in days). If enabled, allows clan leaders to set the amount for their clans. Set to 0 to disable clan rent."+economyNotice)
+                        .translation("Charge Rent Time")
+                        .defineInRange("chargeRentDays", 0, 0, Integer.MAX_VALUE);
+                evictNonpayers = builder
+                        .comment("Kick clan members out who can't afford rent. This will not kick out leaders."+economyNotice)
+                        .translation("Evict Nonpaying Clan Members")
+                        .define("evictNonpayers", false);
+                evictNonpayerAdmins = builder
+                        .comment("Kick clan admins out who can't afford rent. This will not kick out leaders."+economyNotice)
+                        .translation("Evict Nonpaying Clan Admins")
+                        .define("evictNonpayerAdmins", false);
+                maxRent = builder
+                        .comment("Maximum amount of rent a clan can charge. Set to 0 for no maximum."+economyNotice)
+                        .translation("Max Rent")
+                        .defineInRange("maxRent", 0, 0, Integer.MAX_VALUE);
+                multiplyMaxRentClaims = builder
+                        .comment("Multiply the max rent by the number of claims."+economyNotice)
+                        .translation("Max Rent Claim Multiplier")
+                        .define("multiplyMaxRentClaims", true);
+                builder.pop();
+            }
+        }
     }
 }

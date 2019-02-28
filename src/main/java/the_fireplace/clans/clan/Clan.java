@@ -2,11 +2,8 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.Clans;
 
@@ -92,14 +89,14 @@ public class Clan implements Serializable {
 		}
 	}
 
-	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers(MinecraftServer server, ICommandSender sender) {
+	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {
 		HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
 		if(isOpclan)
 			return online;
 		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
 			EntityPlayerMP memberMP;
 			try {
-				memberMP = CommandBase.getPlayer(server, sender, member.getKey().toString());
+				memberMP = Clans.minecraftServer.getPlayerList().getPlayerByUUID(member.getKey());
 			} catch(CommandException e) {
 				continue;
 			}
