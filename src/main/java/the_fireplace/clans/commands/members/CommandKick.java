@@ -18,7 +18,10 @@ import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,8 +52,12 @@ public class CommandKick extends ClanSubCommand {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 
 		if(target != null) {
+			if(target.getId().equals(sender.getUniqueID())) {
+				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "To leave a clan, use /clan leave."));
+				return;
+			}
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-				if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {//TODO verify
+				if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
 					EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 					EnumRank targetRank = selectedClan.getMembers().get(target.getId());
 					if (senderRank == EnumRank.LEADER) {

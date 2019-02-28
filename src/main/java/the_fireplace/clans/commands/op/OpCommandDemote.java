@@ -52,22 +52,22 @@ public class OpCommandDemote extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
 	}
 
-	public static void demoteClanMember(MinecraftServer server, EntityPlayerMP sender, String playerName, Clan c) throws CommandException {
+	public static void demoteClanMember(MinecraftServer server, EntityPlayerMP sender, String playerName, Clan clan) throws CommandException {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
 		if(target != null) {
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-				if (ClanCache.getPlayerClans(target.getId()).contains(c)) {
-					if (c.demoteMember(target.getId())) {
+				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
+					if (clan.demoteMember(target.getId())) {
 						sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have demoted %s.", target.getName()));
 						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been demoted in %s by %s.", c.getClanName(), sender.getName()));
+							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been demoted in %s by %s.", clan.getClanName(), sender.getName()));
 					} else
 						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s could not be demoted.", target.getName()));
 				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), c.getClanName()));
+					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), clan.getClanName()));
 			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), c.getClanName()));
+				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), clan.getClanName()));
 		} else
 			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", playerName));
 	}

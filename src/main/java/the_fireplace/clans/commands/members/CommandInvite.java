@@ -10,12 +10,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.raid.Raid;
-import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;

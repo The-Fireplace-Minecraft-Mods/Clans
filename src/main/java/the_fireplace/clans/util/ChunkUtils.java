@@ -5,7 +5,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
-import the_fireplace.clans.clan.Clan;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

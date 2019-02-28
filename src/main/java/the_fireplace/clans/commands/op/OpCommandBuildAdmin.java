@@ -4,22 +4,13 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.MinecraftColors;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

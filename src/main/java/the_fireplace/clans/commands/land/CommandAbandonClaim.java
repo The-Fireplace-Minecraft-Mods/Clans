@@ -1,6 +1,5 @@
 package the_fireplace.clans.commands.land;
 
-import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,8 +7,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.op.OpCommandAbandomClaim;

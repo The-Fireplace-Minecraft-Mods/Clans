@@ -17,9 +17,9 @@ import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.MinecraftColors;
 import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.PlayerClanCapability;
-import the_fireplace.clans.util.MinecraftColors;
 
 import java.util.*;
 

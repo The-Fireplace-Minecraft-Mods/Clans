@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.raiding;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,7 +9,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;

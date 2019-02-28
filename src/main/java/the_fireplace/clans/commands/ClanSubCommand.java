@@ -40,7 +40,7 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(sender instanceof Entity) {
 			if(getRequiredClanRank() == EnumRank.ANY)
 				return true;
-			EnumRank playerRank = ClanCache.getPlayerRank(sender.getCommandSenderEntity().getUniqueID(), selectedClan);
+			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
 			switch(playerRank){
 				case LEADER:
 					return !getRequiredClanRank().equals(EnumRank.NOCLAN);
