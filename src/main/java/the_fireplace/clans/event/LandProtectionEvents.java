@@ -9,8 +9,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketEntityEquipment;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
@@ -98,21 +101,24 @@ public class LandProtectionEvents {
 		}
 	}
 
+	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
 		if(!event.getWorld().isRemote) {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
-				if (chunkClan != null) {
-					EntityPlayer placingPlayer = event.getPlayer();
-					if (placingPlayer instanceof EntityPlayerMP) {
+			EntityPlayer placingPlayer = event.getPlayer();
+			if (placingPlayer instanceof EntityPlayerMP) {
+				if (chunkOwner != null) {
+					Clan chunkClan = ClanCache.getClan(chunkOwner);
+					if (chunkClan != null) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
 						if (!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) {
 							event.setCanceled(true);
+							EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
+							((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
 							placingPlayer.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in another clan's territory."));
-						} else if(RaidingParties.hasActiveRaid(chunkClan)) {
+						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
 							RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
@@ -124,11 +130,13 @@ public class LandProtectionEvents {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-			}
-			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
-				event.setCanceled(true);
-				event.getPlayer().inventory.markDirty();
-				event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in Wilderness."));
+				if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+					event.setCanceled(true);
+					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
+					((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
+					event.getPlayer().inventory.markDirty();
+					event.getPlayer().sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot place blocks in Wilderness."));
+				}
 			}
 		}
 	}
