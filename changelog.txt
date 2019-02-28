@@ -18,3 +18,4 @@ All commands now support using tab autocomplete
 Fixed an error when using /opclan abandonclaim
 Players can now be promoted/demoted/kicked when they are offline
 After trying to place a block in another clan's territory, you can now see that the block is still in your inventory.
+Animals on claimed land are now protected from players that aren't in the clan and are not raiding the clan.

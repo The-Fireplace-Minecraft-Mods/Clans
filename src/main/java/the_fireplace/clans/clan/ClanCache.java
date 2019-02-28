@@ -35,7 +35,9 @@ public final class ClanCache {
 		return clanNames.get(clanName);
 	}
 
-	public static ArrayList<Clan> getPlayerClans(UUID player) {
+	public static ArrayList<Clan> getPlayerClans(@Nullable UUID player) {
+		if(player == null)
+			return Lists.newArrayList();
 		if(playerClans.containsKey(player))
 			return (playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
 		playerClans.put(player, ClanDatabase.lookupPlayerClans(player));

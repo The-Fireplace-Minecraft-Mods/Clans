@@ -249,12 +249,11 @@ public class LandProtectionEvents {
 	public static void onLivingDamage(LivingDamageEvent event) {
 		Entity entity = event.getEntityLiving();
 		if(!entity.getEntityWorld().isRemote) {
-			if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
-				Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
-				UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+            Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
+            Clan chunkClan = ClanCache.getClan(ChunkUtils.getChunkOwner(c));
+            Entity source = event.getSource().getTrueSource();
+            if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 				ArrayList<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
-				Entity source = event.getSource().getTrueSource();
 				if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)))
 					event.setCanceled(true);
 				else if(RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null))) {
@@ -263,7 +262,17 @@ public class LandProtectionEvents {
 							return;
 					event.setCanceled(true);
 				}
-			}
+			} else {//Entity is not a player
+                if((source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null))) {
+                    if (RaidingParties.isRaidedBy(chunkClan, source instanceof EntityPlayer ? (EntityPlayer) source : (((EntityTameable) source).getOwner() instanceof EntityPlayer ? (EntityPlayer) ((EntityTameable) source).getOwner() : null)))
+                        return;//Raiders can harm things
+                    UUID sourceId = source instanceof EntityPlayer ? source.getUniqueID() : ((EntityTameable) source).getOwnerId();
+                    ArrayList<Clan> sourceClans = ClanCache.getPlayerClans(sourceId);
+                    if(sourceClans.contains(chunkClan))
+                        return;//Players can harm things
+                    event.setCanceled(true);
+                }
+            }
 		}
 	}
 }
