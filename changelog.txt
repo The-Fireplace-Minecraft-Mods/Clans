@@ -1,1 +1,3 @@
 Updated to 1.13.2
+Merged the functionality of /raid form into /raid join. Use /raid join to create or join a raiding party.
+The raid cost is now paid when /raid start is used, not /raid form.

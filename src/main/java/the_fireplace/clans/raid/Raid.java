@@ -22,13 +22,12 @@ public class Raid {
 	private long cost;
 	private boolean isActive;
 
-	public Raid(EntityPlayerMP starter, Clan targetClan, long raidCost){
+	public Raid(EntityPlayerMP starter, Clan targetClan){
 		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
 		addMember(starter);
 		this.target = targetClan;
-		cost = raidCost;
 		RaidingParties.addRaid(target, this);
 	}
 
@@ -157,6 +156,10 @@ public class Raid {
 
 	void activate() {
 		isActive = true;
-		setDefenders(target.getOnlineMembers(Clans.minecraftServer, null).keySet());//TODO test that this works
+		setDefenders(target.getOnlineMembers().keySet());
+	}
+
+	public void setCost(long cost) {
+		this.cost = cost;
 	}
 }

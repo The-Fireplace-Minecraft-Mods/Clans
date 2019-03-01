@@ -92,7 +92,7 @@ public final class Clans {
         minecraftServer = event.getServer();
         //manager.registerCommand(new CommandClan());
         //manager.registerCommand(new CommandOpClan());
-        //manager.registerCommand(new CommandRaid());
+        CommandRaid.register(event.getCommandDispatcher());
     }
 
     private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
