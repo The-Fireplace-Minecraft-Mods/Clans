@@ -184,7 +184,7 @@ public class CommandOpClan {
             Clan targetClan = ClanCache.getClan(claimFaction);
             if(claimFaction.equals(opClan.getClanId()) || force || targetClan == null) {
                 if(targetClan != null) {
-                    if (targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
+                    if (force || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
                         CommandClan.abandonClaim(context.getSource().asPlayer(), c, targetClan);
                         ChunkUtils.clearChunkOwner(c);
                         sendFeedback(context, TextStyles.GREEN, "Claim abandoned!");
