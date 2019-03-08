@@ -1,3 +1,1 @@
-Fixed missing opclan commands
-/opclan abandonclaim force can now create disconnected claims even if the server's config doesn't allow disconnected claims.
-Fixed the error message for the details command when used without specifying a clan by a player who is not in a clan.
+Fixed config not loading
