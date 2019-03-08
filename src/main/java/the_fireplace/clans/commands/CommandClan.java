@@ -6,7 +6,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -30,6 +32,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
@@ -68,7 +71,7 @@ public class CommandClan {
     };
 
     public static final SuggestionProvider<CommandSource> invitablePlayerSuggestion = (context, builder) -> {
-        for(EntityPlayerMP p: Clans.minecraftServer.getPlayerList().getPlayers())
+        for(EntityPlayerMP p: ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(p.getUniqueID()).isEmpty())
                 builder.suggest(p.getName().getFormattedText());
         return builder.buildFuture();
@@ -77,7 +80,7 @@ public class CommandClan {
     @SuppressWarnings("Duplicates")
     public static void register(CommandDispatcher<CommandSource> commandDispatcher) {
         LiteralArgumentBuilder<CommandSource> clanCommand = Commands.literal("clan").requires((iCommandSender) -> iCommandSender.getEntity() instanceof EntityPlayerMP);
-        LiteralArgumentBuilder<CommandSource> clanCommandWithClan = clanCommand.then(Commands.argument("clan", StringArgumentType.word()).suggests(playerClanSuggestion));
+        RequiredArgumentBuilder<CommandSource, String> clanCommandWithClan = Commands.argument("clan", StringArgumentType.word()).suggests(playerClanSuggestion);
 
         clanCommand.then(Commands.literal("banner")
                 .executes(context -> runBannerCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
@@ -298,6 +301,8 @@ public class CommandClan {
                     .executes(context -> runFinancesCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
         }
 
+        clanCommand.then(clanCommandWithClan);
+
         LiteralCommandNode<CommandSource> clanNode = commandDispatcher.register(clanCommand);
         commandDispatcher.register(Commands.literal("c").redirect(clanNode));
     }
@@ -365,6 +370,7 @@ public class CommandClan {
         return 1;
     }
 
+    @SuppressWarnings("Duplicates")
     static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable Clan clan, boolean isOpclanCommand) throws CommandSyntaxException {
         if (!isOpclanCommand && !validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
@@ -386,7 +392,7 @@ public class CommandClan {
                         clan.payLeaders(distFunds);
                     EntityPlayerMP player;
                     try {
-                        player = Clans.minecraftServer.getPlayerList().getPlayerByUUID(member);
+                        player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
                     } catch (CommandException e) {
                         player = null;
                     }
@@ -712,19 +718,19 @@ public class CommandClan {
 
     @SuppressWarnings("Duplicates")
     private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
-        if(!validateClanRank(context, clan, EnumRank.ADMIN))
+        if (!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
         assert clan != null;
         Chunk c = context.getSource().asPlayer().getEntityWorld().getChunk(context.getSource().asPlayer().getPosition());
         UUID claimFaction = ChunkUtils.getChunkOwner(c);
-        if(claimFaction != null) {
-            if(claimFaction.equals(clan.getClanId()))
+        if (claimFaction != null) {
+            if (claimFaction.equals(clan.getClanId()))
                 throwCommandFailure("%s has already claimed this land.", clan.getClanName());
             else
                 throwCommandFailure("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClan(claimFaction)).getClanName());
         } else {
-            if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, clan.getClanId()) || clan.getClaimCount() == 0) {
-                if(Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
+            if (!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, clan.getClanId()) || clan.getClaimCount() == 0) {
+                if (Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
                     if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, clan.getClanId())) {
                         ChunkUtils.setChunkOwner(c, clan.getClanId());
                         clan.addClaimCount();
@@ -776,15 +782,15 @@ public class CommandClan {
 
     static void demotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
         String playerName = context.getArgument("target", String.class);
-        GameProfile target = Clans.minecraftServer.getPlayerProfileCache().getGameProfileForUsername(playerName);
+        GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
             if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
                 if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
                     if (clan.demoteMember(target.getId())) {
                         sendFeedback(context, TextStyles.GREEN, "You have demoted %s.", target.getName());
-                        if(ArrayUtils.contains(Clans.minecraftServer.getOnlinePlayerNames(), target))
-                            Objects.requireNonNull(Clans.minecraftServer.getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
+                        if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
+                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
                     } else
                         throwCommandFailure("The player %s could not be demoted in %s.", target.getName(), clan.getClanName());
                 } else
@@ -806,15 +812,15 @@ public class CommandClan {
 
     static void promotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
         String playerName = context.getArgument("target", String.class);
-        GameProfile target = Clans.minecraftServer.getPlayerProfileCache().getGameProfileForUsername(playerName);
+        GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
             if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
                 if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
                     if (clan.promoteMember(target.getId())) {
                         sendFeedback(context, TextStyles.GREEN, "You have promoted %s in %s.", target.getName(), clan.getClanName());
-                        if(ArrayUtils.contains(Clans.minecraftServer.getOnlinePlayerNames(), target))
-                            Objects.requireNonNull(Clans.minecraftServer.getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been promoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
+                        if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
+                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been promoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
                     } else
                         throwCommandFailure("The player %s could not be promoted.", target.getName());
                 } else
@@ -830,7 +836,7 @@ public class CommandClan {
             return 0;
         assert clan != null;
         String playerName = context.getArgument("target", String.class);
-        EntityPlayerMP target = Clans.minecraftServer.getPlayerList().getPlayerByUsername(playerName);
+        EntityPlayerMP target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName);
         if(target != null) {
             if (Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
                 if (ClanCache.inviteToClan(target.getUniqueID(), clan))
@@ -849,7 +855,7 @@ public class CommandClan {
             return 0;
         assert clan != null;
         String playerName = context.getArgument("target", String.class);
-        GameProfile target = Clans.minecraftServer.getPlayerProfileCache().getGameProfileForUsername(playerName);
+        GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
             if(target.getId().equals(context.getSource().asPlayer().getUniqueID())) {
@@ -878,8 +884,8 @@ public class CommandClan {
     public static void removeMember(CommandContext<CommandSource> context, Clan playerClan, GameProfile target) throws CommandException {
         if(playerClan.removeMember(target.getId())) {
             sendFeedback(context, TextStyles.GREEN, "You have kicked %s out of %s.", target.getName(), playerClan.getClanName());
-            if(ArrayUtils.contains(Clans.minecraftServer.getOnlinePlayerNames(), target.getName()))
-                Objects.requireNonNull(Clans.minecraftServer.getPlayerList().getPlayerByUsername(target.getName())).sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
+            if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target.getName()))
+                Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(target.getName())).sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
         } else
             throwCommandFailure("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName());
     }
@@ -918,7 +924,7 @@ public class CommandClan {
      * @param removeClan
      * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
      */
-    static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
+    public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
         UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
         if(removeClan == null || removeClan.getClanId().equals(oldDef))
             if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())
@@ -949,7 +955,7 @@ public class CommandClan {
         return 1;
     }
 
-    static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
+    public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
         if (playerDim == playerClan.getHomeDim() || player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim())), player.getServerWorld().getDefaultTeleporter()) != null) {
             if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
                 throwCommandFailure("Error teleporting to clan home. Ensure that it is not blocked.");
@@ -1010,29 +1016,29 @@ public class CommandClan {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private static boolean validateClanRank(CommandContext<CommandSource> context, @Nullable Clan selectedClan, EnumRank requiredRank) {
+    private static boolean validateClanRank(CommandContext<CommandSource> context, @Nullable Clan clan, EnumRank requiredRank) {
         if(!(context.getSource().getEntity() instanceof EntityPlayerMP)) {
             throwCommandFailure("You must be a player to do this!");
             return false;
         }
 
-        if(selectedClan == null && !requiredRank.equals(EnumRank.ANY) && !requiredRank.equals(EnumRank.NOCLAN)) {
+        if(clan == null && !requiredRank.equals(EnumRank.ANY) && !requiredRank.equals(EnumRank.NOCLAN)) {
             throwCommandFailure("Invalid clan! Either you are not in a clan or the clan you typed does not exist!");
             return false;
         }
 
-        if(selectedClan != null && requiredRank.equals(EnumRank.NOCLAN)) {
+        if(clan != null && requiredRank.equals(EnumRank.NOCLAN)) {
             throwCommandFailure("You cannot do this because you are in a clan!");
             return false;
         }
 
-        if(selectedClan != null && !selectedClan.getMembers().containsKey(context.getSource().getEntity().getUniqueID())) {
-            throwCommandFailure("You are not in %s!", selectedClan.getClanName());
+        if(clan != null && !clan.getMembers().containsKey(context.getSource().getEntity().getUniqueID())) {
+            throwCommandFailure("You are not in %s!", clan.getClanName());
             return false;
         }
 
-        if(selectedClan != null && !selectedClan.getMembers().get(context.getSource().getEntity().getUniqueID()).greaterOrEquals(requiredRank)) {
-            throwCommandFailure("You do not have permission to do this in %s!", selectedClan.getClanName());
+        if(clan != null && !clan.getMembers().get(context.getSource().getEntity().getUniqueID()).greaterOrEquals(requiredRank)) {
+            throwCommandFailure("You do not have permission to do this in %s!", clan.getClanName());
             return false;
         }
 

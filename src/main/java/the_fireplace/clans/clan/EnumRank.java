@@ -19,11 +19,11 @@ public enum EnumRank implements Serializable {
 			case NOCLAN:
 				return other.equals(NOCLAN);
 			case MEMBER:
-				return !other.equals(NOCLAN);
+				return other.equals(MEMBER);
 			case ADMIN:
-				return other.equals(ADMIN) || other.equals(LEADER);
+				return other.equals(ADMIN) || other.equals(MEMBER);
 			case LEADER:
-				return other.equals(LEADER);
+				return !other.equals(NOCLAN);
 		}
 	}
 }

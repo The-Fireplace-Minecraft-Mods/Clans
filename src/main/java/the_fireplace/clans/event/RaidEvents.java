@@ -30,10 +30,9 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = Clans.MODID)
 public class RaidEvents {
 	@SubscribeEvent
-	public static void onBlockDrops(BlockEvent.HarvestDropsEvent event) {
+	public void onBlockDrops(BlockEvent.HarvestDropsEvent event) {
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -54,7 +53,7 @@ public class RaidEvents {
 	}
 
 	@SubscribeEvent
-	public static void onPlayerDeath(LivingDeathEvent event) {
+	public void onPlayerDeath(LivingDeathEvent event) {
 		if(!event.getEntity().getEntityWorld().isRemote) {
 			if (event.getEntityLiving() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
@@ -69,9 +68,10 @@ public class RaidEvents {
 	}
 
 	@SubscribeEvent
-	public static void onChunkLoaded(ChunkEvent.Load event) {
+	public void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote()) {
-			if (!RaidingParties.hasActiveRaid(ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk())))) {
+			Clan chunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk()));
+			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(Objects.requireNonNull(event.getChunk().getWorldForge()).getDimension().getType().getId(), event.getChunk());
 				if (data != null)
 					data.restore(event.getChunk());
@@ -82,7 +82,7 @@ public class RaidEvents {
 	private static HashMap<BlockPos, Boolean> phases = Maps.newHashMap();
 
 	@SubscribeEvent
-	public static void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
+	public void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
 		if(!event.getWorld().isRemote()) {
 			IBlockState state = event.getState();
 			if (state.getBlock() instanceof BlockPistonBase) {

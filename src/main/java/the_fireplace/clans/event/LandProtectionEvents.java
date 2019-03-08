@@ -38,10 +38,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid=Clans.MODID)
 public class LandProtectionEvents {
 	@SubscribeEvent
-	public static void onBreakBlock(BlockEvent.BreakEvent event){
+	public void onBreakBlock(BlockEvent.BreakEvent event){
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -81,7 +80,7 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
+	public void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -105,7 +104,7 @@ public class LandProtectionEvents {
 
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
-	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
+	public void onBlockPlace(BlockEvent.PlaceEvent event) {
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -144,7 +143,7 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
+	public void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -158,7 +157,7 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onPortalPlace(BlockEvent.PortalSpawnEvent event) {//TODO: Ensure that no part of the portal can enter a claimed chunk
+	public void onPortalPlace(BlockEvent.PortalSpawnEvent event) {//TODO: Ensure that no part of the portal can enter a claimed chunk
 		if(!event.getWorld().isRemote()) {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -168,7 +167,7 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+	public void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		if(!event.getWorld().isRemote) {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
@@ -210,7 +209,7 @@ public class LandProtectionEvents {
 
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
-	public static void onDetonate(ExplosionEvent.Detonate event) {
+	public void onDetonate(ExplosionEvent.Detonate event) {
 		if(!event.getWorld().isRemote) {
 			ArrayList<BlockPos> removeBlocks = Lists.newArrayList();
 			for (BlockPos pos : event.getAffectedBlocks()) {
@@ -248,7 +247,7 @@ public class LandProtectionEvents {
 
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
-	public static void onLivingDamage(LivingDamageEvent event) {
+	public void onLivingDamage(LivingDamageEvent event) {
 		Entity entity = event.getEntityLiving();
 		if(!entity.getEntityWorld().isRemote) {
             Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());

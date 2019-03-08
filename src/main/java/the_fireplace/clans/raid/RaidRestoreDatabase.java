@@ -2,9 +2,7 @@ package the_fireplace.clans.raid;
 
 import com.google.common.collect.Maps;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraftforge.common.DimensionManager;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.Pair;
@@ -17,7 +15,7 @@ public final class RaidRestoreDatabase implements Serializable {
 
 	private static RaidRestoreDatabase instance = null;
 	private static final String dataFileName = "raids.dat";
-	private static File saveDir = Clans.getWorldDir();
+	private static File saveDir = Clans.getDataDir();
 
 	public static RaidRestoreDatabase getInstance() {
 		if(instance == null)
@@ -74,7 +72,7 @@ public final class RaidRestoreDatabase implements Serializable {
 
 	private static void load() {
 		if (saveDir == null)
-			saveDir = Clans.getWorldDir();
+			saveDir = Clans.getDataDir();
 		File f = new File(saveDir, dataFileName);
 		if (f.exists()) {
 			try {
@@ -95,7 +93,7 @@ public final class RaidRestoreDatabase implements Serializable {
 	public static void save() {
 		try {
 			if (saveDir == null)
-				saveDir = Clans.getWorldDir();
+				saveDir = Clans.getDataDir();
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(saveDir, dataFileName)));
 			out.writeObject(instance);
 			out.close();

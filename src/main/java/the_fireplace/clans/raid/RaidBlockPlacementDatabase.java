@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.DimensionManager;
 import the_fireplace.clans.Clans;
 
 import java.io.*;
@@ -18,7 +17,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 
 	private static RaidBlockPlacementDatabase instance = null;
 	private static final String dataFileName = "raidblockplacement.dat";
-	private static File saveDir = Clans.getWorldDir();
+	private static File saveDir = Clans.getDataDir();
 
 	public static RaidBlockPlacementDatabase getInstance() {
 		if(instance == null)
@@ -54,7 +53,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 
 	private static void readFromFile() {
 		if (saveDir == null)
-			saveDir = Clans.getWorldDir();
+			saveDir = Clans.getDataDir();
 		File f = new File(saveDir, dataFileName);
 		if (f.exists()) {
 			try {
@@ -75,7 +74,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 	private static void saveToFile() {
 		try {
 			if (saveDir == null)
-				saveDir = Clans.getWorldDir();
+				saveDir = Clans.getDataDir();
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(saveDir, dataFileName)));
 			out.writeObject(instance);
 			out.close();

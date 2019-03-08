@@ -4,10 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -107,12 +110,14 @@ public final class RaidingParties {
 		for(EntityPlayerMP player: raid.getMembers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
-		for(DimensionType dimType: DimensionManager.getRegistry())//TODO Find out if this works on modded dimensions
-			for(Chunk c: Clans.minecraftServer.getWorld(dimType).getChunkProvider().getLoadedChunks()) {
+		for(ResourceLocation location: DimensionManager.getRegistry().getKeys()) {//TODO Find out if this works on modded dimensions
+			DimensionType dimType = DimensionManager.getRegistry().get(location);
+			for (Chunk c : ServerLifecycleHooks.getCurrentServer().getWorld(dimType).getChunkProvider().getLoadedChunks()) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(dimType.getId(), c);
-				if(data != null)
+				if (data != null)
 					data.restore(c);
 			}
+		}
 	}
 
 	public static ArrayList<Clan> getRaidedClans() {

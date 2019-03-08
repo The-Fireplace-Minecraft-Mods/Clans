@@ -2,7 +2,7 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraftforge.common.DimensionManager;
+import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -16,7 +16,7 @@ public final class ClanDatabase implements Serializable {
 
 	private static ClanDatabase instance = null;
 	private static final String dataFileName = "clans.dat";
-	private static File saveDir = DimensionManager.getCurrentSaveRootDirectory();
+	private static File saveDir = Clans.getDataDir();
 
 	public static ClanDatabase getInstance() {
 		if(instance == null) {
@@ -94,11 +94,7 @@ public final class ClanDatabase implements Serializable {
 
 	private static void readFromFile() {
 		if (saveDir == null)
-			saveDir = DimensionManager.getCurrentSaveRootDirectory();
-		if (saveDir == null) {
-			instance = new ClanDatabase();
-			return;
-		}
+			saveDir = Clans.getDataDir();
 		File f = new File(saveDir, dataFileName);
 		if (f.exists()) {
 			try {
@@ -119,7 +115,7 @@ public final class ClanDatabase implements Serializable {
 	public static void save() {
 		try {
 			if (saveDir == null)
-				saveDir = DimensionManager.getCurrentSaveRootDirectory();
+				saveDir = Clans.getDataDir();
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(saveDir, dataFileName)));
 			out.writeObject(instance);
 			out.close();

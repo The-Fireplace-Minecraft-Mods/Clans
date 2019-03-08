@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
@@ -96,7 +97,7 @@ public class Clan implements Serializable {
 		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
 			EntityPlayerMP memberMP;
 			try {
-				memberMP = Clans.minecraftServer.getPlayerList().getPlayerByUUID(member.getKey());
+				memberMP = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member.getKey());
 			} catch(CommandException e) {
 				continue;
 			}

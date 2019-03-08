@@ -7,21 +7,19 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.commands.teleportation.CommandHome;
+import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.*;
 
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = Clans.MODID)
 public class Timer {
 	private static byte ticks = 0;
 	private static int minuteCounter = 0;
@@ -29,7 +27,7 @@ public class Timer {
 	public static HashMap<EntityPlayerMP, Pair<Integer, Integer>> clanHomeWarmups = Maps.newHashMap();
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
-	public static void onServerTick(TickEvent.ServerTickEvent event) {
+	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
 			if(++minuteCounter >= 20*60)
 				for(Clan clan: ClanDatabase.getClans())
@@ -43,7 +41,7 @@ public class Timer {
 					if (entry.getValue().getValue1() == 1) {
 						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null)
-							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
+							CommandClan.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
 					}
 				Set<EntityPlayerMP> players = clanHomeWarmups.keySet();
 				for(EntityPlayerMP player: players)
@@ -101,7 +99,7 @@ public class Timer {
 	private static HashMap<EntityPlayer, Integer> prevYs = Maps.newHashMap();
 
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(!event.player.getEntityWorld().isRemote) {
 			if (event.player.getEntityWorld().getGameTime() % 20 == 0) {
 				PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.player);

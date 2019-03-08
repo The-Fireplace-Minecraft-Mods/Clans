@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.60'
+	minecraft 'net.minecraftforge:forge:1.13.2-25.0.74'
     compile name:'GrandEconomy-1.13.2-1.1.1-deobf'
 }
 
@@ -93,7 +93,7 @@ curseforge {
   project {
     id = '313915'
     changelog = file('changelog.txt')
-    releaseType = 'release'
+    releaseType = 'beta'
     addGameVersion '1.13.2'
 	addGameVersion 'Java 8'
     mainArtifact(jar) {
@@ -116,7 +116,7 @@ modsIO {
 		modid = "1280"
 		minecraft = "1.13.2"
 		try{changelog = file('changelog.txt').text}catch(Exception e){changelog=""}
-		tag = ""
+		tag = "beta"
 		current = true
     }
 }

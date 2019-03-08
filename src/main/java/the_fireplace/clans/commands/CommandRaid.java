@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
@@ -41,7 +42,7 @@ public class CommandRaid {
     };
 
     public static final SuggestionProvider<CommandSource> invitablePlayerSuggestion = (context, builder) -> {
-        for(EntityPlayerMP p: Clans.minecraftServer.getPlayerList().getPlayers())
+        for(EntityPlayerMP p: ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
             if(!ClanCache.getPlayerClans(p.getUniqueID()).contains(RaidingParties.getRaid(context.getSource().asPlayer()).getTarget()) && RaidingParties.getRaid(p) == null)
                 builder.suggest(p.getName().getFormattedText());
         return builder.buildFuture();

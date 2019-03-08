@@ -28,11 +28,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
+import the_fireplace.clans.event.LandProtectionEvents;
+import the_fireplace.clans.event.OtherEvents;
+import the_fireplace.clans.event.RaidEvents;
+import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.payment.IPaymentHandler;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
 import the_fireplace.clans.payment.PaymentHandlerGE;
@@ -50,8 +56,6 @@ import static the_fireplace.clans.Clans.MODID;
 @Mod(MODID)
 public final class Clans {
     public static final String MODID = "clans";
-
-    public static MinecraftServer minecraftServer;
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
@@ -78,6 +82,10 @@ public final class Clans {
     public void preInit(FMLCommonSetupEvent event){
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
+        MinecraftForge.EVENT_BUS.register(new RaidEvents());
+        MinecraftForge.EVENT_BUS.register(new LandProtectionEvents());
+        MinecraftForge.EVENT_BUS.register(new OtherEvents());
+        MinecraftForge.EVENT_BUS.register(new Timer());
     }
 
     public void postInit(FMLLoadCompleteEvent event){
@@ -89,14 +97,13 @@ public final class Clans {
 
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
-        minecraftServer = event.getServer();
         CommandClan.register(event.getCommandDispatcher());
         //manager.registerCommand(new CommandOpClan());
         CommandRaid.register(event.getCommandDispatcher());
     }
 
-    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
-    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
+    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claim_data");
+    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "home_cooldown_data");
 
     @SubscribeEvent
     public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){
@@ -156,8 +163,8 @@ public final class Clans {
         });
     }
 
-    public static File getWorldDir() {
-        return minecraftServer.getWorld(DimensionType.OVERWORLD).getSaveHandler().getWorldDirectory();
+    public static File getDataDir() {
+        return ServerLifecycleHooks.getCurrentServer().getDataDirectory();
     }
 
     public static class cfg {
