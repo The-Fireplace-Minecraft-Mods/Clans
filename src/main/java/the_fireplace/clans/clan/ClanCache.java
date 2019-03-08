@@ -6,6 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.commands.CommandClan;
+import the_fireplace.clans.util.CapHelper;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,6 +22,8 @@ public final class ClanCache {
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
 	private static ArrayList<EntityPlayerMP> claimAdmins = Lists.newArrayList();
+
+	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba");
 
 	@Nullable
 	public static Clan getClan(@Nullable UUID clanID){
@@ -44,6 +47,13 @@ public final class ClanCache {
 		return (playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
 	}
 
+	@Nullable
+	public static Clan getPlayerDefaultClan(@Nullable EntityPlayerMP player) {
+		if(player == null)
+			return null;
+		return getClan(CapHelper.getPlayerClanCapability(player).getDefaultClan());
+	}
+
 	public static EnumRank getPlayerRank(UUID player, Clan clan) {
 		return clan.getMembers().get(player);
 	}
@@ -52,7 +62,7 @@ public final class ClanCache {
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);
-		return clanName.toLowerCase().equals("wilderness") || clanName.toLowerCase().equals("underground") || clanName.toLowerCase().equals("opclan") || CommandClan.commands.containsKey(clanName.toLowerCase()) || clanNames.containsKey(clanName);
+		return forbiddenClanNames.contains(clanName.toLowerCase()) || clanNames.containsKey(clanName);
 	}
 
 	public static boolean clanBannerTaken(String clanBanner) {

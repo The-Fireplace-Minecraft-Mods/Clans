@@ -90,7 +90,7 @@ public final class Clans {
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
         minecraftServer = event.getServer();
-        //manager.registerCommand(new CommandClan());
+        CommandClan.register(event.getCommandDispatcher());
         //manager.registerCommand(new CommandOpClan());
         CommandRaid.register(event.getCommandDispatcher());
     }

@@ -76,34 +76,4 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		return args.length == 1 ? Collections.singletonList("force") : Collections.emptyList();
 	}
-
-	public static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
-		if (targetClan.hasHome()
-				&& sender.dimension == targetClan.getHomeDim()
-				&& targetClan.getHome().getX() >= c.getPos().getXStart()
-				&& targetClan.getHome().getX() <= c.getPos().getXEnd()
-				&& targetClan.getHome().getZ() >= c.getPos().getZStart()
-				&& targetClan.getHome().getZ() <= c.getPos().getZEnd()) {
-			targetClan.unsetHome();
-		}
-
-		targetClan.subClaimCount();
-		Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
-	}
-
-	public static void abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, Clan targetClan) {
-		boolean allowed = true;
-		for (Chunk checkChunk : ChunkUtils.getConnectedClaims(c, targetClan.getClanId()))
-			if (ChunkUtils.getConnectedClaims(checkChunk, targetClan.getClanId()).equals(Lists.newArrayList(c))) {
-				allowed = false;
-				break;
-			}
-		if (allowed) {
-			//Unset clan home if it is in the chunk
-			OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
-			ChunkUtils.clearChunkOwner(c);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
-		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot abandon this chunk of land because doing so would create at least one disconnected claim."));
-	}
 }
