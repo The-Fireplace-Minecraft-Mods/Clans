@@ -3,3 +3,5 @@ Merged the functionality of /raid form into /raid join. Use /raid join to create
 The raid cost is now paid when /raid start is used, not /raid form.
 Improved much of the command feedback
 /clan form now has an alias: /clan create
+/opclan claim can now be used to claim land for other clans
+Most opclan commands(addfunds, promote, demote, kick, disband, setname, setdescription, setshield) can now be run from the console

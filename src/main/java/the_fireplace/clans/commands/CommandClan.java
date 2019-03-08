@@ -43,6 +43,7 @@ import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.TextStyles;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CommandClan {
 
     public static final SuggestionProvider<CommandSource> invitablePlayerSuggestion = (context, builder) -> {
         for(EntityPlayerMP p: Clans.minecraftServer.getPlayerList().getPlayers())
-            if(!ClanCache.getPlayerClans(p.getUniqueID()).contains(RaidingParties.getRaid(context.getSource().asPlayer()).getTarget()) && RaidingParties.getRaid(p) == null)
+            if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(p.getUniqueID()).isEmpty())
                 builder.suggest(p.getName().getFormattedText());
         return builder.buildFuture();
     };
@@ -223,16 +224,16 @@ public class CommandClan {
                 .executes(context -> runDemoteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("invite")
-                .then(Commands.argument("target", StringArgumentType.word())
+                .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
                 .executes(context -> runInviteCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommand.then(Commands.literal("i")
-                .then(Commands.argument("target", StringArgumentType.word())
+                .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
                 .executes(context -> runInviteCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("invite")
-                .then(Commands.argument("target", StringArgumentType.word())
+                .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
                 .executes(context -> runInviteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("i")
-                .then(Commands.argument("target", StringArgumentType.word())
+                .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
                 .executes(context -> runInviteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("kick")
@@ -365,7 +366,7 @@ public class CommandClan {
     }
 
     static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable Clan clan, boolean isOpclanCommand) throws CommandSyntaxException {
-        if (!validateClanRank(context, clan, EnumRank.LEADER))
+        if (!isOpclanCommand && !validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
         if(!clan.isOpclan()) {
@@ -392,7 +393,7 @@ public class CommandClan {
                     if (player != null) {
                         updateDefaultClan(player, clan);
                         if (!player.getUniqueID().equals(context.getSource().asPlayer().getUniqueID()))
-                            sendFeedback(context, TextStyles.GREEN, "Your clan has been disbanded by %s.", context.getSource().asPlayer().getName().getFormattedText());
+                            sendFeedback(context, TextStyles.GREEN, "Your clan has been disbanded by %s.", context.getSource().getName());
                     }
                 }
                 Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clan.getClanId()), clan.getClanId());
@@ -547,7 +548,7 @@ public class CommandClan {
             clan.setClanName(newName);
             sendFeedback(context, TextStyles.GREEN, "You have renamed %s to %s!", oldName, newName);
         } else
-            throwCommandFailure("The clan name \"%s\" is already taken.", newName);
+            throwCommandFailure("The clan name \"%s\" is already taken or invalid.", newName);
         return 1;
     }
 
@@ -769,6 +770,11 @@ public class CommandClan {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
+        demotePlayer(context, clan);
+        return 1;
+    }
+
+    static void demotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
         String playerName = context.getArgument("target", String.class);
         GameProfile target = Clans.minecraftServer.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
@@ -778,16 +784,15 @@ public class CommandClan {
                     if (clan.demoteMember(target.getId())) {
                         sendFeedback(context, TextStyles.GREEN, "You have demoted %s.", target.getName());
                         if(ArrayUtils.contains(Clans.minecraftServer.getOnlinePlayerNames(), target))
-                            Objects.requireNonNull(Clans.minecraftServer.getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
+                            Objects.requireNonNull(Clans.minecraftServer.getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
                     } else
-                        throwCommandFailure("The player %s could not be demoted.", target.getName());
+                        throwCommandFailure("The player %s could not be demoted in %s.", target.getName(), clan.getClanName());
                 } else
                     throwCommandFailure("The player %s is not in %s.", target.getName(), clan.getClanName());
             } else
                 throwCommandFailure("The player %s is not in %s.", target.getName(), clan.getClanName());
         } else
             throwCommandFailure("The player %s was not found.", playerName);
-        return 1;
     }
 
     @SuppressWarnings("Duplicates")
@@ -795,6 +800,11 @@ public class CommandClan {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
+        promotePlayer(context, clan);
+        return 1;
+    }
+
+    static void promotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
         String playerName = context.getArgument("target", String.class);
         GameProfile target = Clans.minecraftServer.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
@@ -813,7 +823,6 @@ public class CommandClan {
                 throwCommandFailure("The player %s is not in %s.", target.getName(), clan.getClanName());
         } else
             throwCommandFailure("The player %s was not found.", playerName);
-        return 1;
     }
 
     private static int runInviteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
