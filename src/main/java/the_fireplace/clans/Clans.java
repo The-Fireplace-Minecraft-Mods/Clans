@@ -98,7 +98,7 @@ public final class Clans {
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
         CommandClan.register(event.getCommandDispatcher());
-        //manager.registerCommand(new CommandOpClan());
+        CommandOpClan.register(event.getCommandDispatcher());
         CommandRaid.register(event.getCommandDispatcher());
     }
 

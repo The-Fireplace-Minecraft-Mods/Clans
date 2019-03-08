@@ -334,7 +334,7 @@ public class CommandClan {
     }
 
     private static int runDetailsCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
-        if(!validateClanRank(context, clan, EnumRank.ANY))
+        if(!validateClanRank(context, clan, clan == null ? EnumRank.MEMBER : EnumRank.ANY))
             return 0;
         assert clan != null;
         sendFeedback(context, TextStyles.GREEN, "Clan name: %s", clan.getClanName());
