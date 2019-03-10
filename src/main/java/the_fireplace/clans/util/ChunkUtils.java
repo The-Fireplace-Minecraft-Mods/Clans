@@ -67,14 +67,7 @@ public class ChunkUtils {
 		if(checkOwner == null)
 			return false;
 		ChunkPos cPos = c.getPos();
-        IChunk checkChunk;
-        for(int i=-1;i<2;i+=2)
-            for(int j=-1;j<2;j+=2) {
-                checkChunk = Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x + i, cPos.z + j);
-                if (checkOwner.equals(getChunkOwner(checkChunk)))
-                    return true;
-            }
-        return false;
+        return checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x + 1, cPos.z))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x - 1, cPos.z))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x, cPos.z + 1))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x, cPos.z - 1)));
 	}
 
     public static ArrayList<IChunk> getConnectedClaims(IChunk c, @Nullable UUID checkOwner) {

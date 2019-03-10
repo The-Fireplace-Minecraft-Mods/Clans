@@ -1,1 +1,1 @@
-Fixed config not loading
+Fixed chunk adjacency checking
