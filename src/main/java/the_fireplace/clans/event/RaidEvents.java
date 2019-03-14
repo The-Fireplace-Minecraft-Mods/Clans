@@ -71,7 +71,8 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote) {
-			if (!RaidingParties.hasActiveRaid(ClanCache.getClan(Objects.requireNonNull(event.getChunk().getCapability(Clans.CLAIMED_LAND, null)).getClan()))) {
+			Clan chunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk()));
+			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
 				if (data != null)
 					data.restore(event.getChunk());
