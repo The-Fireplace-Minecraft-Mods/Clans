@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Clan implements Serializable {
-	private static final long serialVersionUID = 0x2ACA77AC;
+	private static final long serialVersionUID = 0x1254367;
 
 	private String clanName, clanBanner;
 	private String description = "This is a new clan.";
