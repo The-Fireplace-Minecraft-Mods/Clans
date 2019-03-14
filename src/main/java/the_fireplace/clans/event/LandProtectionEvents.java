@@ -268,9 +268,9 @@ public class LandProtectionEvents {
                         return;//Raiders can harm things
                     UUID sourceId = source instanceof EntityPlayer ? source.getUniqueID() : ((EntityTameable) source).getOwnerId();
                     ArrayList<Clan> sourceClans = ClanCache.getPlayerClans(sourceId);
-                    if(sourceClans.contains(chunkClan))
+                    if(sourceClans.contains(chunkClan) || chunkClan == null || RaidingParties.hasActiveRaid(chunkClan))
                         return;//Players can harm things
-                    event.setCanceled(true);
+					event.setCanceled(true);
                 }
             }
 		}
