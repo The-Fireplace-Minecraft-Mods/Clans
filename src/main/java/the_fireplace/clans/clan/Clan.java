@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Clan implements Serializable {
-	private static final long serialVersionUID = 0x2ACA77AC;
+	private static final long serialVersionUID = 0x1254367;
 
 	private String clanName, clanBanner;
 	private String description = "This is a new clan.";
@@ -29,7 +29,7 @@ public class Clan implements Serializable {
 	private int homeDimension;
 	private int claimCount = 0;
 	private boolean isOpclan = false;
-	private int rent = 0;
+	private long rent = 0;
 	private int wins = 0;
 
 	private int losses = 0;
@@ -271,11 +271,11 @@ public class Clan implements Serializable {
 		return isOpclan;
 	}
 
-	public int getRent() {
+	public long getRent() {
 		return rent;
 	}
 
-	public void setRent(int rent) {
+	public void setRent(long rent) {
 		this.rent = rent;
 	}
 

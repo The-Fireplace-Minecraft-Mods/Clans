@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public final class ClanDatabase implements Serializable {
-	private static final long serialVersionUID = 0x696969;
+	private static final long serialVersionUID = 0x1254367;
 
 	private static ClanDatabase instance = null;
 	private static final String dataFileName = "clans.dat";

@@ -3,3 +3,5 @@ Fixed claim adjacency checking
 Fixed claim adjacency checking, part 2
 Allow opclan abandonclaim force to create disconnected claims
 Fixed rare crash
+
+Internal change to prevent the clan database from wiping when updating Clans to 1.13.2. This will wipe your current clan database.
