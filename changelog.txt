@@ -1,3 +1,4 @@
 Fixed attacking things on unclaimed land
 Fixed claim adjacency checking
 Fixed claim adjacency checking, part 2
+Allow opclan abandonclaim force to create disconnected claims
