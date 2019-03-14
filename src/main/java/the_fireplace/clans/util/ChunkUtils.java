@@ -8,6 +8,7 @@ import the_fireplace.clans.clan.ClaimedLandCapability;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ChunkUtils {
@@ -50,14 +51,7 @@ public class ChunkUtils {
 		if(checkOwner == null)
 			return false;
 		ChunkPos cPos = c.getPos();
-        Chunk checkChunk;
-        for(int i=-1;i<2;i+=2)
-            for(int j=-1;j<2;j+=2) {
-                checkChunk = c.getWorld().getChunk(cPos.x + i, cPos.z + j);
-                if (checkOwner.equals(getChunkOwner(checkChunk)))
-                    return true;
-            }
-        return false;
+		return checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorld()).getChunk(cPos.x + 1, cPos.z))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorld()).getChunk(cPos.x - 1, cPos.z))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorld()).getChunk(cPos.x, cPos.z + 1))) || checkOwner.equals(getChunkOwner(Objects.requireNonNull(c.getWorld()).getChunk(cPos.x, cPos.z - 1)));
 	}
 
     public static ArrayList<Chunk> getConnectedClaims(Chunk c, @Nullable UUID checkOwner) {
