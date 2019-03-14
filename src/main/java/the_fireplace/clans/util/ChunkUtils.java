@@ -77,13 +77,10 @@ public class ChunkUtils {
         if(checkOwner == null)
             return adjacent;
         ChunkPos cPos = c.getPos();
-        IChunk checkChunk;
-        for(int i=-1;i<2;i+=2)
-            for(int j=-1;j<2;j+=2) {
-                checkChunk = Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x + i, cPos.z + j);
-                if (checkOwner.equals(getChunkOwner(checkChunk)))
-                    adjacent.add(checkChunk);
-            }
+		adjacent.add(Objects.requireNonNull(c.getWorldForge()).getChunk(cPos.x + 1, cPos.z));
+		adjacent.add(c.getWorldForge().getChunk(cPos.x - 1, cPos.z));
+		adjacent.add(c.getWorldForge().getChunk(cPos.x, cPos.z + 1));
+		adjacent.add(c.getWorldForge().getChunk(cPos.x, cPos.z - 1));
         return adjacent;
     }
 }
