@@ -40,19 +40,22 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(sender instanceof Entity) {
 			if(getRequiredClanRank() == EnumRank.ANY)
 				return true;
-			EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
-			switch(playerRank){
-				case LEADER:
-					return !getRequiredClanRank().equals(EnumRank.NOCLAN);
-				case ADMIN:
-					return !getRequiredClanRank().equals(EnumRank.LEADER) && !getRequiredClanRank().equals(EnumRank.NOCLAN);
-				case MEMBER:
-					return getRequiredClanRank().equals(EnumRank.MEMBER);
-				case NOCLAN:
-					return getRequiredClanRank().equals(EnumRank.NOCLAN);
-				default:
-					return false;
-			}
+			if(selectedClan != null) {
+				EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
+				switch (playerRank) {
+					case LEADER:
+						return !getRequiredClanRank().equals(EnumRank.NOCLAN);
+					case ADMIN:
+						return !getRequiredClanRank().equals(EnumRank.LEADER) && !getRequiredClanRank().equals(EnumRank.NOCLAN);
+					case MEMBER:
+						return getRequiredClanRank().equals(EnumRank.MEMBER);
+					case NOCLAN:
+						return getRequiredClanRank().equals(EnumRank.NOCLAN);
+					default:
+						return false;
+				}
+			} else
+				return getRequiredClanRank().equals(EnumRank.NOCLAN);
 		}
 		return false;
 	}

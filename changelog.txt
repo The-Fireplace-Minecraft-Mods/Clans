@@ -1,1 +1,2 @@
 Fixed crash when player is not in a clan
+Fixed internal error when player is not in a clan and tries to use a /clan command
