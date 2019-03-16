@@ -52,7 +52,8 @@ public interface PlayerClanCapability {
 		public NBTBase writeNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("cooldown", instance.getCooldown());
-			tag.setUniqueId("defaultClan", instance.getDefaultClan());
+			if(instance.getDefaultClan() != null)
+				tag.setUniqueId("defaultClan", instance.getDefaultClan());
 			return tag;
 		}
 
@@ -60,7 +61,8 @@ public interface PlayerClanCapability {
 		public void readNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side, NBTBase nbt) {
 			if(nbt instanceof NBTTagCompound) {
 				instance.setCooldown(((NBTTagCompound) nbt).getInteger("cooldown"));
-				instance.setDefaultClan(((NBTTagCompound) nbt).getUniqueId("defaultClan"));
+				if(((NBTTagCompound) nbt).hasUniqueId("defaultClan"))
+					instance.setDefaultClan(((NBTTagCompound) nbt).getUniqueId("defaultClan"));
 			}
 		}
 	}
