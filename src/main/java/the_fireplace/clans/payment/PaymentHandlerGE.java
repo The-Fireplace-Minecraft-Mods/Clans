@@ -44,6 +44,7 @@ public class PaymentHandlerGE implements IPaymentHandler {
 				Objects.requireNonNull(Account.get(account)).writeIfChanged();
 			} catch(IOException e) {
 				e.printStackTrace();
+				return false;
 			}
 		return true;
 	}
