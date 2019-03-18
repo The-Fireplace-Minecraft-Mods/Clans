@@ -17,7 +17,7 @@ import java.util.*;
 
 public final class RaidingParties {
 	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
-	private static HashMap<EntityPlayerMP, Raid> raidingPlayers = Maps.newHashMap();
+	private static HashMap<UUID, Raid> raidingPlayers = Maps.newHashMap();
 	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
 	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
 	private static HashMap<Clan, Integer> bufferTimes = Maps.newHashMap();
@@ -31,10 +31,10 @@ public final class RaidingParties {
 	}
 
 	public static Raid getRaid(EntityPlayerMP player){
-		return raidingPlayers.get(player);
+		return raidingPlayers.get(player.getUniqueID());
 	}
 
-	public static Set<EntityPlayerMP> getRaidingPlayers() {
+	public static Set<UUID> getRaidingPlayers() {
 		return raidingPlayers.keySet();
 	}
 
@@ -66,10 +66,10 @@ public final class RaidingParties {
 	}
 
 	public static void addRaider(EntityPlayerMP raider, Raid raid){
-		raidingPlayers.put(raider, raid);
+		raidingPlayers.put(raider.getUniqueID(), raid);
 	}
 
-	public static void removeRaider(EntityPlayerMP raider){
+	public static void removeRaider(UUID raider){
 		raidingPlayers.remove(raider);
 	}
 
@@ -87,9 +87,9 @@ public final class RaidingParties {
 	    return bufferTimes.containsKey(targetClan);
     }
 
-	public static void initRaid(ICommandSender sender, Clan raidTarget){
+	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
-		for(EntityPlayerMP member: raidTarget.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).keySet())
+		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
 			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
 	}
 
@@ -101,7 +101,7 @@ public final class RaidingParties {
 
 	public static void endRaid(Clan targetClan) {
 		Raid raid = activeraids.remove(targetClan);
-		for(EntityPlayerMP player: raid.getMembers())
+		for(UUID player: raid.getMembers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
 		for(int id: DimensionManager.getIDs())

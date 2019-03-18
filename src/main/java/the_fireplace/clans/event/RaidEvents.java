@@ -61,7 +61,7 @@ public class RaidEvents {
 				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
 					if (clan != null && RaidingParties.hasActiveRaid(clan))
 						RaidingParties.getActiveRaid(clan).removeDefender(player);
-					if (RaidingParties.getRaidingPlayers().contains(player) && RaidingParties.getRaid(player).isActive())
+					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
 						RaidingParties.getRaid(player).removeMember(player);
 				}
 			}

@@ -44,12 +44,12 @@ public class CommandInviteRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(!RaidingParties.getRaidingPlayers().contains(sender)) {
+		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				assert server != null;
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, args[0]);
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
+				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
 						targetPlayer.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have been invited to a raid against " + raid.getTarget().getClanName() + "! To join, type /raid join " + raid.getTarget().getClanName()));

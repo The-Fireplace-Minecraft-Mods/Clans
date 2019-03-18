@@ -161,7 +161,7 @@ public class Timer {
 							else
 								r.incrementDefenderAbandonmentTime(player);
 						}
-					if (RaidingParties.getRaidingPlayers().contains(player)) {
+					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID())) {
 						Raid r = RaidingParties.getRaid(player);
 						if (r.isActive()) {
 							if (r.getTarget().getClanId().equals(chunkClan))

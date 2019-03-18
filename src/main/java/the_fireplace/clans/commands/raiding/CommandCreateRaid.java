@@ -45,9 +45,9 @@ public class CommandCreateRaid extends RaidSubCommand {
 		if(target == null)
 			sender.sendMessage(new TextComponentString(MinecraftColors.RED+"Target clan not found."));
 		else {
-			if(!RaidingParties.getRaidingPlayers().contains(sender)) {
+			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 				if(!target.isShielded()) {
-					if (target.getOnlineMembers(FMLCommonHandler.instance().getMinecraftServerInstance(), sender).size() > 0) {
+					if (target.getOnlineMembers().size() > 0) {
 						if (!RaidingParties.getRaidedClans().contains(target)) {
 							long raidCost = Clans.cfg.startRaidCost;
 							if (Clans.cfg.startRaidMultiplier)
@@ -74,7 +74,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 		Collection<Clan> clans = ClanDatabase.getClans();
 		ArrayList<String> targetClanNames = Lists.newArrayList();
 		for(Clan c: clans)
-			if(sender.getCommandSenderEntity() != null && !c.getOnlineMembers(server, sender).isEmpty() && !c.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !raids.containsKey(c) && !RaidingParties.hasActiveRaid(c) && !c.isShielded() && !c.isOpclan())
+			if(sender.getCommandSenderEntity() != null && !c.getOnlineMembers().isEmpty() && !c.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !raids.containsKey(c) && !RaidingParties.hasActiveRaid(c) && !c.isShielded() && !c.isOpclan())
 				targetClanNames.add(c.getClanName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();
 	}

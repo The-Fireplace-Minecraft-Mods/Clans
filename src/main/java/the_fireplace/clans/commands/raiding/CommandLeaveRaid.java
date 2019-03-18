@@ -33,7 +33,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!RaidingParties.getRaidingPlayers().contains(sender)) {
+		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				raid.removeMember(sender);

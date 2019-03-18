@@ -20,7 +20,7 @@ public final class ClanCache {
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
-	private static ArrayList<EntityPlayerMP> claimAdmins = Lists.newArrayList();
+	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
 
 	@Nullable
 	public static Clan getClan(@Nullable UUID clanID){
@@ -132,16 +132,16 @@ public final class ClanCache {
 	}
 
 	public static boolean toggleClaimAdmin(EntityPlayerMP admin){
-		if(claimAdmins.contains(admin)) {
-			claimAdmins.remove(admin);
+		if(claimAdmins.contains(admin.getUniqueID())) {
+			claimAdmins.remove(admin.getUniqueID());
 			return false;
 		} else {
-			claimAdmins.add(admin);
+			claimAdmins.add(admin.getUniqueID());
 			return true;
 		}
 	}
 
 	public static boolean isClaimAdmin(EntityPlayerMP admin) {
-		return claimAdmins.contains(admin);
+		return claimAdmins.contains(admin.getUniqueID());
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
@@ -92,19 +93,12 @@ public class Clan implements Serializable {
 		}
 	}
 
-	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers(MinecraftServer server, ICommandSender sender) {
+	public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {
 		HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
 		if(isOpclan)
 			return online;
-		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
-			EntityPlayerMP memberMP;
-			try {
-				memberMP = CommandBase.getPlayer(server, sender, member.getKey().toString());
-			} catch(CommandException e) {
-				continue;
-			}
-			online.put(memberMP, member.getValue());
-		}
+		for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet())
+			online.put(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member.getKey()), member.getValue());
 		return online;
 	}
 

@@ -36,15 +36,15 @@ public class CommandStartRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(RaidingParties.getRaidingPlayers().contains(sender)) {
+		if(RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				assert server != null;
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
+				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
 				if(clanPlayers.size() >= raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
-							RaidingParties.initRaid(sender, raid.getTarget());
+							RaidingParties.initRaid(raid.getTarget());
 							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully started the raid!"));
 						} else
 							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You have already started this raid!"));

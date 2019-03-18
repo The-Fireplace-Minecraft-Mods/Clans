@@ -39,11 +39,11 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!RaidingParties.getRaidingPlayers().contains(sender)) {
+		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			String targetName = args[0];
 			Raid raid = RaidingParties.getRaid(targetName);
 			if (raid != null) {
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers(server, sender);
+				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(sender)) {
 						raid.addMember(sender);
