@@ -27,7 +27,6 @@ import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
