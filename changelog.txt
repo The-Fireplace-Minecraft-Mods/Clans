@@ -1,2 +1,3 @@
-Fixed crash when player is not in a clan
-Fixed internal error when player is not in a clan and tries to use a /clan command
+Fixed server crash when player tries using /clan home and the clan doesn't have a home.
+Internal optimizations
+Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
