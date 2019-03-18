@@ -47,8 +47,10 @@ public final class Clans {
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
+    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
     @CapabilityInject(PlayerClanCapability.class)
     public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
+    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
 
     private IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
@@ -78,9 +80,6 @@ public final class Clans {
         manager.registerCommand(new CommandOpClan());
         manager.registerCommand(new CommandRaid());
     }
-
-    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
-    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
 
     @SubscribeEvent
     public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){

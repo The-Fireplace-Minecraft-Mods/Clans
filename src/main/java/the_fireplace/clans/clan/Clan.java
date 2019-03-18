@@ -150,6 +150,7 @@ public class Clan implements Serializable {
 		//No need to save here because subClaimCount is always called after this.
 	}
 
+	@Nullable
 	public BlockPos getHome() {
 		if(!hasHome)
 			return null;

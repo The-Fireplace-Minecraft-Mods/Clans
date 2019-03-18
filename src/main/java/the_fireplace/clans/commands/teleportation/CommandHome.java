@@ -50,7 +50,7 @@ public class CommandHome extends ClanSubCommand {
 			//noinspection ConstantConditions
 			int cooldown = sender.getCapability(Clans.CLAN_DATA_CAP, null).getCooldown();
 			if(cooldown <= 0) {
-				if (!selectedClan.hasHome())
+				if (!selectedClan.hasHome() || home == null)
 					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Error: Your clan does not have a set home. The clan leader should use /clan sethome to set one."));
 				else {
 					if(Clans.cfg.clanHomeWarmupTime > 0)
