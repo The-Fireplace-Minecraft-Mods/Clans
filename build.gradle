@@ -22,7 +22,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'net.cazzar.gradle.modsio'
 
-version = "1.1.6"
+version = "1.2.0"
 group = "the_fireplace.clans"
 archivesBaseName = "Clans-1.12.2"
 
@@ -38,6 +38,22 @@ minecraft {
     mappings = "stable_39"
 	
 	clientRunArgs += "--uuid=0b1ec5ad-cb2a-43b7-995d-889320eb2e5b --username=The_Fireplace"
+}
+
+dependencies {
+    //provided 'io.github.nucleuspowered:nucleus-api:1.9.2-S7.1'
+    compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.2"
+    deobfProvided "us.dynmap:DynmapCoreAPI:${dynmapapi_version}"
+}
+
+repositories {
+    //maven {url='https://repo.drnaylor.co.uk/artifactory/minecraft/'}
+    jcenter()
+	maven {
+		url "http://maven.shadowfacts.net/"
+	}
+	// Maven repo for Dynmap
+    maven { url = "http://repo.mikeprimm.com" }
 }
 
 processResources

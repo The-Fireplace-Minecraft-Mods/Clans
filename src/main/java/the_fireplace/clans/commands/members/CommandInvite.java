@@ -46,6 +46,7 @@ public class CommandInvite extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+		assert server != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);
 		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
 			if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan))
