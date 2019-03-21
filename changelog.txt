@@ -4,3 +4,4 @@ Improved cache reliability - less wonky things that get fixed by relogging or re
 Fix long lines of chat losing color when going to the second line
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 Improve a few messages
+Add the default clan before the player's name in chat
