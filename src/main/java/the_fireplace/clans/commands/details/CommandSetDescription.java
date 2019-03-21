@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,6 +41,6 @@ public class CommandSetDescription extends ClanSubCommand {
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
 		selectedClan.setDescription(newTagline.toString());
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description set!"));
+		sender.sendMessage(new TextComponentString("Clan description set!").setStyle(TextStyles.GREEN));
 	}
 }

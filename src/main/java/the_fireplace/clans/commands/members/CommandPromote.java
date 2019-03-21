@@ -12,7 +12,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.op.OpCommandPromote;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,7 +49,7 @@ public class CommandPromote extends ClanSubCommand {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
 			OpCommandPromote.promoteClanMember(server, sender, args[0], selectedClan);
 		else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not a leader of " + selectedClan.getClanName()));
+			sender.sendMessage(new TextComponentString("You are not a leader of " + selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

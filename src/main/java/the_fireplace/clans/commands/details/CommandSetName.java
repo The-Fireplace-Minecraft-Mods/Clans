@@ -9,7 +9,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,11 +41,11 @@ public class CommandSetName extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
 		if(Clans.cfg.maxNameLength > 0 && newName.length() > Clans.cfg.maxNameLength)
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is too long. This server's maximum name length is: "+Clans.cfg.maxNameLength));
+			sender.sendMessage(new TextComponentString("The clan name you have specified is too long. This server's maximum name length is: "+Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
 		else if(!ClanCache.clanNameTaken(newName)) {
 			selectedClan.setClanName(newName);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan name set!"));
+			sender.sendMessage(new TextComponentString("Clan name set!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is already taken."));
+			sender.sendMessage(new TextComponentString("The clan name you have specified is already taken.").setStyle(TextStyles.RED));
 	}
 }

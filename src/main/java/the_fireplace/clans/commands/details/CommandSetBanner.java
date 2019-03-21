@@ -15,7 +15,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,10 +50,10 @@ public class CommandSetBanner extends ClanSubCommand {
 				JsonToNBT.getTagFromJson(args[0]);
 				//TODO: Check that the tag would actually be a valid NBTTagList of patterns
 				if(ClanCache.clanBannerTaken(args[0]))
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED+"The clan banner you have specified is already taken."));
+					sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 				else {
 					selectedClan.setClanBanner(args[0]);
-					sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan banner set!"));
+					sender.sendMessage(new TextComponentString("Clan banner set!").setStyle(TextStyles.GREEN));
 				}
 			} catch(NBTException e){
 				throw new SyntaxErrorException("Invalid Banner NBT: "+args[0]);
@@ -69,16 +69,16 @@ public class CommandSetBanner extends ClanSubCommand {
 				tags.setShort("ClanBaseColor", (short) sender.getHeldItemOffhand().getMetadata());
 			setClanBannerFromItem(sender, selectedClan, tags);
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not holding a banner!"));
+			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
 
 	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED+"The clan banner you have specified is already taken."));
+			sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 		else {
 			playerClan.setClanBanner(banner);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan banner set!"));
+			sender.sendMessage(new TextComponentString("Clan banner set!").setStyle(TextStyles.GREEN));
 		}
 	}
 }

@@ -11,7 +11,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.op.OpCommandAbandomClaim;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -52,16 +52,16 @@ public class CommandAbandonClaim extends ClanSubCommand {
 						//Unset clan home if it is in the chunk
 						OpCommandAbandomClaim.abandonClaim(sender, c, selectedClan);
 						ChunkUtils.clearChunkOwner(c);
-						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+						sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
 					} else {//We are forcing connected claims and there is a claim connected
 						//Prevent creation of disconnected claims
 						OpCommandAbandomClaim.abandonClaimWithAdjacencyCheck(sender, c, selectedClan);
 					}
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to "+selectedClan.getClanName()));
+					sender.sendMessage(new TextComponentString("This land does not belong to "+selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land is not claimed."));
+				sender.sendMessage(new TextComponentString("This land is not claimed.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
+			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
 	}
 }

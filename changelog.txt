@@ -1,3 +1,6 @@
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
 Internal optimizations
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
+Fix long lines of chat losing color when going to the second line
+Improve chat colors - Wilderness is now yellow when protected, like other protected land.
+Improve a few messages

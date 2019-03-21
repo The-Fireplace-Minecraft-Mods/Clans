@@ -13,7 +13,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,7 +51,7 @@ public class CommandMap extends ClanSubCommand {
 		Chunk center = w.getChunk(sender.getPosition());
 
 		Map<UUID, Character> symbolMap = Maps.newHashMap();
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "====================================================="));
+		sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 		for(int z=center.z-5; z <= center.z + 5; z++) {
 			StringBuilder row = new StringBuilder();
 			for (int x = center.x - 26; x <= center.x + 26; x++) {
@@ -70,12 +70,12 @@ public class CommandMap extends ClanSubCommand {
 					}
 				}
 			}
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + row));
+			sender.sendMessage(new TextComponentString(row.toString()).setStyle(TextStyles.GREEN));
 		}
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "====================================================="));
+		sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 		for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
 			Clan c = ClanCache.getClan(symbol.getKey());
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")));
+			sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")).setStyle(TextStyles.GREEN));
 		}
 	}
 }

@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.op.*;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -103,14 +103,14 @@ public class CommandOpClan extends CommandBase {
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/opclan commands:\n" +
+                StringBuilder commandsHelp = new StringBuilder("/opclan commands:\n" +
                         "help");
                 for (String command : commands.keySet()) {
                     if(commands.get(command) == null)
                         continue;
                     commandsHelp.append("\n").append(command);
                 }
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()));
+                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
         }
         throw new WrongUsageException("/opclan <command> [parameters]");

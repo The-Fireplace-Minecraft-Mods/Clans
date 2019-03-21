@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,13 +38,13 @@ public class OpCommandSetName extends OpClanSubCommand {
 		if(!ClanCache.clanNameTaken(newName)) {
 			if(opSelectedClan == null) {
 				ClanDatabase.getOpClan().setClanName(newName);
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan name set!"));
+				sender.sendMessage(new TextComponentString("Opclan name set!").setStyle(TextStyles.GREEN));
 			} else {
 				String oldName = opSelectedClan.getClanName();
 				opSelectedClan.setClanName(newName);
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "%s renamed to %s!", oldName, newName));
+				sender.sendMessage(new TextComponentTranslation("%s renamed to %s!", oldName, newName).setStyle(TextStyles.GREEN));
 			}
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan name you have specified is already taken."));
+			sender.sendMessage(new TextComponentString("The clan name you have specified is already taken.").setStyle(TextStyles.RED));
 	}
 }

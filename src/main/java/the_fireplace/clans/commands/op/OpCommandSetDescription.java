@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,10 +38,10 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 			newDescription.append(arg).append(' ');
 		if(opSelectedClan == null) {
 			ClanDatabase.getOpClan().setDescription(newDescription.toString());
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Opclan description set!"));
+			sender.sendMessage(new TextComponentString("Opclan description set!").setStyle(TextStyles.GREEN));
 		} else {
 			opSelectedClan.setDescription(newDescription.toString());
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "%s description set!", opSelectedClan.getClanName()));
+			sender.sendMessage(new TextComponentTranslation("%s description set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

@@ -11,7 +11,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,14 +47,14 @@ public class CommandDetails extends ClanSubCommand {
 		assert server != null;
 		if(args.length == 0) {
 			if(selectedClan == null) {
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in a clan. Use /clan details [clan] to get the details of another clan."));
+				sender.sendMessage(new TextComponentString("You are not in a clan. Use /clan details [clan] to get the details of another clan.").setStyle(TextStyles.RED));
 			} else {
 				showDetails(server, sender, selectedClan);
 			}
 		} else {
 			Clan targetClan = ClanCache.getClan(args[0]);
 			if(targetClan == null) {
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan not found."));
+				sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 			} else {
 				showDetails(server, sender, targetClan);
 			}
@@ -67,10 +67,10 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	private void showDetails(MinecraftServer server, EntityPlayerMP sender, Clan clan) {
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan name: "+clan.getClanName()));
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan description: "+clan.getDescription()));
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Number of claims: "+clan.getClaimCount()));
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Number of members: "+clan.getMemberCount()));
+		sender.sendMessage(new TextComponentString("Clan name: "+clan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(new TextComponentString("Clan description: "+clan.getDescription()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(new TextComponentString("Number of claims: "+clan.getClaimCount()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(new TextComponentString("Number of members: "+clan.getMemberCount()).setStyle(TextStyles.GREEN));
 		List<EntityPlayerMP> leaders = Lists.newArrayList();
 		List<EntityPlayerMP> admins = Lists.newArrayList();
 		List<EntityPlayerMP> members = Lists.newArrayList();
@@ -88,15 +88,15 @@ public class CommandDetails extends ClanSubCommand {
 			}
 		}
 		if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Online members: "));
+			sender.sendMessage(new TextComponentString("Online members: ").setStyle(TextStyles.GREEN));
 			for(EntityPlayerMP leader: leaders)
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + MinecraftColors.BOLD + MinecraftColors.ITALIC + "Leader " + leader.getName()));
+				sender.sendMessage(new TextComponentString("Leader " + leader.getName()).setStyle(TextStyles.BOLD_ITALIC_GREEN));
 			for(EntityPlayerMP admin: admins)
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + MinecraftColors.ITALIC + "Admin " + admin.getName()));
+				sender.sendMessage(new TextComponentString("Admin " + admin.getName()).setStyle(TextStyles.BOLD_GREEN));
 			for(EntityPlayerMP member: members)
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + member.getName()));
+				sender.sendMessage(new TextComponentString(member.getName()).setStyle(TextStyles.GREEN));
 		} else {
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "No online members."));
+			sender.sendMessage(new TextComponentString("No online members.").setStyle(TextStyles.GREEN));
 		}
 	}
 }

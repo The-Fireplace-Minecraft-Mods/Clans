@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,10 +37,10 @@ public class CommandLeaveRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				raid.removeMember(sender);
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully left the raid!"));
+				sender.sendMessage(new TextComponentString("You successfully left the raid!").setStyle(TextStyles.GREEN));
 			} else//Internal error because we should not reach this point
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: You are not in a raid!"));
+				sender.sendMessage(new TextComponentString("Internal error: You are not in a raid!").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in a raid!"));
+			sender.sendMessage(new TextComponentString("You are not in a raid!").setStyle(TextStyles.RED));
 	}
 }

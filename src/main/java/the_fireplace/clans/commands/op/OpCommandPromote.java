@@ -15,7 +15,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,7 +49,7 @@ public class OpCommandPromote extends OpClanSubCommand {
 		if(c != null) {
 			promoteClanMember(server, sender, args[1], c);
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	public static void promoteClanMember(MinecraftServer server, EntityPlayerMP sender, String playerName, Clan clan) throws CommandException {
@@ -59,17 +59,17 @@ public class OpCommandPromote extends OpClanSubCommand {
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
 					if (clan.promoteMember(target.getId())) {
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have promoted %s.", target.getName()));
+						sender.sendMessage(new TextComponentTranslation("You have promoted %s.", target.getName()).setStyle(TextStyles.GREEN));
 						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been promoted in %s by %s.", clan.getClanName(), sender.getName()));
+							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been promoted in %s by %s.", clan.getClanName(), sender.getName()).setStyle(TextStyles.GREEN));
 					} else
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s could not be promoted.", target.getName()));
+						sender.sendMessage(new TextComponentTranslation("The player %s could not be promoted.", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), clan.getClanName()));
+					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), clan.getClanName()));
+				sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", playerName));
+			sender.sendMessage(new TextComponentTranslation("The player %s was not found.", playerName).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

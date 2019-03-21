@@ -13,7 +13,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,15 +47,15 @@ public class CommandJoinRaid extends RaidSubCommand {
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(sender)) {
 						raid.addMember(sender);
-						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You successfully joined the raid!"));
+						sender.sendMessage(new TextComponentString("You successfully joined the raid!").setStyle(TextStyles.GREEN));
 					} else
-						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot raid your own clan!"));
+						sender.sendMessage(new TextComponentString("You cannot raid your own clan!").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target raid cannot hold any more people!"));
+					sender.sendMessage(new TextComponentString("Target raid cannot hold any more people!").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target raid does not exist!"));
+				sender.sendMessage(new TextComponentString("Target raid does not exist!").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are already in a raid!"));
+			sender.sendMessage(new TextComponentString("You are already in a raid!").setStyle(TextStyles.RED));
 	}
 
 	@Override

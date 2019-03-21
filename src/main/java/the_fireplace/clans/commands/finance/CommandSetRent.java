@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,10 +45,10 @@ public class CommandSetRent extends ClanSubCommand {
 				maxRent *= selectedClan.getClaimCount();
 			if(maxRent <= 0 || newRent <= maxRent) {
 				selectedClan.setRent(newRent);
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan rent set!"));
+				sender.sendMessage(new TextComponentString("Clan rent set!").setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Cannot set rent above your maximum("+maxRent+' '+Clans.getPaymentHandler().getCurrencyName(maxRent)+")!"));
+				sender.sendMessage(new TextComponentString("Cannot set rent above your maximum("+maxRent+' '+Clans.getPaymentHandler().getCurrencyName(maxRent)+")!").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Cannot set negative rent!"));
+			sender.sendMessage(new TextComponentString("Cannot set negative rent!").setStyle(TextStyles.RED));
 	}
 }

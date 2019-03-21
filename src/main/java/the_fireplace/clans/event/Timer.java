@@ -3,6 +3,7 @@ package the_fireplace.clans.event;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.Mod;
@@ -16,10 +17,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
-import the_fireplace.clans.util.Pair;
-import the_fireplace.clans.util.PlayerClanCapability;
+import the_fireplace.clans.util.*;
 
 import java.util.*;
 
@@ -126,30 +124,33 @@ public class Timer {
 						chunkClan = null;
 					}
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
-						event.player.getCapability(Clans.CLAIMED_LAND, null).setClan(chunkClan);
-						String color = MinecraftColors.GREEN;
+						CapHelper.getClaimedLandCapability(event.player).setClan(chunkClan);
+						Style color = TextStyles.GREEN;
 						if ((!playerClans.isEmpty() && !playerClans.contains(ClanCache.getClan(chunkClan))) || (playerClans.isEmpty() && chunkClan != null))
-							color = MinecraftColors.YELLOW;
+							color = TextStyles.YELLOW;
 						if (chunkClan == null)
-							color = MinecraftColors.DARK_GREEN;
+							color = TextStyles.DARK_GREEN;
 						String endMsg;
 						if (chunkClan == null) {
 							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY))
 								endMsg = "Underground.";
-							else
+							else {
 								endMsg = "Wilderness.";
+								if(Clans.cfg.protectWilderness)
+									color = TextStyles.YELLOW;
+							}
 						} else
 							endMsg = ClanCache.getClan(chunkClan).getClanName() + "'s territory.";
 
-						event.player.sendMessage(new TextComponentString(color + "You are now entering " + endMsg));
+						event.player.sendMessage(new TextComponentString("You are now entering " + endMsg).setStyle(color));
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 15 == 0) {
 						int curY = (int) Math.round(event.player.posY);
 						int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
 						int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
 						if (curY >= yBound && prevY < yBound)
-							event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Wilderness."));
+							event.player.sendMessage(new TextComponentString("You are now entering Wilderness.").setStyle(TextStyles.YELLOW));
 						else if (prevY >= yBound && curY < yBound)
-							event.player.sendMessage(new TextComponentString(MinecraftColors.DARK_GREEN + "You are now entering Underground."));
+							event.player.sendMessage(new TextComponentString("You are now entering Underground.").setStyle(TextStyles.DARK_GREEN));
 						prevYs.put(event.player, curY);
 					}
 				}

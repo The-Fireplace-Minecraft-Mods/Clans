@@ -13,14 +13,14 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -46,7 +46,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 		Clan opClan = ClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
-			UUID claimFaction = Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan();
+			UUID claimFaction = CapHelper.getClaimedLandCapability(c).getClan();
 			if(claimFaction != null) {
 				Clan targetClan = ClanCache.getClan(claimFaction);
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
@@ -55,21 +55,21 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 							//Unset clan home if it is in the chunk
 							OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
 							ChunkUtils.clearChunkOwner(c);
-							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+							sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
 						} else {//We are forcing connected claims and there is a claim connected
 							//Prevent creation of disconnected claims
 							abandonClaimWithAdjacencyCheck(sender, c, targetClan);
 						}
 					} else {
 						ChunkUtils.clearChunkOwner(c);
-						sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+						sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
 					}
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land does not belong to opclan. To force "+targetClan.getClanName()+" to abandon it, use /opclan abandonclaim force"));
+					sender.sendMessage(new TextComponentString("This land does not belong to opclan. To force "+targetClan.getClanName()+" to abandon it, use /opclan abandonclaim force").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "This land is not claimed."));
+				sender.sendMessage(new TextComponentString("This land is not claimed.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
+			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
 	}
 
 	@Override
@@ -78,7 +78,8 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 	}
 
 	public static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
-		if (targetClan.hasHome()
+		if (targetClan.getHome() != null
+				&& targetClan.hasHome()
 				&& sender.dimension == targetClan.getHomeDim()
 				&& targetClan.getHome().getX() >= c.getPos().getXStart()
 				&& targetClan.getHome().getX() <= c.getPos().getXEnd()
@@ -102,8 +103,8 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 			//Unset clan home if it is in the chunk
 			OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
 			ChunkUtils.clearChunkOwner(c);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Claim abandoned!"));
+			sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot abandon this chunk of land because doing so would create at least one disconnected claim."));
+			sender.sendMessage(new TextComponentString("You cannot abandon this chunk of land because doing so would create at least one disconnected claim.").setStyle(TextStyles.RED));
 	}
 }

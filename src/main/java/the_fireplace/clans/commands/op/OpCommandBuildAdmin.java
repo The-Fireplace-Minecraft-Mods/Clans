@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,8 +34,8 @@ public class OpCommandBuildAdmin extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(ClanCache.toggleClaimAdmin(sender))
-			sender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You are now in Build Admin mode."));
+			sender.sendMessage(new TextComponentString("You are now in Build Admin mode.").setStyle(TextStyles.YELLOW));
 		else
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You are no longer in Build Admin mode."));
+			sender.sendMessage(new TextComponentString("You are no longer in Build Admin mode.").setStyle(TextStyles.GREEN));
 	}
 }

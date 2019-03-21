@@ -12,7 +12,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,15 +48,15 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 				if(amount < 0)
 					amount = 0;
 			} catch(NumberFormatException e) {
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Improperly formatted amount."));
+				sender.sendMessage(new TextComponentString("Improperly formatted amount.").setStyle(TextStyles.RED));
 				return;
 			}
 			if(Clans.getPaymentHandler().addAmount(amount, c.getClanId()))
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()));
+				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
 			else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Clan account not found."));
+				sender.sendMessage(new TextComponentString("Internal error: Clan account not found.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	@Override

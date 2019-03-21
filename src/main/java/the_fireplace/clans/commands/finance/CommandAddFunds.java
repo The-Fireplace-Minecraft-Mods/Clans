@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,12 +42,12 @@ public class CommandAddFunds extends ClanSubCommand {
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 			if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId()))
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()));
+				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Clan account not found."));
+				sender.sendMessage(new TextComponentString("Internal error: Clan account not found.").setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You do not have enough funds to do this."));
+			sender.sendMessage(new TextComponentString("You do not have enough funds to do this.").setStyle(TextStyles.RED));
 	}
 }

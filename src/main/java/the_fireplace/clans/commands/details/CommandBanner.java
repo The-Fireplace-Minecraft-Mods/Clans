@@ -11,7 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,7 +45,7 @@ public class CommandBanner extends ClanSubCommand {
 		try{
 			banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
 		} catch(NBTException e){
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Your clan does not have a banner."));
+			sender.sendMessage(new TextComponentString("Your clan does not have a banner.").setStyle(TextStyles.RED));
 			return;
 		}
 		if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
@@ -55,6 +55,6 @@ public class CommandBanner extends ClanSubCommand {
 			sender.getHeldItemOffhand().getOrCreateSubCompound("BlockEntityTag").setTag("Patterns", banner.getTagList("Patterns", 10));
 			sender.getHeldItemOffhand().setItemDamage(banner.getShort("ClanBaseColor"));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not holding a banner!"));
+			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
 }

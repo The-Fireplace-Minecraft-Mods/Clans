@@ -6,17 +6,18 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.CapHelper;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -78,10 +79,10 @@ public abstract class ClanSubCommand extends CommandBase {
 					playerClan = ClanCache.getClan(args[0]);
 					opSelectedClan = playerClan;
 				} else
-					playerClan = ClanCache.getClan(((EntityPlayerMP) sender).getCapability(Clans.CLAN_DATA_CAP, null).getDefaultClan());
+					playerClan = ClanCache.getClan(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
 				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 				if(playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
+					sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
 					return;
 				}
 				this.selectedClan = playerClan;

@@ -14,7 +14,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,7 +42,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Clan target = ClanCache.getClan(args[0]);
 		if(target == null)
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED+"Target clan not found."));
+			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 		else {
 			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 				if(!target.isShielded()) {
@@ -53,17 +53,17 @@ public class CommandCreateRaid extends RaidSubCommand {
 								raidCost *= target.getClaimCount();
 							if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
 								new Raid(sender, target, raidCost);
-								sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Raiding party created!"));
+								sender.sendMessage(new TextComponentString("Raiding party created!").setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds to form raiding party against " + target.getClanName() + ". It costs " + raidCost + ' ' + Clans.getPaymentHandler().getCurrencyName(raidCost)));
+								sender.sendMessage(new TextComponentString("Insufficient funds to form raiding party against " + target.getClanName() + ". It costs " + raidCost + ' ' + Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
 						} else
-							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan already has a party preparing to raid it or currently raiding it!"));
+							sender.sendMessage(new TextComponentString("Target clan already has a party preparing to raid it or currently raiding it!").setStyle(TextStyles.RED));
 					} else
-						sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan has no online members!"));
+						sender.sendMessage(new TextComponentString("Target clan has no online members!").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Target clan is currently shielded! Try again in "+(Math.round(100f*target.getShield()*60)/100f)+" hours."));
+					sender.sendMessage(new TextComponentString("Target clan is currently shielded! Try again in "+(Math.round(100f*target.getShield()*60)/100f)+" hours.").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are already in a raid!"));
+				sender.sendMessage(new TextComponentString("You are already in a raid!").setStyle(TextStyles.RED));
 		}
 	}
 

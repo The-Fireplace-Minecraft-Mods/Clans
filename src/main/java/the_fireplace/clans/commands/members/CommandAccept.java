@@ -10,7 +10,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,8 +43,8 @@ public class CommandAccept extends ClanSubCommand {
 		Clan acceptClan = ClanCache.getInvite(sender.getUniqueID());
 		if(acceptClan != null){
 			acceptClan.addMember(sender.getUniqueID());
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You joined %s.", acceptClan.getClanName()));
+			sender.sendMessage(new TextComponentTranslation("You joined %s.", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You don't have any pending invites."));
+			sender.sendMessage(new TextComponentString("You don't have any pending invites.").setStyle(TextStyles.RED));
 	}
 }

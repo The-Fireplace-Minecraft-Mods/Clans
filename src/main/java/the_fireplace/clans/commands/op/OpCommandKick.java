@@ -15,7 +15,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandKick;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,13 +54,13 @@ public class OpCommandKick extends OpClanSubCommand {
 					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {//TODO verify
 						CommandKick.removeMember(server, sender, selectedClan, target);
 					} else
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
+						sender.sendMessage(new TextComponentTranslation("The player %s is not in your clan.", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in your clan.", target.getName()));
+					sender.sendMessage(new TextComponentTranslation("The player %s is not in your clan.", target.getName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", args[0]));
+				sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

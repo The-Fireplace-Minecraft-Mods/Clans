@@ -10,7 +10,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,24 +46,24 @@ public class CommandClaim extends ClanSubCommand {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId()))
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Your clan has already claimed this land."));
+					sender.sendMessage(new TextComponentString("Your clan has already claimed this land.").setStyle(TextStyles.RED));
 				else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land."));
+					sender.sendMessage(new TextComponentString("Another clan has already claimed this land.").setStyle(TextStyles.RED));
 			} else {
 				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
 						if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 							ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 							selectedClan.addClaimCount();
-							sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+							sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.RED));
 						} else
-							sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Insufficient funds in clan account to claim chunk. It costs " + Clans.cfg.claimChunkCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)));
+							sender.sendMessage(new TextComponentString("Insufficient funds in clan account to claim chunk. It costs " + Clans.cfg.claimChunkCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
 					} else
-						sender.sendMessage(new TextComponentString(MinecraftColors.RED + selectedClan.getClanName() + " is already at or above its max claim count of "+selectedClan.getMaxClaimCount()));
+						sender.sendMessage(new TextComponentString(selectedClan.getClanName() + " is already at or above its max claim count of "+selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot claim this chunk of land because it is not next to another of "+selectedClan.getClanName()+"'s claims."));
+					sender.sendMessage(new TextComponentString("You cannot claim this chunk of land because it is not next to another of "+selectedClan.getClanName()+"'s claims.").setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
+			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
 	}
 }

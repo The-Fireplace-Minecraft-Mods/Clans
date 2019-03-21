@@ -14,7 +14,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,7 +53,7 @@ public class CommandKick extends ClanSubCommand {
 
 		if(target != null) {
 			if(target.getId().equals(sender.getUniqueID())) {
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "To leave a clan, use /clan leave."));
+				sender.sendMessage(new TextComponentTranslation("To leave a clan, use /clan leave.").setStyle(TextStyles.RED));
 				return;
 			}
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
@@ -65,13 +65,13 @@ public class CommandKick extends ClanSubCommand {
 					} else if (targetRank == EnumRank.MEMBER) {
 						removeMember(server, sender, selectedClan, target);
 					} else
-						sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "You do not have the authority to kick out %s.", target.getName()));
+						sender.sendMessage(new TextComponentTranslation("You do not have the authority to kick out %s.", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
+					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is not in %s.", target.getName(), selectedClan.getClanName()));
+				sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s was not found.", args[0]));
+			sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]));
 	}
 
 	@Override
@@ -87,10 +87,10 @@ public class CommandKick extends ClanSubCommand {
 
 	public static void removeMember(MinecraftServer server, EntityPlayerMP sender, Clan playerClan, GameProfile target) throws CommandException {
 		if(playerClan.removeMember(target.getId())) {
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have kicked %s out of %s.", target.getName(), playerClan.getClanName()));
+			sender.sendMessage(new TextComponentTranslation("You have kicked %s out of %s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.GREEN));
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-				getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()));
+				getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 		} else
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName()));
+			sender.sendMessage(new TextComponentTranslation("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

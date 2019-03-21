@@ -10,7 +10,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,10 +46,10 @@ public class CommandSetDefault extends ClanSubCommand {
 				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null))
 					sender.getCapability(Clans.CLAN_DATA_CAP, null).setDefaultClan(def.getClanId());
 				else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Player cannot set default clan."));
+					sender.sendMessage(new TextComponentString("Internal error: Player cannot set default clan.").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You are not in that clan."));
+				sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "The clan you have specified does not exist."));
+			sender.sendMessage(new TextComponentString("The clan you have specified does not exist.").setStyle(TextStyles.RED));
 	}
 }

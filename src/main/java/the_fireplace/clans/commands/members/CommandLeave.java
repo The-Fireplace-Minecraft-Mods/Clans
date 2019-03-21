@@ -7,12 +7,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.CapHelper;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,7 +47,7 @@ public class CommandLeave extends ClanSubCommand {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 		if(senderRank == EnumRank.LEADER) {
 			if(selectedClan.getMembers().size() == 1){
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "You are the last member of your clan. To disband it, use /clan disband."));
+				sender.sendMessage(new TextComponentTranslation("You are the last member of your clan. To disband it, use /clan disband.").setStyle(TextStyles.RED));
 				return;
 			}
 			List<UUID> leaders = Lists.newArrayList();
@@ -55,15 +55,15 @@ public class CommandLeave extends ClanSubCommand {
 				if(selectedClan.getMembers().get(member).equals(EnumRank.LEADER))
 					leaders.add(member);
 			if(leaders.size() <= 1) {
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot leave the clan without a leader. Promote someone else to be a leader before leaving."));
+				sender.sendMessage(new TextComponentString("You cannot leave the clan without a leader. Promote someone else to be a leader before leaving.").setStyle(TextStyles.RED));
 				return;
 			}
 		}
 		if(selectedClan.removeMember(sender.getUniqueID())) {
 			updateDefaultClan(sender, selectedClan);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have left the clan."));
+			sender.sendMessage(new TextComponentTranslation("You have left %s.", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else //Internal error because this should be unreachable
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "Internal Error: You were unable to be removed from your clan."));
+			sender.sendMessage(new TextComponentTranslation("Internal Error: You were unable to be removed from %s.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	/**
@@ -74,11 +74,11 @@ public class CommandLeave extends ClanSubCommand {
 	 * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
 	 */
 	public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
-		UUID oldDef = player.getCapability(Clans.CLAN_DATA_CAP, null).getDefaultClan();
+		UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
 		if(removeClan == null || removeClan.getClanId().equals(oldDef))
 			if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())
-				player.getCapability(Clans.CLAN_DATA_CAP, null).setDefaultClan(null);
+				CapHelper.getPlayerClanCapability(player).setDefaultClan(null);
 			else
-				player.getCapability(Clans.CLAN_DATA_CAP, null).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
+				CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
 	}
 }

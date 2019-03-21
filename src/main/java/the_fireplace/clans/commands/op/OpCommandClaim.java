@@ -13,7 +13,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,9 +49,9 @@ public class OpCommandClaim extends OpClanSubCommand {
 			Clan targetClan = claimFaction != null ? ClanCache.getClan(claimFaction) : null;
 			if(claimFaction != null && targetClan != null && ((args.length != 1 || !args[0].toLowerCase().equals("force")) || claimFaction.equals(opClan.getClanId()))) {
 				if(claimFaction.equals(opClan.getClanId()))
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Opclan has already claimed this land."));
+					sender.sendMessage(new TextComponentString("Opclan has already claimed this land.").setStyle(TextStyles.RED));
 				else
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Another clan has already claimed this land. To take this land from "+targetClan.getClanName()+", use /opclan claim force"));
+					sender.sendMessage(new TextComponentString("Another clan has already claimed this land. To take this land from "+targetClan.getClanName()+", use /opclan claim force").setStyle(TextStyles.RED));
 			} else {
 				if(targetClan != null) {
 					targetClan.subClaimCount();
@@ -59,10 +59,10 @@ public class OpCommandClaim extends OpClanSubCommand {
 				}
 				ChunkUtils.setChunkOwner(c, opClan.getClanId());
 				opClan.addClaimCount();
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Land claimed!"));
+				sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 			}
 		} else {
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: This chunk doesn't appear to be claimable."));
+			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
 		}
 	}
 

@@ -11,7 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.raiding.*;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -77,10 +77,10 @@ public class CommandRaid extends CommandBase {
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/raid commands:\n" +
+                StringBuilder commandsHelp = new StringBuilder("/raid commands:\n" +
                         "help");
                 CommandClan.buildHelpCommand(sender, commandsHelp, commands);
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()));
+                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
         }
         throw new WrongUsageException("/raid <command> [parameters]");

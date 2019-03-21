@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 
 import static the_fireplace.clans.Clans.MODID;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "Duplicates"})
 @Mod.EventBusSubscriber(modid = MODID)
 @Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*")
 public final class Clans {
@@ -175,6 +175,8 @@ public final class Clans {
         @Config.Comment("Max claims per player per clan. Set to 0 for infinite.")
         @Config.RangeInt(min=0)
         public static int maxClanPlayerClaims = 0;
+        @Config.Comment("Show player's default clan in chat.")
+        public static boolean showDefaultClanInChat = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;

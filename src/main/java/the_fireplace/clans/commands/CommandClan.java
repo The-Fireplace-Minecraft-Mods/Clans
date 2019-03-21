@@ -23,7 +23,7 @@ import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
 import the_fireplace.clans.payment.PaymentHandlerDummy;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -170,10 +170,10 @@ public class CommandClan extends CommandBase {
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder(MinecraftColors.YELLOW+"/clan commands:\n" +
+                StringBuilder commandsHelp = new StringBuilder("/clan commands:\n" +
                         "help");
                 buildHelpCommand(sender, commandsHelp, commands);
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()));
+                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
         }
         //Payment commands

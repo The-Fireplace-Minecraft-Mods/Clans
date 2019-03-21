@@ -13,7 +13,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,11 +50,11 @@ public class CommandInvite extends ClanSubCommand {
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);
 		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
 			if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan))
-				target.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", selectedClan.getClanName()));
+				target.sendMessage(new TextComponentTranslation("You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else
-				sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName()));
+				sender.sendMessage(new TextComponentTranslation("The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation(MinecraftColors.RED + "The player %s is already in a clan.", target.getName()));
+			sender.sendMessage(new TextComponentTranslation("The player %s is already in a clan.", target.getName()).setStyle(TextStyles.RED));
 	}
 
 	@Override

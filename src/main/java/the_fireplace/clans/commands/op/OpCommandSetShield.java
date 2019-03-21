@@ -10,7 +10,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,13 +46,13 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				if(duration < 0)
 					duration = 0;
 			} catch(NumberFormatException e) {
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Improperly formatted shield duration."));
+				sender.sendMessage(new TextComponentString("Improperly formatted shield duration.").setStyle(TextStyles.RED));
 				return;
 			}
 			c.setShield(duration);
-			sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan shield set!"));
+			sender.sendMessage(new TextComponentString("Clan shield set!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	@Override

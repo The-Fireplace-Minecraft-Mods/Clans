@@ -8,7 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,6 +39,6 @@ public class CommandBalance extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
-		sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "Clan balance: " + balance + ' ' + Clans.getPaymentHandler().getCurrencyName(balance)));
+		sender.sendMessage(new TextComponentString("Clan balance: " + balance + ' ' + Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
 	}
 }

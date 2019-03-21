@@ -15,7 +15,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandLeave;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,7 +46,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Clan not found."));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	public static void disbandClan(MinecraftServer server, EntityPlayerMP sender, Clan c) {
@@ -74,15 +74,15 @@ public class OpCommandDisband extends OpClanSubCommand {
 					if (player != null) {
 						CommandLeave.updateDefaultClan(player, c);
 						if (!player.getUniqueID().equals(sender.getUniqueID()))
-							player.sendMessage(new TextComponentTranslation(MinecraftColors.GREEN + "Your clan has been disbanded by %s.", sender.getName()));
+							player.sendMessage(new TextComponentTranslation("%s has been disbanded by %s.", c.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 					}
 				}
 				Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(c.getClanId()), c.getClanId());
-				sender.sendMessage(new TextComponentString(MinecraftColors.GREEN + "You have disbanded " + c.getClanName()));
+				sender.sendMessage(new TextComponentString("You have disbanded " + c.getClanName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Unable to disband clan."));
+				sender.sendMessage(new TextComponentString("Internal error: Unable to disband clan.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot disband the Opclan."));
+			sender.sendMessage(new TextComponentString("You cannot disband the Opclan.").setStyle(TextStyles.RED));
 	}
 
 	@Override

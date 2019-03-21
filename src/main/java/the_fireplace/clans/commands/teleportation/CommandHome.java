@@ -12,8 +12,9 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.event.Timer;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.Pair;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,34 +47,29 @@ public class CommandHome extends ClanSubCommand {
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
 
-		if(sender.hasCapability(Clans.CLAN_DATA_CAP, null)) {
-			//noinspection ConstantConditions
-			int cooldown = sender.getCapability(Clans.CLAN_DATA_CAP, null).getCooldown();
-			if(cooldown <= 0) {
-				if (!selectedClan.hasHome() || home == null)
-					sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Error: Your clan does not have a set home. The clan leader should use /clan sethome to set one."));
-				else {
-					if(Clans.cfg.clanHomeWarmupTime > 0)
-						Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
-					else
-						teleportHome(sender, selectedClan, home, playerDim);
-				}
-			} else
-				sender.sendMessage(new TextComponentString(MinecraftColors.RED + "You cannot use this command until your cooldown runs out in "+cooldown+" seconds."));
+		int cooldown = CapHelper.getPlayerClanCapability(sender).getCooldown();
+		if(cooldown <= 0) {
+			if (!selectedClan.hasHome() || home == null)
+				sender.sendMessage(new TextComponentString("Error: Your clan does not have a set home. The clan leader should use /clan sethome to set one.").setStyle(TextStyles.RED));
+			else {
+				if(Clans.cfg.clanHomeWarmupTime > 0)
+					Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
+				else
+					teleportHome(sender, selectedClan, home, playerDim);
+			}
 		} else
-			sender.sendMessage(new TextComponentString(MinecraftColors.RED + "Internal error: Player does not have a cooldown timer."));
+			sender.sendMessage(new TextComponentString("You cannot use this command until your cooldown runs out in "+cooldown+" seconds.").setStyle(TextStyles.RED));
 	}
 
 	public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
 		if (playerDim == playerClan.getHomeDim() || player.changeDimension(playerClan.getHomeDim()) != null) {
 			if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
-				player.sendMessage(new TextComponentString(MinecraftColors.RED + "Error teleporting to clan home. Ensure that it is not blocked."));
+				player.sendMessage(new TextComponentString("Error teleporting to clan home. Ensure that it is not blocked.").setStyle(TextStyles.RED));
 				if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
-					player.sendMessage(new TextComponentString(MinecraftColors.RED + "Error teleporting you back to the dimension you were in."));
+					player.sendMessage(new TextComponentString("Error teleporting you back to the dimension you were in.").setStyle(TextStyles.RED));
 			} else
-				//noinspection ConstantConditions
-				player.getCapability(Clans.CLAN_DATA_CAP, null).setCooldown(Clans.cfg.clanHomeCooldownTime);
+				CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
 		} else
-			player.sendMessage(new TextComponentString(MinecraftColors.RED + "Error teleporting to clan home dimension."));
+			player.sendMessage(new TextComponentString("Error teleporting to clan home dimension.").setStyle(TextStyles.RED));
 	}
 }
