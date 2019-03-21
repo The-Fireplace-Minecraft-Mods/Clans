@@ -46,7 +46,7 @@ public class CommandClaim extends ClanSubCommand {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId()))
-					sender.sendMessage(new TextComponentString("Your clan has already claimed this land.").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentString("Your clan has already claimed this land.").setStyle(TextStyles.YELLOW));
 				else
 					sender.sendMessage(new TextComponentString("Another clan has already claimed this land.").setStyle(TextStyles.RED));
 			} else {
@@ -55,7 +55,7 @@ public class CommandClaim extends ClanSubCommand {
 						if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 							ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 							selectedClan.addClaimCount();
-							sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.RED));
+							sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 						} else
 							sender.sendMessage(new TextComponentString("Insufficient funds in clan account to claim chunk. It costs " + Clans.cfg.claimChunkCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
 					} else
