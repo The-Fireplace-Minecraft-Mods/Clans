@@ -40,7 +40,7 @@ public class CommandSetDefault extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan def = ClanCache.getClan(args[0]);
+		Clan def = ClanCache.getClanByName(args[0]);
 		if(def != null) {
 			if(def.getMembers().containsKey(sender.getUniqueID())) {
 				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null))

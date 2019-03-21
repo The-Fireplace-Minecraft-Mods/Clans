@@ -37,7 +37,7 @@ public class RaidEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					if (RaidingParties.hasActiveRaid(chunkClan)) {
 						//Double check that nothing gets dropped during a raid, to avoid block duping.
@@ -70,7 +70,7 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote) {
-			Clan chunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk()));
+			Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
 			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
 				if (data != null)

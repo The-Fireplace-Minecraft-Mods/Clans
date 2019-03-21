@@ -38,7 +38,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanCache.getClan(clan);
+		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			long duration;
 			try {

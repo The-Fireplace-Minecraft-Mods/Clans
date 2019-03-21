@@ -40,7 +40,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan target = ClanCache.getClan(args[0]);
+		Clan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
 			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 		else {

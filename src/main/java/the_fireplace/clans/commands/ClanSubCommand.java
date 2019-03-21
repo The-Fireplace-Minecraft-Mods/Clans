@@ -76,10 +76,10 @@ public abstract class ClanSubCommand extends CommandBase {
 			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
 				Clan playerClan;
 				if(args.length == getMaxArgs()+1) {
-					playerClan = ClanCache.getClan(args[0]);
+					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else
-					playerClan = ClanCache.getClan(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
+					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
 				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 				if(playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
 					sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));

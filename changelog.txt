@@ -5,3 +5,4 @@ Fix long lines of chat losing color when going to the second line
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 Improve a few messages
 Add the default clan before the player's name in chat
+Add a new command: /clan playerinfo - shows what clans a player is in and what ranks they hold in the clan.

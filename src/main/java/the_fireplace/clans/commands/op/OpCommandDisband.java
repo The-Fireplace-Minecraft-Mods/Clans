@@ -42,7 +42,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanCache.getClan(clan);
+		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
@@ -88,7 +88,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> removable = Lists.newArrayList(ClanCache.getClanNames().keySet());
-		removable.remove(Objects.requireNonNull(ClanCache.getClan(UUID.fromString("00000000-0000-0000-0000-000000000000"))).getClanName());
+		removable.remove(Objects.requireNonNull(ClanCache.getClanById(UUID.fromString("00000000-0000-0000-0000-000000000000"))).getClanName());
 		return args.length == 1 ? removable : Collections.emptyList();
 	}
 }

@@ -26,7 +26,7 @@ public final class RaidingParties {
 	}
 
 	public static Raid getRaid(String name){
-		return raids.get(ClanCache.getClan(name));
+		return raids.get(ClanCache.getClanByName(name));
 	}
 
 	public static Raid getRaid(EntityPlayerMP player){

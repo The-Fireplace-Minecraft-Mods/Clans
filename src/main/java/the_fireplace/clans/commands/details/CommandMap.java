@@ -60,7 +60,7 @@ public class CommandMap extends ClanSubCommand {
 				if(chunkOwner == null)
 					row.append('#');
 				else {
-					if(ClanCache.getClan(chunkOwner) == null) {
+					if(ClanCache.getClanById(chunkOwner) == null) {
 						ChunkUtils.clearChunkOwner(c);
 						row.append('#');
 					} else {
@@ -74,7 +74,7 @@ public class CommandMap extends ClanSubCommand {
 		}
 		sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 		for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-			Clan c = ClanCache.getClan(symbol.getKey());
+			Clan c = ClanCache.getClanById(symbol.getKey());
 			sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")).setStyle(TextStyles.GREEN));
 		}
 	}

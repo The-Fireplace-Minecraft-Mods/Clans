@@ -48,7 +48,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = CapHelper.getClaimedLandCapability(c).getClan();
 			if(claimFaction != null) {
-				Clan targetClan = ClanCache.getClan(claimFaction);
+				Clan targetClan = ClanCache.getClanById(claimFaction);
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
 					if(targetClan != null) {
 						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {

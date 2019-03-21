@@ -23,12 +23,12 @@ public final class ClanCache {
 	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
 
 	@Nullable
-	public static Clan getClan(@Nullable UUID clanID){
+	public static Clan getClanById(@Nullable UUID clanID){
 		return ClanDatabase.getClan(clanID);
 	}
 
 	@Nullable
-	public static Clan getClan(String clanName){
+	public static Clan getClanByName(String clanName){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);

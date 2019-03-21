@@ -44,7 +44,7 @@ public class LandProtectionEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					EntityPlayer breakingPlayer = event.getPlayer();
 					if (breakingPlayer instanceof EntityPlayerMP) {
@@ -84,7 +84,7 @@ public class LandProtectionEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					EntityPlayer breakingPlayer = event.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.getEntity() : null;
 					if (breakingPlayer != null) {
@@ -110,7 +110,7 @@ public class LandProtectionEvents {
 			EntityPlayer placingPlayer = event.getPlayer();
 			if (placingPlayer instanceof EntityPlayerMP) {
 				if (chunkOwner != null) {
-					Clan chunkClan = ClanCache.getClan(chunkOwner);
+					Clan chunkClan = ClanCache.getClanById(chunkOwner);
 					if (chunkClan != null) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
 						if (!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) {
@@ -171,7 +171,7 @@ public class LandProtectionEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					EntityPlayer interactingPlayer = event.getEntityPlayer();
 					if (interactingPlayer instanceof EntityPlayerMP) {
@@ -214,7 +214,7 @@ public class LandProtectionEvents {
 			for (BlockPos pos : event.getAffectedBlocks()) {
 				Chunk c = event.getWorld().getChunk(pos);
 				UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState)) {
@@ -233,7 +233,7 @@ public class LandProtectionEvents {
 				if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 					Chunk c = event.getWorld().getChunk(entity.getPosition());
 					UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-					Clan chunkClan = ClanCache.getClan(chunkOwner);
+					Clan chunkClan = ClanCache.getClanById(chunkOwner);
 					ArrayList<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
 					if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
 						removeEntities.add(entity);
@@ -250,7 +250,7 @@ public class LandProtectionEvents {
 		Entity entity = event.getEntityLiving();
 		if(!entity.getEntityWorld().isRemote) {
             Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
-            Clan chunkClan = ClanCache.getClan(ChunkUtils.getChunkOwner(c));
+            Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
             Entity source = event.getSource().getTrueSource();
             if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 				ArrayList<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());

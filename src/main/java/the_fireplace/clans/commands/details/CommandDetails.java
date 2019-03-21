@@ -52,7 +52,7 @@ public class CommandDetails extends ClanSubCommand {
 				showDetails(server, sender, selectedClan);
 			}
 		} else {
-			Clan targetClan = ClanCache.getClan(args[0]);
+			Clan targetClan = ClanCache.getClanByName(args[0]);
 			if(targetClan == null) {
 				sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 			} else {

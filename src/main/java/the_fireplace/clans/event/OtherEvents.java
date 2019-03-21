@@ -23,7 +23,7 @@ public class OtherEvents {
         if(!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
             PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.player);
             assert c != null;
-            if ((c.getDefaultClan() != null && ClanCache.getClan(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.player.getUniqueID()).isEmpty()))
+            if ((c.getDefaultClan() != null && ClanCache.getClanById(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.player.getUniqueID()).isEmpty()))
                 CommandLeave.updateDefaultClan((EntityPlayerMP)event.player, null);
         }
     }
@@ -33,7 +33,7 @@ public class OtherEvents {
         if(Clans.cfg.showDefaultClanInChat && event.getPlayer() != null) {
             PlayerClanCapability playerClanCap = CapHelper.getPlayerClanCapability(event.getPlayer());
             if(playerClanCap != null && playerClanCap.getDefaultClan() != null) {
-                Clan playerDefaultClan = ClanCache.getClan(playerClanCap.getDefaultClan());
+                Clan playerDefaultClan = ClanCache.getClanById(playerClanCap.getDefaultClan());
                 if(playerDefaultClan != null)
                     event.setComponent(new TextComponentString('<'+playerDefaultClan.getClanName()+"> ").setStyle(TextStyles.GREEN).appendSibling(event.getComponent().setStyle(TextStyles.WHITE)));
                 else

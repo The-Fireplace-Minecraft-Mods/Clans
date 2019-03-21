@@ -46,7 +46,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
-			Clan targetClan = claimFaction != null ? ClanCache.getClan(claimFaction) : null;
+			Clan targetClan = claimFaction != null ? ClanCache.getClanById(claimFaction) : null;
 			if(claimFaction != null && targetClan != null && ((args.length != 1 || !args[0].toLowerCase().equals("force")) || claimFaction.equals(opClan.getClanId()))) {
 				if(claimFaction.equals(opClan.getClanId()))
 					sender.sendMessage(new TextComponentString("Opclan has already claimed this land.").setStyle(TextStyles.RED));

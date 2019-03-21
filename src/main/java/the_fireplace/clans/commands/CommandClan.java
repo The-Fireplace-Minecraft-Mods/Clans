@@ -55,6 +55,7 @@ public class CommandClan extends CommandBase {
         put("details", new CommandDetails());
         put("setdescription", new CommandSetDescription());
         put("setdefault", new CommandSetDefault());
+        put("playerinfo", new CommandPlayerInfo());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -158,6 +159,10 @@ public class CommandClan extends CommandBase {
                 return;
             case "setdefault":
                 commands.get("setdefault").execute(server, sender, args);
+                return;
+            case "playerinfo":
+            case "pi":
+                commands.get("playerinfo").execute(server, sender, args);
                 return;
             //Teleportation related
             case "home":

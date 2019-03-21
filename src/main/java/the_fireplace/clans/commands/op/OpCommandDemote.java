@@ -45,7 +45,7 @@ public class OpCommandDemote extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		String clan = args[0];
-		Clan c = ClanCache.getClan(clan);
+		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			demoteClanMember(server, sender, args[1], c);
 		} else
@@ -77,7 +77,7 @@ public class OpCommandDemote extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
 			return Lists.newArrayList();
-		Clan target = ClanCache.getClan(args[0]);
+		Clan target = ClanCache.getClanByName(args[0]);
 		if(target != null && args.length == 2) {
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (UUID player : target.getMembers().keySet()) {
