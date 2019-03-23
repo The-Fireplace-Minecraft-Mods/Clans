@@ -59,7 +59,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 				}
 				ChunkUtils.setChunkOwner(c, opClan.getClanId());
-				ClanChunkCache.addChunk(opClan.getClanId(), c.x, c.z, c.getWorld().provider.getDimension());
+				ClanChunkCache.addChunk(opClan, c.x, c.z, c.getWorld().provider.getDimension());
 				opClan.addClaimCount();
 				sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 			}

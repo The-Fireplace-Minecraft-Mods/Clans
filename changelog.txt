@@ -8,3 +8,4 @@ Add the default clan before the player's name in chat
 Add a new command: /clan playerinfo - shows what clans a player is in and what ranks they hold in the clan.
 Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
 Fixed a minor performance issue that occurred after the server has been running for over 60 seconds
+Fix some errors in the console when autocompleting commands

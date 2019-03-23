@@ -18,13 +18,11 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.clan.ClaimedLandCapability;
+import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
@@ -66,6 +64,9 @@ public final class Clans {
     }
 
     private IDynmapCompat dynmapCompat;
+    public static IDynmapCompat getDynmapCompat(){
+        return instance.dynmapCompat;
+    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
@@ -100,6 +101,11 @@ public final class Clans {
         manager.registerCommand(new CommandOpClan());
         manager.registerCommand(new CommandRaid());
         dynmapCompat.serverStart();
+    }
+
+    @Mod.EventHandler
+    public void onServerStop(FMLServerStoppingEvent event) {
+        ClanChunkCache.save();
     }
 
     @SubscribeEvent

@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import the_fireplace.clans.Clans;
+import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.util.ChunkPosition;
 
 import java.io.*;
@@ -34,19 +36,20 @@ public class ClanChunkCache {
         return claimClans;
     }
 
-    public static void addChunk(UUID clan, int x, int z, int dim) {
+    public static void addChunk(Clan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan, Sets.newHashSet());
-        claimedChunks.get(clan).add(new ChunkPosition(x, z, dim));
+        claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
+        claimedChunks.get(clan.getClanId()).add(new ChunkPosition(x, z, dim));
+        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription()));
         isChanged = true;
     }
 
-    public static void delChunk(UUID clan, int x, int z, int dim) {
+    public static void delChunk(Clan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan, Sets.newHashSet());
-        if(claimedChunks.get(clan).remove(new ChunkPosition(x, z, dim)))
+        claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
+        if(claimedChunks.get(clan.getClanId()).remove(new ChunkPosition(x, z, dim)))
             isChanged = true;
     }
 
@@ -63,14 +66,16 @@ public class ClanChunkCache {
         JsonParser jsonParser = new JsonParser();
         try {
             Object obj = jsonParser.parse(new FileReader(file));
-            JsonObject jsonObject = (JsonObject) obj;
-            JsonArray keyArray = jsonObject.get("claimedChunksKeys").getAsJsonArray();
-            JsonArray valueArray = jsonObject.get("claimedChunksValues").getAsJsonArray();
-            for(int i=0;i<keyArray.size();i++) {
-                Set<ChunkPosition> positions = Sets.newHashSet();
-                for(JsonElement element : valueArray.get(i).getAsJsonArray())
-                    positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
-                claimedChunks.put(UUID.fromString(keyArray.get(i).getAsString()), positions);
+            if(obj instanceof JsonObject) {
+                JsonObject jsonObject = (JsonObject) obj;
+                JsonArray keyArray = jsonObject.get("claimedChunksKeys").getAsJsonArray();
+                JsonArray valueArray = jsonObject.get("claimedChunksValues").getAsJsonArray();
+                for (int i = 0; i < keyArray.size(); i++) {
+                    Set<ChunkPosition> positions = Sets.newHashSet();
+                    for (JsonElement element : valueArray.get(i).getAsJsonArray())
+                        positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
+                    claimedChunks.put(UUID.fromString(keyArray.get(i).getAsString()), positions);
+                }
             }
         } catch (FileNotFoundException e) {
             //do nothing, it just hasn't been created yet

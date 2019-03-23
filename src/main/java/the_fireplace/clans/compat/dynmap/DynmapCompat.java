@@ -58,7 +58,7 @@ public class DynmapCompat implements IDynmapCompat {
                         // Update the claim display in dynmap for the list of teams.
                         if (!claimUpdates.isEmpty()) {
                             for (ClanDimInfo teamDim : claimUpdates)
-                                updateTeamClaims(teamDim);
+                                updateClanClaims(teamDim);
 
                             claimUpdates.clear();
                         }
@@ -85,24 +85,23 @@ public class DynmapCompat implements IDynmapCompat {
     }
 
     /**
-     * Method to queue up team claim event updates to be processed at a later time. Multiple updates for the same
-     * team are combined in to a single update.
+     * Method to queue up clan claim event updates to be processed at a later time. Multiple updates for the same
+     * clan are combined in to a single update.
      *
      * @param clanDimInfo The clan and dimension the claim update is for.
      */
-
+    @Override
     public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {
-            Clans.LOGGER.debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
+        Clans.LOGGER.debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
 
-            claimUpdates.add(clanDimInfo);
+        claimUpdates.add(clanDimInfo);
     }
 
     /**
-     * Updates all the claims in Dynamp for the specified team in the specified dimension.
-     * @param clanDimInfo The team and dimension to update claims for.
+     * Updates all the claims in Dynamp for the specified clan in the specified dimension.
+     * @param clanDimInfo The clan and dimension to update claims for.
      */
-
-    private void updateTeamClaims(ClanDimInfo clanDimInfo) {
+    private void updateClanClaims(ClanDimInfo clanDimInfo) {
         long startTimeNS;
         long totalChunks;
         long totalGroups;
@@ -145,15 +144,6 @@ public class DynmapCompat implements IDynmapCompat {
 
     }
 
-    /**
-     * Initializes the dynmap claims for all teams and all dimensions.
-     *
-     * NOTE: There is no way for us to know when FTB is ready with all the claim data, so we assume if we get a
-     * response we are good to go. However when there are no claims we will also not get a response so we can't tell
-     * the difference.
-     *
-     * @return Returns true if the initialization was successful.
-     */
     private boolean initializeMap() {
         Set<ClanDimInfo> teamDimList = Sets.newHashSet();
 
@@ -212,7 +202,7 @@ public class DynmapCompat implements IDynmapCompat {
 
     /**
      * This creates a single claim marker in Dynmap.
-     * @param clanDimInfo Defines the team and dimension this claim marker is for
+     * @param clanDimInfo Defines the clan and dimension this claim marker is for
      * @param groupIndex Defines the index number for how many claims this team has
      * @param perimeterPoints A list of X Z points representing the perimeter of the claim to draw.
      */
@@ -263,8 +253,7 @@ public class DynmapCompat implements IDynmapCompat {
                 marker.setFillStyle(dFillOpacity, nFillColor);
             } else
                 Clans.LOGGER.error("Failed to create Dynmap area marker for claim.");
-        }
-        else
+        } else
             Clans.LOGGER.error("Failed to create Dynmap area marker for claim, Dynmap Marker Set is not available.");
     }
 

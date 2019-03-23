@@ -55,7 +55,7 @@ public class CommandClaim extends ClanSubCommand {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
 						if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 							ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
-							ClanChunkCache.addChunk(selectedClan.getClanId(), c.x, c.z, c.getWorld().provider.getDimension());
+							ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 							selectedClan.addClaimCount();
 							sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 						} else
