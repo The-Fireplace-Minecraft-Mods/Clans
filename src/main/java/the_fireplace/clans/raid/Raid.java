@@ -6,10 +6,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.util.MinecraftColors;
+import the_fireplace.clans.util.TextStyles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,9 +114,9 @@ public class Raid {
 		members.put(member.getUniqueID(), members.get(member.getUniqueID()) + 1);
 		if(members.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
 			removeMember(member);
-			member.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You have been removed from your raid because you spent too long outside the target's territory."));
+			member.sendMessage(new TextComponentString("You have been removed from your raid because you spent too long outside the target's territory.").setStyle(TextStyles.YELLOW));
 		} else if(members.get(member.getUniqueID()) == 1)
-			member.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You are not in the target clan's territory. If you stay outside it for longer than "+Clans.cfg.maxAttackerAbandonmentTime+" seconds, you will be removed from the raiding party."));
+			member.sendMessage(new TextComponentTranslation("You are not in the target clan's territory. If you stay outside it for longer than %s seconds, you will be removed from the raiding party.", Clans.cfg.maxAttackerAbandonmentTime).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetAttackerAbandonmentTime(EntityPlayerMP member) {
@@ -131,7 +132,7 @@ public class Raid {
 		if(defenders.get(defender.getUniqueID()) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
 			removeDefender(defender);
 		else if(defenders.get(defender.getUniqueID()) == 1)
-			defender.sendMessage(new TextComponentString(MinecraftColors.YELLOW + "You have left your clan's territory. If you stay outside it for longer than "+Clans.cfg.maxClanDesertionTime+" seconds, you will be considered dead when determining if your clan wins the raid."));
+			defender.sendMessage(new TextComponentTranslation("You have left your clan's territory. If you stay outside it for longer than %s seconds, you will be considered dead when determining if your clan wins the raid.", Clans.cfg.maxClanDesertionTime).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetDefenderAbandonmentTime(EntityPlayerMP defender) {
