@@ -10,6 +10,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
@@ -58,6 +59,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 				}
 				ChunkUtils.setChunkOwner(c, opClan.getClanId());
+				ClanChunkCache.addChunk(opClan.getClanId(), c.x, c.z, c.getWorld().provider.getDimension());
 				opClan.addClaimCount();
 				sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 			}

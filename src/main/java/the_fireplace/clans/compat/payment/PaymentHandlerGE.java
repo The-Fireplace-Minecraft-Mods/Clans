@@ -1,4 +1,4 @@
-package the_fireplace.clans.payment;
+package the_fireplace.clans.compat.payment;
 
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;

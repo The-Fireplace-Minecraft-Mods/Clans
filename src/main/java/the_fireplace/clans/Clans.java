@@ -15,19 +15,25 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
-import the_fireplace.clans.payment.IPaymentHandler;
-import the_fireplace.clans.payment.PaymentHandlerDummy;
-import the_fireplace.clans.payment.PaymentHandlerGE;
+import the_fireplace.clans.compat.dynmap.DynmapCompat;
+import the_fireplace.clans.compat.dynmap.DynmapCompatDummy;
+import the_fireplace.clans.compat.dynmap.IDynmapCompat;
+import the_fireplace.clans.compat.payment.IPaymentHandler;
+import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
+import the_fireplace.clans.compat.payment.PaymentHandlerGE;
 import the_fireplace.clans.util.PlayerClanCapability;
 
 import javax.annotation.Nonnull;
@@ -37,13 +43,15 @@ import static the_fireplace.clans.Clans.MODID;
 
 @SuppressWarnings({"WeakerAccess", "Duplicates"})
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap")
 public final class Clans {
     public static final String MODID = "clans";
     public static final String MODNAME = "Clans";
     public static final String VERSION = "${version}";
     @Mod.Instance(MODID)
     public static Clans instance;
+
+    public static Logger LOGGER = FMLLog.log;
 
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
@@ -57,10 +65,22 @@ public final class Clans {
         return instance.paymentHandler;
     }
 
+    private IDynmapCompat dynmapCompat;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
+        LOGGER = event.getModLog();
+        if(Loader.isModLoaded("dynmap"))
+            dynmapCompat = new DynmapCompat();
+        else
+            dynmapCompat = new DynmapCompatDummy();
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event){
+        dynmapCompat.init();
     }
 
     @Mod.EventHandler
@@ -79,6 +99,7 @@ public final class Clans {
         manager.registerCommand(new CommandClan());
         manager.registerCommand(new CommandOpClan());
         manager.registerCommand(new CommandRaid());
+        dynmapCompat.serverStart();
     }
 
     @SubscribeEvent
@@ -257,5 +278,15 @@ public final class Clans {
         public static int maxRent = 0;
         @Config.Comment("Multiply the max rent by the number of claims. This requires a compatible economy to be installed.")
         public static boolean multiplyMaxRentClaims = true;
+        //Dynmap settings
+        @Config.Comment("The weight of the dynmap border for claims. This requires Dynmap to be installed.")
+        @Config.RangeInt(min=0)
+        public static int dynmapBorderWeight = 0;
+        @Config.Comment("The opacity of the border for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
+        @Config.RangeDouble(min=0, max=1)
+        public static double dynmapBorderOpacity = 0.9;
+        @Config.Comment("The opacity of the fill color for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
+        @Config.RangeDouble(min=0, max=1)
+        public static double dynmapFillOpacity = 0.75;
     }
 }

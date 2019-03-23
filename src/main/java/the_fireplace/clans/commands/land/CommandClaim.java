@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
@@ -54,6 +55,7 @@ public class CommandClaim extends ClanSubCommand {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
 						if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 							ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
+							ClanChunkCache.addChunk(selectedClan.getClanId(), c.x, c.z, c.getWorld().provider.getDimension());
 							selectedClan.addClaimCount();
 							sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 						} else

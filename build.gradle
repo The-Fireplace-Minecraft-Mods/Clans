@@ -115,6 +115,7 @@ curseforge {
         displayName = jar.archiveName.replace(".jar", "")
         relations{
             optionalLibrary 'grand-economy'
+            optionalLibrary 'dynmapforge'
         }
     }
     addArtifact(sourceJar) {
