@@ -38,7 +38,7 @@ public class ClanChunkCache {
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
         claimedChunks.get(clan.getClanId()).add(new ChunkPosition(x, z, dim));
-        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription()));
+        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
         isChanged = true;
     }
 

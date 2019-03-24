@@ -12,10 +12,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class NewClan {
     private String clanName, clanBanner;
@@ -32,6 +29,7 @@ public class NewClan {
     private int losses = 0;
     private long shield = Clans.cfg.initialShield * 60;
     private long rentTimestamp = System.currentTimeMillis(), upkeepTimestamp = System.currentTimeMillis();
+    private int color = new Random().nextInt(0xffffff);
 
     public NewClan(String clanName, UUID leader){
         this(clanName, leader, null);
@@ -91,6 +89,7 @@ public class NewClan {
         ret.addProperty("shield", shield);
         ret.addProperty("rentTimestamp", rentTimestamp);
         ret.addProperty("upkeepTimestamp", upkeepTimestamp);
+        ret.addProperty("color", color);
 
         return ret;
     }
@@ -118,6 +117,8 @@ public class NewClan {
         this.shield = obj.get("shield").getAsLong();
         this.rentTimestamp = obj.get("rentTimestamp").getAsLong();
         this.upkeepTimestamp = obj.get("upkeepTimestamp").getAsLong();
+        if(obj.has("color"))
+            this.color = obj.get("color").getAsInt();
     }
 
     public HashMap<UUID, EnumRank> getMembers() {
@@ -383,5 +384,13 @@ public class NewClan {
 
     public void addLoss() {
         losses++;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
