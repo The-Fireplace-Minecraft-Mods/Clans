@@ -26,3 +26,5 @@ Fixed some errors in the console when autocompleting commands
 Fixed a bug that caused a new opclan to be generated every time the server started.
 Fixed wrong usage exception being thrown for /clan setdesc and /opclan setdesc
 Fixed permission error when trying to accept a clan invite when already in a clan on multi clan membership servers
+Fixed clan shield calculation when starting a raid
+Fixed default clan not getting set when joining a clan

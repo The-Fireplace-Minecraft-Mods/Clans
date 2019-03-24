@@ -61,7 +61,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 					} else
 						sender.sendMessage(new TextComponentString("Target clan has no online members!").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString("Target clan is currently shielded! Try again in "+(Math.round(100f*target.getShield()*60)/100f)+" hours.").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentString("Target clan is currently shielded! Try again in "+(Math.round(100f*target.getShield()/60)/100f)+" hours.").setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(new TextComponentString("You are already in a raid!").setStyle(TextStyles.RED));
 		}

@@ -11,6 +11,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
@@ -44,6 +45,8 @@ public class CommandAccept extends ClanSubCommand {
 		NewClan acceptClan = ClanCache.getInvite(sender.getUniqueID());
 		if(acceptClan != null){
 			acceptClan.addMember(sender.getUniqueID());
+			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
+				CapHelper.getPlayerClanCapability(sender).setDefaultClan(acceptClan.getClanId());
 			sender.sendMessage(new TextComponentTranslation("You joined %s.", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(new TextComponentString("You don't have any pending invites.").setStyle(TextStyles.RED));
