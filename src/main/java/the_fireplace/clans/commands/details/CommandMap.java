@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CommandMap extends ClanSubCommand {
-	private static final char[] mapchars = {'%', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
+	private static final char[] mapchars = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
 	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ANY;
@@ -57,20 +58,22 @@ public class CommandMap extends ClanSubCommand {
 			for (int x = center.x - 26; x <= center.x + 26; x++) {
 				Chunk c = w.getChunk(x, z);
 				UUID chunkOwner = ChunkUtils.getChunkOwner(c);
+				String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
 				if(chunkOwner == null)
-					row.append('#');
+					row.append(wildernessColor).append('-');
 				else {
-					if(ClanCache.getClanById(chunkOwner) == null) {
+					NewClan clan = ClanCache.getClanById(chunkOwner);
+					if(clan == null) {
 						ChunkUtils.clearChunkOwner(c);
-						row.append('#');
+						row.append(wildernessColor).append('-');
 					} else {
 						if (!symbolMap.containsKey(chunkOwner))
 							symbolMap.put(chunkOwner, mapchars[symbolMap.size() % mapchars.length]);
-						row.append(symbolMap.get(chunkOwner));
+						row.append(center.z == z && center.x == x ? "§9" : clan.getMembers().containsKey(sender.getUniqueID()) ? "§a" : "§c").append(symbolMap.get(chunkOwner));
 					}
 				}
 			}
-			sender.sendMessage(new TextComponentString(row.toString()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentString(row.toString()));
 		}
 		sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 		for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
