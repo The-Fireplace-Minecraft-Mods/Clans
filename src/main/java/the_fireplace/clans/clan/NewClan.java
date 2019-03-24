@@ -8,8 +8,10 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -30,6 +32,7 @@ public class NewClan {
     private long shield = Clans.cfg.initialShield * 60;
     private long rentTimestamp = System.currentTimeMillis(), upkeepTimestamp = System.currentTimeMillis();
     private int color = new Random().nextInt(0xffffff);
+    private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
 
     public NewClan(String clanName, UUID leader){
         this(clanName, leader, null);
@@ -117,8 +120,10 @@ public class NewClan {
         this.shield = obj.get("shield").getAsLong();
         this.rentTimestamp = obj.get("rentTimestamp").getAsLong();
         this.upkeepTimestamp = obj.get("upkeepTimestamp").getAsLong();
-        if(obj.has("color"))
+        if(obj.has("color")) {
             this.color = obj.get("color").getAsInt();
+            this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+        }
     }
 
     public HashMap<UUID, EnumRank> getMembers() {
@@ -392,5 +397,10 @@ public class NewClan {
 
     public void setColor(int color) {
         this.color = color;
+        this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+    }
+
+    public TextFormatting getTextColor() {
+        return TextFormatting.fromColorIndex(textColor);
     }
 }
