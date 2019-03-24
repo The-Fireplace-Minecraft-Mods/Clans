@@ -41,10 +41,10 @@ public class CommandSetColor extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		try {
-			selectedClan.setColor(Integer.parseInt(args[0]));
+			selectedClan.setColor(args[0].startsWith("0x") ? Integer.parseInt(args[0].substring(2), 16) : Integer.parseInt(args[0]));
 			sender.sendMessage(new TextComponentString("Clan color set!").setStyle(TextStyles.GREEN));
 		} catch(NumberFormatException e) {
-			sender.sendMessage(new TextComponentTranslation("Invalid color: %s!", args[0]).setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentTranslation("Invalid color integer: %s!", args[0]).setStyle(TextStyles.RED));
 		}
 	}
 }

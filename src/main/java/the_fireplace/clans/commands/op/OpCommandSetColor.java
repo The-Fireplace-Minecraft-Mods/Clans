@@ -37,9 +37,9 @@ public class OpCommandSetColor extends OpClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		int color;
 		try {
-			color = Integer.parseInt(args[0]);
+			color = args[0].startsWith("0x") ? Integer.parseInt(args[0].substring(2), 16) : Integer.parseInt(args[0]);
 		} catch(NumberFormatException e) {
-			sender.sendMessage(new TextComponentTranslation("Invalid color: %s!", args[0]).setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentTranslation("Invalid color integer: %s!", args[0]).setStyle(TextStyles.RED));
 			return;
 		}
 		if(opSelectedClan == null) {
