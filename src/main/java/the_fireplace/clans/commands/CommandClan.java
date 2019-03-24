@@ -57,6 +57,7 @@ public class CommandClan extends CommandBase {
         put("setdefault", new CommandSetDefault());
         put("playerinfo", new CommandPlayerInfo());
         put("setcolor", new CommandSetColor());
+        put("list", new CommandList());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -165,6 +166,13 @@ public class CommandClan extends CommandBase {
             case "pi":
                 commands.get("playerinfo").execute(server, sender, args);
                 return;
+            case "setcolor":
+            case "setcolour":
+                commands.get("setcolor").execute(server, sender, args);
+                return;
+            case "list":
+                commands.get("list").execute(server, sender, args);
+                return;
             //Teleportation related
             case "home":
             case "h":
@@ -173,10 +181,6 @@ public class CommandClan extends CommandBase {
             case "trapped":
             case "t":
                 commands.get("trapped").execute(server, sender, args);
-                return;
-            case "setcolor":
-            case "setcolour":
-                commands.get("setcolor").execute(server, sender, args);
                 return;
             //Help command
             case "help":

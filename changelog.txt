@@ -2,6 +2,7 @@ Additions:
 Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
 New command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
 New command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
+New command: /clan list - View the names and descriptions of all clans on the server.
 
 Changes:
 The player's default clan is now shown before the player's name in chat.
