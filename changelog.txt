@@ -1,10 +1,11 @@
 Additions:
-The default clan is now shown before the player's name in chat
 Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
-Added a new command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
-Added a new command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
+New command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
+New command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
 
 Changes:
+The player's default clan is now shown before the player's name in chat.
+Show offline members in clan details, hide member count and "No members" message if looking at opclan details.
 Improved chat colors - Wilderness is now yellow when protected, like other protected land.
 Improve a few feedback messages
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
