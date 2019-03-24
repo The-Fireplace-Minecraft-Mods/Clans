@@ -24,3 +24,4 @@ Fixed long lines of chat losing color when going to the second line
 Fixed a minor performance issue that occurred after the server has been running for over 60 seconds
 Fixed some errors in the console when autocompleting commands
 Fixed a bug that caused a new opclan to be generated every time the server started.
+Fixed wrong usage exception being thrown for /clan setdesc and /opclan setdesc

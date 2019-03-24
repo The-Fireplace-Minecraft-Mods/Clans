@@ -73,9 +73,9 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(server == null)
 			throw new WrongUsageException("Internal error: The server must not be null!");
 		if(sender instanceof EntityPlayerMP) {
-			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
+			if(args.length >= getMinArgs() && args.length <= (getMaxArgs() == Integer.MAX_VALUE ? getMaxArgs() : getMaxArgs()+1)) {
 				NewClan playerClan;
-				if(args.length == getMaxArgs()+1) {
+				if(getMaxArgs() == Integer.MAX_VALUE ? args.length > 1 && (args[1].equalsIgnoreCase("setdesc") || args[1].equalsIgnoreCase("setdescription")) : args.length ==  getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else
