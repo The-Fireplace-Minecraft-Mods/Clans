@@ -1,15 +1,21 @@
-Fixed server crash when player tries using /clan home and the clan doesn't have a home.
-Internal optimizations
-Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
-Fix long lines of chat losing color when going to the second line
-Improve chat colors - Wilderness is now yellow when protected, like other protected land.
-Improve a few messages
-Add the default clan before the player's name in chat
-Add a new command: /clan playerinfo - shows what clans a player is in and what ranks they hold in the clan.
+Additions:
+The default clan is now shown before the player's name in chat
 Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
-Fixed a minor performance issue that occurred after the server has been running for over 60 seconds
+Added a new command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
+Added a new command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
+
+Changes:
+Improved chat colors - Wilderness is now yellow when protected, like other protected land.
+Improve a few feedback messages
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
-Fix some errors in the console when autocompleting commands
-Change the clan banner saving format to be more consistent with the 1.13 method. The clan banners might or might not migrate to 1.13 successfully now.
-Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Old databases will be migrated to the new format.
+Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
+Internal optimizations
+Change the clan banner saving format to be more consistent with the 1.13 method. The clan banners might or might not migrate to 1.13 successfully now. Pre-1.2.0 clan banners will be lost, so make sure you have a physical banner available so you can set it again.
+Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
+
+Fixes:
+Fixed server crash when player tries using /clan home and the clan doesn't have a home.
+Fixed long lines of chat losing color when going to the second line
+Fixed a minor performance issue that occurred after the server has been running for over 60 seconds
+Fixed some errors in the console when autocompleting commands
 Fixed a bug that caused a new opclan to be generated every time the server started.
