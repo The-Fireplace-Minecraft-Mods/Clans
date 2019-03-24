@@ -1,12 +1,15 @@
 package the_fireplace.clans.commands.details;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
@@ -18,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -66,15 +70,17 @@ public class CommandDetails extends ClanSubCommand {
 		return args.length == 1 ? Lists.newArrayList(ClanCache.getClanNames().keySet()) : Collections.emptyList();
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private void showDetails(MinecraftServer server, EntityPlayerMP sender, NewClan clan) {
-		sender.sendMessage(new TextComponentString("NewClan name: "+clan.getClanName()).setStyle(TextStyles.GREEN));
-		sender.sendMessage(new TextComponentString("NewClan description: "+clan.getDescription()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(new TextComponentString("Clan name: "+clan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(new TextComponentString("Clan description: "+clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(new TextComponentString("Number of claims: "+clan.getClaimCount()).setStyle(TextStyles.GREEN));
-		sender.sendMessage(new TextComponentString("Number of members: "+clan.getMemberCount()).setStyle(TextStyles.GREEN));
-		List<EntityPlayerMP> leaders = Lists.newArrayList();
-		List<EntityPlayerMP> admins = Lists.newArrayList();
-		List<EntityPlayerMP> members = Lists.newArrayList();
-		for(Map.Entry<EntityPlayerMP, EnumRank> member: clan.getOnlineMembers().entrySet()) {
+		if(!clan.isOpclan())
+			sender.sendMessage(new TextComponentString("Number of members: "+clan.getMemberCount()).setStyle(TextStyles.GREEN));
+		List<UUID> leaders = Lists.newArrayList();
+		List<UUID> admins = Lists.newArrayList();
+		List<UUID> members = Lists.newArrayList();
+		for(Map.Entry<UUID, EnumRank> member: clan.getMembers().entrySet()) {
 			switch(member.getValue()){
 				case LEADER:
 					leaders.add(member.getKey());
@@ -88,15 +94,25 @@ public class CommandDetails extends ClanSubCommand {
 			}
 		}
 		if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-			sender.sendMessage(new TextComponentString("Online members: ").setStyle(TextStyles.GREEN));
-			for(EntityPlayerMP leader: leaders)
-				sender.sendMessage(new TextComponentString("Leader " + leader.getName()).setStyle(TextStyles.BOLD_ITALIC_GREEN));
-			for(EntityPlayerMP admin: admins)
-				sender.sendMessage(new TextComponentString("Admin " + admin.getName()).setStyle(TextStyles.BOLD_GREEN));
-			for(EntityPlayerMP member: members)
-				sender.sendMessage(new TextComponentString(member.getName()).setStyle(TextStyles.GREEN));
-		} else {
-			sender.sendMessage(new TextComponentString("No online members.").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentString("Members: ").setStyle(TextStyles.GREEN));
+			for(UUID leader: leaders) {
+				GameProfile l = server.getPlayerProfileCache().getProfileByUUID(leader);
+				if(l != null)
+					sender.sendMessage(new TextComponentString("Leader " + l.getName()).setStyle(server.getPlayerList().getPlayerByUUID(leader) != null ? TextStyles.ONLINE_LEADER : TextStyles.OFFLINE_LEADER));
+			}
+			for(UUID admin: admins) {
+				GameProfile a = server.getPlayerProfileCache().getProfileByUUID(admin);
+				if(a != null)
+					sender.sendMessage(new TextComponentString("Admin " + a.getName()).setStyle(server.getPlayerList().getPlayerByUUID(admin) != null ? TextStyles.ONLINE_ADMIN : TextStyles.OFFLINE_ADMIN));
+			}
+			for(UUID member: members) {
+				GameProfile m = server.getPlayerProfileCache().getProfileByUUID(member);
+				if(m != null)
+					sender.sendMessage(new TextComponentString(m.getName()).setStyle(server.getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW));
+			}
+		} else if(!clan.isOpclan()) {
+			sender.sendMessage(new TextComponentTranslation("Error: %s has no members.", clan.getClanName()).setStyle(TextStyles.RED));
+			Clans.LOGGER.error("Clan %s has no members.", clan.getClanName());
 		}
 	}
 }
