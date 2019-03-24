@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
@@ -20,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CommandDecline extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
-		return EnumRank.NOCLAN;
+		return Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN;
 	}
 
 	@Override
