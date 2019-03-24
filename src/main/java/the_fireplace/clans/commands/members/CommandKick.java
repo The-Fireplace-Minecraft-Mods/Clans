@@ -14,6 +14,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
@@ -88,8 +89,12 @@ public class CommandKick extends ClanSubCommand {
 	public static void removeMember(MinecraftServer server, EntityPlayerMP sender, NewClan playerClan, GameProfile target) throws CommandException {
 		if(playerClan.removeMember(target.getId())) {
 			sender.sendMessage(new TextComponentTranslation("You have kicked %s out of %s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.GREEN));
-			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-				getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
+				EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
+				targetPlayer.sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+				if(playerClan.getClanId().equals(CapHelper.getPlayerClanCapability(targetPlayer).getDefaultClan()))
+					CommandLeave.updateDefaultClan(targetPlayer, playerClan);
+			}
 		} else
 			sender.sendMessage(new TextComponentTranslation("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.RED));
 	}

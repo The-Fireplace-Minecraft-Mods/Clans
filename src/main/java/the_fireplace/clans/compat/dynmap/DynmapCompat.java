@@ -46,8 +46,7 @@ public class DynmapCompat implements IDynmapCompat {
 
 
     @SubscribeEvent
-    public void onServerTickEvent(TickEvent.ServerTickEvent event)
-    {
+    public void onServerTickEvent(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             tickCounter++;
 

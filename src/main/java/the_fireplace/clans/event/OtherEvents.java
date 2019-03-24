@@ -24,7 +24,7 @@ public class OtherEvents {
         if(!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
             PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.player);
             assert c != null;
-            if ((c.getDefaultClan() != null && ClanCache.getClanById(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.player.getUniqueID()).isEmpty()))
+            if ((c.getDefaultClan() != null && ClanCache.getClanById(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.player.getUniqueID()).isEmpty()) || (c.getDefaultClan() != null && !ClanCache.getPlayerClans(event.player.getUniqueID()).contains(ClanCache.getClanById(c.getDefaultClan()))))
                 CommandLeave.updateDefaultClan((EntityPlayerMP)event.player, null);
         }
     }

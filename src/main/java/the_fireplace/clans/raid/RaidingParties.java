@@ -50,8 +50,7 @@ public final class RaidingParties {
 	}
 
 	public static boolean isRaidedBy(NewClan c, EntityPlayer player) {
-		//noinspection SuspiciousMethodCalls
-		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
+		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player.getUniqueID());
 	}
 
 	static void addRaid(NewClan clan, Raid raid){

@@ -28,3 +28,4 @@ Fixed wrong usage exception being thrown for /clan setdesc and /opclan setdesc
 Fixed permission error when trying to accept a clan invite when already in a clan on multi clan membership servers
 Fixed clan shield calculation when starting a raid
 Fixed default clan not getting set when joining a clan
+Fixed default clan check on login not updaging default clan when players are no longer in their previous default clan
