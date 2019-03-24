@@ -176,8 +176,11 @@ public class CommandClan extends CommandBase {
             //Teleportation related
             case "home":
             case "h":
-                commands.get("home").execute(server, sender, args);
-                return;
+                if(Clans.cfg.clanHomeWarmupTime > -1) {
+                    commands.get("home").execute(server, sender, args);
+                    return;
+                } else
+                    throw new CommandException("/clan home is disabled on this server.");
             case "trapped":
             case "t":
                 commands.get("trapped").execute(server, sender, args);

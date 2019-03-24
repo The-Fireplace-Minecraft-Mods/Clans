@@ -10,6 +10,7 @@ Show offline members in clan details, hide member count and "No members" message
 Show the clan's description when you enter its territory.
 Improved chat colors - Wilderness is now yellow when protected, like other protected land.
 The /clan map is now color coded: Green for clans the player is a member of, yellow for wilderness, red for clans the player is not part of, and blue for where the player is currently standing.
+The clan home warmup time can now be set to -1 to disable /clan home.
 Improve a few feedback messages
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.

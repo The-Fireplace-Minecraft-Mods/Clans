@@ -195,8 +195,8 @@ public final class Clans {
         public static boolean forceConnectedClaims = true;
         @Config.Comment("Allow players to be a member of multiple clans at once.")
         public static boolean allowMultiClanMembership = true;
-        @Config.Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported.")
-        @Config.RangeInt(min=0)
+        @Config.Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported. Set to -1 to disable /clan home.")
+        @Config.RangeInt(min=-1)
         public static int clanHomeWarmupTime = 0;
         @Config.Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
         @Config.RangeInt(min=0)
