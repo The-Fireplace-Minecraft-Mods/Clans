@@ -56,6 +56,7 @@ public class CommandClan extends CommandBase {
         put("setdescription", new CommandSetDescription());
         put("setdefault", new CommandSetDefault());
         put("playerinfo", new CommandPlayerInfo());
+        put("setcolor", new CommandSetColor());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -172,6 +173,10 @@ public class CommandClan extends CommandBase {
             case "trapped":
             case "t":
                 commands.get("trapped").execute(server, sender, args);
+                return;
+            case "setcolor":
+            case "setcolour":
+                commands.get("setcolor").execute(server, sender, args);
                 return;
             //Help command
             case "help":

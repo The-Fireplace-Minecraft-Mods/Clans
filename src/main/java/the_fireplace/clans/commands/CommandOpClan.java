@@ -26,6 +26,7 @@ public class CommandOpClan extends CommandBase {
         //clan constants
         put("setname", new OpCommandSetName());
         put("setdescription", new OpCommandSetDescription());
+        put("setcolor", new OpCommandSetColor());
         //Adjust other clans
         put("setshield", new OpCommandSetShield());
         put("addfunds", new OpCommandAddFunds());
@@ -73,6 +74,10 @@ public class CommandOpClan extends CommandBase {
             case "setdescription":
             case "setdesc":
                 commands.get("setdescription").execute(server, sender, args);
+                return;
+            case "setcolor":
+            case "setcolour":
+                commands.get("setcolor").execute(server, sender, args);
                 return;
             //Adjust other clans
             case "setshield":

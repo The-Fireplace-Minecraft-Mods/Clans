@@ -1,7 +1,5 @@
 package the_fireplace.clans.compat.dynmap.data;
 
-import java.util.Random;
-
 public class ClanDimInfo {
     private String clanName;
     private String clanDescription;
@@ -16,10 +14,6 @@ public class ClanDimInfo {
         this.clanName = clanName;
         this.clanDescription = description;
         this.clanColor = rgbColor;
-    }
-
-    public ClanDimInfo(String clanID, int dim, String clanName, String description) {
-        this(clanID, dim, clanName, description, new Random().nextInt(0xffffff));
     }
 
     public String getClanIdString() {
