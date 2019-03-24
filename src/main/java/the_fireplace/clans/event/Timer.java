@@ -33,12 +33,13 @@ public class Timer {
 				executing = true;
 				fiveMinuteCounter -= 20*60*5;
 				ClanChunkCache.save();
+				NewClanDatabase.save();
 				executing = false;
 			}
 			if(++minuteCounter >= 20*60) {
 				executing = true;
 				minuteCounter -= 20*60;
-				for (Clan clan : ClanDatabase.getClans())
+				for (NewClan clan : NewClanDatabase.getClans())
 					clan.decrementShield();
 				executing = false;
 			}
@@ -49,7 +50,7 @@ public class Timer {
 				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
+						NewClan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
 					}
@@ -65,8 +66,8 @@ public class Timer {
 						raid.defenderVictory();
 
 				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-					for (Clan clan : ClanDatabase.getClans()) {
-						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getRentTimeStamp()) {
+					for (NewClan clan : NewClanDatabase.getClans()) {
+						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getRentTimestamp()) {
 							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
 								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
 									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
@@ -76,7 +77,7 @@ public class Timer {
 							}
 							clan.updateRentTimeStamp();
 						}
-						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getUpkeepTimeStamp()) {
+						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getUpkeepTimestamp()) {
 							int upkeep = Clans.cfg.clanUpkeepCost;
 							if (Clans.cfg.multiplyUpkeepMembers)
 								upkeep *= clan.getMemberCount();
@@ -124,7 +125,7 @@ public class Timer {
 				assert Clans.CLAIMED_LAND != null;
 				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
 				UUID chunkClan = ChunkUtils.getChunkOwner(c);
-				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
+				ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
 				if (event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
 					UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
 					if (chunkClan != null && ClanCache.getClanById(chunkClan) == null) {
@@ -164,7 +165,7 @@ public class Timer {
 				}
 				EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP) event.player : null;
 				if (player != null) {
-					for(Clan pc: playerClans)
+					for(NewClan pc: playerClans)
 						if (RaidingParties.hasActiveRaid(pc)) {
 							Raid r = RaidingParties.getActiveRaid(pc);
 							if (pc.getClanId().equals(chunkClan))

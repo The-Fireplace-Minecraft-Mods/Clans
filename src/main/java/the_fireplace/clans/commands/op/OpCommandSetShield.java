@@ -7,8 +7,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -38,7 +38,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanCache.getClanByName(clan);
+		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			long duration;
 			try {
@@ -50,9 +50,9 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				return;
 			}
 			c.setShield(duration);
-			sender.sendMessage(new TextComponentString("Clan shield set!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentString("NewClan shield set!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
 	}
 
 	@Override

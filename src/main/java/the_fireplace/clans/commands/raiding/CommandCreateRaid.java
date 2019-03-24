@@ -8,9 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
@@ -40,7 +40,7 @@ public class CommandCreateRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan target = ClanCache.getClanByName(args[0]);
+		NewClan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
 			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 		else {
@@ -69,10 +69,10 @@ public class CommandCreateRaid extends RaidSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		HashMap<Clan, Raid> raids = RaidingParties.getRaids();
-		Collection<Clan> clans = ClanDatabase.getClans();
+		HashMap<NewClan, Raid> raids = RaidingParties.getRaids();
+		Collection<NewClan> clans = NewClanDatabase.getClans();
 		ArrayList<String> targetClanNames = Lists.newArrayList();
-		for(Clan c: clans)
+		for(NewClan c: clans)
 			if(sender.getCommandSenderEntity() != null && !c.getOnlineMembers().isEmpty() && !c.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !raids.containsKey(c) && !RaidingParties.hasActiveRaid(c) && !c.isShielded() && !c.isOpclan())
 				targetClanNames.add(c.getClanName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();

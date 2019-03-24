@@ -2,8 +2,8 @@ package the_fireplace.clans.compat.dynmap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -13,13 +13,13 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.util.ChunkPosition;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.compat.dynmap.data.GroupedChunks;
 import the_fireplace.clans.compat.dynmap.data.PositionPoint;
+import the_fireplace.clans.util.ChunkPosition;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -147,7 +147,7 @@ public class DynmapCompat implements IDynmapCompat {
     private boolean initializeMap() {
         Set<ClanDimInfo> teamDimList = Sets.newHashSet();
 
-        for(Clan clan: ClanChunkCache.clansWithClaims()) {
+        for(NewClan clan: ClanChunkCache.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
             for(ChunkPosition chunk: ClanChunkCache.getChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.dim)) {

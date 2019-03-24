@@ -8,8 +8,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
@@ -60,9 +60,9 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		HashMap<Clan, Raid> raids = RaidingParties.getRaids();
+		HashMap<NewClan, Raid> raids = RaidingParties.getRaids();
 		ArrayList<String> targetClanNames = Lists.newArrayList();
-		for(Map.Entry<Clan, Raid> entry: raids.entrySet())
+		for(Map.Entry<NewClan, Raid> entry: raids.entrySet())
 			if(sender.getCommandSenderEntity() != null && !entry.getKey().getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()))
 				targetClanNames.add(entry.getKey().getClanName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();

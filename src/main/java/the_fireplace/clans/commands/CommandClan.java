@@ -11,9 +11,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.finance.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
@@ -251,7 +251,7 @@ public class CommandClan extends CommandBase {
     static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
         if(sender instanceof EntityPlayer) {
             ArrayList<EnumRank> playerRanks = Lists.newArrayList();
-            for(Clan c: ClanCache.getPlayerClans(((EntityPlayer) sender).getUniqueID()))
+            for(NewClan c: ClanCache.getPlayerClans(((EntityPlayer) sender).getUniqueID()))
                 playerRanks.add(ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID(), c));
             //Only append commands the player can use.
             for (String command : commands.keySet()) {

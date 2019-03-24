@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -37,7 +37,7 @@ public class OpCommandSetName extends OpClanSubCommand {
 		String newName = args[0];
 		if(!ClanCache.clanNameTaken(newName)) {
 			if(opSelectedClan == null) {
-				ClanDatabase.getOpClan().setClanName(newName);
+				NewClanDatabase.getOpClan().setClanName(newName);
 				sender.sendMessage(new TextComponentString("Opclan name set!").setStyle(TextStyles.GREEN));
 			} else {
 				String oldName = opSelectedClan.getClanName();

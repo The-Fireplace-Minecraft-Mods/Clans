@@ -8,10 +8,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -43,11 +43,11 @@ public class OpCommandClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan opClan = ClanDatabase.getOpClan();
+		NewClan opClan = NewClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
-			Clan targetClan = claimFaction != null ? ClanCache.getClanById(claimFaction) : null;
+			NewClan targetClan = claimFaction != null ? ClanCache.getClanById(claimFaction) : null;
 			if(claimFaction != null && targetClan != null && ((args.length != 1 || !args[0].toLowerCase().equals("force")) || claimFaction.equals(opClan.getClanId()))) {
 				if(claimFaction.equals(opClan.getClanId()))
 					sender.sendMessage(new TextComponentString("Opclan has already claimed this land.").setStyle(TextStyles.RED));

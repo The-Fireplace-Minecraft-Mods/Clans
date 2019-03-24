@@ -7,9 +7,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.CapHelper;
@@ -61,7 +61,7 @@ public class CommandHome extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You cannot use this command until your cooldown runs out in "+cooldown+" seconds.").setStyle(TextStyles.RED));
 	}
 
-	public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
+	public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
 		if (playerDim == playerClan.getHomeDim() || player.changeDimension(playerClan.getHomeDim()) != null) {
 			if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
 				player.sendMessage(new TextComponentString("Error teleporting to clan home. Ensure that it is not blocked.").setStyle(TextStyles.RED));

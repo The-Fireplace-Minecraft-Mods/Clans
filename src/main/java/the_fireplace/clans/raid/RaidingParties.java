@@ -9,19 +9,19 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.NewClan;
 
 import java.util.*;
 
 public final class RaidingParties {
-	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
+	private static HashMap<NewClan, Raid> raids = Maps.newHashMap();
 	private static HashMap<UUID, Raid> raidingPlayers = Maps.newHashMap();
-	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
-	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
-	private static HashMap<Clan, Integer> bufferTimes = Maps.newHashMap();
+	private static ArrayList<NewClan> raidedClans = Lists.newArrayList();
+	private static HashMap<NewClan, Raid> activeraids = Maps.newHashMap();
+	private static HashMap<NewClan, Integer> bufferTimes = Maps.newHashMap();
 
-	public static HashMap<Clan, Raid> getRaids() {
+	public static HashMap<NewClan, Raid> getRaids() {
 		return raids;
 	}
 
@@ -37,11 +37,11 @@ public final class RaidingParties {
 		return raidingPlayers.keySet();
 	}
 
-	public static boolean hasActiveRaid(Clan clan){
+	public static boolean hasActiveRaid(NewClan clan){
 		return activeraids.containsKey(clan);
 	}
 
-	public static Raid getActiveRaid(Clan clan){
+	public static Raid getActiveRaid(NewClan clan){
 		return activeraids.get(clan);
 	}
 
@@ -49,12 +49,12 @@ public final class RaidingParties {
 		return activeraids.values();
 	}
 
-	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
+	public static boolean isRaidedBy(NewClan c, EntityPlayer player) {
 		//noinspection SuspiciousMethodCalls
 		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
 	}
 
-	static void addRaid(Clan clan, Raid raid){
+	static void addRaid(NewClan clan, Raid raid){
 		raids.put(clan, raid);
 		raidedClans.add(raid.getTarget());
 	}
@@ -73,7 +73,7 @@ public final class RaidingParties {
 	}
 
 	public static void decrementBuffers() {
-		for(Map.Entry<Clan, Integer> entry : bufferTimes.entrySet()) {
+		for(Map.Entry<NewClan, Integer> entry : bufferTimes.entrySet()) {
 			if(entry.getValue() <= 1) {
 				bufferTimes.remove(entry.getKey());
 				activateRaid(entry.getKey());
@@ -82,23 +82,23 @@ public final class RaidingParties {
 		}
 	}
 
-	public static boolean isPreparingRaid(Clan targetClan) {
+	public static boolean isPreparingRaid(NewClan targetClan) {
 	    return bufferTimes.containsKey(targetClan);
     }
 
-	public static void initRaid(Clan raidTarget){
+	public static void initRaid(NewClan raidTarget){
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
 		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
 			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
 	}
 
-	private static void activateRaid(Clan raidTarget) {
+	private static void activateRaid(NewClan raidTarget) {
 		Raid startingRaid = raids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 	}
 
-	public static void endRaid(Clan targetClan) {
+	public static void endRaid(NewClan targetClan) {
 		Raid raid = activeraids.remove(targetClan);
 		for(UUID player: raid.getMembers())
 			removeRaider(player);
@@ -111,7 +111,7 @@ public final class RaidingParties {
 			}
 	}
 
-	public static ArrayList<Clan> getRaidedClans() {
+	public static ArrayList<NewClan> getRaidedClans() {
 		return raidedClans;
 	}
 }

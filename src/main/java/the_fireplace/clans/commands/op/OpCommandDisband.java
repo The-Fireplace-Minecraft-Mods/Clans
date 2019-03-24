@@ -10,9 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.util.TextStyles;
@@ -42,16 +42,16 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanCache.getClanByName(clan);
+		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
 	}
 
-	public static void disbandClan(MinecraftServer server, EntityPlayerMP sender, Clan c) {
+	public static void disbandClan(MinecraftServer server, EntityPlayerMP sender, NewClan c) {
 		if(!c.isOpclan()) {
-			if (ClanDatabase.removeClan(c.getClanId())) {
+			if (NewClanDatabase.removeClan(c.getClanId())) {
 				long distFunds = Clans.getPaymentHandler().getBalance(c.getClanId());
 				distFunds += Clans.cfg.claimChunkCost * c.getClaimCount();
 				if (Clans.cfg.leaderRecieveDisbandFunds) {

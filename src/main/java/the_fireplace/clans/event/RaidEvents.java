@@ -19,8 +19,8 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.raid.ChunkRestoreData;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
@@ -37,7 +37,7 @@ public class RaidEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClanById(chunkOwner);
+				NewClan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					if (RaidingParties.hasActiveRaid(chunkClan)) {
 						//Double check that nothing gets dropped during a raid, to avoid block duping.
@@ -57,7 +57,7 @@ public class RaidEvents {
 		if(!event.getEntity().getEntityWorld().isRemote) {
 			if (event.getEntityLiving() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
+				for(NewClan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
 					if (clan != null && RaidingParties.hasActiveRaid(clan))
 						RaidingParties.getActiveRaid(clan).removeDefender(player);
 					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
@@ -70,7 +70,7 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote) {
-			Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
+			NewClan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
 			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
 				if (data != null)

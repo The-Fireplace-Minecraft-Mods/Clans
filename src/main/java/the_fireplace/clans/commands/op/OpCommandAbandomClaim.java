@@ -9,10 +9,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
@@ -44,12 +44,12 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan opClan = ClanDatabase.getOpClan();
+		NewClan opClan = NewClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimFaction = CapHelper.getClaimedLandCapability(c).getClan();
 			if(claimFaction != null) {
-				Clan targetClan = ClanCache.getClanById(claimFaction);
+				NewClan targetClan = ClanCache.getClanById(claimFaction);
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
 					if(targetClan != null) {
 						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
@@ -78,7 +78,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 		return args.length == 1 ? Collections.singletonList("force") : Collections.emptyList();
 	}
 
-	public static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
+	public static void abandonClaim(EntityPlayerMP sender, Chunk c, NewClan targetClan) {
 		if (targetClan.getHome() != null
 				&& targetClan.hasHome()
 				&& sender.dimension == targetClan.getHomeDim()
@@ -94,7 +94,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 		Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
 	}
 
-	public static void abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, Clan targetClan) {
+	public static void abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, NewClan targetClan) {
 		boolean allowed = true;
 		for (Chunk checkChunk : ChunkUtils.getConnectedClaims(c, targetClan.getClanId()))
 			if (ChunkUtils.getConnectedClaims(checkChunk, targetClan.getClanId()).equals(Lists.newArrayList(c))) {

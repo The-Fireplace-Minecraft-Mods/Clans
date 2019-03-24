@@ -8,9 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -74,7 +74,7 @@ public class CommandMap extends ClanSubCommand {
 		}
 		sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 		for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-			Clan c = ClanCache.getClanById(symbol.getKey());
+			NewClan c = ClanCache.getClanById(symbol.getKey());
 			sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")).setStyle(TextStyles.GREEN));
 		}
 	}

@@ -9,8 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -40,7 +40,7 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanCache.getClanByName(clan);
+		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			long amount;
 			try {
@@ -54,9 +54,9 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 			if(Clans.getPaymentHandler().addAmount(amount, c.getClanId()))
 				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
 			else
-				sender.sendMessage(new TextComponentString("Internal error: Clan account not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentString("Internal error: NewClan account not found.").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
 	}
 
 	@Override

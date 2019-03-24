@@ -11,9 +11,9 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -53,32 +53,28 @@ public class CommandSetBanner extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 				else {
 					selectedClan.setClanBanner(args[0]);
-					sender.sendMessage(new TextComponentString("Clan banner set!").setStyle(TextStyles.GREEN));
+					sender.sendMessage(new TextComponentString("NewClan banner set!").setStyle(TextStyles.GREEN));
 				}
 			} catch(NBTException e){
 				throw new SyntaxErrorException("Invalid Banner NBT: "+args[0]);
 			}
 		} else if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
-			NBTTagCompound tags = sender.getHeldItemMainhand().getSubCompound("BlockEntityTag");
-			if(tags != null)
-				tags.setShort("ClanBaseColor", (short) sender.getHeldItemMainhand().getMetadata());
+			NBTTagCompound tags = sender.getHeldItemMainhand().writeToNBT(new NBTTagCompound());
 			setClanBannerFromItem(sender, selectedClan, tags);
 		} else if(sender.getHeldItemOffhand().getItem() instanceof ItemBanner) {
-			NBTTagCompound tags = sender.getHeldItemOffhand().getSubCompound("BlockEntityTag");
-			if(tags != null)
-				tags.setShort("ClanBaseColor", (short) sender.getHeldItemOffhand().getMetadata());
+			NBTTagCompound tags = sender.getHeldItemOffhand().writeToNBT(new NBTTagCompound());
 			setClanBannerFromItem(sender, selectedClan, tags);
 		} else
 			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
 
-	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
+	private void setClanBannerFromItem(EntityPlayerMP sender, NewClan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))
 			sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 		else {
 			playerClan.setClanBanner(banner);
-			sender.sendMessage(new TextComponentString("Clan banner set!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentString("NewClan banner set!").setStyle(TextStyles.GREEN));
 		}
 	}
 }

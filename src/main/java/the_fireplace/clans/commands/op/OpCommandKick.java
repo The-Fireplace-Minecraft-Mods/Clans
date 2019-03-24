@@ -10,9 +10,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandKick;
 import the_fireplace.clans.util.TextStyles;
@@ -45,7 +45,7 @@ public class OpCommandKick extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		String clan = args[0];
-		Clan c = ClanCache.getClanByName(clan);
+		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 
@@ -60,7 +60,7 @@ public class OpCommandKick extends OpClanSubCommand {
 			} else
 				sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -68,7 +68,7 @@ public class OpCommandKick extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
 			return Lists.newArrayList();
-		Clan target = ClanCache.getClanByName(args[0]);
+		NewClan target = ClanCache.getClanByName(args[0]);
 		if(target != null && args.length == 2) {
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (UUID player : target.getMembers().keySet()) {

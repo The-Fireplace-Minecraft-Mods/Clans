@@ -14,6 +14,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
@@ -68,7 +69,7 @@ public class CommandForm extends ClanSubCommand {
 				if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, sender.getUniqueID())) {
 					Clan c = new Clan(newClanName, sender.getUniqueID(), banner);
 					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-						sender.getCapability(Clans.CLAN_DATA_CAP, null).setDefaultClan(c.getClanId());
+						CapHelper.getPlayerClanCapability(sender).setDefaultClan(c.getClanId());
 					sender.sendMessage(new TextComponentString("Clan formed!").setStyle(TextStyles.GREEN));
 				} else
 					sender.sendMessage(new TextComponentString("Insufficient funds to form clan. It costs " + Clans.cfg.formClanCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)).setStyle(TextStyles.RED));

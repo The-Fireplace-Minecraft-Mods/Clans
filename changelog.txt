@@ -8,4 +8,8 @@ Add the default clan before the player's name in chat
 Add a new command: /clan playerinfo - shows what clans a player is in and what ranks they hold in the clan.
 Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
 Fixed a minor performance issue that occurred after the server has been running for over 60 seconds
+Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
 Fix some errors in the console when autocompleting commands
+Change the clan banner saving format to be more consistent with the 1.13 method. The clan banners might or might not migrate to 1.13 successfully now.
+Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Old databases will be migrated to the new format.
+Fixed a bug that caused a new opclan to be generated every time the server started.

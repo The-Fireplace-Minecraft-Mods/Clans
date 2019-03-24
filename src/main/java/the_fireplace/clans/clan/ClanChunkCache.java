@@ -2,10 +2,7 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
@@ -27,16 +24,16 @@ public class ClanChunkCache {
         return claimed != null ? claimed : Collections.emptySet();
     }
 
-    public static Set<Clan> clansWithClaims() {
+    public static Set<NewClan> clansWithClaims() {
         if(!isLoaded)
             load();
-        Set<Clan> claimClans = Sets.newHashSet();
+        Set<NewClan> claimClans = Sets.newHashSet();
         for(UUID clanId: claimedChunks.keySet())
             claimClans.add(ClanCache.getClanById(clanId));
         return claimClans;
     }
 
-    public static void addChunk(Clan clan, int x, int z, int dim) {
+    public static void addChunk(NewClan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
@@ -45,7 +42,7 @@ public class ClanChunkCache {
         isChanged = true;
     }
 
-    public static void delChunk(Clan clan, int x, int z, int dim) {
+    public static void delChunk(NewClan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
@@ -68,15 +65,15 @@ public class ClanChunkCache {
             Object obj = jsonParser.parse(new FileReader(file));
             if(obj instanceof JsonObject) {
                 JsonObject jsonObject = (JsonObject) obj;
-                JsonArray keyArray = jsonObject.get("claimedChunksKeys").getAsJsonArray();
-                JsonArray valueArray = jsonObject.get("claimedChunksValues").getAsJsonArray();
-                for (int i = 0; i < keyArray.size(); i++) {
+                JsonArray claimedChunkMap = jsonObject.get("claimedChunks").getAsJsonArray();
+                for (int i = 0; i < claimedChunkMap.size(); i++) {
                     Set<ChunkPosition> positions = Sets.newHashSet();
-                    for (JsonElement element : valueArray.get(i).getAsJsonArray())
+                    for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray())
                         positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
-                    claimedChunks.put(UUID.fromString(keyArray.get(i).getAsString()), positions);
+                    claimedChunks.put(UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString()), positions);
                 }
-            }
+            } else
+                Clans.LOGGER.warn("Claim Cache not found! This is normal when no chunks have been claimed on Clans 1.2.0 and above.");
         } catch (FileNotFoundException e) {
             //do nothing, it just hasn't been created yet
         } catch (Exception e) {
@@ -93,10 +90,8 @@ public class ClanChunkCache {
         if(!isChanged)
             return;
         JsonObject obj = new JsonObject();
-        JsonArray keyArray = new JsonArray();
-        JsonArray valueArray = new JsonArray();
+        JsonArray claimedChunkMap = new JsonArray();
         for(Map.Entry<UUID, Set<ChunkPosition>> position : claimedChunks.entrySet()) {
-            keyArray.add(position.getKey().toString());
             JsonArray positionArray = new JsonArray();
             for(ChunkPosition pos: position.getValue()) {
                 JsonObject chunkPositionObject = new JsonObject();
@@ -105,14 +100,17 @@ public class ClanChunkCache {
                 chunkPositionObject.addProperty("d", pos.dim);
                 positionArray.add(chunkPositionObject);
             }
-            valueArray.add(positionArray);
+            JsonObject entry = new JsonObject();
+            entry.addProperty("key", position.getKey().toString());
+            entry.add("value", positionArray);
+            claimedChunkMap.add(entry);
         }
-        obj.add("claimedChunksKeys", keyArray);
-        obj.add("claimedChunksValues", valueArray);
+        obj.add("claimedChunks", claimedChunkMap);
         try {
             FileWriter file = new FileWriter(location);
             String str = obj.toString();
             file.write(str);
+            file.close();
         } catch(IOException e) {
             e.printStackTrace();
         }

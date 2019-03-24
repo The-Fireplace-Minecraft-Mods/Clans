@@ -13,9 +13,9 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
@@ -33,8 +33,8 @@ public abstract class ClanSubCommand extends CommandBase {
 		return "clan";
 	}
 
-	protected Clan selectedClan;
-	protected Clan opSelectedClan = null;
+	protected NewClan selectedClan;
+	protected NewClan opSelectedClan = null;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
@@ -74,13 +74,13 @@ public abstract class ClanSubCommand extends CommandBase {
 			throw new WrongUsageException("Internal error: The server must not be null!");
 		if(sender instanceof EntityPlayerMP) {
 			if(args.length >= getMinArgs() && args.length <= getMaxArgs()+1) {
-				Clan playerClan;
+				NewClan playerClan;
 				if(args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else
 					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
-				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+				ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 				if(playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
 					sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
 					return;

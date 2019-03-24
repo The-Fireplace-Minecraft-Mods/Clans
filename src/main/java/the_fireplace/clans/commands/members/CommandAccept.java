@@ -6,9 +6,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -40,7 +40,7 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan acceptClan = ClanCache.getInvite(sender.getUniqueID());
+		NewClan acceptClan = ClanCache.getInvite(sender.getUniqueID());
 		if(acceptClan != null){
 			acceptClan.addMember(sender.getUniqueID());
 			sender.sendMessage(new TextComponentTranslation("You joined %s.", acceptClan.getClanName()).setStyle(TextStyles.GREEN));

@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -37,7 +37,7 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 		for(String arg: args)
 			newDescription.append(arg).append(' ');
 		if(opSelectedClan == null) {
-			ClanDatabase.getOpClan().setDescription(newDescription.toString());
+			NewClanDatabase.getOpClan().setDescription(newDescription.toString());
 			sender.sendMessage(new TextComponentString("Opclan description set!").setStyle(TextStyles.GREEN));
 		} else {
 			opSelectedClan.setDescription(newDescription.toString());
