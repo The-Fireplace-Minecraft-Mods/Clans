@@ -37,6 +37,7 @@ public final class RaidBlockPlacementDatabase implements Serializable {
 				ObjectInputStream stream = new ObjectInputStream(new FileInputStream(f));
 				instance = (RaidBlockPlacementDatabase) stream.readObject();
 				stream.close();
+				f.delete();
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 				instance = new RaidBlockPlacementDatabase();

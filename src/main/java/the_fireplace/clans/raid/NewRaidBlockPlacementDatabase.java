@@ -2,10 +2,7 @@ package the_fireplace.clans.raid;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -93,8 +90,9 @@ public final class NewRaidBlockPlacementDatabase {
 		obj.add("placedBlocks", placedBlocksMap);
 		try {
 			FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raidblockplacement.json"));
-			String str = obj.toString();
-			file.write(str);
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json = gson.toJson(obj);
+			file.write(json);
 			file.close();
 		} catch(IOException e) {
 			e.printStackTrace();

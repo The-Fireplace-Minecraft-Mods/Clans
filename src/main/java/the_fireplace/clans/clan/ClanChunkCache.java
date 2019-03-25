@@ -2,10 +2,7 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
@@ -111,8 +108,9 @@ public class ClanChunkCache {
         obj.add("claimedChunks", claimedChunkMap);
         try {
             FileWriter file = new FileWriter(location);
-            String str = obj.toString();
-            file.write(str);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(obj);
+            file.write(json);
             file.close();
         } catch(IOException e) {
             e.printStackTrace();
