@@ -52,8 +52,8 @@ public class CommandSetHome extends ClanSubCommand {
 					return;
 				}
 			selectedClan.setHome(sender.getPosition(), sender.dimension);
-			sender.sendMessage(new TextComponentString("NewClan home set!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentString("Clan home set!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("NewClan home can only be set in clan territory!").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("Clan home can only be set in clan territory!").setStyle(TextStyles.RED));
 	}
 }

@@ -195,6 +195,11 @@ public final class Clans {
         @Config.Comment("Minimum number of blocks between clan homes.")
         @Config.RangeInt(min=0)
         public static int minClanHomeDist = 320;
+        @Config.Comment("This multiplied by the minimum clan home distance is how far away from other clans' homes to make the initial claim for a clan.")
+        @Config.RangeDouble(min=0)
+        public static double initialClaimSeparationMultiplier = 1.25;
+        @Config.Comment("If set to false, players will be warned if making the initial claim within the claim separation range, but not prevented from making the claim if they want to.")
+        public static boolean enforceInitialClaimSeparation = true;
         @Config.Comment("Force clans to have connected claims.")
         public static boolean forceConnectedClaims = true;
         @Config.Comment("Allow players to be a member of multiple clans at once.")

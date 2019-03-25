@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.NewClan;
@@ -46,7 +47,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
-			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	public static void disbandClan(MinecraftServer server, EntityPlayerMP sender, NewClan c) {
@@ -65,12 +66,8 @@ public class OpCommandDisband extends OpClanSubCommand {
 					Clans.getPaymentHandler().ensureAccountExists(member);
 					if (!Clans.getPaymentHandler().addAmount(distFunds, member))
 						c.payLeaders(distFunds);
-					EntityPlayerMP player;
-					try {
-						player = getPlayer(server, sender, member.toString());
-					} catch (CommandException e) {
-						player = null;
-					}
+					EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+					//noinspection ConstantConditions
 					if (player != null) {
 						CommandLeave.updateDefaultClan(player, c);
 						if (!player.getUniqueID().equals(sender.getUniqueID()))

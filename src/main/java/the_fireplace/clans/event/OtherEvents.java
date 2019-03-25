@@ -30,6 +30,24 @@ public class OtherEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
+            CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
+            Timer.prevChunkXs.remove(event.player);
+            Timer.prevChunkZs.remove(event.player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
+            CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
+            Timer.prevChunkXs.remove(event.player);
+            Timer.prevChunkZs.remove(event.player);
+        }
+    }
+
+    @SubscribeEvent
     public static void onServerChat(ServerChatEvent event) {
         if(Clans.cfg.showDefaultClanInChat && event.getPlayer() != null) {
             PlayerClanCapability playerClanCap = CapHelper.getPlayerClanCapability(event.getPlayer());
