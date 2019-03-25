@@ -10,7 +10,10 @@ import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.UUID;
 
 public final class NewClanDatabase {
     private static NewClanDatabase instance = null;

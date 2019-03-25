@@ -1,5 +1,7 @@
 package the_fireplace.clans.util;
 
+import com.google.gson.JsonObject;
+
 public class ChunkPosition {
     public final int posX;
     public final int posZ;
@@ -58,5 +60,20 @@ public class ChunkPosition {
     @Override
     public int hashCode() {
         return 31 * (31 * this.posX + this.posZ) + this.dim;
+    }
+
+    public JsonObject toJsonObject() {
+        JsonObject ret = new JsonObject();
+        ret.addProperty("posX", posX);
+        ret.addProperty("posZ", posZ);
+        ret.addProperty("dim", dim);
+
+        return ret;
+    }
+
+    public ChunkPosition(JsonObject obj){
+        this.dim = obj.get("dim").getAsInt();
+        this.posX = obj.get("posX").getAsInt();
+        this.posZ = obj.get("posZ").getAsInt();
     }
 }

@@ -21,8 +21,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.raid.ChunkRestoreData;
-import the_fireplace.clans.raid.RaidRestoreDatabase;
+import the_fireplace.clans.raid.NewChunkRestoreData;
+import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
 
@@ -72,7 +72,7 @@ public class RaidEvents {
 		if(!event.getWorld().isRemote) {
 			NewClan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
 			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
-				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
+				NewChunkRestoreData data = NewRaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
 				if (data != null)
 					data.restore(event.getChunk());
 			}
@@ -196,10 +196,10 @@ public class RaidEvents {
 	}
 
 	private static void shiftBlocks(BlockEvent.NeighborNotifyEvent event, BlockPos oldPos, BlockPos newPos, Chunk oldChunk, Chunk newChunk) {
-		String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
+		String oldBlock = NewRaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
 		if (oldBlock != null)
-			RaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
-		if(RaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
-			RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
+			NewRaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
+		if(NewRaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
+			NewRaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
 	}
 }

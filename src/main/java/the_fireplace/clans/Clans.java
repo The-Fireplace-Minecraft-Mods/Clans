@@ -33,6 +33,8 @@ import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.compat.payment.IPaymentHandler;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.compat.payment.PaymentHandlerGE;
+import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.util.PlayerClanCapability;
 
 import javax.annotation.Nonnull;
@@ -108,6 +110,8 @@ public final class Clans {
     public void onServerStop(FMLServerStoppingEvent event) {
         ClanChunkCache.save();
         NewClanDatabase.save();
+        NewRaidRestoreDatabase.save();
+        NewRaidBlockPlacementDatabase.save();
     }
 
     @SubscribeEvent

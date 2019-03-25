@@ -104,7 +104,7 @@ public final class RaidingParties {
 		raidedClans.remove(targetClan);
 		for(int id: DimensionManager.getIDs())
 			for(Chunk c: FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(id).getChunkProvider().getLoadedChunks()) {
-				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
+				NewChunkRestoreData data = NewRaidRestoreDatabase.popChunkRestoreData(id, c);
 				if(data != null)
 					data.restore(c);
 			}

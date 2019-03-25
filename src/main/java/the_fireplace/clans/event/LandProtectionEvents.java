@@ -26,8 +26,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
-import the_fireplace.clans.raid.RaidRestoreDatabase;
+import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
@@ -62,7 +62,7 @@ public class LandProtectionEvents {
 								else
 									breakingPlayer.sendMessage(new TextComponentString("You cannot break this block while in another clan's territory.").setStyle(TextStyles.RED));
 							} else
-								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
+								NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 						}
 					}
 					return;
@@ -121,8 +121,8 @@ public class LandProtectionEvents {
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
-							RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
-							RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
+							NewRaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
+							NewRaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
 						}
 					}
 					return;
@@ -218,7 +218,7 @@ public class LandProtectionEvents {
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState)) {
-						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
+						NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
 					} else {
 						removeBlocks.add(pos);
 					}

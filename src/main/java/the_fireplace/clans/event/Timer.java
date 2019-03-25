@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
+import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.*;
@@ -34,6 +36,8 @@ public class Timer {
 				fiveMinuteCounter -= 20*60*5;
 				ClanChunkCache.save();
 				NewClanDatabase.save();
+				NewRaidBlockPlacementDatabase.save();
+				NewRaidRestoreDatabase.save();
 				executing = false;
 			}
 			if(++minuteCounter >= 20*60) {
