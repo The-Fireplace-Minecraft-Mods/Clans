@@ -194,7 +194,7 @@ public final class Clans {
         public static int maxNameLength = 32;
         @Config.Comment("Minimum number of blocks between clan homes.")
         @Config.RangeInt(min=0)
-        public static int minClanHomeDist = 1000;
+        public static int minClanHomeDist = 320;
         @Config.Comment("Force clans to have connected claims.")
         public static boolean forceConnectedClaims = true;
         @Config.Comment("Allow players to be a member of multiple clans at once.")
@@ -219,13 +219,13 @@ public final class Clans {
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;
         @Config.Comment("Maximum duration a raid can last for, in minutes.")
-        @Config.RangeInt(min=0)
+        @Config.RangeInt(min=0,max=Integer.MAX_VALUE/60)
         public static int maxRaidDuration = 30;
         @Config.Comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
         @Config.RangeInt(min=0)
         public static int raidBufferTime = 90;
         @Config.Comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
-        @Config.RangeInt(min=0)
+        @Config.RangeInt(min=0,max=Integer.MAX_VALUE/60)
         public static int remainingTimeToGlow = 10;
         @Config.Comment("Maximum amount of consecutive time raiding parties can remain outside their target's territory, in seconds.")
         @Config.RangeInt(min=0)

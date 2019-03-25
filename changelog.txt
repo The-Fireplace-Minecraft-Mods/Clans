@@ -18,6 +18,7 @@ Internal optimizations
 Change the clan banner saving format to be more consistent with the 1.13 method. The clan banners might or might not migrate to 1.13 successfully now. Pre-1.2.0 clan banners will be lost, so make sure you have a physical banner available so you can set it again.
 Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, and messages when various stages of a raid are reached.
+The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
 
 Fixes:
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
