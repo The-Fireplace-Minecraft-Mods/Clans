@@ -49,9 +49,10 @@ public class CommandInvite extends ClanSubCommand {
 		assert server != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);
 		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
-			if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan))
+			if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
+				target.sendMessage(new TextComponentTranslation("You have invited %s to join %s.", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				target.sendMessage(new TextComponentTranslation("You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-			else
+			} else
 				sender.sendMessage(new TextComponentTranslation("The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(new TextComponentTranslation("The player %s is already in a clan.", target.getName()).setStyle(TextStyles.RED));

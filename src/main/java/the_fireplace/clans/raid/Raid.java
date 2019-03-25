@@ -36,7 +36,7 @@ public class Raid {
 	}
 
 	public void raiderVictory() {
-		RaidingParties.endRaid(target);
+		RaidingParties.endRaid(target, true);
 		long reward = Clans.cfg.winRaidAmount;
 		if(Clans.cfg.winRaidMultiplierClaims)
 			reward *= target.getClaimCount();
@@ -56,7 +56,7 @@ public class Raid {
 	}
 
 	public void defenderVictory() {
-		RaidingParties.endRaid(target);
+		RaidingParties.endRaid(target, false);
 		//Reward the defenders the cost of the raid
 		Clans.getPaymentHandler().addAmount(cost, target.getClanId());
 		target.addShield(Clans.cfg.defenseShield * 60);
@@ -65,6 +65,10 @@ public class Raid {
 
 	public Set<UUID> getMembers() {
 		return members.keySet();
+	}
+
+	public ArrayList<UUID> getInitMembers() {
+		return initMembers;
 	}
 
 	public int getMemberCount(){
@@ -100,6 +104,12 @@ public class Raid {
 	}
 
 	public boolean checkRaidEndTimer() {
+		if(remainingSeconds == Clans.cfg.remainingTimeToGlow * 60) {
+			for(UUID member: defenders.keySet())
+				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
+			for(UUID member: getMembers())
+				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+		}
 		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
 			for(UUID defender: defenders.keySet())
 				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(defender).addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
