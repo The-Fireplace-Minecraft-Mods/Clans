@@ -1,5 +1,6 @@
 package the_fireplace.clans.clan;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
@@ -8,6 +9,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.util.ChunkPosition;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
@@ -50,6 +52,17 @@ public class ClanChunkCache {
             Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
             isChanged = true;
         }
+    }
+
+    @Nullable
+    public static NewClan getChunkClan(int x, int z, int dim) {
+        if(!isLoaded)
+            load();
+        for(Map.Entry<UUID, Set<ChunkPosition>> entry: Lists.newArrayList(claimedChunks.entrySet()))//New list with the data to prevent concurrent modification errors
+            for(ChunkPosition pos: entry.getValue())
+                if(pos.posX == x && pos.posZ == z && pos.dim == dim)
+                    return ClanCache.getClanById(entry.getKey());
+        return null;
     }
 
     private static void load() {

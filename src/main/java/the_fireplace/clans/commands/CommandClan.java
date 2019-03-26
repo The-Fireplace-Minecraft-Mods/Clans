@@ -37,6 +37,7 @@ public class CommandClan extends CommandBase {
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonClaim());
 	    put("map", new CommandMap());
+        put("fancymap", new CommandFancyMap());
         //managing members
         put("invite", new CommandInvite());
         put("kick", new CommandKick());
@@ -106,6 +107,10 @@ public class CommandClan extends CommandBase {
             case "map":
             case "m":
                 commands.get("map").execute(server, sender, args);
+                return;
+            case "fancymap":
+            case "fm":
+                commands.get("fancymap").execute(server, sender, args);
                 return;
             //Managing members
             case "invite":

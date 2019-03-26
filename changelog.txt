@@ -3,6 +3,7 @@ Added Dynmap integration - Dynmap now shows what land is claimed by which clans.
 New command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
 New command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
 New command: /clan list - View the names and descriptions of all clans on the server.
+New command: /clan fancymap - View a taller and differently color coded clan map.
 New configs: initial claim separation multiplier, enforce initial claim separation, Dynmap border weight, Dynmap border opacity, and Dynmap fill opacity.
 Added initial claim distance enforcement, to prevent clans from stacking up next to each other and being unable to grow or forced to see each others' bases.
 
@@ -22,6 +23,7 @@ Change the clan banner saving format to be more consistent with the 1.13 method.
 Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, and messages when various stages of a raid are reached.
 The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
+Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
 
 Fixes:
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
