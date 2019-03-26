@@ -108,13 +108,13 @@ public class DynmapCompat implements IDynmapCompat {
         startTimeNS = System.nanoTime();
         Clans.LOGGER.trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> teamClaimsList = ClanChunkCache.getChunks(UUID.fromString(clanDimInfo.getClanIdString()));
+        Set<ChunkPosition> teamClaimsList = Sets.newHashSet(ClanChunkCache.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent data from getting removed from the chunk cache
         totalChunks = teamClaimsList.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
         List<GroupedChunks> groupList = new ArrayList<>();
         if (!teamClaimsList.isEmpty()) {
-            for (ChunkPosition pos: teamClaimsList) {
+            for (ChunkPosition pos: Lists.newArrayList(teamClaimsList)) {//New list to prevent concurrent modification exception
                 GroupedChunks group = new GroupedChunks();
                 groupList.add(group);
 

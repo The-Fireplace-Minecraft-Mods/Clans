@@ -74,27 +74,33 @@ public class ClanChunkCache {
         return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclancache.json");
     }
 
+    private static boolean reading;
+
     private static void read(File file) {
-        JsonParser jsonParser = new JsonParser();
-        try {
-            Object obj = jsonParser.parse(new FileReader(file));
-            if(obj instanceof JsonObject) {
-                JsonObject jsonObject = (JsonObject) obj;
-                JsonArray claimedChunkMap = jsonObject.get("claimedChunks").getAsJsonArray();
-                for (int i = 0; i < claimedChunkMap.size(); i++) {
-                    Set<ChunkPosition> positions = Sets.newHashSet();
-                    for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray())
-                        positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
-                    claimedChunks.put(UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString()), positions);
-                }
-            } else
-                Clans.LOGGER.warn("Claim Cache not found! This is normal when no chunks have been claimed on Clans 1.2.0 and above.");
-        } catch (FileNotFoundException e) {
-            //do nothing, it just hasn't been created yet
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(!reading) {
+            reading = true;
+            JsonParser jsonParser = new JsonParser();
+            try {
+                Object obj = jsonParser.parse(new FileReader(file));
+                if (obj instanceof JsonObject) {
+                    JsonObject jsonObject = (JsonObject) obj;
+                    JsonArray claimedChunkMap = jsonObject.get("claimedChunks").getAsJsonArray();
+                    for (int i = 0; i < claimedChunkMap.size(); i++) {
+                        Set<ChunkPosition> positions = Sets.newHashSet();
+                        for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray())
+                            positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
+                        claimedChunks.put(UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString()), positions);
+                    }
+                } else
+                    Clans.LOGGER.warn("Claim Cache not found! This is normal when no chunks have been claimed on Clans 1.2.0 and above.");
+            } catch (FileNotFoundException e) {
+                //do nothing, it just hasn't been created yet
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            isChanged = false;
+            reading = false;
         }
-        isChanged = false;
     }
 
     public static void save() {

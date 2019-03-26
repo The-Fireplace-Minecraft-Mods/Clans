@@ -153,6 +153,18 @@ public class Timer {
 						ChunkUtils.clearChunkOwner(c);
 						chunkClan = null;
 					}
+
+					ClaimedLandCapability cap = CapHelper.getClaimedLandCapability(c);
+					if(cap.pre120() && cap.getClan() != null) {
+						NewClan clan = ClanCache.getClanById(cap.getClan());
+						if(clan == null) {
+							ChunkUtils.clearChunkOwner(c);
+							return;
+						}
+						ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().provider.getDimension());
+						cap.setPre120(false);
+					}
+
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 						CapHelper.getClaimedLandCapability(event.player).setClan(chunkClan);
 						Style color = TextStyles.GREEN;
@@ -179,7 +191,7 @@ public class Timer {
 						}
 
 						event.player.sendMessage(new TextComponentString("You are now entering " + endMsg).setStyle(color));
-					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 15 == 0) {
+					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
 						int curY = (int) Math.round(event.player.posY);
 						int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
 						int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);

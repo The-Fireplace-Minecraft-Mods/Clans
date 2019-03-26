@@ -16,7 +16,7 @@ import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
-public class OtherEvents {
+public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         //noinspection ConstantConditions
