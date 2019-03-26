@@ -12,6 +12,7 @@ import the_fireplace.clans.util.ChunkUtils;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public final class NewRaidRestoreDatabase {
 	static NewRaidRestoreDatabase instance = null;
@@ -26,9 +27,13 @@ public final class NewRaidRestoreDatabase {
 	HashMap<ChunkPosition, NewChunkRestoreData> raidedChunks = Maps.newHashMap();
 
 	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
+		addRestoreBlock(dim, c, pos, block, ChunkUtils.getChunkOwner(c));
+	}
+
+	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block, UUID chunkOwner) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
-			getInstance().raidedChunks.put(coords, new NewChunkRestoreData(ChunkUtils.getChunkOwner(c)));
+			getInstance().raidedChunks.put(coords, new NewChunkRestoreData(chunkOwner));
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		isChanged = true;
 	}

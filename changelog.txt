@@ -24,6 +24,7 @@ Change the way clans are stored - the database is now json-based, so server owne
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, and messages when various stages of a raid are reached.
 The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
 Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
+Minor performance improvement to saving and restoring block data from raids.
 
 Fixes:
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.

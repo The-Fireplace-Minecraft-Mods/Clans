@@ -63,7 +63,7 @@ public class LandProtectionEvents {
 								else
 									breakingPlayer.sendMessage(new TextComponentString("You cannot break this block while in another clan's territory.").setStyle(TextStyles.RED));
 							} else
-								NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
+								NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState), chunkOwner);
 						}
 					}
 					return;
@@ -217,14 +217,12 @@ public class LandProtectionEvents {
 				NewClan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
-					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState)) {
-						NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-					} else {
+					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState))
+						NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState), chunkOwner);
+					else
 						removeBlocks.add(pos);
-					}
-				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY)) {
+				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY))
 					removeBlocks.add(pos);
-				}
 			}
 			for (BlockPos pos : removeBlocks)
 				event.getAffectedBlocks().remove(pos);
