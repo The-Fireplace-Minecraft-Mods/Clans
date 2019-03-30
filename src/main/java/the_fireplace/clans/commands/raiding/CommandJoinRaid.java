@@ -7,7 +7,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -39,23 +41,34 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
-			String targetName = args[0];
-			Raid raid = RaidingParties.getRaid(targetName);
-			if (raid != null) {
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
-					if(!clanPlayers.containsKey(sender)) {
-						raid.addMember(sender);
-						sender.sendMessage(new TextComponentString("You successfully joined the raid!").setStyle(TextStyles.GREEN));
-					} else
-						sender.sendMessage(new TextComponentString("You cannot raid your own clan!").setStyle(TextStyles.RED));
+		NewClan target = ClanCache.getClanByName(args[0]);
+		if(target == null)
+			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
+		else {
+			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
+				if(!target.getMembers().containsKey(sender.getUniqueID())) {
+					if (!RaidingParties.getRaidedClans().contains(target)) {
+						if(!target.isShielded()) {
+							if (target.getOnlineMembers().size() > 0 && target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset > 0) {
+								new Raid(sender, target);
+								sender.sendMessage(new TextComponentString("Raiding party created!").setStyle(TextStyles.GREEN));
+							} else
+								sender.sendMessage(new TextComponentTranslation("%s does not have enough online members to get raided!", target.getClanName()).setStyle(TextStyles.RED));
+						} else
+							sender.sendMessage(new TextComponentString("Target clan is currently shielded! Try again in " + (Math.round(100f * target.getShield() / 60) / 100f) + " hours.").setStyle(TextStyles.RED));
+					} else { //Join an existing raid
+						Raid raid = RaidingParties.getRaid(target);
+						if(target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset > raid.getMemberCount()) {
+							raid.addMember(sender);
+							sender.sendMessage(new TextComponentTranslation("You successfully joined the raiding party against %s!", target.getClanName()).setStyle(TextStyles.GREEN));
+						} else
+							sender.sendMessage(new TextComponentTranslation("Target raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+					}
 				} else
-					sender.sendMessage(new TextComponentString("Target raid cannot hold any more people!").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentString("You cannot raid a clan you are in!").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString("Target raid does not exist!").setStyle(TextStyles.RED));
-		} else
-			sender.sendMessage(new TextComponentString("You are already in a raid!").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentString("You are already in a raid!").setStyle(TextStyles.RED));
+		}
 	}
 
 	@Override

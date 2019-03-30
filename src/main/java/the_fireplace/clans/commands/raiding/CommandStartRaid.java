@@ -44,8 +44,15 @@ public class CommandStartRaid extends RaidSubCommand {
 				if(clanPlayers.size() >= raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
-							RaidingParties.initRaid(raid.getTarget());
-							sender.sendMessage(new TextComponentString("You successfully started the raid!").setStyle(TextStyles.GREEN));
+							long raidCost = Clans.cfg.startRaidCost;
+							if (Clans.cfg.startRaidMultiplier)
+								raidCost *= raid.getTarget().getClaimCount();
+							raid.setCost(raidCost);
+							if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
+								RaidingParties.initRaid(raid.getTarget());
+								sender.sendMessage(new TextComponentString("You successfully started the raid!").setStyle(TextStyles.GREEN));
+							} else
+								sender.sendMessage(new TextComponentString("Insufficient funds to form raiding party against " + raid.getTarget().getClanName() + ". It costs " + raidCost + ' ' + Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(new TextComponentString("You have already started this raid!").setStyle(TextStyles.RED));
 					} else

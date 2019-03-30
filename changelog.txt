@@ -15,6 +15,8 @@ Improved chat colors - Wilderness is now yellow when protected, like other prote
 The /clan map is now color coded: Green for clans the player is a member of, yellow for wilderness, red for clans the player is not part of, and blue for where the player is currently standing.
 The clan home warmup time can now be set to -1 to disable /clan home.
 It is now far easier to avoid accidentally making a clan's first claim within the minimum clan home distance of another clan's home. If not being enforced, the player is still shown a warning against claiming within that range before they are allowed to do it.
+Merged the functionality of /raid form into /raid join. Use /raid join to create or join a raiding party.
+The raid cost is now paid when /raid start is used, not /raid form.
 Improve a few feedback messages
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
@@ -37,3 +39,4 @@ Fixed permission error when trying to accept a clan invite when already in a cla
 Fixed clan shield calculation when starting a raid
 Fixed default clan not getting set when joining a clan
 Fixed default clan check on login not updaging default clan when players are no longer in their previous default clan
+You can no longer form a raid against a clan you're in

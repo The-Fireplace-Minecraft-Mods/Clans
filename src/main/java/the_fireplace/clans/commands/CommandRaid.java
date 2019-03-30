@@ -22,7 +22,6 @@ import java.util.*;
 public class CommandRaid extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //raiding parties
-        put("form", new CommandCreateRaid());
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
         put("invite", new CommandInviteRaid());
