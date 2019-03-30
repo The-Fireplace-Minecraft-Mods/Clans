@@ -137,6 +137,7 @@ public class CommandClan extends CommandBase {
                 return;
             //Setting clan details and home
             case "form":
+            case "create":
                 commands.get("form").execute(server, sender, args);
                 return;
 	        case "disband":

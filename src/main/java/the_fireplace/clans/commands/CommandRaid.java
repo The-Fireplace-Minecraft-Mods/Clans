@@ -50,11 +50,6 @@ public class CommandRaid extends CommandBase {
             args = new String[]{};
         switch(tag){
             //Commands for raiding parties
-            case "create":
-            case "form":
-            case "f":
-                commands.get("form").execute(server, sender, args);
-                return;
             case "join":
             case "j":
                 commands.get("join").execute(server, sender, args);
