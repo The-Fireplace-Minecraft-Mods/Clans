@@ -1,10 +1,7 @@
 package the_fireplace.clans.event;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockFenceGate;
-import net.minecraft.block.BlockTNT;
-import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
@@ -217,7 +214,7 @@ public class LandProtectionEvents {
 				NewClan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
-					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState))
+					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
 						NewRaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState), chunkOwner);
 					else
 						removeBlocks.add(pos);

@@ -29,6 +29,7 @@ Change the way clans are stored - the database is now json-based, so server owne
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, setting your default clan, and messages when various stages of a raid are reached.
 The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
 Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
+Improved /clan home teleportation handling, you are far less likely to run into issues with the clan home being falsely obstructed
 Minor performance improvement to saving and restoring block data from raids.
 Minor performance improvement to tab completions for the opclan disband command.
 
@@ -43,4 +44,5 @@ Fixed permission error when trying to accept a clan invite when already in a cla
 Fixed clan shield calculation when starting a raid
 Fixed default clan not getting set when joining a clan
 Fixed default clan check on login not updaging default clan when players are no longer in their previous default clan
+Fixed multiple explosions messing up the chunk restoration
 You can no longer form a raid against a clan you're in
