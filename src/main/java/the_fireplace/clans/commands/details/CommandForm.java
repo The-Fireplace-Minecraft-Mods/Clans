@@ -81,4 +81,9 @@ public class CommandForm extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("You are already in a clan.").setStyle(TextStyles.RED));
 	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
+	}
 }

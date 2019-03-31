@@ -44,6 +44,11 @@ public class OpCommandPromote extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
 		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
@@ -52,7 +57,7 @@ public class OpCommandPromote extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
-	public static void promoteClanMember(MinecraftServer server, EntityPlayerMP sender, String playerName, NewClan clan) throws CommandException {
+	public static void promoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, NewClan clan) throws CommandException {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
 		if(target != null) {

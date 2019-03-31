@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.details;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -41,5 +42,10 @@ public class CommandDisband extends ClanSubCommand {
 			OpCommandDisband.disbandClan(server, sender, selectedClan);
 		else
 			sender.sendMessage(new TextComponentString("You are not a leader of " + selectedClan.getClanName()).setStyle(TextStyles.RED));
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
 	}
 }

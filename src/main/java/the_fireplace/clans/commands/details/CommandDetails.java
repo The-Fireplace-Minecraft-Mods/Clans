@@ -48,21 +48,31 @@ public class CommandDetails extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		assert server != null;
+
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		if(args.length == 0) {
 			if(selectedClan == null) {
-				sender.sendMessage(new TextComponentString("You are not in a clan. Use /clan details [clan] to get the details of another clan.").setStyle(TextStyles.RED));
-			} else {
+				if(sender instanceof EntityPlayerMP)
+					sender.sendMessage(new TextComponentString("You are not in a clan. Use /clan details [clan] to get the details of another clan.").setStyle(TextStyles.RED));
+				else
+					sender.sendMessage(new TextComponentString("You must specify a clan when viewing details from console. Use /clan details [clan] to get the details of a clan.").setStyle(TextStyles.RED));
+			} else
 				showDetails(server, sender, selectedClan);
-			}
 		} else {
 			NewClan targetClan = ClanCache.getClanByName(args[0]);
-			if(targetClan == null) {
+			if(targetClan == null)
 				sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
-			} else {
+			else
 				showDetails(server, sender, targetClan);
-			}
 		}
+	}
+
+	@Override
+	protected boolean allowConsoleUsage() {
+		return true;
 	}
 
 	@Override
@@ -71,7 +81,7 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private void showDetails(MinecraftServer server, EntityPlayerMP sender, NewClan clan) {
+	private void showDetails(MinecraftServer server, ICommandSender sender, NewClan clan) {
 		sender.sendMessage(new TextComponentString("Clan name: "+clan.getClanName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(new TextComponentString("Clan description: "+clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(new TextComponentString("Number of claims: "+clan.getClaimCount()).setStyle(TextStyles.GREEN));

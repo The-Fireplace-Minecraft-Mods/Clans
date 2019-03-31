@@ -64,4 +64,9 @@ public class CommandBanner extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
 }

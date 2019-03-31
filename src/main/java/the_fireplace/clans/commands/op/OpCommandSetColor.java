@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.op;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -32,6 +33,11 @@ public class OpCommandSetColor extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		int color;
 		try {
 			color = args[0].startsWith("0x") ? Integer.parseInt(args[0].substring(2), 16) : Integer.parseInt(args[0]);
@@ -39,12 +45,7 @@ public class OpCommandSetColor extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentTranslation("Invalid color integer: %s!", args[0]).setStyle(TextStyles.RED));
 			return;
 		}
-		if(opSelectedClan.isOpclan()) {
-			NewClanDatabase.getOpClan().setColor(color);
-			sender.sendMessage(new TextComponentTranslation("%s color set!", NewClanDatabase.getOpClan().getClanName()).setStyle(TextStyles.GREEN));
-		} else {
-			opSelectedClan.setColor(color);
-			sender.sendMessage(new TextComponentTranslation("%s color set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
-		}
+		opSelectedClan.setColor(color);
+		sender.sendMessage(new TextComponentTranslation("%s color set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}
 }

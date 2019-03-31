@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.op;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -37,5 +38,15 @@ public class OpCommandBuildAdmin extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentString("You are now in Build Admin mode.").setStyle(TextStyles.YELLOW));
 		else
 			sender.sendMessage(new TextComponentString("You are no longer in Build Admin mode.").setStyle(TextStyles.GREEN));
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
+	}
+
+	@Override
+	protected boolean allowConsoleUsage() {
+		return false;
 	}
 }

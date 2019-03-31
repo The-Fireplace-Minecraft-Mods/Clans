@@ -24,4 +24,9 @@ public abstract class OpClanSubCommand extends ClanSubCommand {
 	public final EnumRank getRequiredClanRank(){
 		return EnumRank.LEADER;
 	}
+
+	@Override
+	protected boolean allowConsoleUsage() {
+		return true;
+	}
 }

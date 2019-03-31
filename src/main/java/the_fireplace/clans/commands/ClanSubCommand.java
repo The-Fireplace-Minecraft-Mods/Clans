@@ -73,18 +73,20 @@ public abstract class ClanSubCommand extends CommandBase {
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(server == null)
 			throw new WrongUsageException("Internal error: The server must not be null!");
-		if(sender instanceof EntityPlayerMP) {
+		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			if(args.length >= getMinArgs() && args.length <= (getMaxArgs() == Integer.MAX_VALUE ? getMaxArgs() : getMaxArgs()+1)) {
-				NewClan playerClan;
+				NewClan playerClan = null;
 				if(getMaxArgs() == Integer.MAX_VALUE ? args.length > 1 && (args[1].equalsIgnoreCase("setdesc") || args[1].equalsIgnoreCase("setdescription")) : args.length ==  getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
-				} else
+				} else if(sender instanceof EntityPlayer)
 					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
-				ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
-				if(playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
-					sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
-					return;
+				if(sender instanceof EntityPlayerMP) {
+					ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
+						sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
+						return;
+					}
 				}
 				this.selectedClan = playerClan;
 				if(this.opSelectedClan == null)
@@ -97,7 +99,10 @@ public abstract class ClanSubCommand extends CommandBase {
 						args2 = new String[]{};
 				}
 				if(checkPermission(server, sender))
-					run(server, (EntityPlayerMP) sender, args2);
+					if(sender instanceof EntityPlayerMP)
+						run(server, (EntityPlayerMP) sender, args2);
+					else
+						runFromAnywhere(server, sender, args2);
 				else
 					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
 			} else
@@ -107,4 +112,10 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	protected abstract void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException;
+
+	protected abstract void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
+
+	protected boolean allowConsoleUsage() {
+		return false;
+	}
 }

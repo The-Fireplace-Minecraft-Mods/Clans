@@ -52,6 +52,11 @@ public class CommandPromote extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You are not a leader of " + selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
+
 	@SuppressWarnings("Duplicates")
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {

@@ -66,4 +66,9 @@ public class CommandTrapped extends ClanSubCommand {
 			}
 		}
 	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
 }

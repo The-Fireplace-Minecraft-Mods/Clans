@@ -62,6 +62,11 @@ public class CommandHome extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You cannot use this command until your cooldown runs out in "+cooldown+" seconds.").setStyle(TextStyles.RED));
 	}
 
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
+
 	public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
 		if (playerDim == playerClan.getHomeDim() || player.changeDimension(playerClan.getHomeDim()) != null) {
 			if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {

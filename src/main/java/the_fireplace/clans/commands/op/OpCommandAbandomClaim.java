@@ -2,6 +2,7 @@ package the_fireplace.clans.commands.op;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -75,6 +76,11 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 	}
 
 	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
+
+	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		return args.length == 1 ? Collections.singletonList("force") : Collections.emptyList();
 	}
@@ -109,5 +115,10 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentTranslation("Claim abandoned from %s!", targetClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(new TextComponentString("You cannot abandon this chunk of land because doing so would create at least one disconnected claim.").setStyle(TextStyles.RED));
+	}
+
+	@Override
+	protected boolean allowConsoleUsage() {
+		return false;
 	}
 }

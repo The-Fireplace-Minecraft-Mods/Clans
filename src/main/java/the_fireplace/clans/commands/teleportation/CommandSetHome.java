@@ -56,4 +56,9 @@ public class CommandSetHome extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("Clan home can only be set in clan territory!").setStyle(TextStyles.RED));
 	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
 }

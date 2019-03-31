@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.details;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -48,10 +49,17 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		assert server != null;
-		if(args.length == 0)
-			showDetails(server, sender, sender.getGameProfile());
-		else {
+
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(args.length == 0) {
+			if(sender instanceof EntityPlayerMP)
+				showDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
+			else
+				sender.sendMessage(new TextComponentString("You must specify a player to view details of when running this command from console.").setStyle(TextStyles.RED));
+		} else {
 			GameProfile targetPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args[0]);
 			if(targetPlayer == null)
 				sender.sendMessage(new TextComponentString("Target player not found.").setStyle(TextStyles.RED));
@@ -61,11 +69,16 @@ public class CommandPlayerInfo extends ClanSubCommand {
 	}
 
 	@Override
+	protected boolean allowConsoleUsage() {
+		return true;
+	}
+
+	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		return args.length == 1 ? Lists.newArrayList(ClanCache.getClanNames().keySet()) : Collections.emptyList();
 	}
 
-	private void showDetails(MinecraftServer server, EntityPlayerMP sender, GameProfile target) {
+	private void showDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
 		sender.sendMessage(new TextComponentTranslation("Player name: %s", target.getName()).setStyle(TextStyles.GREEN));
 		List<NewClan> leaders = Lists.newArrayList();
 		List<NewClan> admins = Lists.newArrayList();

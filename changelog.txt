@@ -18,6 +18,8 @@ It is now far easier to avoid accidentally making a clan's first claim within th
 Merged the functionality of /raid form into /raid join. Use /raid join to create or join a raiding party.
 The raid cost is now paid when /raid start is used, not /raid form.
 /opclan claim can now be used to claim land for other clans
+Many opclan commands can now be used from the console
+/clan details can now be used from the console
 Improved much of the command feedback (The improvements that came with 1.1.0 plus additional improvements)
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.

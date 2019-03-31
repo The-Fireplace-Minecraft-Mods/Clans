@@ -66,6 +66,11 @@ public class CommandLeave extends ClanSubCommand {
 			sender.sendMessage(new TextComponentTranslation("Internal Error: You were unable to be removed from %s.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
+
 	/**
 	 * Check if a clan is the player's default clan, and if it is, update the player's default clan to something else.
 	 * @param player

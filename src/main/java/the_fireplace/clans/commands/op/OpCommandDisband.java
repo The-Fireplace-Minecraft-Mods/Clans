@@ -42,6 +42,11 @@ public class OpCommandDisband extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+
+	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
 		NewClan c = ClanCache.getClanByName(clan);
 		if(c != null) {
@@ -50,7 +55,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
-	public static void disbandClan(MinecraftServer server, EntityPlayerMP sender, NewClan c) {
+	public static void disbandClan(MinecraftServer server, ICommandSender sender, NewClan c) {
 		if(!c.isOpclan()) {
 			if (NewClanDatabase.removeClan(c.getClanId())) {
 				long distFunds = Clans.getPaymentHandler().getBalance(c.getClanId());
@@ -70,7 +75,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 					//noinspection ConstantConditions
 					if (player != null) {
 						CommandLeave.updateDefaultClan(player, c);
-						if (!player.getUniqueID().equals(sender.getUniqueID()))
+						if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
 							player.sendMessage(new TextComponentTranslation("%s has been disbanded by %s.", c.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 					}
 				}

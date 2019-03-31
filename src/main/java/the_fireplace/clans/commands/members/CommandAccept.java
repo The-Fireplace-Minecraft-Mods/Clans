@@ -51,4 +51,9 @@ public class CommandAccept extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("You don't have any pending invites.").setStyle(TextStyles.RED));
 	}
+
+	@Override
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+
+	}
 }
