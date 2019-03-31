@@ -41,11 +41,6 @@ public class OpCommandDisband extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
 		NewClan c = ClanCache.getClanByName(clan);

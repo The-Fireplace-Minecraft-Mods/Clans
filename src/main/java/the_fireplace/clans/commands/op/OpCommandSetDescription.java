@@ -33,11 +33,6 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		StringBuilder newDescription = new StringBuilder();
 		for(String arg: args)

@@ -43,11 +43,6 @@ public class OpCommandKick extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
 		NewClan c = ClanCache.getClanByName(clan);

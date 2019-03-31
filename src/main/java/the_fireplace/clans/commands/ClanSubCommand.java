@@ -79,8 +79,8 @@ public abstract class ClanSubCommand extends CommandBase {
 				if(getMaxArgs() == Integer.MAX_VALUE ? args.length > 1 && (args[1].equalsIgnoreCase("setdesc") || args[1].equalsIgnoreCase("setdescription")) : args.length ==  getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
-				} else if(sender instanceof EntityPlayer)
-					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayer) sender).getDefaultClan());
+				} else if(sender instanceof EntityPlayerMP)
+					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayerMP) sender).getDefaultClan());
 				if(sender instanceof EntityPlayerMP) {
 					ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {

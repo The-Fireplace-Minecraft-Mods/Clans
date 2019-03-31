@@ -34,11 +34,6 @@ public class OpCommandSetName extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String newName = args[0];
 		if(!ClanCache.clanNameTaken(newName)) {
