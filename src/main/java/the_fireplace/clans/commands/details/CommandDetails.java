@@ -47,8 +47,8 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		runFromAnywhere(server, sender, args);
 	}
 
 	@Override

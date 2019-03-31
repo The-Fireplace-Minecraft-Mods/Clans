@@ -48,12 +48,12 @@ public class CommandPlayerInfo extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		runFromAnywhere(server, sender, args);
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		if(args.length == 0) {
 			if(sender instanceof EntityPlayerMP)
 				showDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
