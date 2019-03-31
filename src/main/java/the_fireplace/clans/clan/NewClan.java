@@ -330,20 +330,20 @@ public class NewClan {
         this.rent = rent;
     }
 
-    public long getRentTimestamp() {
+    public long getNextRentTimestamp() {
         return rentTimestamp;
     }
 
-    public void updateRentTimeStamp() {
-        this.rentTimestamp = System.currentTimeMillis();
+    public void updateNextRentTimeStamp() {
+        this.rentTimestamp = System.currentTimeMillis() + Clans.cfg.chargeRentDays * 1000L * 60L * 60L * 24L;
     }
 
-    public long getUpkeepTimestamp() {
+    public long getNextUpkeepTimestamp() {
         return upkeepTimestamp;
     }
 
-    public void updateUpkeepTimeStamp() {
-        this.upkeepTimestamp = System.currentTimeMillis();
+    public void updateNextUpkeepTimeStamp() {
+        this.upkeepTimestamp = System.currentTimeMillis() + Clans.cfg.clanUpkeepDays * 1000L * 60L * 60L * 24L;
     }
 
     /**

@@ -22,7 +22,6 @@ Many opclan commands can now be used from the console
 /clan details can now be used from the console
 Improved much of the command feedback (The improvements that came with 1.1.0 plus additional improvements)
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
-Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
 Internal optimizations
 Change the clan banner saving format to be more consistent with the 1.13 method. The clan banners might or might not migrate to 1.13 successfully now. Pre-1.2.0 clan banners will be lost, so make sure you have a physical banner available so you can set it again.
 Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
@@ -45,4 +44,6 @@ Fixed clan shield calculation when starting a raid
 Fixed default clan not getting set when joining a clan
 Fixed default clan check on login not updaging default clan when players are no longer in their previous default clan
 Fixed multiple explosions messing up the chunk restoration
+Fixed clan upkeep and rent draining the balances of clans and players by constantly running
 You can no longer form a raid against a clan you're in
+Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
