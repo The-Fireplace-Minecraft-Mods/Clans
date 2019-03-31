@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.details;
+package the_fireplace.clans.commands.land;
 
 import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;

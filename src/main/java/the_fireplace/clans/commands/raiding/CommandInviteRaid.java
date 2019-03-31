@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -52,16 +53,16 @@ public class CommandInviteRaid extends RaidSubCommand {
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
 				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
-						targetPlayer.sendMessage(new TextComponentString("You have been invited to a raid against " + raid.getTarget().getClanName() + "! To join, type /raid join " + raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
-						sender.sendMessage(new TextComponentString("You successfully invited " + targetPlayer.getName() + " to the raid!").setStyle(TextStyles.GREEN));
+						targetPlayer.sendMessage(new TextComponentTranslation("You have been invited to a raiding party against %1$s! To join, type /raid join %1$s", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+						sender.sendMessage(new TextComponentTranslation("You successfully invited %s to the raiding party!", targetPlayer.getName()).setStyle(TextStyles.GREEN));
 					} else
-						sender.sendMessage(new TextComponentString("You cannot invite someone to raid their own clan!").setStyle(TextStyles.RED));
+						sender.sendMessage(new TextComponentString("You cannot invite someone to raid a clan they are a part of!").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString("Your raid cannot hold any more people!").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentTranslation("Your raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
 			} else//Internal error because we should not reach this point
-				sender.sendMessage(new TextComponentString("Internal error: You are not in a raid!").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentString("Internal error: You are not in a raiding party!").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("You are not in a raid!").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("You are not in a raiding party!").setStyle(TextStyles.RED));
 	}
 
 	@Override

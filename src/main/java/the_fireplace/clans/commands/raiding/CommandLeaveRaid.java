@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
@@ -37,10 +38,10 @@ public class CommandLeaveRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				raid.removeMember(sender);
-				sender.sendMessage(new TextComponentString("You successfully left the raid!").setStyle(TextStyles.GREEN));
+				sender.sendMessage(new TextComponentTranslation("You successfully left the raiding party against %s!", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 			} else//Internal error because we should not reach this point
-				sender.sendMessage(new TextComponentString("Internal error: You are not in a raid!").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentString("Internal error: You are not in a raiding party!").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("You are not in a raid!").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("You are not in a raiding party!").setStyle(TextStyles.RED));
 	}
 }

@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -45,7 +46,7 @@ public class CommandSetRent extends ClanSubCommand {
 				maxRent *= selectedClan.getClaimCount();
 			if(maxRent <= 0 || newRent <= maxRent) {
 				selectedClan.setRent(newRent);
-				sender.sendMessage(new TextComponentString("Clan rent set!").setStyle(TextStyles.GREEN));
+				sender.sendMessage(new TextComponentTranslation("Clan rent for %s set to %s!", selectedClan.getClanName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
 			} else
 				sender.sendMessage(new TextComponentString("Cannot set rent above your maximum("+maxRent+' '+Clans.getPaymentHandler().getCurrencyName(maxRent)+")!").setStyle(TextStyles.RED));
 		} else

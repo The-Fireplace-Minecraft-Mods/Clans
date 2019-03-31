@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -50,7 +51,7 @@ public class CommandHome extends ClanSubCommand {
 		int cooldown = CapHelper.getPlayerClanCapability(sender).getCooldown();
 		if(cooldown <= 0) {
 			if (!selectedClan.hasHome() || home == null)
-				sender.sendMessage(new TextComponentString("Error: Your clan does not have a set home. The clan leader should use /clan sethome to set one.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.cfg.clanHomeWarmupTime > 0)
 					Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));

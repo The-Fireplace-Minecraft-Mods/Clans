@@ -53,9 +53,9 @@ public class CommandClaim extends ClanSubCommand {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId()))
-					sender.sendMessage(new TextComponentString("Your clan has already claimed this land.").setStyle(TextStyles.YELLOW));
+					sender.sendMessage(new TextComponentTranslation("%s has already claimed this land.", selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 				else
-					sender.sendMessage(new TextComponentString("Another clan has already claimed this land.").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentTranslation("Another clan (%s) has already claimed this land.", ClanCache.getClanById(claimFaction)).setStyle(TextStyles.RED));
 			} else {
 				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
@@ -68,11 +68,11 @@ public class CommandClaim extends ClanSubCommand {
 									inClanHomeRange = true;
 							if(inClanHomeRange) {
 								if(Clans.cfg.enforceInitialClaimSeparation)
-									sender.sendMessage(new TextComponentTranslation("You cannot claim this chunk of land because it is too close to another clan's home. Make sure you are at least %s blocks away from other clans' homes before trying again.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
+									sender.sendMessage(new TextComponentTranslation("You cannot claim this chunk of land because it is too close to another clan's home. Make sure you are at least %s blocks away from other clans' homes before trying again. Try using /clan fancymap to help determine where other clans are.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
 								else if(CapHelper.getPlayerClanCapability(sender).getClaimWarning())
 									claimChunk(sender, c, selectedClan);
 								else {
-									sender.sendMessage(new TextComponentTranslation("It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
+									sender.sendMessage(new TextComponentTranslation("It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways. Try using /clan fancymap to help determine where other clans are.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
 							}
@@ -95,6 +95,6 @@ public class CommandClaim extends ClanSubCommand {
 			selectedClan.addClaimCount();
 			sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("Insufficient funds in clan account to claim chunk. It costs " + Clans.cfg.claimChunkCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentTranslation("Insufficient funds in %s's account to claim chunk. It costs %s %s.", selectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
 	}
 }

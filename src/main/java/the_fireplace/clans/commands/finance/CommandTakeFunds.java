@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -44,12 +45,12 @@ public class CommandTakeFunds extends ClanSubCommand {
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
 			if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID()))
-				sender.sendMessage(new TextComponentString("Successfully took " + amount + ' ' + Clans.getPaymentHandler().getCurrencyName(amount) + " from your clan's balance.").setStyle(TextStyles.GREEN));
+				sender.sendMessage(new TextComponentTranslation("Successfully took %s %s from %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
-				sender.sendMessage(new TextComponentString("Internal error: Your account not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentString("Internal error: Your currency account not found.").setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString("Your clan does not have enough funds to do this.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentTranslation("%s does not have enough funds to do this.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

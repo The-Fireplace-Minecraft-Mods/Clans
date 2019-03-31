@@ -48,7 +48,7 @@ public class CommandSetHome extends ClanSubCommand {
 		if(c.hasCapability(Clans.CLAIMED_LAND, null) && selectedClan.getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
 			for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
 				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
-					sender.sendMessage(new TextComponentString("You are too close to another clan's home! You must be at least "+Clans.cfg.minClanHomeDist+" blocks away from other clans' homes to set your clan home.").setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentString("You are too close to another clan's home! You must be at least "+Clans.cfg.minClanHomeDist+" blocks away from other clans' homes to set your clan home. Use /clan fancymap to see where nearby clans are.").setStyle(TextStyles.RED));
 					return;
 				}
 			selectedClan.setHome(sender.getPosition(), sender.dimension);

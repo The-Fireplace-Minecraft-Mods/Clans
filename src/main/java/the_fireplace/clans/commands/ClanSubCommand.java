@@ -16,6 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
@@ -34,7 +35,7 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	protected NewClan selectedClan;
-	protected NewClan opSelectedClan = null;
+	protected NewClan opSelectedClan;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
@@ -86,6 +87,8 @@ public abstract class ClanSubCommand extends CommandBase {
 					return;
 				}
 				this.selectedClan = playerClan;
+				if(this.opSelectedClan == null)
+					this.opSelectedClan = NewClanDatabase.getOpClan();
 				String[] args2 = args;
 				if(args.length == getMaxArgs()+1) {
 					if (args.length > 1)

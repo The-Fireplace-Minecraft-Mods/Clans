@@ -36,12 +36,7 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 		StringBuilder newDescription = new StringBuilder();
 		for(String arg: args)
 			newDescription.append(arg).append(' ');
-		if(opSelectedClan == null) {
-			NewClanDatabase.getOpClan().setDescription(newDescription.toString());
-			sender.sendMessage(new TextComponentString("Opclan description set!").setStyle(TextStyles.GREEN));
-		} else {
-			opSelectedClan.setDescription(newDescription.toString());
-			sender.sendMessage(new TextComponentTranslation("%s description set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
-		}
+		opSelectedClan.setDescription(newDescription.toString());
+		sender.sendMessage(new TextComponentTranslation("%s description set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}
 }

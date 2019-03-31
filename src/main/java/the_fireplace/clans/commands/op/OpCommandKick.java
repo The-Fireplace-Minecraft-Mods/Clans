@@ -39,7 +39,7 @@ public class OpCommandKick extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan promote <clan> <member>";
+		return "/opclan kick <clan> <member>";
 	}
 
 	@Override
@@ -51,16 +51,16 @@ public class OpCommandKick extends OpClanSubCommand {
 
 			if(target != null) {
 				if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {//TODO verify
+					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
 						CommandKick.removeMember(server, sender, selectedClan, target);
 					} else
-						sender.sendMessage(new TextComponentTranslation("The player %s is not in your clan.", target.getName()).setStyle(TextStyles.RED));
+						sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s is not in your clan.", target.getName()).setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

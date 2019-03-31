@@ -36,14 +36,9 @@ public class OpCommandSetName extends OpClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
 		if(!ClanCache.clanNameTaken(newName)) {
-			if(opSelectedClan == null) {
-				NewClanDatabase.getOpClan().setClanName(newName);
-				sender.sendMessage(new TextComponentString("Opclan name set!").setStyle(TextStyles.GREEN));
-			} else {
-				String oldName = opSelectedClan.getClanName();
-				opSelectedClan.setClanName(newName);
-				sender.sendMessage(new TextComponentTranslation("%s renamed to %s!", oldName, newName).setStyle(TextStyles.GREEN));
-			}
+			String oldName = opSelectedClan.getClanName();
+			opSelectedClan.setClanName(newName);
+			sender.sendMessage(new TextComponentTranslation("%s %srenamed to %s!", oldName, opSelectedClan.isOpclan() ? "(Opclan) " : "", newName).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(new TextComponentString("The clan name you have specified is already taken.").setStyle(TextStyles.RED));
 	}

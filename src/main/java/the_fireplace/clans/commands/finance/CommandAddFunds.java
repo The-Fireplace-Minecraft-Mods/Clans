@@ -45,7 +45,7 @@ public class CommandAddFunds extends ClanSubCommand {
 				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
-				sender.sendMessage(new TextComponentString("Internal error: Clan account not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("Internal error: Clan account not found for %s.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			}
 		} else
 			sender.sendMessage(new TextComponentString("You do not have enough funds to do this.").setStyle(TextStyles.RED));

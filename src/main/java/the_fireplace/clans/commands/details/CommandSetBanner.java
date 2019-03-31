@@ -6,11 +6,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBanner;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
@@ -47,16 +49,18 @@ public class CommandSetBanner extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 1){
 			try {
-				JsonToNBT.getTagFromJson(args[0]);
-				//TODO: Check that the tag would actually be a valid NBTTagList of patterns
+				if(new ItemStack(JsonToNBT.getTagFromJson(args[0])).isEmpty()) {
+					sender.sendMessage(new TextComponentString("The clan banner you have specified is invalid.").setStyle(TextStyles.RED));
+					return;
+				}
 				if(ClanCache.clanBannerTaken(args[0]))
 					sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 				else {
 					selectedClan.setClanBanner(args[0]);
-					sender.sendMessage(new TextComponentString("NewClan banner set!").setStyle(TextStyles.GREEN));
+					sender.sendMessage(new TextComponentTranslation("Clan banner for %s set!", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				}
 			} catch(NBTException e){
-				throw new SyntaxErrorException("Invalid Banner NBT: "+args[0]);
+				throw new SyntaxErrorException("The clan banner you have specified is invalid.");
 			}
 		} else if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
 			NBTTagCompound tags = sender.getHeldItemMainhand().writeToNBT(new NBTTagCompound());
@@ -74,7 +78,7 @@ public class CommandSetBanner extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 		else {
 			playerClan.setClanBanner(banner);
-			sender.sendMessage(new TextComponentString("NewClan banner set!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentTranslation("Clan banner for %s set!", playerClan.getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

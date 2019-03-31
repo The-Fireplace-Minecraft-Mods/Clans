@@ -39,7 +39,7 @@ public class OpCommandSetColor extends OpClanSubCommand {
 			sender.sendMessage(new TextComponentTranslation("Invalid color integer: %s!", args[0]).setStyle(TextStyles.RED));
 			return;
 		}
-		if(opSelectedClan == null) {
+		if(opSelectedClan.isOpclan()) {
 			NewClanDatabase.getOpClan().setColor(color);
 			sender.sendMessage(new TextComponentTranslation("%s color set!", NewClanDatabase.getOpClan().getClanName()).setStyle(TextStyles.GREEN));
 		} else {

@@ -49,7 +49,7 @@ public class OpCommandPromote extends OpClanSubCommand {
 		if(c != null) {
 			promoteClanMember(server, sender, args[1], c);
 		} else
-			sender.sendMessage(new TextComponentString("NewClan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
 	public static void promoteClanMember(MinecraftServer server, EntityPlayerMP sender, String playerName, NewClan clan) throws CommandException {

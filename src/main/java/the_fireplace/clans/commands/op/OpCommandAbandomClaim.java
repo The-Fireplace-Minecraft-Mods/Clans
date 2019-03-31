@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
@@ -56,7 +57,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 							//Unset clan home if it is in the chunk
 							OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
 							ChunkUtils.clearChunkOwner(c);
-							sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
+							sender.sendMessage(new TextComponentTranslation("Claim abandoned from %s!", targetClan.getClanName()).setStyle(TextStyles.GREEN));
 						} else {//We are forcing connected claims and there is a claim connected
 							//Prevent creation of disconnected claims
 							abandonClaimWithAdjacencyCheck(sender, c, targetClan);
@@ -105,7 +106,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 			//Unset clan home if it is in the chunk
 			OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
 			ChunkUtils.clearChunkOwner(c);
-			sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(new TextComponentTranslation("Claim abandoned from %s!", targetClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(new TextComponentString("You cannot abandon this chunk of land because doing so would create at least one disconnected claim.").setStyle(TextStyles.RED));
 	}

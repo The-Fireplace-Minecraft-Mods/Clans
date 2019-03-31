@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -44,12 +45,14 @@ public class CommandSetDefault extends ClanSubCommand {
 		NewClan def = ClanCache.getClanByName(args[0]);
 		if(def != null) {
 			if(def.getMembers().containsKey(sender.getUniqueID())) {
-				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null))
+				//noinspection ConstantConditions
+				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null)) {
 					CapHelper.getPlayerClanCapability(sender).setDefaultClan(def.getClanId());
-				else
+					sender.sendMessage(new TextComponentTranslation("Your default clan has been set to %s.", def.getClanName()).setStyle(TextStyles.GREEN));
+				} else
 					sender.sendMessage(new TextComponentString("Internal error: Player cannot set default clan.").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("You are not in %s.", def.getClanName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(new TextComponentString("The clan you have specified does not exist.").setStyle(TextStyles.RED));
 	}

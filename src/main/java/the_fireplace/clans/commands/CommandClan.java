@@ -18,6 +18,8 @@ import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.finance.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
+import the_fireplace.clans.commands.land.CommandFancyMap;
+import the_fireplace.clans.commands.land.CommandMap;
 import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;

@@ -75,17 +75,17 @@ public class OpCommandDisband extends OpClanSubCommand {
 					}
 				}
 				Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(c.getClanId()), c.getClanId());
-				sender.sendMessage(new TextComponentString("You have disbanded " + c.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(new TextComponentTranslation("You have disbanded %s.", c.getClanName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(new TextComponentString("Internal error: Unable to disband clan.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("Internal error: Unable to disband %s.", c.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("You cannot disband the Opclan.").setStyle(TextStyles.RED));
+			sender.sendMessage(new TextComponentTranslation("You cannot disband %s because it is the opclan.", c.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> removable = Lists.newArrayList(ClanCache.getClanNames().keySet());
-		removable.remove(Objects.requireNonNull(ClanCache.getClanById(UUID.fromString("00000000-0000-0000-0000-000000000000"))).getClanName());
+		removable.remove(NewClanDatabase.getOpClan().getClanName());
 		return args.length == 1 ? removable : Collections.emptyList();
 	}
 }

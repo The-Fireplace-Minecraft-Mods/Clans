@@ -47,7 +47,7 @@ public class CommandLeave extends ClanSubCommand {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 		if(senderRank == EnumRank.LEADER) {
 			if(selectedClan.getMembers().size() == 1){
-				sender.sendMessage(new TextComponentTranslation("You are the last member of your clan. To disband it, use /clan disband.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("You are the last member of %s. To disband it, use /clan disband.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
 			}
 			List<UUID> leaders = Lists.newArrayList();
@@ -55,7 +55,7 @@ public class CommandLeave extends ClanSubCommand {
 				if(selectedClan.getMembers().get(member).equals(EnumRank.LEADER))
 					leaders.add(member);
 			if(leaders.size() <= 1) {
-				sender.sendMessage(new TextComponentString("You cannot leave the clan without a leader. Promote someone else to be a leader before leaving.").setStyle(TextStyles.RED));
+				sender.sendMessage(new TextComponentTranslation("You cannot leave %s without a leader. Promote someone else to be a leader before leaving.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
 			}
 		}

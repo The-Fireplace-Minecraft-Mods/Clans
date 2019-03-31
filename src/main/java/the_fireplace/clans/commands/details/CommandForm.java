@@ -5,10 +5,12 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -25,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CommandForm extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
-		return EnumRank.NOCLAN;
+		return Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN;
 	}
 
 	@Override
@@ -55,15 +57,17 @@ public class CommandForm extends ClanSubCommand {
 				String banner = null;
 				if (args.length == 2) {
 					try {
-						JsonToNBT.getTagFromJson(args[1]);
-						//TODO: Check that the tag would actually be a valid NBTTagList of patterns
 						banner = args[1];
+						if(new ItemStack(JsonToNBT.getTagFromJson(banner)).isEmpty()) {
+							sender.sendMessage(new TextComponentString("The clan banner you have specified is invalid.").setStyle(TextStyles.RED));
+							return;
+						}
 						if (ClanCache.clanBannerTaken(banner)) {
 							sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
 							return;
 						}
 					} catch (NBTException e) {
-						throw new SyntaxErrorException("Invalid Banner NBT: " + args[1]);
+						throw new SyntaxErrorException("The clan banner you have specified is invalid.");
 					}
 				}
 				if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, sender.getUniqueID())) {
@@ -72,7 +76,7 @@ public class CommandForm extends ClanSubCommand {
 						CapHelper.getPlayerClanCapability(sender).setDefaultClan(c.getClanId());
 					sender.sendMessage(new TextComponentString("Clan formed!").setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(new TextComponentString("Insufficient funds to form clan. It costs " + Clans.cfg.formClanCost + ' ' + Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)).setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentTranslation("Insufficient funds to form clan. It costs %s %s.", Clans.cfg.formClanCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)).setStyle(TextStyles.RED));
 			}
 		} else
 			sender.sendMessage(new TextComponentString("You are already in a clan.").setStyle(TextStyles.RED));
