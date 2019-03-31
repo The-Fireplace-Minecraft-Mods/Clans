@@ -34,6 +34,8 @@ public final class NewRaidRestoreDatabase {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new NewChunkRestoreData(chunkOwner));
+		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
+			Clans.LOGGER.error("Block restore data being written when it already exists at position (%s, %s, %s). Block being written is: %s.", pos.getX(), pos.getY(), pos.getZ(), block);
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		isChanged = true;
 	}

@@ -39,6 +39,10 @@ public class NewChunkRestoreData {
 		return replaceBlocks.remove(new SerialBlockPos(x, y, z));
 	}
 
+	public boolean hasRestoreBlock(int x, int y, int z) {
+		return replaceBlocks.containsKey(new SerialBlockPos(x, y, z));
+	}
+
 	public boolean delRemoveBlock(int x, int y, int z) {
 		return removeBlocks.remove(new SerialBlockPos(x, y, z));
 	}
