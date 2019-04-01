@@ -72,5 +72,7 @@ public class CommandFinances extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString("You may want to find a way to reduce upkeep.").setStyle(TextStyles.YELLOW));
 			}
 		}
+		if(rent <= 0 && upkeep <= 0)
+			sender.sendMessage(new TextComponentString("Your clan is not earning or losing money.").setStyle(TextStyles.GREEN));
 	}
 }

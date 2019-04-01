@@ -75,7 +75,8 @@ public class CommandClaim extends ClanSubCommand {
 									sender.sendMessage(new TextComponentTranslation("It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways. Try using /clan fancymap to help determine where other clans are.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
-							}
+							} else
+								claimChunk(sender, c, selectedClan);
 						} else
 							claimChunk(sender, c, selectedClan);
 					} else
