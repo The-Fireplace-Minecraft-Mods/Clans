@@ -52,9 +52,4 @@ public class CommandSetRent extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("Cannot set negative rent!").setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

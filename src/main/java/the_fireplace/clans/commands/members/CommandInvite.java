@@ -59,11 +59,6 @@ public class CommandInvite extends ClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
-
-	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 		if(!Clans.cfg.allowMultiClanMembership)

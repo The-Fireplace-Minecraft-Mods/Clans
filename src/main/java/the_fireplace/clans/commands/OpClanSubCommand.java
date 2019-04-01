@@ -32,9 +32,4 @@ public abstract class OpClanSubCommand extends ClanSubCommand {
 	protected boolean allowConsoleUsage() {
 		return true;
 	}
-
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		runFromAnywhere(server, sender, args);
-	}
 }

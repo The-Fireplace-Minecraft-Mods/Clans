@@ -56,9 +56,4 @@ public class CommandSetDefault extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentString("The clan you have specified does not exist.").setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

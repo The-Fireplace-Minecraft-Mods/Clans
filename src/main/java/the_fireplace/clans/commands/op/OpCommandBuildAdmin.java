@@ -41,11 +41,6 @@ public class OpCommandBuildAdmin extends OpClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
-	}
-
-	@Override
 	protected boolean allowConsoleUsage() {
 		return false;
 	}

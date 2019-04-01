@@ -43,9 +43,4 @@ public class CommandDisband extends ClanSubCommand {
 		else
 			sender.sendMessage(new TextComponentString("You are not a leader of " + selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
-	}
 }

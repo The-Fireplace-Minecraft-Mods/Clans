@@ -53,9 +53,4 @@ public class CommandTakeFunds extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentTranslation("%s does not have enough funds to do this.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

@@ -76,11 +76,6 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
-
-	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		return args.length == 1 ? Collections.singletonList("force") : Collections.emptyList();
 	}

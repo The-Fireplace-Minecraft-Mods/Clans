@@ -53,11 +53,6 @@ public class CommandDemote extends ClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
-
-	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(UUID player: selectedClan.getMembers().keySet()) {

@@ -44,9 +44,4 @@ public class CommandSetDescription extends ClanSubCommand {
 		selectedClan.setDescription(newTagline.toString());
 		sender.sendMessage(new TextComponentTranslation("Clan description for %s set!", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

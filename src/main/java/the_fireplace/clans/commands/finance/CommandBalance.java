@@ -41,9 +41,4 @@ public class CommandBalance extends ClanSubCommand {
 		long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
 		sender.sendMessage(new TextComponentString("Clan balance: " + balance + ' ' + Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

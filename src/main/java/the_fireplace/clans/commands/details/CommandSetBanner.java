@@ -72,11 +72,6 @@ public class CommandSetBanner extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
 
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
-	}
-
 	private void setClanBannerFromItem(EntityPlayerMP sender, NewClan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))

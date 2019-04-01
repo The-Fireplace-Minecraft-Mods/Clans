@@ -47,11 +47,6 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		runFromAnywhere(server, sender, args);
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		if(args.length == 0) {
 			if(selectedClan == null) {

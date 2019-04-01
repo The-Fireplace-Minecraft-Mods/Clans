@@ -76,9 +76,4 @@ public class CommandMap extends ClanSubCommand {
 			}
 		}).start();
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

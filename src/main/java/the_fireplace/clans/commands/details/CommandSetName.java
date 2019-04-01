@@ -50,9 +50,4 @@ public class CommandSetName extends ClanSubCommand {
 		} else
 			sender.sendMessage(new TextComponentTranslation("The clan name \"%s\" is already taken.", newName).setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

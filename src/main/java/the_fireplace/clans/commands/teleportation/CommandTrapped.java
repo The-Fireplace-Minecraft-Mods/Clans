@@ -69,9 +69,4 @@ public class CommandTrapped extends ClanSubCommand {
 		} else
 			player.sendMessage(new TextComponentString("No, you're not trapped in someone else's claim.").setStyle(TextStyles.RED));
 	}
-
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-
-	}
 }

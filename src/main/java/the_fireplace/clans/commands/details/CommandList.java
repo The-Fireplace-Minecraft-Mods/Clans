@@ -39,11 +39,6 @@ public class CommandList extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		runFromAnywhere(server, sender, args);
-	}
-
-	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		sender.sendMessage(new TextComponentString("Clans on this server:").setStyle(TextStyles.GREEN));
 		if(!NewClanDatabase.getClans().isEmpty()) {

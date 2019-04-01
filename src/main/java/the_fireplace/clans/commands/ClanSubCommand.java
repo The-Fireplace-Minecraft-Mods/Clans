@@ -13,6 +13,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.clan.NewClan;
@@ -98,12 +99,12 @@ public abstract class ClanSubCommand extends CommandBase {
 					else
 						args2 = new String[]{};
 				}
-				if(checkPermission(server, sender))
-					if(sender instanceof EntityPlayerMP)
+				if(checkPermission(server, sender)) {
+					if (sender instanceof EntityPlayerMP)
 						run(server, (EntityPlayerMP) sender, args2);
 					else
 						runFromAnywhere(server, sender, args2);
-				else
+				} else
 					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
 			} else
 				throwWrongUsage(sender);
@@ -111,9 +112,14 @@ public abstract class ClanSubCommand extends CommandBase {
 			throw new WrongUsageException("You must be a player to do this");
 	}
 
-	protected abstract void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException;
+	protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+        runFromAnywhere(server, sender, args);
+    }
 
-	protected abstract void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		Clans.LOGGER.warn("This point should not have been reached. Command sender is a %s.", sender.getClass().getCanonicalName());
+		throw new WrongUsageException("You must be a player to do this");
+	}
 
 	protected boolean allowConsoleUsage() {
 		return false;
