@@ -45,9 +45,14 @@ public class CommandBanner extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		NBTTagCompound banner;
-		try{
-			banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
-		} catch(NBTException e){
+		if(selectedClan.getClanBanner() != null) {
+			try {
+				banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
+			} catch (NBTException e) {
+				sender.sendMessage(new TextComponentTranslation("%s does not have a banner.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				return;
+			}
+		} else {
 			sender.sendMessage(new TextComponentTranslation("%s does not have a banner.", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			return;
 		}

@@ -49,7 +49,7 @@ public class CommandClaim extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
+		if(c.hasCapability(Clans.CLAIMED_LAND, null)) {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId()))
@@ -59,9 +59,9 @@ public class CommandClaim extends ClanSubCommand {
 			} else {
 				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
-						if(selectedClan.getClaimCount() > 0) {
+						if(selectedClan.getClaimCount() > 0)
 							claimChunk(sender, c, selectedClan);
-						} else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
+						else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
 							boolean inClanHomeRange = false;
 							for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
 								if(pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
@@ -76,9 +76,8 @@ public class CommandClaim extends ClanSubCommand {
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
 							}
-						} else {
+						} else
 							claimChunk(sender, c, selectedClan);
-						}
 					} else
 						sender.sendMessage(new TextComponentString(selectedClan.getClanName() + " is already at or above its max claim count of "+selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
 				} else
