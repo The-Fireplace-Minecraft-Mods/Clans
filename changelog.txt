@@ -1,1 +1,2 @@
 Fixed NPE when claiming near land when a clan doesn't have a home.
+Fixed clan name that shows up when trying to claim another clan's territory

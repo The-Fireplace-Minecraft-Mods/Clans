@@ -21,6 +21,7 @@ import the_fireplace.clans.util.TextStyles;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -55,7 +56,7 @@ public class CommandClaim extends ClanSubCommand {
 				if(claimFaction.equals(selectedClan.getClanId()))
 					sender.sendMessage(new TextComponentTranslation("%s has already claimed this land.", selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 				else
-					sender.sendMessage(new TextComponentTranslation("Another clan (%s) has already claimed this land.", ClanCache.getClanById(claimFaction)).setStyle(TextStyles.RED));
+					sender.sendMessage(new TextComponentTranslation("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClanById(claimFaction)).getClanName()).setStyle(TextStyles.RED));
 			} else {
 				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
