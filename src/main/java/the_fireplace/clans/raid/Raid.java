@@ -105,14 +105,26 @@ public class Raid {
 
 	public boolean checkRaidEndTimer() {
 		if(remainingSeconds == Clans.cfg.remainingTimeToGlow * 60) {
-			for(UUID member: defenders.keySet())
-				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
-			for(UUID member: getMembers())
-				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+			for(UUID member: defenders.keySet()) {
+				EntityPlayerMP d2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+				//noinspection ConstantConditions
+				if (d2 != null)
+					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
+			}
+			for(UUID member: getMembers()) {
+				EntityPlayerMP d2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+				//noinspection ConstantConditions
+				if(d2 != null)
+					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+			}
 		}
 		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
-			for(UUID defender: defenders.keySet())
-				FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(defender).addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
+			for(UUID defender: defenders.keySet()) {
+				EntityPlayerMP d2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(defender);
+				//noinspection ConstantConditions
+				if(d2 != null)
+					d2.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
+			}
 		return remainingSeconds <= 0;
 	}
 
