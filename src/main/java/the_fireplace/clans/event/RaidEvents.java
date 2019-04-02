@@ -6,6 +6,7 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.BlockSlime;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -13,6 +14,7 @@ import net.minecraft.tileentity.TileEntityPiston;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -24,6 +26,7 @@ import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.raid.NewChunkRestoreData;
 import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
 import java.util.HashMap;
@@ -160,6 +163,15 @@ public class RaidEvents {
 					}
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+		if(event.getEntity() instanceof EntityFallingBlock) {
+			NewClan owningClan = ClanCache.getClanById(CapHelper.getClaimedLandCapability(event.getWorld().getChunk(event.getEntity().getPosition())).getClan());
+			if(owningClan != null && RaidingParties.hasActiveRaid(owningClan))
+				event.setCanceled(true);//TODO monitor where it goes rather than just preventing it from falling
 		}
 	}
 

@@ -175,10 +175,10 @@ public class LandProtectionEvents {
 					if (interactingPlayer instanceof EntityPlayerMP) {
 						ArrayList<NewClan> playerClan = ClanCache.getPlayerClans(interactingPlayer.getUniqueID());
 						IBlockState targetState = event.getWorld().getBlockState(event.getPos());
-						if (!ClanCache.isClaimAdmin((EntityPlayerMP) interactingPlayer) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, interactingPlayer) || targetState.getBlock() instanceof BlockContainer)) {
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) interactingPlayer) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, interactingPlayer) || targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)) {
 							if (!(event.getItemStack().getItem() instanceof ItemBlock))
 								cancelBlockInteraction(event, interactingPlayer, targetState);
-							else if (targetState.getBlock().hasTileEntity(targetState) && targetState.getBlock() instanceof BlockContainer)
+							else if (targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)
 								cancelBlockInteraction(event, interactingPlayer, targetState);
 						}
 					}

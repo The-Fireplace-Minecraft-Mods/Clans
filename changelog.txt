@@ -3,3 +3,5 @@ Fixed clan name that shows up when trying to claim another clan's territory
 Fixed potential crash when players leave terrirory during raid
 Allow build admins to place blocks in protected wilderness
 More permissive interactions when raiding
+Stop blocks from falling during a raid as a temporary fix for possible duping
+Prevent interaction with dragon egg by raiders during a raid
