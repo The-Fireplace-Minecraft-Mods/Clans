@@ -1,7 +1,1 @@
-Fixed NPE when trying to use /clan banner and the clan doesn't have a banner
-Fixed invite command "You have invited player" message going to the wrong person
-Added a message for feedback when you run /clan trapped and you're not actually trapped
-Optimized the system that allows commands to be run from the console
-More verbose logging of errors when executing commands
-Fixed an issue with attempting to claim land a reasonable distance from other clans.
-Added feedback when /clan finances is run and the clan isn't earning or losing money.
+Fixed NPE when claiming near land when a clan doesn't have a home.
