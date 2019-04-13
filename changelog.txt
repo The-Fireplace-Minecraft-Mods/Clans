@@ -1,1 +1,2 @@
 Fixed crash with Dynmap when a clan is disbanded
+Fixed being able to invite players to clans they are already in
