@@ -30,8 +30,15 @@ public class ClanChunkCache {
         if(!isLoaded)
             load();
         Set<NewClan> claimClans = Sets.newHashSet();
-        for(UUID clanId: claimedChunks.keySet())
-            claimClans.add(ClanCache.getClanById(clanId));
+        for(UUID clanId: claimedChunks.keySet()) {
+            NewClan clan = ClanCache.getClanById(clanId);
+            if(clan != null)
+                claimClans.add(clan);
+            else {
+                claimedChunks.remove(clanId);
+                //TODO: Make sure the deleted clan is removed from Dynmap
+            }
+        }
         return claimClans;
     }
 
