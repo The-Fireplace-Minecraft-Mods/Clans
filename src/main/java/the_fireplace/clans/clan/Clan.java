@@ -41,6 +41,13 @@ public class Clan implements Serializable {
 			this.clanBanner = banner;
 		this.clanId = UUID.randomUUID();
 		Clans.getPaymentHandler().ensureAccountExists(clanId);
+		
+		// Ensure that the starting balance of the account is 0,
+		//  to prevent "free money" from the creation of a new bank account
+		if (Clans.getPaymentHandler().getBalance(clanId) > 0) {
+			Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
+		}
+		
 		Clans.getPaymentHandler().addAmount(Clans.cfg.formClanBankAmount, clanId);
 		ClanCache.purgePlayerCache(leader);
 	}
