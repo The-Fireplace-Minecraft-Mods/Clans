@@ -13,6 +13,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -75,9 +76,11 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(server == null)
 			throw new WrongUsageException("Internal error: The server must not be null!");
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
-			if(args.length >= getMinArgs() && args.length <= (getMaxArgs() == Integer.MAX_VALUE ? getMaxArgs() : getMaxArgs()+1)) {
+			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
+			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
 				NewClan playerClan = null;
-				if(getMaxArgs() == Integer.MAX_VALUE ? args.length > 1 && (args[1].equalsIgnoreCase("setdesc") || args[1].equalsIgnoreCase("setdescription")) : args.length ==  getMaxArgs()+1) {
+				Clans.LOGGER.info(ArrayUtils.toString(args));
+				if(greedyArgs ? args.length > 1 && CommandClan.greedyCommands.contains(args[1]) : args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else if(sender instanceof EntityPlayerMP)
@@ -106,8 +109,11 @@ public abstract class ClanSubCommand extends CommandBase {
 						runFromAnywhere(server, sender, args2);
 				} else
 					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
-			} else
+			} else {
+				Clans.LOGGER.info(args.length);
+				Clans.LOGGER.info(getMaxArgs());
 				throwWrongUsage(sender);
+			}
 		} else
 			throw new WrongUsageException("You must be a player to do this");
 	}
@@ -117,6 +123,7 @@ public abstract class ClanSubCommand extends CommandBase {
     }
 
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		//noinspection PlaceholderCountMatchesArgumentCount
 		Clans.LOGGER.error("This point should not have been reached. Command sender is a %s.", sender.getClass().getCanonicalName());
 		throw new WrongUsageException("You must be a player to do this");
 	}

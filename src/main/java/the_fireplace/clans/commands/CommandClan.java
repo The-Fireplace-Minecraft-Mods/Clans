@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
@@ -87,15 +88,25 @@ public class CommandClan extends CommandBase {
         return "/clan [clan] <command> [parameters]";
     }
 
+    public static final ArrayList<String> greedyCommands = Lists.newArrayList("setdesc", "setdescription");
+
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
             throw new WrongUsageException("/clan <command> [parameters]");
         String tag = args[0];
-        if(args.length > 1)
-            args = Arrays.copyOfRange(args, 1, args.length);
-        else
-            args = new String[]{};
+        if(ClanCache.clanNameTaken(tag) && args.length >= 2) {
+            tag = args[1];
+            if (args.length > 2) {
+                String[] commArgs = Arrays.copyOfRange(args, 2, args.length);
+                args = ArrayUtils.addAll(new String[]{args[0]}, greedyCommands.contains(tag) ? ArrayUtils.addAll(new String[]{tag}, commArgs) : commArgs);
+            } else
+                args = new String[]{args[0]};
+        } else
+            if(args.length > 1)
+                args = Arrays.copyOfRange(args, 1, args.length);
+            else
+                args = new String[]{};
         switch(tag){
             //Land Claiming
             case "claim":
