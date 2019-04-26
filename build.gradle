@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.74'
+	minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
     compile name:'GrandEconomy-1.13.2-1.1.1-deobf'
 }
 
