@@ -79,7 +79,6 @@ public abstract class ClanSubCommand extends CommandBase {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
 				NewClan playerClan = null;
-				Clans.LOGGER.info(ArrayUtils.toString(args));
 				if(greedyArgs ? args.length > 1 && CommandClan.greedyCommands.contains(args[1]) : args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
@@ -109,11 +108,8 @@ public abstract class ClanSubCommand extends CommandBase {
 						runFromAnywhere(server, sender, args2);
 				} else
 					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
-			} else {
-				Clans.LOGGER.info(args.length);
-				Clans.LOGGER.info(getMaxArgs());
+			} else
 				throwWrongUsage(sender);
-			}
 		} else
 			throw new WrongUsageException("You must be a player to do this");
 	}
