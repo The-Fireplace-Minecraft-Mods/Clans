@@ -1,2 +1,3 @@
 Fix clan balance getting extra money on creation (LordFusion)
 Fix config gui not saving the new settings
+Fix having to relog after death to regain /clan command permissions
