@@ -1,4 +1,4 @@
-Thank you for reporting!
+Thank you for reporting! Please provide the information requested below in this post and **delete this template**. There is no need to make a separate comment with the below details if you put them into this post.
 
 For issues:
  * Try the latest version, it may have fixed the issue already.
