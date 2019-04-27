@@ -1,3 +1,1 @@
-Tweak that will wipe the clan database when updating from Clans 1.1.3 and below, but makes it possible to update from Minecraft 1.12.2 to 1.13.2 without the database being wiped.
-Fixed claim adjacency checking, part 2
-Fixed attacking mobs and animals on unclaimed land
+Fix NPE when player is not in a clan
