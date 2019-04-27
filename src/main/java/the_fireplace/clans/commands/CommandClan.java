@@ -942,7 +942,7 @@ public class CommandClan {
 
         int cooldown = CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).getCooldown();
         if(cooldown <= 0) {
-            if (!clan.hasHome())
+            if (!clan.hasHome() || home == null)
                 throwCommandFailure("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", clan.getClanName());
             else {
                 if(Clans.cfg.clanHomeWarmupTime > 0)

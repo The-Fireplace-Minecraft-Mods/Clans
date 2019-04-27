@@ -38,15 +38,17 @@ public class Timer {
 
 				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
-					if (entry.getValue().getValue1() == 1) {
+					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isAlive()) {
 						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
-						if(c != null)
+						if(c != null && c.getHome() != null)
 							CommandClan.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
 					}
 				Set<EntityPlayerMP> players = clanHomeWarmups.keySet();
 				for(EntityPlayerMP player: players)
 					if(clanHomeWarmups.get(player).getValue1() > 0)
 						clanHomeWarmups.put(player, new Pair<>(clanHomeWarmups.get(player).getValue1() - 1, clanHomeWarmups.get(player).getValue2()));
+					else
+						clanHomeWarmups.remove(player);
 
 				for (Raid raid : RaidingParties.getActiveRaids())
 					if (raid.checkRaidEndTimer())
