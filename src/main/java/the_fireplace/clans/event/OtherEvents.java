@@ -1,13 +1,17 @@
 package the_fireplace.clans.event;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.PlayerClanCapability;
+import the_fireplace.clans.util.TextStyles;
 
 public class OtherEvents {
     @SubscribeEvent
@@ -18,6 +22,20 @@ public class OtherEvents {
             PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.getPlayer());
             if ((c.getDefaultClan() != null && ClanCache.getClan(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.getPlayer().getUniqueID()).isEmpty()))
                 CommandClan.updateDefaultClan((EntityPlayerMP)event.getPlayer(), null);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerChat(ServerChatEvent event) {
+        if(Clans.cfg.showDefaultClanInChat && event.getPlayer() != null) {
+            PlayerClanCapability playerClanCap = CapHelper.getPlayerClanCapability(event.getPlayer());
+            if(playerClanCap.getDefaultClan() != null) {
+                Clan playerDefaultClan = ClanCache.getClan(playerClanCap.getDefaultClan());
+                if(playerDefaultClan != null)
+                    event.setComponent(new TextComponentString('<'+playerDefaultClan.getClanName()+"> ").setStyle(TextStyles.GREEN).appendSibling(event.getComponent().setStyle(TextStyles.WHITE)));
+                else
+                    CommandClan.updateDefaultClan(event.getPlayer(), null);
+            }
         }
     }
 }

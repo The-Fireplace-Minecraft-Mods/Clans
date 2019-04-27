@@ -131,8 +131,11 @@ public class Timer {
 						if (chunkClan == null) {
 							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY))
 								endMsg = "Underground.";
-							else
+							else {
 								endMsg = "Wilderness.";
+								if(Clans.cfg.protectWilderness)
+									color = TextStyles.YELLOW;
+							}
 						} else
 							endMsg = ClanCache.getClan(chunkClan).getClanName() + "'s territory.";
 

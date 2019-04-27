@@ -2,3 +2,5 @@ Fix NPE when player is not in a clan
 Updated to work with Forge 25.0.168+
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
+Improve chat colors - Wilderness is now yellow when protected, like other protected land.
+Add the default clan before the player's name in chat

@@ -689,6 +689,7 @@ public class CommandClan {
 
     static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
         if (targetClan.hasHome()
+                && targetClan.getHome() != null
                 && sender.dimension.getId() == targetClan.getHomeDim()
                 && targetClan.getHome().getX() >= c.getPos().getXStart()
                 && targetClan.getHome().getX() <= c.getPos().getXEnd()

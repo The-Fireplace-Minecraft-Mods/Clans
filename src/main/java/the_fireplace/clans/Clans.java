@@ -186,6 +186,7 @@ public final class Clans {
         public static int clanHomeWarmupTime;
         public static int clanHomeCooldownTime;
         public static int maxClanPlayerClaims;
+        public static boolean showDefaultClanInChat;
         //Wilderness guard
         public static boolean protectWilderness;
         public static int minWildernessY;
@@ -231,6 +232,7 @@ public final class Clans {
             clanHomeWarmupTime = SERVER.clanHomeWarmupTime.get();
             clanHomeCooldownTime = SERVER.clanHomeCooldownTime.get();
             maxClanPlayerClaims = SERVER.maxClanPlayerClaims.get();
+            showDefaultClanInChat = SERVER.showDefaultClanInChat.get();
             //Wilderness guard
             protectWilderness = SERVER.protectWilderness.get();
             minWildernessY = SERVER.minWildernessY.get();
@@ -277,6 +279,7 @@ public final class Clans {
             public ForgeConfigSpec.IntValue clanHomeWarmupTime;
             public ForgeConfigSpec.IntValue clanHomeCooldownTime;
             public ForgeConfigSpec.IntValue maxClanPlayerClaims;
+            public ForgeConfigSpec.BooleanValue showDefaultClanInChat;
             //Wilderness guard
             public ForgeConfigSpec.BooleanValue protectWilderness;
             public ForgeConfigSpec.IntValue minWildernessY;
@@ -346,6 +349,10 @@ public final class Clans {
                         .comment("Max claims per player per clan. Set to 0 for infinite.")
                         .translation("Max claims per player per clan")
                         .defineInRange("maxClanPlayerClaims", 0, 0, Integer.MAX_VALUE);
+                showDefaultClanInChat = builder
+                        .comment("Show player's default clan in chat.")
+                        .translation("Show Default Clan in Chat")
+                        .define("showDefaultClanInChat", true);
                 builder.pop();
 
                 builder.push("wilderness");
