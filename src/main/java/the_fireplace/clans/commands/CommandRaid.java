@@ -78,14 +78,14 @@ public class CommandRaid {
         if(target == null)
             throwCommandFailure("Target clan not found.");
         else {
-            if(!RaidingParties.getRaidingPlayers().contains(context.getSource().asPlayer())) {
+            if(!RaidingParties.getRaidingPlayers().contains(context.getSource().assertIsEntity().getUniqueID())) {
                 Raid raid = RaidingParties.getRaid(target);
                 HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
                 if(!clanPlayers.containsKey(context.getSource().asPlayer())) {
                     if (!RaidingParties.getRaidedClans().contains(target)) { //Form a new raid because one doesn't exist
                         if(!target.isShielded()) {
                             if (target.getOnlineMembers().size() > 0) {
-                                new Raid(context.getSource().asPlayer(), target);
+                                new Raid(context.getSource().assertIsEntity().getUniqueID(), target);
                                 sendFeedback(context, TextStyles.GREEN,"You successfully created the raiding party against %s!", target.getClanName());
                             } else
                                 throwCommandFailure("Target clan has no online members!");
@@ -93,7 +93,7 @@ public class CommandRaid {
                             throwCommandFailure("Target clan is currently shielded! Try again in %s hours.", Math.round(100f*target.getShield()*60)/100f);
                     } else { //Join an existing raid
                         if(clanPlayers.size() + Clans.cfg.maxRaidersOffset > raid.getMemberCount()) {
-                            raid.addMember(context.getSource().asPlayer());
+                            raid.addMember(context.getSource().assertIsEntity().getUniqueID());
                             sendFeedback(context, TextStyles.GREEN,"You successfully joined the raiding party against %s!", target.getClanName());
                         } else
                             throwCommandFailure("Target raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
@@ -130,7 +130,7 @@ public class CommandRaid {
     };
 
     private static final Command<CommandSource> inviteCommand = context -> {
-        if(!RaidingParties.getRaidingPlayers().contains(context.getSource().asPlayer())) {
+        if(!RaidingParties.getRaidingPlayers().contains(context.getSource().assertIsEntity().getUniqueID())) {
             Raid raid = RaidingParties.getRaid(context.getSource().asPlayer());
             if (raid != null) {
                 EntityPlayerMP targetPlayer = EntityArgument.getPlayer(context, "player");
@@ -151,10 +151,10 @@ public class CommandRaid {
     };
 
     private static final Command<CommandSource> leaveCommand = context -> {
-        if(RaidingParties.getRaidingPlayers().contains(context.getSource().asPlayer())) {
+        if(RaidingParties.getRaidingPlayers().contains(context.getSource().assertIsEntity().getUniqueID())) {
             Raid raid = RaidingParties.getRaid(context.getSource().asPlayer());
             if (raid != null) {
-                raid.removeMember(context.getSource().asPlayer());
+                raid.removeMember(context.getSource().assertIsEntity().getUniqueID());
                 sendFeedback(context, TextStyles.GREEN,"You successfully left the raiding party against %s!", raid.getTarget().getClanName());
             } else//Internal error because we should not reach this point
                 throwCommandFailure("Internal error: You are not in a raiding party!");
@@ -164,7 +164,7 @@ public class CommandRaid {
     };
 
     private static final Command<CommandSource> startCommand = context -> {
-        if(RaidingParties.getRaidingPlayers().contains(context.getSource().asPlayer())) {
+        if(RaidingParties.getRaidingPlayers().contains(context.getSource().assertIsEntity().getUniqueID())) {
             Raid raid = RaidingParties.getRaid(context.getSource().asPlayer());
             if (raid != null) {
                 HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();

@@ -1,1 +1,3 @@
 Fix NPE when player is not in a clan
+Updated to work with Forge 25.0.168+
+Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.

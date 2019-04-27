@@ -19,7 +19,7 @@ import java.util.*;
 
 public final class RaidingParties {
 	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
-	private static HashMap<EntityPlayerMP, Raid> raidingPlayers = Maps.newHashMap();
+	private static HashMap<UUID, Raid> raidingPlayers = Maps.newHashMap();
 	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
 	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
 	private static HashMap<Clan, Integer> bufferTimes = Maps.newHashMap();
@@ -37,10 +37,10 @@ public final class RaidingParties {
 	}
 
 	public static Raid getRaid(EntityPlayerMP player){
-		return raidingPlayers.get(player);
+		return raidingPlayers.get(player.getUniqueID());
 	}
 
-	public static Set<EntityPlayerMP> getRaidingPlayers() {
+	public static Set<UUID> getRaidingPlayers() {
 		return raidingPlayers.keySet();
 	}
 
@@ -56,8 +56,7 @@ public final class RaidingParties {
 		return activeraids.values();
 	}
 
-	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
-		//noinspection SuspiciousMethodCalls
+	public static boolean isRaidedBy(Clan c, UUID player) {
 		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player);
 	}
 
@@ -71,11 +70,11 @@ public final class RaidingParties {
 		raidedClans.remove(raid.getTarget());
 	}
 
-	public static void addRaider(EntityPlayerMP raider, Raid raid){
+	public static void addRaider(UUID raider, Raid raid){
 		raidingPlayers.put(raider, raid);
 	}
 
-	public static void removeRaider(EntityPlayerMP raider){
+	public static void removeRaider(UUID raider){
 		raidingPlayers.remove(raider);
 	}
 
@@ -107,7 +106,7 @@ public final class RaidingParties {
 
 	public static void endRaid(Clan targetClan) {
 		Raid raid = activeraids.remove(targetClan);
-		for(EntityPlayerMP player: raid.getMembers())
+		for(UUID player: raid.getMembers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
 		for(ResourceLocation location: DimensionManager.getRegistry().getKeys()) {//TODO Find out if this works on modded dimensions

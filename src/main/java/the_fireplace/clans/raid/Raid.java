@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.util.TextStyles;
@@ -13,16 +14,17 @@ import the_fireplace.clans.util.TextStyles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.UUID;
 
 public class Raid {
-	private ArrayList<EntityPlayerMP> initMembers;
-	private HashMap<EntityPlayerMP, Integer> members, defenders;
+	private ArrayList<UUID> initMembers;
+	private HashMap<UUID, Integer> members, defenders;
 	private Clan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
 	private long cost;
 	private boolean isActive;
 
-	public Raid(EntityPlayerMP starter, Clan targetClan){
+	public Raid(UUID starter, Clan targetClan){
 		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
@@ -41,11 +43,11 @@ public class Raid {
 		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getClanId());
 		long remainder = reward % initMembers.size();
 		reward /= initMembers.size();
-		for(EntityPlayerMP player: initMembers) {
-			Clans.getPaymentHandler().ensureAccountExists(player.getUniqueID());
-			Clans.getPaymentHandler().addAmount(reward, player.getUniqueID());
+		for(UUID player: initMembers) {
+			Clans.getPaymentHandler().ensureAccountExists(player);
+			Clans.getPaymentHandler().addAmount(reward, player);
 			if(remainder-- > 0)
-				Clans.getPaymentHandler().addAmount(1, player.getUniqueID());
+				Clans.getPaymentHandler().addAmount(1, player);
 		}
 		target.addShield(Clans.cfg.defenseShield * 60);
 		target.addLoss();
@@ -59,7 +61,7 @@ public class Raid {
 		target.addWin();
 	}
 
-	public Set<EntityPlayerMP> getMembers() {
+	public Set<UUID> getMembers() {
 		return members.keySet();
 	}
 
@@ -67,13 +69,13 @@ public class Raid {
 		return members.size();
 	}
 
-	public void addMember(EntityPlayerMP player) {
+	public void addMember(UUID player) {
 		this.members.put(player, 0);
 		this.initMembers.add(player);
 		RaidingParties.addRaider(player, this);
 	}
 
-	public boolean removeMember(EntityPlayerMP player) {
+	public boolean removeMember(UUID player) {
 		boolean rm = this.members.remove(player) != null;
 		if(rm) {
 			RaidingParties.removeRaider(player);
@@ -97,50 +99,53 @@ public class Raid {
 
 	public boolean checkRaidEndTimer() {
 		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
-			for(EntityPlayerMP defender: defenders.keySet())
-				defender.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
+			for(UUID defender: defenders.keySet()) {
+				EntityPlayerMP d = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(defender);
+				if(d != null)
+					d.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 40));
+			}
 		return remainingSeconds <= 0;
 	}
 
-	public int getAttackerAbandonmentTime(EntityPlayerMP member) {
+	public int getAttackerAbandonmentTime(UUID member) {
 		return members.get(member);
 	}
 
 	public void incrementAttackerAbandonmentTime(EntityPlayerMP member) {
-		members.put(member, members.get(member) + 1);
-		if(members.get(member) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
-			removeMember(member);
+		members.put(member.getUniqueID(), members.get(member.getUniqueID()) + 1);
+		if(members.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
+			removeMember(member.getUniqueID());
 			member.sendMessage(new TextComponentString("You have been removed from your raid because you spent too long outside the target's territory.").setStyle(TextStyles.YELLOW));
-		} else if(members.get(member) == 1)
+		} else if(members.get(member.getUniqueID()) == 1)
 			member.sendMessage(new TextComponentString("You are not in the target clan's territory. If you stay outside it for longer than "+Clans.cfg.maxAttackerAbandonmentTime+" seconds, you will be removed from the raiding party.").setStyle(TextStyles.YELLOW));
 	}
 
-	public void resetAttackerAbandonmentTime(EntityPlayerMP member) {
+	public void resetAttackerAbandonmentTime(UUID member) {
 		members.put(member, 0);
 	}
 
-	public int getDefenderAbandonmentTime(EntityPlayerMP member) {
+	public int getDefenderAbandonmentTime(UUID member) {
 		return defenders.get(member);
 	}
 
 	public void incrementDefenderAbandonmentTime(EntityPlayerMP defender) {
-		defenders.put(defender, members.get(defender) + 1);
-		if(defenders.get(defender) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
-			removeDefender(defender);
-		else if(defenders.get(defender) == 1)
+		defenders.put(defender.getUniqueID(), members.get(defender.getUniqueID()) + 1);
+		if(defenders.get(defender.getUniqueID()) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
+			removeDefender(defender.getUniqueID());
+		else if(defenders.get(defender.getUniqueID()) == 1)
 			defender.sendMessage(new TextComponentString("You have left your clan's territory. If you stay outside it for longer than "+Clans.cfg.maxClanDesertionTime+" seconds, you will be considered dead when determining if your clan wins the raid.").setStyle(TextStyles.YELLOW));
 	}
 
-	public void resetDefenderAbandonmentTime(EntityPlayerMP defender) {
+	public void resetDefenderAbandonmentTime(UUID defender) {
 		defenders.put(defender, 0);
 	}
 
 	public void setDefenders(Iterable<EntityPlayerMP> defenders) {
 		for(EntityPlayerMP defender: defenders)
-			this.defenders.put(defender, 0);
+			this.defenders.put(defender.getUniqueID(), 0);
 	}
 
-	public void removeDefender(EntityPlayerMP player) {
+	public void removeDefender(UUID player) {
 		defenders.remove(player);
 		if(defenders.size() <= 0)
 			raiderVictory();

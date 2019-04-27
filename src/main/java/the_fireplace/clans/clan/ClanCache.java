@@ -21,7 +21,7 @@ public final class ClanCache {
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
-	private static ArrayList<EntityPlayerMP> claimAdmins = Lists.newArrayList();
+	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
 
 	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba");
 
@@ -141,7 +141,7 @@ public final class ClanCache {
 		clanHomes.remove(c);
 	}
 
-	public static boolean toggleClaimAdmin(EntityPlayerMP admin){
+	public static boolean toggleClaimAdmin(UUID admin){
 		if(claimAdmins.contains(admin)) {
 			claimAdmins.remove(admin);
 			return false;
@@ -151,7 +151,7 @@ public final class ClanCache {
 		}
 	}
 
-	public static boolean isClaimAdmin(EntityPlayerMP admin) {
+	public static boolean isClaimAdmin(UUID admin) {
 		return claimAdmins.contains(admin);
 	}
 }

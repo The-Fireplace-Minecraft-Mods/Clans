@@ -16,7 +16,7 @@ A server-side land protection and PVP system.
 [[dependencies.clans]]
     modId="forge"
     mandatory=true
-    versionRange="[25,)"
+    versionRange="[25.0.168,)"
     ordering="NONE"
     side="SERVER"
 [[dependencies.clans]]

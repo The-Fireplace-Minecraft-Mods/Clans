@@ -17,8 +17,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.raid.ChunkRestoreData;
@@ -59,9 +57,9 @@ public class RaidEvents {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
 				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
 					if (clan != null && RaidingParties.hasActiveRaid(clan))
-						RaidingParties.getActiveRaid(clan).removeDefender(player);
-					if (RaidingParties.getRaidingPlayers().contains(player) && RaidingParties.getRaid(player).isActive())
-						RaidingParties.getRaid(player).removeMember(player);
+						RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
+					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
+						RaidingParties.getRaid(player).removeMember(player.getUniqueID());
 				}
 			}
 		}

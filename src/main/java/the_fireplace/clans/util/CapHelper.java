@@ -1,11 +1,13 @@
 package the_fireplace.clans.util;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 
+@MethodsReturnNonnullByDefault
 public class CapHelper {
 
     public static ClaimedLandCapability getClaimedLandCapability(EntityPlayer player) {

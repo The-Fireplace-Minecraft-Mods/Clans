@@ -220,7 +220,7 @@ public class CommandOpClan {
             throwCommandFailure("You must be a player to do this!");
             return 0;
         }
-        if(ClanCache.toggleClaimAdmin(context.getSource().asPlayer()))
+        if(ClanCache.toggleClaimAdmin(context.getSource().assertIsEntity().getUniqueID()))
             sendFeedback(context, TextStyles.YELLOW, "You are now in Build Admin mode.");
         else
             sendFeedback(context, TextStyles.GREEN, "You are no longer in Build Admin mode.");
