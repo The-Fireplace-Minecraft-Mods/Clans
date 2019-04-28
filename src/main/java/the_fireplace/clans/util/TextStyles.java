@@ -9,6 +9,6 @@ public class TextStyles {
     public static final Style GREEN = new Style().setColor(TextFormatting.GREEN);
     public static final Style DARK_GREEN = new Style().setColor(TextFormatting.DARK_GREEN);
     public static final Style WHITE = new Style().setColor(TextFormatting.WHITE);
-    public static final Style BOLD_ITALIC = new Style().setBold(Boolean.TRUE).setItalic(Boolean.TRUE);
-    public static final Style BOLD = new Style().setBold(Boolean.TRUE);
+    public static final Style BOLD_ITALIC_GREEN = new Style().setBold(Boolean.TRUE).setItalic(Boolean.TRUE).setColor(TextFormatting.GREEN);
+    public static final Style BOLD_GREEN = new Style().setBold(Boolean.TRUE).setColor(TextFormatting.GREEN);
 }

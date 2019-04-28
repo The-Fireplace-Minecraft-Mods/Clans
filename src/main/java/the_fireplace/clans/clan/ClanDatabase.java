@@ -78,7 +78,7 @@ public final class ClanDatabase implements Serializable {
 	}
 
 	/**
-	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClans(UUID)}
+	 * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getClansByPlayer(UUID)}
 	 * @param player
 	 * The player to get the clan of
 	 * @return

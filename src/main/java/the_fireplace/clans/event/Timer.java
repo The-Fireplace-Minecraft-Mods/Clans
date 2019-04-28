@@ -39,7 +39,7 @@ public class Timer {
 				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isAlive()) {
-						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
+						Clan c = ClanCache.getClansByPlayer(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandClan.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
 					}
@@ -113,17 +113,17 @@ public class Timer {
 				assert Clans.CLAIMED_LAND != null;
 				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
 				UUID chunkClan = ChunkUtils.getChunkOwner(c);
-				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
+				ArrayList<Clan> playerClans = ClanCache.getClansByPlayer(event.player.getUniqueID());
 				if (event.player.getCapability(Clans.CLAIMED_LAND).isPresent()) {
 					UUID playerStoredClaimId = CapHelper.getClaimedLandCapability(event.player).getClan();
-					if (chunkClan != null && ClanCache.getClan(chunkClan) == null) {
+					if (chunkClan != null && ClanCache.getClanById(chunkClan) == null) {
 						ChunkUtils.clearChunkOwner(c);
 						chunkClan = null;
 					}
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 						CapHelper.getClaimedLandCapability(event.player).setClan(chunkClan);
 						Style color = TextStyles.GREEN;
-						if ((!playerClans.isEmpty() && !playerClans.contains(ClanCache.getClan(chunkClan))) || (playerClans.isEmpty() && chunkClan != null))
+						if ((!playerClans.isEmpty() && !playerClans.contains(ClanCache.getClanById(chunkClan))) || (playerClans.isEmpty() && chunkClan != null))
 							color = TextStyles.YELLOW;
 						if (chunkClan == null)
 							color = TextStyles.DARK_GREEN;
@@ -137,7 +137,7 @@ public class Timer {
 									color = TextStyles.YELLOW;
 							}
 						} else
-							endMsg = ClanCache.getClan(chunkClan).getClanName() + "'s territory.";
+							endMsg = ClanCache.getClanById(chunkClan).getClanName() + "'s territory.";
 
 						event.player.sendMessage(new TextComponentString("You are now entering " + endMsg).setStyle(color));
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getGameTime() % 15 == 0) {

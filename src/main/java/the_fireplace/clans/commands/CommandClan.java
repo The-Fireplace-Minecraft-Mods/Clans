@@ -6,7 +6,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,14 +16,18 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBanner;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -59,7 +62,7 @@ import java.util.UUID;
 public class CommandClan {
 
     public static final SuggestionProvider<CommandSource> playerClanSuggestion = (context, builder) -> {
-        for(Clan c: ClanCache.getPlayerClans(context.getSource().asPlayer().getUniqueID()))
+        for(Clan c: ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()))
             builder.suggest(c.getClanName());
         return builder.buildFuture();
     };
@@ -72,7 +75,7 @@ public class CommandClan {
 
     public static final SuggestionProvider<CommandSource> invitablePlayerSuggestion = (context, builder) -> {
         for(EntityPlayerMP p: ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-            if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(p.getUniqueID()).isEmpty())
+            if(Clans.cfg.allowMultiClanMembership || ClanCache.getClansByPlayer(p.getUniqueID()).isEmpty())
                 builder.suggest(p.getName().getFormattedText());
         return builder.buildFuture();
     };
@@ -87,33 +90,42 @@ public class CommandClan {
         clanCommand.then(Commands.literal("b")
                 .executes(context -> runBannerCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("banner")
-                .executes(context -> runBannerCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runBannerCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("b")
-                .executes(context -> runBannerCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runBannerCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("details")
                 .executes(context -> runDetailsCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))
                 .then(Commands.argument("clan", StringArgumentType.word()).suggests(clanSuggestion)
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommand.then(Commands.literal("info")
                 .executes(context -> runDetailsCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))
                 .then(Commands.argument("clan", StringArgumentType.word()).suggests(clanSuggestion)
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommand.then(Commands.literal("d")
                 .executes(context -> runDetailsCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))
                 .then(Commands.argument("clan", StringArgumentType.word()).suggests(clanSuggestion)
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("details")
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("info")
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("d")
-                .executes(context -> runDetailsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
+
+        clanCommand.then(Commands.literal("playerinfo")
+                .executes(context -> runPlayerInfoCommand(context, context.getSource().asPlayer().getGameProfile()))
+                .then(Commands.argument("target", EntityArgument.player())
+                .executes(context -> runPlayerInfoCommand(context, EntityArgument.getPlayer(context, "target").getGameProfile()))));
+        clanCommand.then(Commands.literal("pi")
+                .executes(context -> runPlayerInfoCommand(context, context.getSource().asPlayer().getGameProfile()))
+                .then(Commands.argument("target", EntityArgument.player())
+                .executes(context -> runPlayerInfoCommand(context, EntityArgument.getPlayer(context, "target").getGameProfile()))));
 
         clanCommand.then(Commands.literal("disband")
                 .executes(context -> runDisbandCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()), false)));
         clanCommandWithClan.then(Commands.literal("disband")
-                .executes(context -> runDisbandCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)), false)));
+                .executes(context -> runDisbandCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)), false)));
 
         clanCommand.then(Commands.literal("form")
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -136,20 +148,20 @@ public class CommandClan {
                 .then(Commands.argument("banner", StringArgumentType.greedyString())
                 .executes(context -> runSetBannerCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()), context.getArgument("banner", String.class)))));
         clanCommandWithClan.then(Commands.literal("setbanner")
-                .executes(context -> runSetBannerCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)), null))
+                .executes(context -> runSetBannerCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)), null))
                 .then(Commands.argument("banner", StringArgumentType.greedyString())
-                .executes(context -> runSetBannerCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)), context.getArgument("banner", String.class)))));
+                .executes(context -> runSetBannerCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)), context.getArgument("banner", String.class)))));
 
         clanCommand.then(Commands.literal("setdefault")
                 .then(Commands.argument("clan", StringArgumentType.word())
-                .executes(context -> runSetDefaultCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runSetDefaultCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("setname")
                 .then(Commands.argument("name", StringArgumentType.word())
                 .executes(context -> runSetNameCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("setname")
                 .then(Commands.argument("name", StringArgumentType.word())
-                .executes(context -> runSetNameCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runSetNameCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("setdescription")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
@@ -159,10 +171,10 @@ public class CommandClan {
                 .executes(context -> runSetDescriptionCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("setdescription")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
-                .executes(context -> runSetDescriptionCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runSetDescriptionCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("setdesc")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
-                .executes(context -> runSetDescriptionCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runSetDescriptionCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("addfunds")
                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
@@ -175,36 +187,36 @@ public class CommandClan {
                 .executes(context -> runAddFundsCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("addfunds")
                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                .executes(context -> runAddFundsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runAddFundsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("deposit")
                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                .executes(context -> runAddFundsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runAddFundsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("af")
                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                .executes(context -> runAddFundsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runAddFundsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("balance")
                 .executes(context -> runBalanceCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("balance")
-                .executes(context -> runBalanceCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runBalanceCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("claim")
                 .executes(context -> runClaimCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommand.then(Commands.literal("c")
                 .executes(context -> runClaimCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("claim")
-                .executes(context -> runClaimCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runClaimCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("c")
-                .executes(context -> runClaimCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runClaimCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("abandonclaim")
                 .executes(context -> runAbandonClaimCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommand.then(Commands.literal("ac")
                 .executes(context -> runAbandonClaimCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("abandonclaim")
-                .executes(context -> runAbandonClaimCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runAbandonClaimCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("ac")
-                .executes(context -> runAbandonClaimCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runAbandonClaimCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("accept")
                 .executes(context -> runAcceptCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
@@ -217,14 +229,14 @@ public class CommandClan {
                 .executes(context -> runPromoteCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("promote")
                 .then(Commands.argument("target", StringArgumentType.word())
-                .executes(context -> runPromoteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runPromoteCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("demote")
                 .then(Commands.argument("target", StringArgumentType.word())
                 .executes(context -> runDemoteCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("demote")
                 .then(Commands.argument("target", StringArgumentType.word())
-                .executes(context -> runDemoteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runDemoteCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("invite")
                 .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
@@ -234,36 +246,36 @@ public class CommandClan {
                 .executes(context -> runInviteCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("invite")
                 .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
-                .executes(context -> runInviteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runInviteCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         clanCommandWithClan.then(Commands.literal("i")
                 .then(Commands.argument("target", StringArgumentType.word()).suggests(invitablePlayerSuggestion)
-                .executes(context -> runInviteCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runInviteCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("kick")
                 .then(Commands.argument("target", StringArgumentType.word())
                 .executes(context -> runKickCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
         clanCommandWithClan.then(Commands.literal("kick")
                 .then(Commands.argument("target", StringArgumentType.word())
-                .executes(context -> runKickCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                .executes(context -> runKickCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
         clanCommand.then(Commands.literal("leave")
                 .executes(context -> runLeaveCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("leave")
-                .executes(context -> runLeaveCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runLeaveCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("home")
                 .executes(context -> runHomeCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommand.then(Commands.literal("h")
                 .executes(context -> runHomeCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("home")
-                .executes(context -> runHomeCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runHomeCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         clanCommandWithClan.then(Commands.literal("h")
-                .executes(context -> runHomeCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runHomeCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("sethome")
                 .executes(context -> runSetHomeCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
         clanCommandWithClan.then(Commands.literal("sethome")
-                .executes(context -> runSetHomeCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                .executes(context -> runSetHomeCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
         clanCommand.then(Commands.literal("trapped")
                 .executes(context -> runTrappedCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
@@ -279,10 +291,10 @@ public class CommandClan {
                     .executes(context -> runTakeFundsCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
             clanCommandWithClan.then(Commands.literal("takefunds")
                     .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                    .executes(context -> runTakeFundsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                    .executes(context -> runTakeFundsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
             clanCommandWithClan.then(Commands.literal("withdraw")
                     .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                    .executes(context -> runTakeFundsCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                    .executes(context -> runTakeFundsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         }
 
         if(Clans.cfg.chargeRentDays > 0) {
@@ -291,14 +303,14 @@ public class CommandClan {
                     .executes(context -> runSetRentCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
             clanCommandWithClan.then(Commands.literal("setrent")
                     .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                    .executes(context -> runSetRentCommand(context, ClanCache.getClan(context.getArgument("clan", String.class))))));
+                    .executes(context -> runSetRentCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
         }
 
         if(Clans.cfg.chargeRentDays > 0 || Clans.cfg.clanUpkeepDays > 0) {
             clanCommand.then(Commands.literal("finances")
                     .executes(context -> runFinancesCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()))));
             clanCommandWithClan.then(Commands.literal("finances")
-                    .executes(context -> runFinancesCommand(context, ClanCache.getClan(context.getArgument("clan", String.class)))));
+                    .executes(context -> runFinancesCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
         }
 
         clanCommand.then(clanCommandWithClan);
@@ -360,13 +372,53 @@ public class CommandClan {
         if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
             sendFeedback(context, TextStyles.GREEN, "Online members:");
             for(EntityPlayerMP leader: leaders)
-                sendFeedback(context, TextStyles.BOLD_ITALIC.setColor(TextFormatting.GREEN), "Leader %s", leader.getName().getFormattedText());
+                sendFeedback(context, TextStyles.BOLD_ITALIC_GREEN, "Leader %s", leader.getName().getFormattedText());
             for(EntityPlayerMP admin: admins)
-                sendFeedback(context, TextStyles.BOLD.setColor(TextFormatting.GREEN), "Admin %s", admin.getName().getFormattedText());
+                sendFeedback(context, TextStyles.BOLD_GREEN, "Admin %s", admin.getName().getFormattedText());
             for(EntityPlayerMP member: members)
                 sendFeedback(context, TextStyles.GREEN, "Member %s", member.getName().getFormattedText());
         } else
             sendFeedback(context, TextStyles.GREEN, "No online members.");
+        return 1;
+    }
+
+    private static int runPlayerInfoCommand(CommandContext<CommandSource> context, @Nullable GameProfile target) throws CommandSyntaxException {
+        if(target == null) {
+            if(!validateClanRank(context, null, EnumRank.ANY))
+                return 0;
+            target = context.getSource().asPlayer().getGameProfile();
+        }
+        sendFeedback(context, TextStyles.GREEN, "Player name: %s", target.getName());
+        List<Clan> leaders = Lists.newArrayList();
+        List<Clan> admins = Lists.newArrayList();
+        List<Clan> members = Lists.newArrayList();
+        for(Clan clan: ClanCache.getClansByPlayer(target.getId())) {
+            EnumRank rank = clan.getMembers().get(target.getId());
+            switch(rank){
+                case LEADER:
+                    leaders.add(clan);
+                    break;
+                case ADMIN:
+                    admins.add(clan);
+                    break;
+                case MEMBER:
+                    members.add(clan);
+                    break;
+            }
+        }
+        if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
+            Clan defaultClan = null;
+            if(ArrayUtils.contains(context.getSource().getServer().getOnlinePlayerNames(), target.getName()))
+                defaultClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability(Objects.requireNonNull(context.getSource().getServer().getPlayerList().getPlayerByUUID(target.getId()))).getDefaultClan());
+            sendFeedback(context, TextStyles.GREEN, "Clans: ");
+            for(Clan leader: leaders)
+                sendFeedback(context, defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Leader of %s", leader.getClanName());
+            for(Clan admin: admins)
+                sendFeedback(context, defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Admin of %s", admin.getClanName());
+            for(Clan member: members)
+                sendFeedback(context, defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Member of %s", member.getClanName());
+        } else
+            sendFeedback(context, TextStyles.GREEN, "%s is not in any clans.", target.getName());
         return 1;
     }
 
@@ -437,7 +489,7 @@ public class CommandClan {
             }
             if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, context.getSource().asPlayer().getUniqueID())) {
                 Clan c = new Clan(newClanName, context.getSource().asPlayer().getUniqueID(), banner);
-                if(ClanCache.getPlayerClans(context.getSource().asPlayer().getUniqueID()).size() == 1)
+                if(ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).size() == 1)
                     CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setDefaultClan(c.getClanId());
                 sendFeedback(context, TextStyles.GREEN, "Clan formed!");
             } else
@@ -463,7 +515,7 @@ public class CommandClan {
                 if(chunkOwner == null)
                     row.append('#');
                 else {
-                    if(ClanCache.getClan(chunkOwner) == null) {
+                    if(ClanCache.getClanById(chunkOwner) == null) {
                         ChunkUtils.clearChunkOwner(c);
                         row.append('#');
                     } else {
@@ -477,7 +529,7 @@ public class CommandClan {
         }
         sendFeedback(context, TextStyles.GREEN, "=====================================================");
         for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-            Clan c = ClanCache.getClan(symbol.getKey());
+            Clan c = ClanCache.getClanById(symbol.getKey());
             sendFeedback(context, TextStyles.GREEN, "%s: %s", symbol.getValue(), c != null ? c.getClanName() : "Wilderness");
         }
         return 1;
@@ -728,7 +780,7 @@ public class CommandClan {
             if (claimFaction.equals(clan.getClanId()))
                 throwCommandFailure("%s has already claimed this land.", clan.getClanName());
             else
-                throwCommandFailure("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClan(claimFaction)).getClanName());
+                throwCommandFailure("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClanById(claimFaction)).getClanName());
         } else {
             if (!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, clan.getClanId()) || clan.getClaimCount() == 0) {
                 if (Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
@@ -786,8 +838,8 @@ public class CommandClan {
         GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
-            if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-                if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
+            if (!ClanCache.getClansByPlayer(target.getId()).isEmpty()) {
+                if (ClanCache.getClansByPlayer(target.getId()).contains(clan)) {
                     if (clan.demoteMember(target.getId())) {
                         sendFeedback(context, TextStyles.GREEN, "You have demoted %s.", target.getName());
                         if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
@@ -816,8 +868,8 @@ public class CommandClan {
         GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
-            if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-                if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
+            if (!ClanCache.getClansByPlayer(target.getId()).isEmpty()) {
+                if (ClanCache.getClansByPlayer(target.getId()).contains(clan)) {
                     if (clan.promoteMember(target.getId())) {
                         sendFeedback(context, TextStyles.GREEN, "You have promoted %s in %s.", target.getName(), clan.getClanName());
                         if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
@@ -839,7 +891,7 @@ public class CommandClan {
         String playerName = context.getArgument("target", String.class);
         EntityPlayerMP target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName);
         if(target != null) {
-            if (Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+            if (Clans.cfg.allowMultiClanMembership || ClanCache.getClansByPlayer(target.getUniqueID()).isEmpty()) {
                 if (ClanCache.inviteToClan(target.getUniqueID(), clan))
                     sendFeedback(context, TextStyles.GREEN, "You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", clan.getClanName());
                 else
@@ -863,8 +915,8 @@ public class CommandClan {
                 sendFeedback(context, TextStyles.YELLOW, "To leave a clan, use /clan leave.");
                 return 0;
             }
-            if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-                if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
+            if (!ClanCache.getClansByPlayer(target.getId()).isEmpty()) {
+                if (ClanCache.getClansByPlayer(target.getId()).contains(clan)) {
                     EnumRank senderRank = clan.getMembers().get(context.getSource().asPlayer().getUniqueID());
                     EnumRank targetRank = clan.getMembers().get(target.getId());
                     if (senderRank == EnumRank.LEADER) {
@@ -928,10 +980,10 @@ public class CommandClan {
     public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
         UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
         if(removeClan == null || removeClan.getClanId().equals(oldDef))
-            if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())
+            if(ClanCache.getClansByPlayer(player.getUniqueID()).isEmpty())
                 CapHelper.getPlayerClanCapability(player).setDefaultClan(null);
             else
-                CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
+                CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getClansByPlayer(player.getUniqueID()).get(0).getClanId());
     }
 
     private static int runHomeCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
@@ -947,7 +999,7 @@ public class CommandClan {
                 throwCommandFailure("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", clan.getClanName());
             else {
                 if(Clans.cfg.clanHomeWarmupTime > 0)
-                    Timer.clanHomeWarmups.put(context.getSource().asPlayer(), new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(context.getSource().asPlayer().getUniqueID()).indexOf(clan)));
+                    Timer.clanHomeWarmups.put(context.getSource().asPlayer(), new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).indexOf(clan)));
                 else
                     teleportHome(context.getSource().asPlayer(), clan, home, playerDim);
             }
@@ -991,7 +1043,7 @@ public class CommandClan {
             return 0;
         assert clan != null;
         Chunk origin = context.getSource().asPlayer().world.getChunk(context.getSource().asPlayer().getPosition());
-        Clan chunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(origin));
+        Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
         if(chunkOwner == null && Clans.cfg.protectWilderness && context.getSource().asPlayer().getPosition().getY() >= Clans.cfg.minWildernessY) {
             BlockPos spawn = context.getSource().asPlayer().world.getSpawnPoint();
             context.getSource().asPlayer().attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
@@ -999,7 +1051,7 @@ public class CommandClan {
             int x = 0, z = 0, tmp, dx = 0, dz = -1;
             while(true) {//Spiral out until a player friendly chunk is found
                 Chunk test = context.getSource().asPlayer().world.getChunk(origin.x + x, origin.z + z);
-                Clan testChunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(test));
+                Clan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
                 if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID())) {
                     context.getSource().asPlayer().attemptTeleport((test.getPos().getXStart() + test.getPos().getXEnd())/2f, test.getWorld().getHeight(Heightmap.Type.MOTION_BLOCKING, (test.getPos().getXStart() + test.getPos().getXEnd())/2, (test.getPos().getZStart() + test.getPos().getZEnd())/2), (test.getPos().getZStart() + test.getPos().getZEnd())/2f);
                     break;

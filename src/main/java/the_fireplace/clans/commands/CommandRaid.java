@@ -43,7 +43,7 @@ public class CommandRaid {
 
     public static final SuggestionProvider<CommandSource> invitablePlayerSuggestion = (context, builder) -> {
         for(EntityPlayerMP p: ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
-            if(!ClanCache.getPlayerClans(p.getUniqueID()).contains(RaidingParties.getRaid(context.getSource().asPlayer()).getTarget()) && RaidingParties.getRaid(p) == null)
+            if(!ClanCache.getClansByPlayer(p.getUniqueID()).contains(RaidingParties.getRaid(context.getSource().asPlayer()).getTarget()) && RaidingParties.getRaid(p) == null)
                 builder.suggest(p.getName().getFormattedText());
         return builder.buildFuture();
     };
@@ -74,7 +74,7 @@ public class CommandRaid {
     }
 
     private static final Command<CommandSource> joinCommand = context -> {
-        Clan target = ClanCache.getClan(context.getArgument("target", String.class));
+        Clan target = ClanCache.getClanByName(context.getArgument("target", String.class));
         if(target == null)
             throwCommandFailure("Target clan not found.");
         else {

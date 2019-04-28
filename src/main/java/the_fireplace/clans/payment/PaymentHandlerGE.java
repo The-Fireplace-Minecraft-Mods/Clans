@@ -13,7 +13,7 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
 		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, false);
-		if(ret && ClanCache.getClan(account) != null)
+		if(ret && ClanCache.getClanById(account) != null)
 			try {
 				Objects.requireNonNull(Account.get(account)).writeIfChanged();
 			} catch(IOException e) {
@@ -39,7 +39,7 @@ public class PaymentHandlerGE implements IPaymentHandler {
 		if(Account.get(account) == null)
 			return false;
 		GrandEconomyApi.addToBalance(account, amount, false);
-		if(ClanCache.getClan(account) != null)
+		if(ClanCache.getClanById(account) != null)
 			try {
 				Objects.requireNonNull(Account.get(account)).writeIfChanged();
 			} catch(IOException e) {

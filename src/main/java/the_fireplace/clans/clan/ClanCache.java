@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.util.CapHelper;
 
 import javax.annotation.Nullable;
@@ -23,22 +22,22 @@ public final class ClanCache {
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
 	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
 
-	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba");
+	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi");
 
 	@Nullable
-	public static Clan getClan(@Nullable UUID clanID){
+	public static Clan getClanById(@Nullable UUID clanID){
 		return ClanDatabase.getClan(clanID);
 	}
 
 	@Nullable
-	public static Clan getClan(String clanName){
+	public static Clan getClanByName(String clanName){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);
 		return clanNames.get(clanName);
 	}
 
-	public static ArrayList<Clan> getPlayerClans(@Nullable UUID player) {
+	public static ArrayList<Clan> getClansByPlayer(@Nullable UUID player) {
 		if(player == null)
 			return Lists.newArrayList();
 		if(playerClans.containsKey(player))
@@ -51,7 +50,7 @@ public final class ClanCache {
 	public static Clan getPlayerDefaultClan(@Nullable EntityPlayerMP player) {
 		if(player == null)
 			return null;
-		return getClan(CapHelper.getPlayerClanCapability(player).getDefaultClan());
+		return getClanById(CapHelper.getPlayerClanCapability(player).getDefaultClan());
 	}
 
 	public static EnumRank getPlayerRank(UUID player, Clan clan) {

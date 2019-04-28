@@ -35,7 +35,7 @@ public class RaidEvents {
 			IChunk c = event.getWorld().getChunkDefault(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				Clan chunkClan = ClanCache.getClan(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					if (RaidingParties.hasActiveRaid(chunkClan)) {
 						//Double check that nothing gets dropped during a raid, to avoid block duping.
@@ -55,7 +55,7 @@ public class RaidEvents {
 		if(!event.getEntity().getEntityWorld().isRemote) {
 			if (event.getEntityLiving() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
+				for(Clan clan: ClanCache.getClansByPlayer(player.getUniqueID())) {
 					if (clan != null && RaidingParties.hasActiveRaid(clan))
 						RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
 					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
@@ -68,7 +68,7 @@ public class RaidEvents {
 	@SubscribeEvent
 	public void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote()) {
-			Clan chunkOwner = ClanCache.getClan(ChunkUtils.getChunkOwner(event.getChunk()));
+			Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
 			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(Objects.requireNonNull(event.getChunk().getWorldForge()).getDimension().getType().getId(), event.getChunk());
 				if (data != null)
