@@ -1146,7 +1146,7 @@ public class CommandClan {
         if(clan.getClanId().equals(CapHelper.getClaimedLandCapability(c).getClan())) {
             for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
                 if(pos.getValue() != null && pos.getKey() != clan && pos.getValue().getDistance(context.getSource().asPlayer().getPosition().getX(), context.getSource().asPlayer().getPosition().getY(), context.getSource().asPlayer().getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
-                    throwCommandFailure("You are too close to another clan's home! You must be at least %s blocks away from other clans' homes to set your clan home.", Clans.cfg.minClanHomeDist);
+                    throwCommandFailure("You are too close to another clan's home! You must be at least %s blocks away from other clans' homes to set your clan home. Use /clan fancymap to see where nearby clans are.", Clans.cfg.minClanHomeDist);
                     return 0;
                 }
             clan.setHome(context.getSource().asPlayer().getPosition(), context.getSource().asPlayer().dimension.getId());
