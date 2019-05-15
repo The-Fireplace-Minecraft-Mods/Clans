@@ -533,7 +533,7 @@ public class CommandClan {
                 NewClan c = new NewClan(newClanName, context.getSource().asPlayer().getUniqueID(), banner);
                 if(ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).size() == 1)
                     CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setDefaultClan(c.getClanId());
-                sendFeedback(context, TextStyles.GREEN, "NewClan formed!");
+                sendFeedback(context, TextStyles.GREEN, "Clan formed!");
             } else
                 throwCommandFailure("Insufficient funds to form clan. It costs %s %s.", Clans.cfg.formClanCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost));
         }
@@ -721,7 +721,7 @@ public class CommandClan {
             return 0;
         assert clan != null;
         long balance = Clans.getPaymentHandler().getBalance(clan.getClanId());
-        sendFeedback(context, TextStyles.GREEN, "NewClan balance: %s %s", balance, Clans.getPaymentHandler().getCurrencyName(balance));
+        sendFeedback(context, TextStyles.GREEN, "Clan balance: %s %s", balance, Clans.getPaymentHandler().getCurrencyName(balance));
         return 1;
     }
 
