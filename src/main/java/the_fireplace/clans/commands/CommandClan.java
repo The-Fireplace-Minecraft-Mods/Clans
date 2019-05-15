@@ -110,6 +110,9 @@ public class CommandClan {
         clanCommandWithClan.then(Commands.literal("d")
                 .executes(context -> runDetailsCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))));
 
+        clanCommand.then(Commands.literal("list")
+                        .executes(CommandClan::runListCommand));
+
         clanCommand.then(Commands.literal("playerinfo")
                 .executes(context -> runPlayerInfoCommand(context, context.getSource().asPlayer().getGameProfile()))
                 .then(Commands.argument("target", EntityArgument.player())
@@ -401,6 +404,16 @@ public class CommandClan {
             throwCommandFailure("Error: %s has no members.", clan.getClanName());
             Clans.LOGGER.error("Clan %s has no members.", clan.getClanName());
         }
+        return 1;
+    }
+
+    private static int runListCommand(CommandContext<CommandSource> context) {
+        sendFeedback(context, TextStyles.GREEN, "Clans on this server:");
+        if(!NewClanDatabase.getClans().isEmpty()) {
+            for (NewClan clan : NewClanDatabase.getClans())
+                sendFeedback(context, TextStyles.GREEN, clan.getClanName() + " - " + clan.getDescription());
+        } else
+            sendFeedback(context, TextStyles.YELLOW, "There are no clans on this server.");
         return 1;
     }
 
