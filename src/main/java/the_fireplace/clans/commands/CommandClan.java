@@ -26,10 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
@@ -533,7 +530,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static final char[] mapchars = {'%', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
+    private static final char[] mapchars = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
     private static int runMapCommand(CommandContext<CommandSource> context) throws CommandSyntaxException {
         if(!validateClanRank(context, null, EnumRank.ANY))
             return 0;
@@ -547,20 +544,22 @@ public class CommandClan {
             for (int x = center.x - 26; x <= center.x + 26; x++) {
                 Chunk c = w.getChunk(x, z);
                 UUID chunkOwner = ChunkUtils.getChunkOwner(c);
+                String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
                 if(chunkOwner == null)
-                    row.append('#');
+                    row.append(wildernessColor).append('-');
                 else {
-                    if(ClanCache.getClanById(chunkOwner) == null) {
+                    NewClan clan = ClanCache.getClanById(chunkOwner);
+                    if(clan == null) {
                         ChunkUtils.clearChunkOwner(c);
-                        row.append('#');
+                        row.append(wildernessColor).append('-');
                     } else {
                         if (!symbolMap.containsKey(chunkOwner))
                             symbolMap.put(chunkOwner, mapchars[symbolMap.size() % mapchars.length]);
-                        row.append(symbolMap.get(chunkOwner));
+                        row.append(center.z == z && center.x == x ? "§9" : clan.getMembers().containsKey(context.getSource().assertIsEntity().getUniqueID()) ? "§a" : "§c").append(symbolMap.get(chunkOwner));
                     }
                 }
             }
-            sendFeedback(context, TextStyles.GREEN, row.toString());
+            sendFeedback(context, null, row.toString());
         }
         sendFeedback(context, TextStyles.GREEN, "=====================================================");
         for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
@@ -1153,7 +1152,10 @@ public class CommandClan {
         throw new CommandException(new TextComponentTranslation(message, args).setStyle(TextStyles.RED));
     }
 
-    private static void sendFeedback(CommandContext<CommandSource> context, Style color, String message, Object... args) throws CommandException {
-        context.getSource().sendFeedback(new TextComponentTranslation(message, args).setStyle(color), false);
+    private static void sendFeedback(CommandContext<CommandSource> context, @Nullable Style color, String message, Object... args) throws CommandException {
+        ITextComponent out = new TextComponentTranslation(message, args);
+        if(color != null)
+            out.setStyle(color);
+        context.getSource().sendFeedback(out, false);
     }
 }
