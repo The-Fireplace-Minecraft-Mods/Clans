@@ -881,7 +881,7 @@ public class CommandClan {
                     } else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
                         boolean inClanHomeRange = false;
                         for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
-                            if(pos.getValue().getDistance(context.getSource().asPlayer().getPosition().getX(), context.getSource().asPlayer().getPosition().getY(), context.getSource().asPlayer().getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
+                            if(!pos.getKey().getClanId().equals(clan.getClanId()) && pos.getKey().hasHome() && pos.getValue() != null && pos.getValue().getDistance(context.getSource().asPlayer().getPosition().getX(), context.getSource().asPlayer().getPosition().getY(), context.getSource().asPlayer().getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
                                 inClanHomeRange = true;
                         if(inClanHomeRange) {
                             if(Clans.cfg.enforceInitialClaimSeparation)

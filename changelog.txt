@@ -42,4 +42,3 @@ Fixed multiple explosions messing up the chunk restoration
 Fixed clan upkeep and rent draining the balances of clans and players by constantly running
 Fixed invite command "You have invited player" message going to the wrong person
 Fixed crash when trying to use /clan banner and the clan doesn't have a banner
-Fixed an issue with attempting to claim land a reasonable distance from other clans.
