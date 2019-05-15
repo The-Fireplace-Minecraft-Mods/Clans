@@ -47,3 +47,4 @@ Fixed crash when trying to use /clan banner and the clan doesn't have a banner
 Fixed potential crash when players leave terrirory during raid
 Stop blocks from falling during a raid as a temporary fix for possible duping
 Fixed being able to invite players to clans they are already in
+Fix having to relog after death to regain /clan command permissions

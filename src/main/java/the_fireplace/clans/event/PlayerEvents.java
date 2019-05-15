@@ -57,4 +57,16 @@ public class PlayerEvents {
             Timer.prevChunkZs.remove(event.getPlayer());
         }
     }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        //noinspection ConstantConditions
+        assert Clans.CLAN_DATA_CAP != null;
+        if(!event.getPlayer().world.isRemote && event.getPlayer() instanceof EntityPlayerMP) {
+            PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.getPlayer());
+            assert c != null;
+            if ((c.getDefaultClan() != null && ClanCache.getClanById(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getClansByPlayer(event.getPlayer().getUniqueID()).isEmpty()) || (c.getDefaultClan() != null && !ClanCache.getClansByPlayer(event.getPlayer().getUniqueID()).contains(ClanCache.getClanById(c.getDefaultClan()))))
+                CommandClan.updateDefaultClan((EntityPlayerMP)event.getPlayer(), null);
+        }
+    }
 }
