@@ -409,7 +409,7 @@ public final class Clans {
                 maxRaidDuration = builder
                         .comment("Maximum duration a raid can last for, in minutes.")
                         .translation("Maximum Raid Duration")
-                        .defineInRange("maxRaidDuration", 20, 0, Integer.MAX_VALUE);
+                        .defineInRange("maxRaidDuration", 20, 0, Integer.MAX_VALUE/60);
                 raidBufferTime = builder
                         .comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
                         .translation("Raid Preparation Time")
@@ -417,7 +417,7 @@ public final class Clans {
                 remainingTimeToGlow = builder
                         .comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
                         .translation("Remaining Time To Glow")
-                        .defineInRange("remainingTimeToGlow", 10, 0, Integer.MAX_VALUE);
+                        .defineInRange("remainingTimeToGlow", 10, 0, Integer.MAX_VALUE/60);
                 maxAttackerAbandonmentTime = builder
                         .comment("Maximum amount of consecutive time members of raiding parties can remain outside their target's territory, in seconds.")
                         .translation("Maximum Raider Abandonment Time")
