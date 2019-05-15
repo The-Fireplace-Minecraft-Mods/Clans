@@ -7,6 +7,7 @@ New command: /clan list - View the names and descriptions of all clans on the se
 Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 The /clan map is now color coded: Green for clans the player is a member of, yellow for wilderness, red for clans the player is not part of, and blue for where the player is currently standing.
+The clan home warmup time can now be set to -1 to disable /clan home.
 Add the default clan before the player's name in chat
 Show offline members in clan details, hide member count and "No members" message if looking at opclan details.
 Show the clan's description when you enter its territory.

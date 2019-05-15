@@ -1040,21 +1040,24 @@ public class CommandClan {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
-        BlockPos home = clan.getHome();
-        int playerDim = context.getSource().asPlayer().dimension.getId();
+        if(Clans.cfg.clanHomeWarmupTime > -1) {
+            BlockPos home = clan.getHome();
+            int playerDim = context.getSource().asPlayer().dimension.getId();
 
-        int cooldown = CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).getCooldown();
-        if(cooldown <= 0) {
-            if (!clan.hasHome() || home == null)
-                throwCommandFailure("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", clan.getClanName());
-            else {
-                if(Clans.cfg.clanHomeWarmupTime > 0)
-                    Timer.clanHomeWarmups.put(context.getSource().asPlayer(), new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).indexOf(clan)));
-                else
-                    teleportHome(context.getSource().asPlayer(), clan, home, playerDim);
-            }
+            int cooldown = CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).getCooldown();
+            if (cooldown <= 0) {
+                if (!clan.hasHome() || home == null)
+                    throwCommandFailure("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", clan.getClanName());
+                else {
+                    if (Clans.cfg.clanHomeWarmupTime > 0)
+                        Timer.clanHomeWarmups.put(context.getSource().asPlayer(), new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).indexOf(clan)));
+                    else
+                        teleportHome(context.getSource().asPlayer(), clan, home, playerDim);
+                }
+            } else
+                throwCommandFailure("You cannot use this command until your cooldown runs out in %s seconds.", cooldown);
         } else
-            throwCommandFailure("You cannot use this command until your cooldown runs out in %s seconds.", cooldown);
+            throwCommandFailure("/clan home is disabled on this server.");
         return 1;
     }
 

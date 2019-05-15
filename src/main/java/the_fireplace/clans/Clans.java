@@ -373,9 +373,9 @@ public final class Clans {
                         .translation("Allow Multi Clan Membership")
                         .define("allowMultiClanMembership", true);
                 clanHomeWarmupTime = builder
-                        .comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported.")
+                        .comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported. Set to -1 to disable /clan home.")
                         .translation("Clan Home Warmup Time")
-                        .defineInRange("clanHomeWarmupTime", 0, 0, Integer.MAX_VALUE);
+                        .defineInRange("clanHomeWarmupTime", 0, -1, Integer.MAX_VALUE);
                 clanHomeCooldownTime = builder
                         .comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
                         .translation("Clan Home Cooldown Time")
