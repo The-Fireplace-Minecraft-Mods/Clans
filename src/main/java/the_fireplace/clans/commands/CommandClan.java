@@ -989,8 +989,12 @@ public class CommandClan {
     public static void removeMember(CommandContext<CommandSource> context, NewClan playerClan, GameProfile target) throws CommandException {
         if(playerClan.removeMember(target.getId())) {
             sendFeedback(context, TextStyles.GREEN, "You have kicked %s out of %s.", target.getName(), playerClan.getClanName());
-            if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target.getName()))
-                Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(target.getName())).sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
+            if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target.getName())) {
+                EntityPlayerMP targetPlayer = Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(target.getId()));
+                targetPlayer.sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
+                if(playerClan.getClanId().equals(CapHelper.getPlayerClanCapability(targetPlayer).getDefaultClan()))
+                    updateDefaultClan(targetPlayer, playerClan);
+            }
         } else
             throwCommandFailure("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName());
     }

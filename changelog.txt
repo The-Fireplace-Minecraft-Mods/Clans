@@ -26,3 +26,5 @@ Improved cache reliability - less wonky things that get fixed by relogging or re
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
 Fixed clan shield calculation when starting a raid
 Fixed default clan not getting set when joining a clan
+Fixed default clan check on login not updating default clan when players are no longer in their previous default clan
+Fixed default clan not updating if needed when the player is kicked from a clan
