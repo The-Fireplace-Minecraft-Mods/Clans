@@ -27,6 +27,8 @@ Improved /clan home teleportation handling, you are far less likely to run into 
 Minor performance improvement to saving and restoring block data from raids.
 Added a message for feedback when you run /clan trapped and you're not actually trapped.
 Added feedback when /clan finances is run and the clan isn't earning or losing money.
+Allow build admins to place blocks in protected wilderness
+More permissive interactions when raiding
 
 Fixes:
 Fix crash when player is not in a clan
@@ -42,3 +44,4 @@ Fixed multiple explosions messing up the chunk restoration
 Fixed clan upkeep and rent draining the balances of clans and players by constantly running
 Fixed invite command "You have invited player" message going to the wrong person
 Fixed crash when trying to use /clan banner and the clan doesn't have a banner
+Fixed potential crash when players leave terrirory during raid

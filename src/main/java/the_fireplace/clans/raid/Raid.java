@@ -102,10 +102,16 @@ public class Raid {
 
 	public boolean checkRaidEndTimer() {
 		if(remainingSeconds == Clans.cfg.remainingTimeToGlow * 60) {
-			for(UUID member: defenders.keySet())
-				Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member)).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
-			for(UUID member: getMembers())
-				Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member)).sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+			for(UUID defender: defenders.keySet()) {
+				EntityPlayerMP d2 = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(defender);
+				if(d2 != null)
+					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
+			}
+			for(UUID member: getMembers()) {
+				EntityPlayerMP m2 = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
+				if(m2 != null)
+					m2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+			}
 		}
 		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
 			for(UUID defender: defenders.keySet()) {

@@ -128,7 +128,7 @@ public class LandProtectionEvents {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-				if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+				if (!ClanCache.isClaimAdmin(placingPlayer.getUniqueID()) && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
 					event.setCanceled(true);
 					EntityEquipmentSlot hand = ((EntityPlayerMP)event.getEntity()).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 					((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, ((EntityPlayerMP)event.getEntity()).getItemStackFromSlot(hand)));
@@ -175,10 +175,10 @@ public class LandProtectionEvents {
 					if (interactingPlayer instanceof EntityPlayerMP) {
 						ArrayList<NewClan> playerClan = ClanCache.getClansByPlayer(interactingPlayer.getUniqueID());
 						IBlockState targetState = event.getWorld().getBlockState(event.getPos());
-						if (!ClanCache.isClaimAdmin(interactingPlayer.getUniqueID()) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, interactingPlayer.getUniqueID()) || !(targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate || targetState.getBlock() instanceof BlockTNT))) {
+						if (!ClanCache.isClaimAdmin(interactingPlayer.getUniqueID()) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, interactingPlayer.getUniqueID()) || targetState.getBlock() instanceof BlockContainer)) {
 							if (!(event.getItemStack().getItem() instanceof ItemBlock))
 								cancelBlockInteraction(event, interactingPlayer, targetState);
-							else if (targetState.getBlock().hasTileEntity(targetState) || targetState.getBlock() instanceof BlockDoor || targetState.getBlock() instanceof BlockTrapDoor || targetState.getBlock() instanceof BlockFenceGate)
+							else if (targetState.getBlock().hasTileEntity(targetState) && targetState.getBlock() instanceof BlockContainer)
 								cancelBlockInteraction(event, interactingPlayer, targetState);
 						}
 					}
