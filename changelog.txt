@@ -3,11 +3,13 @@ Internal preparations for Dynmap compatibility. The mod will still need a quick 
 New command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
 New command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
 New command: /clan list - View the names and descriptions of all clans on the server.
+New configs: initial claim separation multiplier, enforce initial claim separation, Dynmap border weight, Dynmap border opacity, and Dynmap fill opacity.
 
 Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 The /clan map is now color coded: Green for clans the player is a member of, yellow for wilderness, red for clans the player is not part of, and blue for where the player is currently standing.
 The clan home warmup time can now be set to -1 to disable /clan home.
+It is now far easier to avoid accidentally making a clan's first claim within the minimum clan home distance of another clan's home. It is even enforced, by default, that new clans' first claims must be made outside that range, so they can set their home without issues and to help prevent clans from stacking up next to each other and being unable to expand.
 Add the default clan before the player's name in chat
 Show offline members in clan details, hide member count and "No members" message if looking at opclan details.
 Show the clan's description when you enter its territory.

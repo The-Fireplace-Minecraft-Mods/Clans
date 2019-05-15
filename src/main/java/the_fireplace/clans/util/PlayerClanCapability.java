@@ -14,14 +14,18 @@ public interface PlayerClanCapability {
 	void setCooldown(int cooldown);
 	UUID getDefaultClan();
 	void setDefaultClan(UUID defaultClan);
+	boolean getClaimWarning();
+	void setClaimWarning(boolean claimWarning);
 
 	class Default implements PlayerClanCapability {
 		private int cooldown;
 		private UUID defaultClan;
+		private boolean claimWarning;
 
 		public Default(){
 			cooldown = 0;
 			defaultClan = null;
+			claimWarning = false;
 		}
 
 		@Override
@@ -43,6 +47,16 @@ public interface PlayerClanCapability {
 		public void setDefaultClan(UUID defaultClan) {
 			this.defaultClan = defaultClan;
 		}
+
+		@Override
+		public boolean getClaimWarning() {
+			return claimWarning;
+		}
+
+		@Override
+		public void setClaimWarning(boolean claimWarning) {
+			this.claimWarning = claimWarning;
+		}
 	}
 
 	class Storage implements Capability.IStorage<PlayerClanCapability> {
@@ -52,6 +66,7 @@ public interface PlayerClanCapability {
 		public INBTBase writeNBT(Capability<PlayerClanCapability> capability, PlayerClanCapability instance, EnumFacing side) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.putInt("cooldown", instance.getCooldown());
+			tag.putBoolean("claimWarning", instance.getClaimWarning());
 			if(instance.getDefaultClan() != null)
 				tag.putUniqueId("defaultClan", instance.getDefaultClan());
 			return tag;
@@ -63,6 +78,8 @@ public interface PlayerClanCapability {
 				instance.setCooldown(((NBTTagCompound) nbt).getInt("cooldown"));
 				if(((NBTTagCompound) nbt).hasUniqueId("defaultClan"))
 					instance.setDefaultClan(((NBTTagCompound) nbt).getUniqueId("defaultClan"));
+				if(((NBTTagCompound) nbt).contains("claimWarning"))
+					instance.setClaimWarning(((NBTTagCompound) nbt).getBoolean("claimWarning"));
 			}
 		}
 	}

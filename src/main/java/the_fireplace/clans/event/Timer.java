@@ -5,9 +5,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.CommandClan;
@@ -69,8 +71,14 @@ public class Timer {
 								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
 									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
 								else if (Clans.cfg.evictNonpayers)
-									if (member.getValue() != EnumRank.LEADER && (Clans.cfg.evictNonpayerAdmins || member.getValue() == EnumRank.MEMBER))
-										clan.removeMember(member.getKey());//TODO: If member is online, send the member a message saying they were evicted due to not being able to pay rent.
+									if (member.getValue() != EnumRank.LEADER && (Clans.cfg.evictNonpayerAdmins || member.getValue() == EnumRank.MEMBER)) {
+										clan.removeMember(member.getKey());
+										EntityPlayerMP player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member.getKey());
+										if (player != null) {
+											CommandClan.updateDefaultClan(player, clan);
+											player.sendMessage(new TextComponentTranslation("You have been kicked out of %s due to inability to pay rent.", clan.getClanName()).setStyle(TextStyles.YELLOW));
+										}
+									}
 							}
 							clan.updateNextRentTimeStamp();
 						}
@@ -94,7 +102,11 @@ public class Timer {
 									Clans.getPaymentHandler().ensureAccountExists(member);
 									if (!Clans.getPaymentHandler().addAmount(distFunds, member))
 										clan.payLeaders(distFunds);
-									//TODO send message to member saying it was disbanded.
+									EntityPlayerMP player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
+									if (player != null) {
+										CommandClan.updateDefaultClan(player, clan);
+										player.sendMessage(new TextComponentTranslation("%s has been disbanded due to inability to pay upkeep costs.", clan.getClanName()).setStyle(TextStyles.YELLOW));
+									}
 								}
 							}
 							clan.updateNextUpkeepTimeStamp();
@@ -107,6 +119,8 @@ public class Timer {
 	}
 
 	private static HashMap<EntityPlayer, Integer> prevYs = Maps.newHashMap();
+	static HashMap<EntityPlayer, Integer> prevChunkXs = Maps.newHashMap();
+	static HashMap<EntityPlayer, Integer> prevChunkZs = Maps.newHashMap();
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -182,6 +196,17 @@ public class Timer {
 								r.resetAttackerAbandonmentTime(player.getUniqueID());
 							else
 								r.incrementAttackerAbandonmentTime(player);
+						}
+					}
+					if(CapHelper.getPlayerClanCapability(player).getClaimWarning()) {
+						if(!prevChunkXs.containsKey(player))
+							prevChunkXs.put(player, player.getServerWorld().getChunk(player.getPosition()).x);
+						if(!prevChunkZs.containsKey(player))
+							prevChunkZs.put(player, player.getServerWorld().getChunk(player.getPosition()).z);
+						if(prevChunkXs.get(player) != player.getServerWorld().getChunk(player.getPosition()).x || prevChunkZs.get(player) != player.getServerWorld().getChunk(player.getPosition()).z) {
+							CapHelper.getPlayerClanCapability(player).setClaimWarning(false);
+							prevChunkXs.remove(player);
+							prevChunkZs.remove(player);
 						}
 					}
 				}

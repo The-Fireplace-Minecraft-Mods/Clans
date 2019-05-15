@@ -833,19 +833,41 @@ public class CommandClan {
         } else {
             if (!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, clan.getClanId()) || clan.getClaimCount() == 0) {
                 if (Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
-                    if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, clan.getClanId())) {
-                        ChunkUtils.setChunkOwner(c, clan.getClanId());
-                        ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().getDimension().getType().getId());
-                        clan.addClaimCount();
-                        sendFeedback(context, TextStyles.GREEN, "Land claimed!");
+                    if(clan.getClaimCount() > 0) {
+                        claimChunk(context, c, clan);
+                    } else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
+                        boolean inClanHomeRange = false;
+                        for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
+                            if(pos.getValue().getDistance(context.getSource().asPlayer().getPosition().getX(), context.getSource().asPlayer().getPosition().getY(), context.getSource().asPlayer().getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
+                                inClanHomeRange = true;
+                        if(inClanHomeRange) {
+                            if(Clans.cfg.enforceInitialClaimSeparation)
+                                context.getSource().asPlayer().sendMessage(new TextComponentTranslation("You cannot claim this chunk of land because it is too close to another clan's home. Make sure you are at least %s blocks away from other clans' homes before trying again.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
+                            else if(CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).getClaimWarning())
+                                claimChunk(context, c, clan);
+                            else {
+                                sendFeedback(context, TextStyles.YELLOW, "It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier);
+                                CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setClaimWarning(true);
+                            }
+                        }
                     } else
-                        throwCommandFailure("Insufficient funds in %s's account to claim chunk. It costs %s %s.", clan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost));
+                        claimChunk(context, c, clan);
                 } else
                     throwCommandFailure("%s is already at or above its max claim count of %s.", clan.getClanName(), clan.getMaxClaimCount());
             } else
                 throwCommandFailure("You cannot claim this chunk of land because it is not next to another of %s's claims.", clan.getClanName());
         }
         return 1;
+    }
+
+    private static void claimChunk(CommandContext<CommandSource> context, Chunk c, NewClan selectedClan) {
+        if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
+            ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
+            ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().getDimension().getType().getId());
+            selectedClan.addClaimCount();
+            sendFeedback(context, TextStyles.GREEN, "Land claimed!");
+        } else
+            throwCommandFailure("Insufficient funds in clan account to claim chunk. It costs %s %s.", Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost));
     }
 
     @SuppressWarnings("Duplicates")

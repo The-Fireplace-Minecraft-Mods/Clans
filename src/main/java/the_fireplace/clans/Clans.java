@@ -204,6 +204,8 @@ public final class Clans {
         public static boolean multipleClanLeaders;
         public static int maxNameLength;
         public static int minClanHomeDist;
+        public static double initialClaimSeparationMultiplier;
+        public static boolean enforceInitialClaimSeparation;
         public static boolean forceConnectedClaims;
         public static boolean allowMultiClanMembership;
         public static int clanHomeWarmupTime;
@@ -254,6 +256,8 @@ public final class Clans {
             multipleClanLeaders = SERVER.multipleClanLeaders.get();
             maxNameLength = SERVER.maxNameLength.get();
             minClanHomeDist = SERVER.minClanHomeDist.get();
+            initialClaimSeparationMultiplier = SERVER.initialClaimSeparationMultiplier.get();
+            enforceInitialClaimSeparation = SERVER.enforceInitialClaimSeparation.get();
             forceConnectedClaims = SERVER.forceConnectedClaims.get();
             allowMultiClanMembership = SERVER.allowMultiClanMembership.get();
             clanHomeWarmupTime = SERVER.clanHomeWarmupTime.get();
@@ -305,6 +309,8 @@ public final class Clans {
             public ForgeConfigSpec.BooleanValue multipleClanLeaders;
             public ForgeConfigSpec.IntValue maxNameLength;
             public ForgeConfigSpec.IntValue minClanHomeDist;
+            public ForgeConfigSpec.DoubleValue initialClaimSeparationMultiplier;
+            public ForgeConfigSpec.BooleanValue enforceInitialClaimSeparation;
             public ForgeConfigSpec.BooleanValue forceConnectedClaims;
             public ForgeConfigSpec.BooleanValue allowMultiClanMembership;
             public ForgeConfigSpec.IntValue clanHomeWarmupTime;
@@ -364,6 +370,14 @@ public final class Clans {
                         .comment("Minimum number of blocks between clan homes.")
                         .translation("Minimum Clan Home Separation Distance")
                         .defineInRange("minClanHomeDist", 320, 0, Integer.MAX_VALUE);
+                initialClaimSeparationMultiplier = builder
+                        .comment("This multiplied by the minimum clan home distance is how far away from other clans' homes to make the initial claim for a clan.")
+                        .translation("Initial Claim Separation Multiplier")
+                        .defineInRange("initialClaimSeparationMultiplier", 1.25, 0, Double.MAX_VALUE);
+                enforceInitialClaimSeparation = builder
+                        .comment("If set to false, players will be warned if making the initial claim within the claim separation range, but not prevented from making the claim if they want to.")
+                        .translation("Enforce Initial Claim Separation")
+                        .define("enforceInitialClaimSeparation", true);
                 forceConnectedClaims = builder
                         .comment("Force clans to have connected claims.")
                         .translation("Force Connected Claims")

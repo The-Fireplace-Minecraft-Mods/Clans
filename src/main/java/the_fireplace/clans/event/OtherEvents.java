@@ -39,4 +39,22 @@ public class OtherEvents {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if(CapHelper.getPlayerClanCapability(event.getPlayer()).getClaimWarning()) {
+            CapHelper.getPlayerClanCapability(event.getPlayer()).setClaimWarning(false);
+            Timer.prevChunkXs.remove(event.getPlayer());
+            Timer.prevChunkZs.remove(event.getPlayer());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if(CapHelper.getPlayerClanCapability(event.getPlayer()).getClaimWarning()) {
+            CapHelper.getPlayerClanCapability(event.getPlayer()).setClaimWarning(false);
+            Timer.prevChunkXs.remove(event.getPlayer());
+            Timer.prevChunkZs.remove(event.getPlayer());
+        }
+    }
 }
