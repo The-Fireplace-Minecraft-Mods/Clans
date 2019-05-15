@@ -650,10 +650,10 @@ public class CommandClan {
         assert clan != null;
         String newColor = context.getArgument("color", String.class);
         try {
-            clan.setColor(Integer.parseInt(newColor));
+            clan.setColor(newColor.startsWith("0x") ? Integer.parseInt(newColor.substring(2), 16) : Integer.parseInt(newColor));
             sendFeedback(context, TextStyles.GREEN, "Clan color for %s set!", clan.getClanName());
         } catch(NumberFormatException e) {
-            throwCommandFailure("Invalid color: %s", newColor);
+            throwCommandFailure("Invalid color integer: %s", newColor);
         }
         return 1;
     }
