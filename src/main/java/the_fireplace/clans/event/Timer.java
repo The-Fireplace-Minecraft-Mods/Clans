@@ -66,7 +66,8 @@ public class Timer {
 
 				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
 					for (NewClan clan : NewClanDatabase.getClans()) {
-						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getNextRentTimestamp()) {
+						if (Clans.cfg.chargeRentDays > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
+							Clans.LOGGER.debug("Charging rent for %s.", clan.getClanName());
 							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
 								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
 									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
@@ -82,7 +83,8 @@ public class Timer {
 							}
 							clan.updateNextRentTimeStamp();
 						}
-						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getNextUpkeepTimestamp()) {
+						if (Clans.cfg.clanUpkeepDays > 0 && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
+							Clans.LOGGER.debug("Charging upkeep for %s.", clan.getClanName());
 							int upkeep = Clans.cfg.clanUpkeepCost;
 							if (Clans.cfg.multiplyUpkeepMembers)
 								upkeep *= clan.getMemberCount();
