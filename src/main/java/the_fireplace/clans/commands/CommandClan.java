@@ -140,6 +140,11 @@ public class CommandClan {
         clanCommand.then(Commands.literal("m")
                 .executes(CommandClan::runMapCommand));
 
+        clanCommand.then(Commands.literal("fancymap")
+                .executes(CommandClan::runFancyMapCommand));
+        clanCommand.then(Commands.literal("fm")
+                .executes(CommandClan::runFancyMapCommand));
+
         clanCommand.then(Commands.literal("setbanner")
                 .executes(context -> runSetBannerCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer()), null))
                 .then(Commands.argument("banner", StringArgumentType.greedyString())
@@ -539,33 +544,64 @@ public class CommandClan {
 
         Map<UUID, Character> symbolMap = Maps.newHashMap();
         sendFeedback(context, TextStyles.GREEN, "=====================================================");
-        for(int z=center.z-5; z <= center.z + 5; z++) {
-            StringBuilder row = new StringBuilder();
-            for (int x = center.x - 26; x <= center.x + 26; x++) {
-                Chunk c = w.getChunk(x, z);
-                UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-                String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
-                if(chunkOwner == null)
-                    row.append(wildernessColor).append('-');
-                else {
-                    NewClan clan = ClanCache.getClanById(chunkOwner);
-                    if(clan == null) {
-                        ChunkUtils.clearChunkOwner(c);
+
+        UUID sender = context.getSource().asPlayer().getUniqueID();
+
+        new Thread(() -> {
+            for (int z = center.z - 5; z <= center.z + 5; z++) {
+                StringBuilder row = new StringBuilder();
+                for (int x = center.x - 26; x <= center.x + 26; x++) {
+                    String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
+                    NewClan clan = ClanChunkCache.getChunkClan(x, z, w.getDimension().getType().getId());
+                    if (clan == null)
                         row.append(wildernessColor).append('-');
-                    } else {
-                        if (!symbolMap.containsKey(chunkOwner))
-                            symbolMap.put(chunkOwner, mapchars[symbolMap.size() % mapchars.length]);
-                        row.append(center.z == z && center.x == x ? "§9" : clan.getMembers().containsKey(context.getSource().assertIsEntity().getUniqueID()) ? "§a" : "§c").append(symbolMap.get(chunkOwner));
+                    else {
+                        if (!symbolMap.containsKey(clan.getClanId()))
+                            symbolMap.put(clan.getClanId(), mapchars[symbolMap.size() % mapchars.length]);
+                        row.append(center.z == z && center.x == x ? "§9" : clan.getMembers().containsKey(sender) ? "§a" : "§c").append(symbolMap.get(clan.getClanId()));
                     }
                 }
+                sendFeedback(context, null, row.toString());
             }
-            sendFeedback(context, null, row.toString());
-        }
+            sendFeedback(context, TextStyles.GREEN, "=====================================================");
+            for (Map.Entry<UUID, Character> symbol : symbolMap.entrySet()) {
+                NewClan c = ClanCache.getClanById(symbol.getKey());
+                sendFeedback(context, TextStyles.GREEN, symbol.getValue() + ": " + (c != null ? c.getClanName() : "Wilderness"));
+            }
+        }).start();
+        return 1;
+    }
+
+    private static int runFancyMapCommand(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        if(!validateClanRank(context, null, EnumRank.ANY))
+            return 0;
+        World w = context.getSource().asPlayer().getEntityWorld();
+        Chunk center = w.getChunk(context.getSource().asPlayer().getPosition());
+
+        Map<UUID, Character> symbolMap = Maps.newHashMap();
         sendFeedback(context, TextStyles.GREEN, "=====================================================");
-        for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-            NewClan c = ClanCache.getClanById(symbol.getKey());
-            sendFeedback(context, TextStyles.GREEN, "%s: %s", symbol.getValue(), c != null ? c.getClanName() : "Wilderness");
-        }
+        new Thread(() -> {
+            for(int z=center.z-26; z <= center.z + 26; z++) {
+                StringBuilder row = new StringBuilder();
+                for (int x = center.x - 26; x <= center.x + 26; x++) {
+                    String wildernessColor = center.z == z && center.x == x ? "§9" : Clans.cfg.protectWilderness ? "§e" : "§2";
+                    NewClan clan = ClanChunkCache.getChunkClan(x, z, w.getDimension().getType().getId());
+                    if(clan == null)
+                        row.append(wildernessColor).append('-');
+                    else {
+                        if (!symbolMap.containsKey(clan.getClanId()))
+                            symbolMap.put(clan.getClanId(), mapchars[symbolMap.size() % mapchars.length]);
+                        row.append(center.z == z && center.x == x ? "§9": '§'+Integer.toHexString(clan.getTextColor().getColorIndex())).append(symbolMap.get(clan.getClanId()));
+                    }
+                }
+                sendFeedback(context, null, row.toString());
+            }
+            sendFeedback(context, TextStyles.GREEN, "=====================================================");
+            for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
+                NewClan c = ClanCache.getClanById(symbol.getKey());
+                sendFeedback(context, c != null ? new Style().setColor(c.getTextColor()) : TextStyles.YELLOW, symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness"));
+            }
+        }).start();
         return 1;
     }
 

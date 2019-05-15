@@ -3,13 +3,15 @@ Internal preparations for Dynmap compatibility. The mod will still need a quick 
 New command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
 New command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
 New command: /clan list - View the names and descriptions of all clans on the server.
+New command: /clan fancymap - View a taller and differently color coded clan map.
 New configs: initial claim separation multiplier, enforce initial claim separation, Dynmap border weight, Dynmap border opacity, and Dynmap fill opacity.
+Added initial claim distance enforcement, to prevent clans from stacking up next to each other and being unable to grow or forced to see each others' bases.
 
 Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 The /clan map is now color coded: Green for clans the player is a member of, yellow for wilderness, red for clans the player is not part of, and blue for where the player is currently standing.
 The clan home warmup time can now be set to -1 to disable /clan home.
-It is now far easier to avoid accidentally making a clan's first claim within the minimum clan home distance of another clan's home. It is even enforced, by default, that new clans' first claims must be made outside that range, so they can set their home without issues and to help prevent clans from stacking up next to each other and being unable to expand.
+It is now far easier to avoid accidentally making a clan's first claim within the minimum clan home distance of another clan's home. If not being enforced, the player is still shown a warning against claiming within that range before they are allowed to do it.
 Add the default clan before the player's name in chat
 Show offline members in clan details, hide member count and "No members" message if looking at opclan details.
 Show the clan's description when you enter its territory.
@@ -20,6 +22,7 @@ The default minimum distance between clan homes is now 320 blocks, aka 20 chunks
 Minor performance improvement to saving and restoring block data from raids.
 Minor improvement to clan claim feedback colors
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, and messages when various stages of a raid are reached.
+Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
 
 Fixes:
 Fix crash when player is not in a clan
