@@ -1,6 +1,7 @@
 package the_fireplace.clans.event;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +33,7 @@ public class OtherEvents {
             if(playerClanCap.getDefaultClan() != null) {
                 NewClan playerDefaultClan = ClanCache.getClanById(playerClanCap.getDefaultClan());
                 if(playerDefaultClan != null)
-                    event.setComponent(new TextComponentString('<'+playerDefaultClan.getClanName()+"> ").setStyle(TextStyles.GREEN).appendSibling(event.getComponent().setStyle(TextStyles.WHITE)));
+                    event.setComponent(new TextComponentString('<'+playerDefaultClan.getClanName()+"> ").setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(event.getComponent().setStyle(TextStyles.RESET)));
                 else
                     CommandClan.updateDefaultClan(event.getPlayer(), null);
             }

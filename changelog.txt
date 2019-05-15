@@ -1,5 +1,7 @@
 Additions:
 Internal preparations for Dynmap compatibility. The mod will still need a quick update to finish off Dynmap compat once Dynmap is updated to 1.13.2.
+Added a new command: /clan playerinfo - shows what clans a player is in and what rank they hold in each clan.
+Added a new command: /clan setcolor - sets the clan color for Dynmap, and the clan name in chat uses the closest chat color to this.
 
 Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
