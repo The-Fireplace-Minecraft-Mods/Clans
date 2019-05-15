@@ -763,6 +763,8 @@ public class CommandClan {
                     sendFeedback(context, TextStyles.YELLOW, "You may want to find a way to reduce upkeep.");
             }
         }
+        if(rent <= 0 && upkeep <= 0)
+            sendFeedback(context, TextStyles.GREEN, "Your clan is not earning or losing money.");
         return 1;
     }
 
@@ -890,7 +892,8 @@ public class CommandClan {
                                 sendFeedback(context, TextStyles.YELLOW, "It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier);
                                 CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setClaimWarning(true);
                             }
-                        }
+                        } else
+                            claimChunk(context, c, clan);
                     } else
                         claimChunk(context, c, clan);
                 } else

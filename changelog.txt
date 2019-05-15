@@ -26,6 +26,7 @@ Greatly improved the performance of /clan map. Clans will need to abandon and re
 Improved /clan home teleportation handling, you are far less likely to run into issues with the clan home being falsely obstructed
 Minor performance improvement to saving and restoring block data from raids.
 Added a message for feedback when you run /clan trapped and you're not actually trapped.
+Added feedback when /clan finances is run and the clan isn't earning or losing money.
 
 Fixes:
 Fix crash when player is not in a clan
@@ -41,3 +42,4 @@ Fixed multiple explosions messing up the chunk restoration
 Fixed clan upkeep and rent draining the balances of clans and players by constantly running
 Fixed invite command "You have invited player" message going to the wrong person
 Fixed crash when trying to use /clan banner and the clan doesn't have a banner
+Fixed an issue with attempting to claim land a reasonable distance from other clans.
