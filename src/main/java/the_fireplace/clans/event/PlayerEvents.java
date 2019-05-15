@@ -14,7 +14,7 @@ import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 
-public class OtherEvents {
+public class PlayerEvents {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         //noinspection ConstantConditions

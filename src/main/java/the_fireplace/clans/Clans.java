@@ -37,7 +37,7 @@ import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.compat.dynmap.DynmapCompatDummy;
 import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.event.LandProtectionEvents;
-import the_fireplace.clans.event.OtherEvents;
+import the_fireplace.clans.event.PlayerEvents;
 import the_fireplace.clans.event.RaidEvents;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.compat.payment.IPaymentHandler;
@@ -101,7 +101,7 @@ public final class Clans {
 
         MinecraftForge.EVENT_BUS.register(new RaidEvents());
         MinecraftForge.EVENT_BUS.register(new LandProtectionEvents());
-        MinecraftForge.EVENT_BUS.register(new OtherEvents());
+        MinecraftForge.EVENT_BUS.register(new PlayerEvents());
         MinecraftForge.EVENT_BUS.register(new Timer());
 
         dynmapCompat.init();
