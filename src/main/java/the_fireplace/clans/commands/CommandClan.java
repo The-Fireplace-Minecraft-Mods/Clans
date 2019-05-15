@@ -778,7 +778,7 @@ public class CommandClan {
         UUID claimFaction = ChunkUtils.getChunkOwner(c);
         if (claimFaction != null) {
             if (claimFaction.equals(clan.getClanId()))
-                throwCommandFailure("%s has already claimed this land.", clan.getClanName());
+                sendFeedback(context, TextStyles.YELLOW,"%s has already claimed this land.", clan.getClanName());
             else
                 throwCommandFailure("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClanById(claimFaction)).getClanName());
         } else {

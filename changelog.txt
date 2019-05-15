@@ -1,4 +1,5 @@
 Additions:
+Internal preparations for Dynmap compatibility. The mod will still need a quick update to finish off Dynmap compat once Dynmap is updated to 1.13.2.
 
 Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
@@ -8,6 +9,7 @@ Internal optimizations
 Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
 The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
 Minor performance improvement to saving and restoring block data from raids.
+Minor improvement to clan claim feedback colors
 
 Fixes:
 Fix crash when player is not in a clan

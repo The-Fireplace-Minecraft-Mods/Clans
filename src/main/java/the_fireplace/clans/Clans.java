@@ -244,6 +244,10 @@ public final class Clans {
         public static boolean evictNonpayerAdmins;
         public static int maxRent;
         public static boolean multiplyMaxRentClaims;
+        //Dynmap settings
+        /*public static int dynmapBorderWeight;
+        public static double dynmapBorderOpacity;
+        public static double dynmapFillOpacity;*/
 
         public static void load() {
             //General clan config
@@ -290,6 +294,10 @@ public final class Clans {
             evictNonpayerAdmins = SERVER.evictNonpayerAdmins.get();
             maxRent = SERVER.maxRent.get();
             multiplyMaxRentClaims = SERVER.multiplyMaxRentClaims.get();
+            //Dynmap settings
+            /*dynmapBorderWeight = SERVER.dynmapBorderWeight.get();
+            dynmapBorderOpacity = SERVER.dynmapBorderOpacity.get();
+            dynmapFillOpacity = SERVER.dynmapFillOpacity.get();*/
         }
 
         public static class ServerConfig {
@@ -337,6 +345,10 @@ public final class Clans {
             public ForgeConfigSpec.BooleanValue evictNonpayerAdmins;
             public ForgeConfigSpec.IntValue maxRent;
             public ForgeConfigSpec.BooleanValue multiplyMaxRentClaims;
+            //Dynmap settings
+            /*public ForgeConfigSpec.IntValue dynmapBorderWeight;
+            public ForgeConfigSpec.DoubleValue dynmapBorderOpacity;
+            public ForgeConfigSpec.DoubleValue dynmapFillOpacity;*/
 
             ServerConfig(ForgeConfigSpec.Builder builder) {
                 builder.push("general");
@@ -511,6 +523,23 @@ public final class Clans {
                         .translation("Max Rent Claim Multiplier")
                         .define("multiplyMaxRentClaims", true);
                 builder.pop();
+
+                /*String dynmapNotice = " This requires Dynmap to be installed.";
+
+                builder.push("dynmap");
+                dynmapBorderWeight = builder
+                        .comment("The weight of the dynmap border for claims."+dynmapNotice)
+                        .translation("Dynmap Border Weight")
+                        .defineInRange("dynmapBorderWeight", 0, 0, Integer.MAX_VALUE);
+                dynmapBorderOpacity = builder
+                        .comment("The opacity of the dynmap border for claims. 0.0=0%, 1.0=100%."+dynmapNotice)
+                        .translation("Dynmap Border Opacity")
+                        .defineInRange("dynmapBorderOpacity", 0.9, 0, 1);
+                dynmapFillOpacity = builder
+                        .comment("The opacity of the dynmap fill color for claims. 0.0=0%, 1.0=100%."+dynmapNotice)
+                        .translation("Dynmap Fill Opacity")
+                        .defineInRange("dynmapFillOpacity", 0.75, 0, 1);
+                builder.pop();*/
             }
         }
     }
