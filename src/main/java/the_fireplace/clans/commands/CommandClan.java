@@ -362,11 +362,12 @@ public class CommandClan {
         sendFeedback(context, TextStyles.GREEN, "Clan name: %s", clan.getClanName());
         sendFeedback(context, TextStyles.GREEN, "Clan description: %s", clan.getDescription());
         sendFeedback(context, TextStyles.GREEN, "Number of claims: %s", clan.getClaimCount());
-        sendFeedback(context, TextStyles.GREEN, "Number of members: %s", clan.getMemberCount());
-        List<EntityPlayerMP> leaders = Lists.newArrayList();
-        List<EntityPlayerMP> admins = Lists.newArrayList();
-        List<EntityPlayerMP> members = Lists.newArrayList();
-        for(Map.Entry<EntityPlayerMP, EnumRank> member: clan.getOnlineMembers().entrySet()) {
+        if(!clan.isOpclan())
+            sendFeedback(context, TextStyles.GREEN, "Number of members: %s", clan.getMemberCount());
+        List<UUID> leaders = Lists.newArrayList();
+        List<UUID> admins = Lists.newArrayList();
+        List<UUID> members = Lists.newArrayList();
+        for(Map.Entry<UUID, EnumRank> member: clan.getMembers().entrySet()) {
             switch(member.getValue()){
                 case LEADER:
                     leaders.add(member.getKey());
@@ -380,15 +381,26 @@ public class CommandClan {
             }
         }
         if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-            sendFeedback(context, TextStyles.GREEN, "Online members:");
-            for(EntityPlayerMP leader: leaders)
-                sendFeedback(context, TextStyles.BOLD_ITALIC_GREEN, "Leader %s", leader.getName().getFormattedText());
-            for(EntityPlayerMP admin: admins)
-                sendFeedback(context, TextStyles.BOLD_GREEN, "Admin %s", admin.getName().getFormattedText());
-            for(EntityPlayerMP member: members)
-                sendFeedback(context, TextStyles.GREEN, "Member %s", member.getName().getFormattedText());
-        } else
-            sendFeedback(context, TextStyles.GREEN, "No online members.");
+            sendFeedback(context, TextStyles.GREEN, "Members:");
+            for(UUID leader: leaders) {
+                GameProfile l = context.getSource().getServer().getPlayerProfileCache().getProfileByUUID(leader);
+                if(l != null)
+                    sendFeedback(context, context.getSource().getServer().getPlayerList().getPlayerByUUID(leader) != null ? TextStyles.ONLINE_LEADER : TextStyles.OFFLINE_LEADER, "Leader %s", l.getName());
+            }
+            for(UUID admin: admins) {
+                GameProfile a = context.getSource().getServer().getPlayerProfileCache().getProfileByUUID(admin);
+                if(a != null)
+                    sendFeedback(context, context.getSource().getServer().getPlayerList().getPlayerByUUID(admin) != null ? TextStyles.ONLINE_ADMIN : TextStyles.OFFLINE_ADMIN, "Admin %s", a.getName());
+            }
+            for(UUID member: members) {
+                GameProfile m = context.getSource().getServer().getPlayerProfileCache().getProfileByUUID(member);
+                if(m != null)
+                    sendFeedback(context, context.getSource().getServer().getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW, "Member %s", m.getName());
+            }
+        } else if(!clan.isOpclan()) {
+            throwCommandFailure("Error: %s has no members.", clan.getClanName());
+            Clans.LOGGER.error("Clan %s has no members.", clan.getClanName());
+        }
         return 1;
     }
 
@@ -422,11 +434,11 @@ public class CommandClan {
                 defaultClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability(Objects.requireNonNull(context.getSource().getServer().getPlayerList().getPlayerByUUID(target.getId()))).getDefaultClan());
             sendFeedback(context, TextStyles.GREEN, "Clans: ");
             for(NewClan leader: leaders)
-                sendFeedback(context, defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Leader of %s", leader.getClanName());
+                sendFeedback(context, defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_LEADER : TextStyles.GREEN, "Leader of %s", leader.getClanName());
             for(NewClan admin: admins)
-                sendFeedback(context, defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Admin of %s", admin.getClanName());
+                sendFeedback(context, defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN, "Admin of %s", admin.getClanName());
             for(NewClan member: members)
-                sendFeedback(context, defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Member of %s", member.getClanName());
+                sendFeedback(context, defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN, "Member of %s", member.getClanName());
         } else
             sendFeedback(context, TextStyles.GREEN, "%s is not in any clans.", target.getName());
         return 1;
