@@ -28,6 +28,7 @@ public class Raid {
 		defenders = Maps.newHashMap();
 		addMember(starter);
 		this.target = targetClan;
+		cost = 0;
 		RaidingParties.addRaid(target, this);
 	}
 

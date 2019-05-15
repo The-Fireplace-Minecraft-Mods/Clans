@@ -23,6 +23,7 @@ Minor performance improvement to saving and restoring block data from raids.
 Minor improvement to clan claim feedback colors
 Additional feedback messages: You now get a confirmation message after successfully inviting a player to a clan, and messages when various stages of a raid are reached.
 Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
+Minor performance improvement to saving and restoring block data from raids.
 
 Fixes:
 Fix crash when player is not in a clan
