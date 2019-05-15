@@ -24,3 +24,5 @@ Fixed a bug that caused a new opclan to be generated every time the server start
 Updated to work with Forge 25.0.168+
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
+Fixed clan shield calculation when starting a raid
+Fixed default clan not getting set when joining a clan

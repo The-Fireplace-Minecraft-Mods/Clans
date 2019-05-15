@@ -90,7 +90,7 @@ public class CommandRaid {
                             } else
                                 throwCommandFailure("Target clan has no online members!");
                         } else
-                            throwCommandFailure("Target clan is currently shielded! Try again in %s hours.", Math.round(100f*target.getShield()*60)/100f);
+                            throwCommandFailure("Target clan is currently shielded! Try again in %s hours.", Math.round(100f*target.getShield()/60)/100f);
                     } else { //Join an existing raid
                         if(clanPlayers.size() + Clans.cfg.maxRaidersOffset > raid.getMemberCount()) {
                             raid.addMember(context.getSource().assertIsEntity().getUniqueID());

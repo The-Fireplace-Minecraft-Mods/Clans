@@ -855,6 +855,8 @@ public class CommandClan {
         NewClan acceptClan = ClanCache.getInvite(context.getSource().asPlayer().getUniqueID());
         if(acceptClan != null){
             acceptClan.addMember(context.getSource().asPlayer().getUniqueID());
+            if(ClanCache.getClansByPlayer(context.getSource().assertIsEntity().getUniqueID()).size() == 1)
+                CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setDefaultClan(acceptClan.getClanId());
             sendFeedback(context, TextStyles.GREEN, "You joined %s.", acceptClan.getClanName());
         } else
             throwCommandFailure("You don't have any pending invites.");
