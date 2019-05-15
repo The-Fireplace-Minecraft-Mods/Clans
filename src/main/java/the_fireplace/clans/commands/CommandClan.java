@@ -1010,11 +1010,14 @@ public class CommandClan {
         EntityPlayerMP target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName);
         if(target != null) {
             if (Clans.cfg.allowMultiClanMembership || ClanCache.getClansByPlayer(target.getUniqueID()).isEmpty()) {
-                if (ClanCache.inviteToClan(target.getUniqueID(), clan)) {
-                    sendFeedback(context, TextStyles.GREEN,"You have invited %s to join %s.", target.getDisplayName().getFormattedText(), clan.getClanName());
-                    target.sendMessage(new TextComponentTranslation("You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", clan.getClanName()));
+                if(!ClanCache.getClansByPlayer(target.getUniqueID()).contains(clan)) {
+                    if (ClanCache.inviteToClan(target.getUniqueID(), clan)) {
+                        sendFeedback(context, TextStyles.GREEN, "You have invited %s to join %s.", target.getDisplayName().getFormattedText(), clan.getClanName());
+                        target.sendMessage(new TextComponentTranslation("You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", clan.getClanName()));
+                    } else
+                        throwCommandFailure("The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName());
                 } else
-                    throwCommandFailure("The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName());
+                    throwCommandFailure("The player %s is already in %s.", target.getName(), clan.getClanName());
             } else
                 throwCommandFailure("The player %s is already in a clan.", target.getName());
         } else

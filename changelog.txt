@@ -46,4 +46,4 @@ Fixed invite command "You have invited player" message going to the wrong person
 Fixed crash when trying to use /clan banner and the clan doesn't have a banner
 Fixed potential crash when players leave terrirory during raid
 Stop blocks from falling during a raid as a temporary fix for possible duping
-Prevent interaction with dragon egg by raiders during a raid
+Fixed being able to invite players to clans they are already in
