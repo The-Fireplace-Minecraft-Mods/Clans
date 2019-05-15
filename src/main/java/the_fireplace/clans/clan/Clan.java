@@ -74,7 +74,7 @@ public class Clan implements Serializable {
 	public JsonObject toJsonObject() {
 		JsonObject ret = new JsonObject();
 		ret.addProperty("clanName", clanName);
-		ret.add("clanBanner", null);
+		ret.addProperty("clanBanner", clanBanner);
 		ret.addProperty("clanDescription", description);
 		JsonArray members = new JsonArray();
 		for(Map.Entry<UUID, EnumRank> entry : this.members.entrySet()) {
