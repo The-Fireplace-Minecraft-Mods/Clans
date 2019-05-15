@@ -38,9 +38,9 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.raid.RaidingParties;
@@ -62,13 +62,13 @@ import java.util.UUID;
 public class CommandClan {
 
     public static final SuggestionProvider<CommandSource> playerClanSuggestion = (context, builder) -> {
-        for(Clan c: ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()))
+        for(NewClan c: ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()))
             builder.suggest(c.getClanName());
         return builder.buildFuture();
     };
 
     public static final SuggestionProvider<CommandSource> clanSuggestion = (context, builder) -> {
-        for(Clan c: ClanDatabase.getClans())
+        for(NewClan c: NewClanDatabase.getClans())
             builder.suggest(c.getClanName());
         return builder.buildFuture();
     };
@@ -319,7 +319,7 @@ public class CommandClan {
         commandDispatcher.register(Commands.literal("c").redirect(clanNode));
     }
 
-    private static int runBannerCommand(CommandContext<CommandSource> context, @Nullable Clan selectedClan) throws CommandSyntaxException {
+    private static int runBannerCommand(CommandContext<CommandSource> context, @Nullable NewClan selectedClan) throws CommandSyntaxException {
         if(!validateClanRank(context, selectedClan, EnumRank.MEMBER))
             return 0;
         assert selectedClan != null;
@@ -345,7 +345,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runDetailsCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runDetailsCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, clan == null ? EnumRank.MEMBER : EnumRank.ANY))
             return 0;
         assert clan != null;
@@ -389,10 +389,10 @@ public class CommandClan {
             target = context.getSource().asPlayer().getGameProfile();
         }
         sendFeedback(context, TextStyles.GREEN, "Player name: %s", target.getName());
-        List<Clan> leaders = Lists.newArrayList();
-        List<Clan> admins = Lists.newArrayList();
-        List<Clan> members = Lists.newArrayList();
-        for(Clan clan: ClanCache.getClansByPlayer(target.getId())) {
+        List<NewClan> leaders = Lists.newArrayList();
+        List<NewClan> admins = Lists.newArrayList();
+        List<NewClan> members = Lists.newArrayList();
+        for(NewClan clan: ClanCache.getClansByPlayer(target.getId())) {
             EnumRank rank = clan.getMembers().get(target.getId());
             switch(rank){
                 case LEADER:
@@ -407,15 +407,15 @@ public class CommandClan {
             }
         }
         if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-            Clan defaultClan = null;
+            NewClan defaultClan = null;
             if(ArrayUtils.contains(context.getSource().getServer().getOnlinePlayerNames(), target.getName()))
                 defaultClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability(Objects.requireNonNull(context.getSource().getServer().getPlayerList().getPlayerByUUID(target.getId()))).getDefaultClan());
             sendFeedback(context, TextStyles.GREEN, "Clans: ");
-            for(Clan leader: leaders)
+            for(NewClan leader: leaders)
                 sendFeedback(context, defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Leader of %s", leader.getClanName());
-            for(Clan admin: admins)
+            for(NewClan admin: admins)
                 sendFeedback(context, defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Admin of %s", admin.getClanName());
-            for(Clan member: members)
+            for(NewClan member: members)
                 sendFeedback(context, defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.BOLD_GREEN : TextStyles.GREEN, "Member of %s", member.getClanName());
         } else
             sendFeedback(context, TextStyles.GREEN, "%s is not in any clans.", target.getName());
@@ -423,12 +423,12 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable Clan clan, boolean isOpclanCommand) throws CommandSyntaxException {
+    static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable NewClan clan, boolean isOpclanCommand) throws CommandSyntaxException {
         if (!isOpclanCommand && !validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
         if(!clan.isOpclan()) {
-            if (ClanDatabase.removeClan(clan.getClanId())) {
+            if (NewClanDatabase.removeClan(clan.getClanId())) {
                 long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
                 distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
                 if (Clans.cfg.leaderRecieveDisbandFunds) {
@@ -463,7 +463,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runFormCommand(CommandContext<CommandSource> context, @Nullable Clan selectedClan, @Nullable String banner) throws CommandSyntaxException {
+    private static int runFormCommand(CommandContext<CommandSource> context, @Nullable NewClan selectedClan, @Nullable String banner) throws CommandSyntaxException {
         if(!validateClanRank(context, selectedClan, Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN))
             return 0;
         String newClanName = context.getArgument("name", String.class);
@@ -488,10 +488,10 @@ public class CommandClan {
                 }
             }
             if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, context.getSource().asPlayer().getUniqueID())) {
-                Clan c = new Clan(newClanName, context.getSource().asPlayer().getUniqueID(), banner);
+                NewClan c = new NewClan(newClanName, context.getSource().asPlayer().getUniqueID(), banner);
                 if(ClanCache.getClansByPlayer(context.getSource().asPlayer().getUniqueID()).size() == 1)
                     CapHelper.getPlayerClanCapability(context.getSource().asPlayer()).setDefaultClan(c.getClanId());
-                sendFeedback(context, TextStyles.GREEN, "Clan formed!");
+                sendFeedback(context, TextStyles.GREEN, "NewClan formed!");
             } else
                 throwCommandFailure("Insufficient funds to form clan. It costs %s %s.", Clans.cfg.formClanCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost));
         }
@@ -529,13 +529,13 @@ public class CommandClan {
         }
         sendFeedback(context, TextStyles.GREEN, "=====================================================");
         for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-            Clan c = ClanCache.getClanById(symbol.getKey());
+            NewClan c = ClanCache.getClanById(symbol.getKey());
             sendFeedback(context, TextStyles.GREEN, "%s: %s", symbol.getValue(), c != null ? c.getClanName() : "Wilderness");
         }
         return 1;
     }
 
-    private static int runSetBannerCommand(CommandContext<CommandSource> context, @Nullable Clan clan, @Nullable String banner) throws CommandSyntaxException {
+    private static int runSetBannerCommand(CommandContext<CommandSource> context, @Nullable NewClan clan, @Nullable String banner) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -567,7 +567,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static void setClanBannerFromItem(CommandContext<CommandSource> context, Clan playerClan, @Nullable NBTTagCompound tags) {
+    private static void setClanBannerFromItem(CommandContext<CommandSource> context, NewClan playerClan, @Nullable NBTTagCompound tags) {
         String banner = tags != null ? tags.toString() : "";
         if(ClanCache.clanBannerTaken(banner))
             throwCommandFailure("The clan banner you have specified is already taken.");
@@ -577,7 +577,7 @@ public class CommandClan {
         }
     }
 
-    private static int runSetDefaultCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runSetDefaultCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
@@ -585,7 +585,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runSetDescriptionCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetDescriptionCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -594,7 +594,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runSetNameCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetNameCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -610,7 +610,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runAddFundsCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runAddFundsCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
@@ -627,16 +627,16 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runBalanceCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runBalanceCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
         long balance = Clans.getPaymentHandler().getBalance(clan.getClanId());
-        sendFeedback(context, TextStyles.GREEN, "Clan balance: %s %s", balance, Clans.getPaymentHandler().getCurrencyName(balance));
+        sendFeedback(context, TextStyles.GREEN, "NewClan balance: %s %s", balance, Clans.getPaymentHandler().getCurrencyName(balance));
         return 1;
     }
 
-    private static int runFinancesCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runFinancesCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -677,7 +677,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runSetRentCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetRentCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -696,7 +696,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runTakeFundsCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runTakeFundsCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -716,7 +716,7 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runAbandonClaimCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runAbandonClaimCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
         assert clan != null;
@@ -739,7 +739,7 @@ public class CommandClan {
         return 1;
     }
 
-    static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
+    static void abandonClaim(EntityPlayerMP sender, Chunk c, NewClan targetClan) {
         if (targetClan.hasHome()
                 && targetClan.getHome() != null
                 && sender.dimension.getId() == targetClan.getHomeDim()
@@ -754,7 +754,7 @@ public class CommandClan {
         Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
     }
 
-    static void abandonClaimWithAdjacencyCheck(CommandContext<CommandSource> context, Chunk c, Clan targetClan) throws CommandSyntaxException {
+    static void abandonClaimWithAdjacencyCheck(CommandContext<CommandSource> context, Chunk c, NewClan targetClan) throws CommandSyntaxException {
         boolean allowed = true;
         for (IChunk checkChunk : ChunkUtils.getConnectedClaims(c, targetClan.getClanId()))
             if (ChunkUtils.getConnectedClaims(checkChunk, targetClan.getClanId()).equals(Lists.newArrayList(c))) {
@@ -770,7 +770,7 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if (!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
         assert clan != null;
@@ -799,10 +799,10 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runAcceptCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runAcceptCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN))
             return 0;
-        Clan acceptClan = ClanCache.getInvite(context.getSource().asPlayer().getUniqueID());
+        NewClan acceptClan = ClanCache.getInvite(context.getSource().asPlayer().getUniqueID());
         if(acceptClan != null){
             acceptClan.addMember(context.getSource().asPlayer().getUniqueID());
             sendFeedback(context, TextStyles.GREEN, "You joined %s.", acceptClan.getClanName());
@@ -812,10 +812,10 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runDeclineCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runDeclineCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN))
             return 0;
-        Clan declineClan = ClanCache.getInvite(context.getSource().asPlayer().getUniqueID());
+        NewClan declineClan = ClanCache.getInvite(context.getSource().asPlayer().getUniqueID());
         if(declineClan != null){
             ClanCache.removeInvite(context.getSource().asPlayer().getUniqueID());
             sendFeedback(context, TextStyles.GREEN, "You declined the invitation to join %s.", declineClan.getClanName());
@@ -825,7 +825,7 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runDemoteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runDemoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -833,7 +833,7 @@ public class CommandClan {
         return 1;
     }
 
-    static void demotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
+    static void demotePlayer(CommandContext<CommandSource> context, @Nonnull NewClan clan) {
         String playerName = context.getArgument("target", String.class);
         GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
@@ -855,7 +855,7 @@ public class CommandClan {
     }
 
     @SuppressWarnings("Duplicates")
-    private static int runPromoteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runPromoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
@@ -863,7 +863,7 @@ public class CommandClan {
         return 1;
     }
 
-    static void promotePlayer(CommandContext<CommandSource> context, @Nonnull Clan clan) {
+    static void promotePlayer(CommandContext<CommandSource> context, @Nonnull NewClan clan) {
         String playerName = context.getArgument("target", String.class);
         GameProfile target = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(playerName);
 
@@ -884,7 +884,7 @@ public class CommandClan {
             throwCommandFailure("The player %s was not found.", playerName);
     }
 
-    private static int runInviteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runInviteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
         assert clan != null;
@@ -903,7 +903,7 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runKickCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runKickCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
         assert clan != null;
@@ -934,7 +934,7 @@ public class CommandClan {
         return 1;
     }
 
-    public static void removeMember(CommandContext<CommandSource> context, Clan playerClan, GameProfile target) throws CommandException {
+    public static void removeMember(CommandContext<CommandSource> context, NewClan playerClan, GameProfile target) throws CommandException {
         if(playerClan.removeMember(target.getId())) {
             sendFeedback(context, TextStyles.GREEN, "You have kicked %s out of %s.", target.getName(), playerClan.getClanName());
             if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target.getName()))
@@ -943,7 +943,7 @@ public class CommandClan {
             throwCommandFailure("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName());
     }
 
-    private static int runLeaveCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runLeaveCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
@@ -977,7 +977,7 @@ public class CommandClan {
      * @param removeClan
      * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
      */
-    public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
+    public static void updateDefaultClan(EntityPlayerMP player, @Nullable NewClan removeClan) {
         UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
         if(removeClan == null || removeClan.getClanId().equals(oldDef))
             if(ClanCache.getClansByPlayer(player.getUniqueID()).isEmpty())
@@ -986,7 +986,7 @@ public class CommandClan {
                 CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getClansByPlayer(player.getUniqueID()).get(0).getClanId());
     }
 
-    private static int runHomeCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runHomeCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.MEMBER))
             return 0;
         assert clan != null;
@@ -1008,7 +1008,7 @@ public class CommandClan {
         return 1;
     }
 
-    public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
+    public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
         if (playerDim == playerClan.getHomeDim() || player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim())), player.getServerWorld().getDefaultTeleporter()) != null) {
             if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
                 throwCommandFailure("Error teleporting to clan home. Ensure that it is not blocked.");
@@ -1020,13 +1020,13 @@ public class CommandClan {
             throwCommandFailure("Error teleporting to clan home dimension.");
     }
 
-    private static int runSetHomeCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runSetHomeCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
         assert clan != null;
         Chunk c = context.getSource().asPlayer().getEntityWorld().getChunk(context.getSource().asPlayer().getPosition());
         if(clan.getClanId().equals(CapHelper.getClaimedLandCapability(c).getClan())) {
-            for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
+            for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
                 if(pos.getValue() != null && pos.getKey() != clan && pos.getValue().getDistance(context.getSource().asPlayer().getPosition().getX(), context.getSource().asPlayer().getPosition().getY(), context.getSource().asPlayer().getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
                     throwCommandFailure("You are too close to another clan's home! You must be at least %s blocks away from other clans' homes to set your clan home.", Clans.cfg.minClanHomeDist);
                     return 0;
@@ -1038,12 +1038,12 @@ public class CommandClan {
         return 1;
     }
 
-    private static int runTrappedCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runTrappedCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.ANY))
             return 0;
         assert clan != null;
         Chunk origin = context.getSource().asPlayer().world.getChunk(context.getSource().asPlayer().getPosition());
-        Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
+        NewClan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
         if(chunkOwner == null && Clans.cfg.protectWilderness && context.getSource().asPlayer().getPosition().getY() >= Clans.cfg.minWildernessY) {
             BlockPos spawn = context.getSource().asPlayer().world.getSpawnPoint();
             context.getSource().asPlayer().attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
@@ -1051,7 +1051,7 @@ public class CommandClan {
             int x = 0, z = 0, tmp, dx = 0, dz = -1;
             while(true) {//Spiral out until a player friendly chunk is found
                 Chunk test = context.getSource().asPlayer().world.getChunk(origin.x + x, origin.z + z);
-                Clan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
+                NewClan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
                 if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID())) {
                     context.getSource().asPlayer().attemptTeleport((test.getPos().getXStart() + test.getPos().getXEnd())/2f, test.getWorld().getHeight(Heightmap.Type.MOTION_BLOCKING, (test.getPos().getXStart() + test.getPos().getXEnd())/2, (test.getPos().getZStart() + test.getPos().getZEnd())/2), (test.getPos().getZStart() + test.getPos().getZEnd())/2f);
                     break;
@@ -1069,7 +1069,7 @@ public class CommandClan {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private static boolean validateClanRank(CommandContext<CommandSource> context, @Nullable Clan clan, EnumRank requiredRank) {
+    private static boolean validateClanRank(CommandContext<CommandSource> context, @Nullable NewClan clan, EnumRank requiredRank) {
         if(!(context.getSource().getEntity() instanceof EntityPlayerMP)) {
             throwCommandFailure("You must be a player to do this!");
             return false;

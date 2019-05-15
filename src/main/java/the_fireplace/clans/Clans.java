@@ -3,14 +3,9 @@ package the_fireplace.clans;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.INBTBase;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,7 +13,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -28,21 +22,29 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.clan.ClaimedLandCapability;
+import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
+import the_fireplace.clans.compat.dynmap.DynmapCompatDummy;
+import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.event.LandProtectionEvents;
 import the_fireplace.clans.event.OtherEvents;
 import the_fireplace.clans.event.RaidEvents;
 import the_fireplace.clans.event.Timer;
-import the_fireplace.clans.payment.IPaymentHandler;
-import the_fireplace.clans.payment.PaymentHandlerDummy;
-import the_fireplace.clans.payment.PaymentHandlerGE;
+import the_fireplace.clans.compat.payment.IPaymentHandler;
+import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
+import the_fireplace.clans.compat.payment.PaymentHandlerGE;
+import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.util.PlayerClanCapability;
 
 import javax.annotation.Nonnull;
@@ -58,6 +60,8 @@ import static the_fireplace.clans.Clans.MODID;
 public final class Clans {
     public static final String MODID = "clans";
 
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
+
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
     private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claim_data");
@@ -69,6 +73,11 @@ public final class Clans {
     private static IPaymentHandler paymentHandler;
     public static IPaymentHandler getPaymentHandler(){
         return paymentHandler;
+    }
+
+    private static IDynmapCompat dynmapCompat;
+    public static IDynmapCompat getDynmapCompat(){
+        return dynmapCompat;
     }
 
     public Clans() {
@@ -87,10 +96,15 @@ public final class Clans {
     public void preInit(FMLCommonSetupEvent event){
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
+
+        dynmapCompat = new DynmapCompatDummy();
+
         MinecraftForge.EVENT_BUS.register(new RaidEvents());
         MinecraftForge.EVENT_BUS.register(new LandProtectionEvents());
         MinecraftForge.EVENT_BUS.register(new OtherEvents());
         MinecraftForge.EVENT_BUS.register(new Timer());
+
+        dynmapCompat.init();
     }
 
     public void postInit(FMLLoadCompleteEvent event){
@@ -105,6 +119,15 @@ public final class Clans {
         CommandClan.register(event.getCommandDispatcher());
         CommandOpClan.register(event.getCommandDispatcher());
         CommandRaid.register(event.getCommandDispatcher());
+        dynmapCompat.serverStart();
+    }
+
+    @SubscribeEvent
+    public void onServerStop(FMLServerStoppingEvent event) {
+        ClanChunkCache.save();
+        NewClanDatabase.save();
+        NewRaidBlockPlacementDatabase.save();
+        NewRaidRestoreDatabase.save();
     }
 
     @SubscribeEvent
@@ -328,7 +351,7 @@ public final class Clans {
                 minClanHomeDist = builder
                         .comment("Minimum number of blocks between clan homes.")
                         .translation("Minimum Clan Home Separation Distance")
-                        .defineInRange("minClanHomeDist", 500, 0, Integer.MAX_VALUE);
+                        .defineInRange("minClanHomeDist", 320, 0, Integer.MAX_VALUE);
                 forceConnectedClaims = builder
                         .comment("Force clans to have connected claims.")
                         .translation("Force Connected Claims")

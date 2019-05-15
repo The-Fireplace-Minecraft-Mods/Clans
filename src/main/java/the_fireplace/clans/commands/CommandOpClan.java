@@ -18,9 +18,9 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -41,13 +41,13 @@ public class CommandOpClan {
         LiteralArgumentBuilder<CommandSource> opclanCommand = Commands.literal("opclan").requires(isOp);
 
         opclanCommand.then(Commands.literal("claim")
-                .executes(context -> runClaimCommand(context, ClanDatabase.getOpClan(), false))
+                .executes(context -> runClaimCommand(context, NewClanDatabase.getOpClan(), false))
                 .then(Commands.literal("force")
-                .executes(context -> runClaimCommand(context, ClanDatabase.getOpClan(), true))));
+                .executes(context -> runClaimCommand(context, NewClanDatabase.getOpClan(), true))));
         opclanCommand.then(Commands.literal("c")
-                .executes(context -> runClaimCommand(context, ClanDatabase.getOpClan(), false))
+                .executes(context -> runClaimCommand(context, NewClanDatabase.getOpClan(), false))
                 .then(Commands.literal("force")
-                .executes(context -> runClaimCommand(context, ClanDatabase.getOpClan(), true))));
+                .executes(context -> runClaimCommand(context, NewClanDatabase.getOpClan(), true))));
         opclanCommand.then(Commands.literal("claim")
                 .then(Commands.argument("clan", StringArgumentType.word()).suggests(CommandClan.clanSuggestion)
                 .executes(context -> runClaimCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)), false))
@@ -103,10 +103,10 @@ public class CommandOpClan {
 
         opclanCommand.then(Commands.literal("setdescription")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
-                .executes(context -> runSetDescriptionCommand(context, ClanDatabase.getOpClan()))));
+                .executes(context -> runSetDescriptionCommand(context, NewClanDatabase.getOpClan()))));
         opclanCommand.then(Commands.literal("setdesc")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
-                .executes(context -> runSetDescriptionCommand(context, ClanDatabase.getOpClan()))));
+                .executes(context -> runSetDescriptionCommand(context, NewClanDatabase.getOpClan()))));
         opclanCommand.then(Commands.argument("clan", StringArgumentType.word()).suggests(CommandClan.clanSuggestion)
                 .then(Commands.literal("setdescription")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
@@ -118,7 +118,7 @@ public class CommandOpClan {
 
         opclanCommand.then(Commands.literal("setname")
                 .then(Commands.argument("name", StringArgumentType.word())
-                .executes(context -> runSetNameCommand(context, ClanDatabase.getOpClan()))));
+                .executes(context -> runSetNameCommand(context, NewClanDatabase.getOpClan()))));
         opclanCommand.then(Commands.literal("setname")
                 .then(Commands.argument("clan", StringArgumentType.word()).suggests(CommandClan.clanSuggestion)
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -133,13 +133,13 @@ public class CommandOpClan {
         commandDispatcher.register(Commands.literal("oc").redirect(opclanNode));
     }
 
-    private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable Clan clan, boolean force) throws CommandSyntaxException {
+    private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable NewClan clan, boolean force) throws CommandSyntaxException {
         if(!validateClan(context, clan, true, false))
             return 0;
         assert clan != null;
         Chunk c = context.getSource().asPlayer().getEntityWorld().getChunk(context.getSource().asPlayer().getPosition());
         UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-        Clan chunkOwnerClan = chunkOwner != null ? ClanCache.getClanById(chunkOwner) : null;
+        NewClan chunkOwnerClan = chunkOwner != null ? ClanCache.getClanById(chunkOwner) : null;
         if(chunkOwner != null && chunkOwnerClan != null && (!force || chunkOwner.equals(clan.getClanId()))) {
             if(chunkOwner.equals(clan.getClanId()))
                 throwCommandFailure("%s has already claimed this land.", clan.getClanName());
@@ -177,11 +177,11 @@ public class CommandOpClan {
             throwCommandFailure("You must be a player to do this!");
             return 0;
         }
-        Clan opClan = ClanDatabase.getOpClan();
+        NewClan opClan = NewClanDatabase.getOpClan();
         Chunk c = context.getSource().asPlayer().getEntityWorld().getChunk(context.getSource().asPlayer().getPosition());
         UUID claimFaction = CapHelper.getClaimedLandCapability(c).getClan();
         if(claimFaction != null) {
-            Clan targetClan = ClanCache.getClanById(claimFaction);
+            NewClan targetClan = ClanCache.getClanById(claimFaction);
             if(claimFaction.equals(opClan.getClanId()) || force || targetClan == null) {
                 if(targetClan != null) {
                     if (force || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
@@ -203,7 +203,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runAddFundsCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runAddFundsCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -227,7 +227,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runDemoteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runDemoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -235,7 +235,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runPromoteCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runPromoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -243,7 +243,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable Clan clan) throws CommandSyntaxException {
+    private static int runDisbandCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -251,7 +251,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runKickCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runKickCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -268,7 +268,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runSetDescriptionCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetDescriptionCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, false))
             return 0;
         assert clan != null;
@@ -278,7 +278,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runSetNameCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetNameCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, false))
             return 0;
         assert clan != null;
@@ -292,7 +292,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static int runSetShieldCommand(CommandContext<CommandSource> context, @Nullable Clan clan) {
+    private static int runSetShieldCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClan(context, clan, false, true))
             return 0;
         assert clan != null;
@@ -302,7 +302,7 @@ public class CommandOpClan {
         return 1;
     }
 
-    private static boolean validateClan(CommandContext<CommandSource> context, @Nullable Clan selectedClan, boolean requiresPlayer, boolean denyOpclan) {
+    private static boolean validateClan(CommandContext<CommandSource> context, @Nullable NewClan selectedClan, boolean requiresPlayer, boolean denyOpclan) {
         if(requiresPlayer && !(context.getSource().getEntity() instanceof EntityPlayerMP)) {
             throwCommandFailure("You must be a player to do this!");
             return false;

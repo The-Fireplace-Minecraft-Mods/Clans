@@ -9,9 +9,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.raid.Raid;
@@ -30,7 +30,7 @@ public class Timer {
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
 			if(++minuteCounter >= 20*60)
-				for(Clan clan: ClanDatabase.getClans())
+				for(NewClan clan: NewClanDatabase.getClans())
 					clan.decrementShield();
 			if (++ticks >= 20) {
 				executing = true;
@@ -39,7 +39,7 @@ public class Timer {
 				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isAlive()) {
-						Clan c = ClanCache.getClansByPlayer(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
+						NewClan c = ClanCache.getClansByPlayer(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandClan.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
 					}
@@ -55,8 +55,8 @@ public class Timer {
 						raid.defenderVictory();
 
 				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-					for (Clan clan : ClanDatabase.getClans()) {
-						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getRentTimeStamp()) {
+					for (NewClan clan : NewClanDatabase.getClans()) {
+						if (Clans.cfg.chargeRentDays > 0 && Clans.cfg.chargeRentDays * 86400000L < clan.getNextRentTimestamp()) {
 							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
 								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
 									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
@@ -64,9 +64,9 @@ public class Timer {
 									if (member.getValue() != EnumRank.LEADER && (Clans.cfg.evictNonpayerAdmins || member.getValue() == EnumRank.MEMBER))
 										clan.removeMember(member.getKey());//TODO: If member is online, send the member a message saying they were evicted due to not being able to pay rent.
 							}
-							clan.updateRentTimeStamp();
+							clan.updateNextRentTimeStamp();
 						}
-						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getUpkeepTimeStamp()) {
+						if (Clans.cfg.clanUpkeepDays > 0 && Clans.cfg.clanUpkeepDays * 86400000L < clan.getNextUpkeepTimestamp()) {
 							int upkeep = Clans.cfg.clanUpkeepCost;
 							if (Clans.cfg.multiplyUpkeepMembers)
 								upkeep *= clan.getMemberCount();
@@ -89,7 +89,7 @@ public class Timer {
 									//TODO send message to member saying it was disbanded.
 								}
 							}
-							clan.updateUpkeepTimeStamp();
+							clan.updateNextUpkeepTimeStamp();
 						}
 					}
 
@@ -113,7 +113,7 @@ public class Timer {
 				assert Clans.CLAIMED_LAND != null;
 				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
 				UUID chunkClan = ChunkUtils.getChunkOwner(c);
-				ArrayList<Clan> playerClans = ClanCache.getClansByPlayer(event.player.getUniqueID());
+				ArrayList<NewClan> playerClans = ClanCache.getClansByPlayer(event.player.getUniqueID());
 				if (event.player.getCapability(Clans.CLAIMED_LAND).isPresent()) {
 					UUID playerStoredClaimId = CapHelper.getClaimedLandCapability(event.player).getClan();
 					if (chunkClan != null && ClanCache.getClanById(chunkClan) == null) {
@@ -153,7 +153,7 @@ public class Timer {
 				}
 				EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP) event.player : null;
 				if (player != null) {
-					for(Clan pc: playerClans)
+					for(NewClan pc: playerClans)
 						if (RaidingParties.hasActiveRaid(pc)) {
 							Raid r = RaidingParties.getActiveRaid(pc);
 							if (pc.getClanId().equals(chunkClan))

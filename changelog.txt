@@ -1,6 +1,17 @@
-Fix NPE when player is not in a clan
+Additions:
+
+Changes:
+Improve chat colors - Wilderness is now yellow when protected, like other protected land.
+Add the default clan before the player's name in chat
+Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
+Internal optimizations
+Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.
+The default minimum distance between clan homes is now 320 blocks, aka 20 chunks, aka reasonably out of sight with a 16 chunk (Far) render distance.
+Minor performance improvement to saving and restoring block data from raids.
+
+Fixes:
+Fix crash when player is not in a clan
+Fixed a bug that caused a new opclan to be generated every time the server started.
 Updated to work with Forge 25.0.168+
 Improved cache reliability - less wonky things that get fixed by relogging or rebooting the server should occur.
 Fixed server crash when player tries using /clan home and the clan doesn't have a home.
-Improve chat colors - Wilderness is now yellow when protected, like other protected land.
-Add the default clan before the player's name in chat

@@ -1,4 +1,4 @@
-package the_fireplace.clans.payment;
+package the_fireplace.clans.compat.payment;
 
 import java.util.UUID;
 

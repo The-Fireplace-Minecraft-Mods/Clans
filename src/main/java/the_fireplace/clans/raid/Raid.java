@@ -8,7 +8,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.util.TextStyles;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ import java.util.UUID;
 public class Raid {
 	private ArrayList<UUID> initMembers;
 	private HashMap<UUID, Integer> members, defenders;
-	private Clan target;
+	private NewClan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
 	private long cost;
 	private boolean isActive;
 
-	public Raid(UUID starter, Clan targetClan){
+	public Raid(UUID starter, NewClan targetClan){
 		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
@@ -89,7 +89,7 @@ public class Raid {
 		return rm;
 	}
 
-	public Clan getTarget() {
+	public NewClan getTarget() {
 		return target;
 	}
 

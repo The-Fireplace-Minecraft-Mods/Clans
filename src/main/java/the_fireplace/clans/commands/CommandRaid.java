@@ -20,12 +20,12 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.raid.Raid;
-import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
 
@@ -35,7 +35,7 @@ import java.util.List;
 public class CommandRaid {
 
     public static final SuggestionProvider<CommandSource> targetableClanSuggestion = (context, builder) -> {
-        for(Clan c: ClanDatabase.getClans())
+        for(NewClan c: NewClanDatabase.getClans())
             if(!c.isShielded() && !c.isOpclan() && !RaidingParties.hasActiveRaid(c) && !RaidingParties.isPreparingRaid(c) && !c.getMembers().containsKey(context.getSource().asPlayer().getUniqueID()))
                 builder.suggest(c.getClanName());
         return builder.buildFuture();
@@ -74,7 +74,7 @@ public class CommandRaid {
     }
 
     private static final Command<CommandSource> joinCommand = context -> {
-        Clan target = ClanCache.getClanByName(context.getArgument("target", String.class));
+        NewClan target = ClanCache.getClanByName(context.getArgument("target", String.class));
         if(target == null)
             throwCommandFailure("Target clan not found.");
         else {
@@ -107,9 +107,9 @@ public class CommandRaid {
     };
 
     private static final Command<CommandSource> collectCommand = context -> {
-        if(RaidBlockPlacementDatabase.hasPlacedBlocks(context.getSource().asPlayer().getUniqueID())){
+        if(NewRaidBlockPlacementDatabase.hasPlacedBlocks(context.getSource().asPlayer().getUniqueID())){
             List<String> removeItems = Lists.newArrayList();
-            for(String string: RaidBlockPlacementDatabase.getPlacedBlocks(context.getSource().asPlayer().getUniqueID())) {
+            for(String string: NewRaidBlockPlacementDatabase.getPlacedBlocks(context.getSource().asPlayer().getUniqueID())) {
                 ItemStack stack;
                 try {
                     stack = ItemStack.read(JsonToNBT.getTagFromJson(string));
@@ -119,8 +119,8 @@ public class CommandRaid {
                 if (stack == null || context.getSource().asPlayer().addItemStackToInventory(stack))
                     removeItems.add(string);
             }
-            RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(context.getSource().asPlayer().getUniqueID(), removeItems);
-            if(RaidBlockPlacementDatabase.hasPlacedBlocks(context.getSource().asPlayer().getUniqueID()))
+            NewRaidBlockPlacementDatabase.getInstance().removePlacedBlocks(context.getSource().asPlayer().getUniqueID(), removeItems);
+            if(NewRaidBlockPlacementDatabase.hasPlacedBlocks(context.getSource().asPlayer().getUniqueID()))
                 sendFeedback(context, TextStyles.YELLOW,"You have run out of room for collection. Make room in your inventory and try again.");
             else
                 sendFeedback(context, TextStyles.GREEN,"Collection successful.");
