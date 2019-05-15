@@ -1127,6 +1127,7 @@ public class CommandClan {
     }
 
     public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
+        home = getSafeExitLocation(Objects.requireNonNull(player.getServer()).getWorld(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim()))), home, 5);
         if (playerDim == playerClan.getHomeDim() || player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim())), player.getServerWorld().getDefaultTeleporter()) != null) {
             if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
                 throwCommandFailure("Error teleporting to clan home. Ensure that it is not blocked.");
@@ -1136,6 +1137,34 @@ public class CommandClan {
                 CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
         } else
             throwCommandFailure("Error teleporting to clan home dimension.");
+    }
+
+    private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {
+        int i = pos.getX();
+        int j = pos.getY();
+        int k = pos.getZ();
+
+        for (int l = 0; l <= 1; ++l) {
+            int i1 = i - Integer.compare(pos.getX(), 0) * l - 1;
+            int j1 = k - Integer.compare(pos.getZ(), 0) * l - 1;
+            int k1 = i1 + 2;
+            int l1 = j1 + 2;
+
+            for (int i2 = i1; i2 <= k1; ++i2) {
+                for (int j2 = j1; j2 <= l1; ++j2) {
+                    BlockPos blockpos = new BlockPos(i2, j, j2);
+
+                    if (hasRoomForPlayer(worldIn, blockpos) || --tries <= 0)
+                        return blockpos;
+                }
+            }
+        }
+
+        return pos;
+    }
+
+    private static boolean hasRoomForPlayer(World worldIn, BlockPos pos) {
+        return worldIn.getBlockState(pos.down()).isTopSolid() && !worldIn.getBlockState(pos).getMaterial().isSolid() && !worldIn.getBlockState(pos.up()).getMaterial().isSolid();
     }
 
     private static int runSetHomeCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
