@@ -9,10 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClanDatabase;
-import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
@@ -23,15 +20,26 @@ import java.util.*;
 public class Timer {
 	private static byte ticks = 0;
 	private static int minuteCounter = 0;
+    private static int fiveMinuteCounter = 0;
 	private static boolean executing = false;
 	public static HashMap<EntityPlayerMP, Pair<Integer, Integer>> clanHomeWarmups = Maps.newHashMap();
 	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
-			if(++minuteCounter >= 20*60)
-				for(NewClan clan: NewClanDatabase.getClans())
-					clan.decrementShield();
+            if(++fiveMinuteCounter >= 20*60*5) {
+                executing = true;
+                fiveMinuteCounter -= 20*60*5;
+                ClanChunkCache.save();
+                executing = false;
+            }
+			if(++minuteCounter >= 20*60) {
+			    executing = true;
+                minuteCounter -= 20*60;
+                for (NewClan clan : NewClanDatabase.getClans())
+                    clan.decrementShield();
+                executing = false;
+            }
 			if (++ticks >= 20) {
 				executing = true;
 				ticks -= 20;

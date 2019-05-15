@@ -38,10 +38,7 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClanDatabase;
-import the_fireplace.clans.clan.EnumRank;
+import the_fireplace.clans.clan.*;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.CapHelper;
@@ -750,6 +747,7 @@ public class CommandClan {
             targetClan.unsetHome();
         }
 
+        ClanChunkCache.delChunk(targetClan, c.x, c.z, c.getWorld().getDimension().getType().getId());
         targetClan.subClaimCount();
         Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
     }
@@ -786,6 +784,7 @@ public class CommandClan {
                 if (Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
                     if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, clan.getClanId())) {
                         ChunkUtils.setChunkOwner(c, clan.getClanId());
+                        ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().getDimension().getType().getId());
                         clan.addClaimCount();
                         sendFeedback(context, TextStyles.GREEN, "Land claimed!");
                     } else

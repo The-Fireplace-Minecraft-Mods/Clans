@@ -18,6 +18,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.NewClanDatabase;
@@ -152,6 +153,7 @@ public class CommandOpClan {
             }
             if(clan.isOpclan()) {
                 ChunkUtils.setChunkOwner(c, clan.getClanId());
+                ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().getDimension().getType().getId());
                 clan.addClaimCount();
                 sendFeedback(context, TextStyles.GREEN, "Land claimed for %s!", clan.getClanName());
             } else {
@@ -159,6 +161,7 @@ public class CommandOpClan {
                     if(force || Clans.cfg.maxClanPlayerClaims <= 0 || clan.getClaimCount() < clan.getMaxClaimCount()) {
                         if (force || Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, clan.getClanId())) {
                             ChunkUtils.setChunkOwner(c, clan.getClanId());
+                            ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().getDimension().getType().getId());
                             clan.addClaimCount();
                             sendFeedback(context, TextStyles.GREEN, "Land claimed for %s!", clan.getClanName());
                         } else
