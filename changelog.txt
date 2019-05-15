@@ -25,6 +25,7 @@ Additional feedback messages: You now get a confirmation message after successfu
 Greatly improved the performance of /clan map. Clans will need to abandon and reclaim their land for it to show up on the map.
 Improved /clan home teleportation handling, you are far less likely to run into issues with the clan home being falsely obstructed
 Minor performance improvement to saving and restoring block data from raids.
+Added a message for feedback when you run /clan trapped and you're not actually trapped.
 
 Fixes:
 Fix crash when player is not in a clan
@@ -38,4 +39,5 @@ Fixed default clan check on login not updating default clan when players are no 
 Fixed default clan not updating if needed when the player is kicked from a clan
 Fixed multiple explosions messing up the chunk restoration
 Fixed clan upkeep and rent draining the balances of clans and players by constantly running
-Fixed clan invitation message going to the wrong person
+Fixed invite command "You have invited player" message going to the wrong person
+Fixed crash when trying to use /clan banner and the clan doesn't have a banner

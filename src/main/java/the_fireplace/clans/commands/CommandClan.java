@@ -339,9 +339,14 @@ public class CommandClan {
             return 0;
         assert selectedClan != null;
         NBTTagCompound banner;
-        try{
-            banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
-        } catch(CommandSyntaxException e){
+        if(selectedClan.getClanBanner() != null) {
+            try {
+                banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
+            } catch (CommandSyntaxException e) {
+                throwCommandFailure("%s does not have a banner.", selectedClan.getClanName());
+                return 1;
+            }
+        } else {
             throwCommandFailure("%s does not have a banner.", selectedClan.getClanName());
             return 1;
         }
@@ -1211,7 +1216,8 @@ public class CommandClan {
                 x += dx;
                 z += dz;
             }
-        }
+        } else
+            throwCommandFailure("No, you're not trapped in someone else's claim.");
         return 1;
     }
 
