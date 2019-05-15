@@ -18,10 +18,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClanDatabase;
+import the_fireplace.clans.clan.*;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -116,6 +113,21 @@ public class CommandOpClan {
                 .then(Commands.literal("setdesc")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
                 .executes(context -> runSetDescriptionCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))))));
+
+        opclanCommand.then(Commands.literal("setcolor")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, NewClanDatabase.getOpClan()))));
+        opclanCommand.then(Commands.literal("setcolour")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, NewClanDatabase.getOpClan()))));
+        opclanCommand.then(Commands.argument("clan", StringArgumentType.word()).suggests(CommandClan.clanSuggestion)
+                .then(Commands.literal("setcolor")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))))));
+        opclanCommand.then(Commands.argument("clan", StringArgumentType.word()).suggests(CommandClan.clanSuggestion)
+                .then(Commands.literal("setcolour")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class)))))));
 
         opclanCommand.then(Commands.literal("setname")
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -292,6 +304,20 @@ public class CommandOpClan {
             sendFeedback(context, TextStyles.GREEN, "%s renamed to %s!", oldName, newName);
         } else
             throwCommandFailure("The clan name \"%s\" is already taken or invalid.", newName);
+        return 1;
+    }
+
+    private static int runSetColorCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
+        if(!validateClan(context, clan, false, false))
+            return 0;
+        assert clan != null;
+        String newColor = context.getArgument("color", String.class);
+        try {
+            clan.setColor(Integer.parseInt(newColor));
+            sendFeedback(context, TextStyles.GREEN, "Clan color for %s set!", clan.getClanName());
+        } catch (NumberFormatException e) {
+            throwCommandFailure("Invalid color: %s", newColor);
+        }
         return 1;
     }
 

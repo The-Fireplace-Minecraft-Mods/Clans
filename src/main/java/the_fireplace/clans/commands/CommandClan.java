@@ -160,6 +160,19 @@ public class CommandClan {
                 .then(Commands.argument("name", StringArgumentType.word())
                 .executes(context -> runSetNameCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
 
+        clanCommand.then(Commands.literal("setcolor")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
+        clanCommand.then(Commands.literal("setcolour")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
+        clanCommandWithClan.then(Commands.literal("setcolor")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
+        clanCommandWithClan.then(Commands.literal("setcolour")
+                .then(Commands.argument("color", StringArgumentType.word())
+                .executes(context -> runSetColorCommand(context, ClanCache.getClanByName(context.getArgument("clan", String.class))))));
+
         clanCommand.then(Commands.literal("setdescription")
                 .then(Commands.argument("description", StringArgumentType.greedyString())
                 .executes(context -> runSetDescriptionCommand(context, ClanCache.getPlayerDefaultClan(context.getSource().asPlayer())))));
@@ -604,6 +617,20 @@ public class CommandClan {
             sendFeedback(context, TextStyles.GREEN, "You have renamed %s to %s!", oldName, newName);
         } else
             throwCommandFailure("The clan name \"%s\" is already taken or invalid.", newName);
+        return 1;
+    }
+
+    private static int runSetColorCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
+        if(!validateClanRank(context, clan, EnumRank.LEADER))
+            return 0;
+        assert clan != null;
+        String newColor = context.getArgument("color", String.class);
+        try {
+            clan.setColor(Integer.parseInt(newColor));
+            sendFeedback(context, TextStyles.GREEN, "Clan color for %s set!", clan.getClanName());
+        } catch(NumberFormatException e) {
+            throwCommandFailure("Invalid color: %s", newColor);
+        }
         return 1;
     }
 
