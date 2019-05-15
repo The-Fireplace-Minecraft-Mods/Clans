@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.util.TextStyles;
 
 import java.util.*;
 
@@ -93,7 +95,9 @@ public final class RaidingParties {
 	public static void initRaid(NewClan raidTarget) {
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
 		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
-			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
+			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s. The raid will begin in %s seconds.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName()));
+		for(UUID member: getRaids().get(raidTarget).getMembers())
+			Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member)).sendMessage(new TextComponentTranslation("Your raiding party, with %s members, is preparing to raid %s. The raid will begin in %s seconds.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
 	}
 
 	private static void activateRaid(NewClan raidTarget) {
@@ -102,7 +106,25 @@ public final class RaidingParties {
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 	}
 
-	public static void endRaid(NewClan targetClan) {
+	public static void endRaid(NewClan targetClan, boolean raiderVictory) {
+		TextComponentTranslation defenderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
+		if(raiderVictory)
+			defenderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.YELLOW);
+		else
+			defenderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.GREEN);
+		for(EntityPlayerMP member: targetClan.getOnlineMembers().keySet())
+			member.sendMessage(defenderMessage);
+
+		TextComponentTranslation raiderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
+		if(raiderVictory)
+			raiderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.GREEN);
+		else
+			raiderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.YELLOW);
+		for(UUID member: getActiveRaid(targetClan).getInitMembers()) {
+			EntityPlayerMP player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
+			if(player != null)
+				player.sendMessage(raiderMessage);
+		}
 		Raid raid = activeraids.remove(targetClan);
 		for(UUID player: raid.getMembers())
 			removeRaider(player);
