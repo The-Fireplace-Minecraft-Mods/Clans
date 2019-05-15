@@ -7,6 +7,7 @@ Changes:
 Improve chat colors - Wilderness is now yellow when protected, like other protected land.
 Add the default clan before the player's name in chat
 Show offline members in clan details, hide member count and "No members" message if looking at opclan details.
+Show the clan's description when you enter its territory.
 Improved the performance of database saving - it now occurs every 5 minutes, if needed, and when the server shuts down. This is a huge improvement over saving immediately when anything in the database changes.
 Internal optimizations
 Change the way clans are stored - the database is now json-based, so server owners can modify it if needed, and internal changes to clans and the clan database can be made easily without breaking the database. Databases from version 1.1.4 and 1.1.5 will be migrated to the new format.

@@ -137,15 +137,21 @@ public class Timer {
 							color = TextStyles.DARK_GREEN;
 						String endMsg;
 						if (chunkClan == null) {
-							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY))
+							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY)) {
 								endMsg = "Underground.";
-							else {
+								endMsg += "\n~This land is not claimed.";
+							} else {
 								endMsg = "Wilderness.";
-								if(Clans.cfg.protectWilderness)
+								if(Clans.cfg.protectWilderness) {
 									color = TextStyles.YELLOW;
+									endMsg += "\n~This land is not claimed, and is protected.";
+								} else
+									endMsg += "\n~This land is not claimed.";
 							}
-						} else
+						} else {
 							endMsg = ClanCache.getClanById(chunkClan).getClanName() + "'s territory.";
+							endMsg += "\n~" + ClanCache.getClanById(chunkClan).getDescription();
+						}
 
 						event.player.sendMessage(new TextComponentString("You are now entering " + endMsg).setStyle(color));
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getGameTime() % 15 == 0) {
@@ -153,9 +159,9 @@ public class Timer {
 						int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
 						int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
 						if (curY >= yBound && prevY < yBound)
-							event.player.sendMessage(new TextComponentString("You are now entering Wilderness.").setStyle(TextStyles.YELLOW));
+							event.player.sendMessage(new TextComponentString("You are now entering Wilderness.\n~This land is not claimed, and is protected.").setStyle(TextStyles.YELLOW));
 						else if (prevY >= yBound && curY < yBound)
-							event.player.sendMessage(new TextComponentString("You are now entering Underground.").setStyle(TextStyles.DARK_GREEN));
+							event.player.sendMessage(new TextComponentString("You are now entering Underground.\n~This land is not claimed.").setStyle(TextStyles.DARK_GREEN));
 						prevYs.put(event.player, curY);
 					}
 				}
