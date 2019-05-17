@@ -1,3 +1,4 @@
 Fix the default clan name not being used for most commands.
 Fix clan home not being removed from the cache when the clan is disbanded
 Fix setting of rent and upkeep timestamps when forming a clan.
+Players in build admin mode can now always attack entities in claimed territory

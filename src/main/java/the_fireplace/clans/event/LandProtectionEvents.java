@@ -28,6 +28,7 @@ import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.BlockSerializeUtil;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 
@@ -248,7 +249,9 @@ public class LandProtectionEvents {
             Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
             NewClan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
             Entity source = event.getSource().getTrueSource();
-            if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
+            if(source instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) source))
+            	return;
+            if(entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 				ArrayList<NewClan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
 				if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)))
 					event.setCanceled(true);
