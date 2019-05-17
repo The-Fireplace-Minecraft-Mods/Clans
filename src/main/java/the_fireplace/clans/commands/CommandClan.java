@@ -95,7 +95,7 @@ public class CommandClan extends CommandBase {
         if(args.length <= 0)
             throw new WrongUsageException("/clan <command> [parameters]");
         String tag = args[0];
-        if(ClanCache.clanNameTaken(tag) && args.length >= 2) {
+        if(ClanCache.clanNameTaken(tag) && !ClanCache.forbiddenClanNames.contains(tag) && args.length >= 2) {
             tag = args[1];
             if (args.length > 2) {
                 String[] commArgs = Arrays.copyOfRange(args, 2, args.length);

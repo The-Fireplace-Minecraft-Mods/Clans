@@ -22,6 +22,8 @@ public final class ClanCache {
 	private static HashMap<NewClan, BlockPos> clanHomes = Maps.newHashMap();
 	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
 
+	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi", "list", "fancymap", "fm");
+
 	@Nullable
 	public static NewClan getClanById(@Nullable UUID clanID){
 		return NewClanDatabase.getClan(clanID);
@@ -52,7 +54,7 @@ public final class ClanCache {
 		if(clanNames.isEmpty())
 			for(NewClan clan: NewClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);
-		return clanName.toLowerCase().equals("wilderness") || clanName.toLowerCase().equals("underground") || clanName.toLowerCase().equals("opclan") || CommandClan.commands.containsKey(clanName.toLowerCase()) || clanNames.containsKey(clanName);
+		return clanName.toLowerCase().equals("wilderness") || clanName.toLowerCase().equals("underground") || clanName.toLowerCase().equals("opclan") || forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
 	}
 
 	public static boolean clanBannerTaken(String clanBanner) {
