@@ -81,6 +81,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 	}
 
 	public static void abandonClaim(EntityPlayerMP sender, Chunk c, NewClan targetClan) {
+		//Unset clan home if it is in the chunk
 		if (targetClan.getHome() != null
 				&& targetClan.hasHome()
 				&& sender.dimension == targetClan.getHomeDim()

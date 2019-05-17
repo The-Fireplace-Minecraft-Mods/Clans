@@ -49,7 +49,6 @@ public class CommandAbandonClaim extends ClanSubCommand {
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId())) {
 					if(!Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId())) {
-						//Unset clan home if it is in the chunk
 						OpCommandAbandomClaim.abandonClaim(sender, c, selectedClan);
 						ChunkUtils.clearChunkOwner(c);
 						sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));

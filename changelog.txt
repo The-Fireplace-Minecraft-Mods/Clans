@@ -1,1 +1,2 @@
 Fix the default clan name not being used for most commands.
+Fix clan home not being removed from the cache when the clan is disbanded
