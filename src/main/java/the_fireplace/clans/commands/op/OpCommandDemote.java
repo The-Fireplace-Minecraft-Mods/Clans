@@ -59,9 +59,9 @@ public class OpCommandDemote extends OpClanSubCommand {
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
 					if (clan.demoteMember(target.getId())) {
-						sender.sendMessage(new TextComponentTranslation("You have demoted %s.", target.getName()).setStyle(TextStyles.GREEN));
+						sender.sendMessage(new TextComponentTranslation("You have demoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
 						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been demoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.YELLOW));
 					} else
 						sender.sendMessage(new TextComponentTranslation("The player %s could not be demoted.", target.getName()).setStyle(TextStyles.RED));
 				} else
