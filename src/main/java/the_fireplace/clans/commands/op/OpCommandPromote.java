@@ -57,10 +57,10 @@ public class OpCommandPromote extends OpClanSubCommand {
 				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
 					if (clan.promoteMember(target.getId())) {
 						sender.sendMessage(new TextComponentTranslation("You have promoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
-						for(Map.Entry<UUID, EnumRank> m : clan.getMembers().entrySet())
+						for(Map.Entry<EntityPlayerMP, EnumRank> m : clan.getOnlineMembers().entrySet())
 							if(m.getValue().greaterOrEquals(clan.getMembers().get(target.getId())))
-								if(!m.getKey().equals(target.getId()))
-									sender.sendMessage(new TextComponentTranslation("%s has been promoted to %s in %s by %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
+								if(!m.getKey().getUniqueID().equals(target.getId()))
+									m.getKey().sendMessage(new TextComponentTranslation("%s has been promoted to %s in %s by %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
 						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
 							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been promoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.GREEN));
 					} else

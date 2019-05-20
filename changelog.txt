@@ -1,2 +1,1 @@
-Improved feedback of the promote/demote commands
-Fixed occasional crash when using /clan home from another dimension (LordFusion)
+Fix new promote feedback message getting spammed at the person who used the command
