@@ -1,1 +1,1 @@
-Fix new promote feedback message getting spammed at the person who used the command
+Fix issues with counting and using online players

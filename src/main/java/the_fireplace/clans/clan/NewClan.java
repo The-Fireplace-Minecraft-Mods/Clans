@@ -160,8 +160,12 @@ public class NewClan {
         HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
         if(isOpclan)
             return online;
-        for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet())
-            online.put(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member.getKey()), member.getValue());
+        for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
+            EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member.getKey());
+            //noinspection ConstantConditions
+            if(player != null)
+                online.put(player, member.getValue());
+        }
         return online;
     }
 
