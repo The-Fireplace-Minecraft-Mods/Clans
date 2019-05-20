@@ -249,6 +249,8 @@ public class LandProtectionEvents {
             Chunk c = entity.getEntityWorld().getChunk(entity.getPosition());
             NewClan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
             Entity source = event.getSource().getTrueSource();
+			if(source != null && ClanCache.isClaimAdmin(source.getUniqueID()))
+				return;
             if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 				ArrayList<NewClan> entityClans = entity instanceof EntityPlayer ? ClanCache.getClansByPlayer(entity.getUniqueID()) : ClanCache.getClansByPlayer(((EntityTameable) entity).getOwnerId());
 				if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)))
