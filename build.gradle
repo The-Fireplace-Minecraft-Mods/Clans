@@ -23,7 +23,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'net.cazzar.gradle.modsio'
 
-version = "1.2.4"
+version = "1.2.8"
 group = "the_fireplace.clans"
 archivesBaseName = "Clans-1.13.2"
 

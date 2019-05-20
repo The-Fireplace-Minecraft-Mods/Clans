@@ -4,3 +4,4 @@ Fix crash with certain modded blocks
 Fix setting of rent and upkeep timestamps when forming a clan
 Players in build admin mode can now always attack entities in claimed territory
 Fix nether portal not lighting inside claimed territory
+Improved feedback of the promote/demote commands

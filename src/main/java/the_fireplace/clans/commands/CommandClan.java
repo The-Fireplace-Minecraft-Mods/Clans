@@ -959,9 +959,9 @@ public class CommandClan {
             if (!ClanCache.getClansByPlayer(target.getId()).isEmpty()) {
                 if (ClanCache.getClansByPlayer(target.getId()).contains(clan)) {
                     if (clan.demoteMember(target.getId())) {
-                        sendFeedback(context, TextStyles.GREEN, "You have demoted %s.", target.getName());
+                        sendFeedback(context, TextStyles.GREEN, "You have demoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName());
                         if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
-                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
+                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been demoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), context.getSource().getName()).setStyle(TextStyles.YELLOW));
                     } else
                         throwCommandFailure("The player %s could not be demoted in %s.", target.getName(), clan.getClanName());
                 } else
@@ -989,9 +989,13 @@ public class CommandClan {
             if (!ClanCache.getClansByPlayer(target.getId()).isEmpty()) {
                 if (ClanCache.getClansByPlayer(target.getId()).contains(clan)) {
                     if (clan.promoteMember(target.getId())) {
-                        sendFeedback(context, TextStyles.GREEN, "You have promoted %s in %s.", target.getName(), clan.getClanName());
+                        sendFeedback(context, TextStyles.GREEN, "You have promoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName());
+                        for(Map.Entry<EntityPlayerMP, EnumRank> m : clan.getOnlineMembers().entrySet())
+                            if(m.getValue().greaterOrEquals(clan.getMembers().get(target.getId())))
+                                if(!m.getKey().getUniqueID().equals(target.getId()))
+                                    m.getKey().sendMessage(new TextComponentTranslation("%s has been promoted to %s in %s by %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName(), context.getSource().getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
                         if(ArrayUtils.contains(ServerLifecycleHooks.getCurrentServer().getOnlinePlayerNames(), target))
-                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been promoted in %s by %s.", clan.getClanName(), context.getSource().getName()).setStyle(TextStyles.GREEN));
+                            Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUsername(playerName)).sendMessage(new TextComponentTranslation("You have been promoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), context.getSource().getName()).setStyle(TextStyles.GREEN));
                     } else
                         throwCommandFailure("The player %s could not be promoted.", target.getName());
                 } else
