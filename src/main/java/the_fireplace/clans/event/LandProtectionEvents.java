@@ -114,7 +114,8 @@ public class LandProtectionEvents {
 						if (!ClanCache.isClaimAdmin(placingPlayer.getUniqueID()) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer.getUniqueID())))) {
 							event.setCanceled(true);
 							EntityEquipmentSlot hand = ((EntityPlayerMP)event.getEntity()).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
-							((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, ((EntityPlayerMP)event.getEntity()).getItemStackFromSlot(hand)));
+							if(((EntityPlayerMP) placingPlayer).connection != null)
+								((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, ((EntityPlayerMP)event.getEntity()).getItemStackFromSlot(hand)));
 							placingPlayer.sendMessage(new TextComponentString("You cannot place blocks in another clan's territory.").setStyle(TextStyles.RED));
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = ((EntityPlayerMP)event.getEntity()).getHeldItem(((EntityPlayerMP)event.getEntity()).getActiveHand()).copy();
@@ -131,7 +132,8 @@ public class LandProtectionEvents {
 				if (!ClanCache.isClaimAdmin(placingPlayer.getUniqueID()) && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
 					event.setCanceled(true);
 					EntityEquipmentSlot hand = ((EntityPlayerMP)event.getEntity()).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
-					((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, ((EntityPlayerMP)event.getEntity()).getItemStackFromSlot(hand)));
+					if(((EntityPlayerMP) placingPlayer).connection != null)
+						((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, ((EntityPlayerMP)event.getEntity()).getItemStackFromSlot(hand)));
 					((EntityPlayerMP)event.getEntity()).inventory.markDirty();
 					event.getEntity().sendMessage(new TextComponentString("You cannot place blocks in Wilderness.").setStyle(TextStyles.RED));
 				}
