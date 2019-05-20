@@ -81,6 +81,7 @@ public final class NewClanDatabase {
                 ClanCache.removeBanner(clan.getClanBanner());
             for(UUID member: clan.getMembers().keySet())
                 ClanCache.purgePlayerCache(member);
+            ClanCache.clearClanHome(clan);
             isChanged = true;
             return true;
         }

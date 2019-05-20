@@ -1,2 +1,3 @@
 Updated forbidden clan name list with new commands
+Fix clan home not being removed from the cache when the clan is disbanded
 Fixed crash with certain modded blocks
