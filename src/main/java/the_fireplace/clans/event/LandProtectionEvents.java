@@ -156,16 +156,6 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public void onPortalPlace(BlockEvent.PortalSpawnEvent event) {//TODO: Ensure that no part of the portal can enter a claimed chunk
-		if(!event.getWorld().isRemote()) {
-			IChunk c = event.getWorld().getChunkDefault(event.getPos());
-			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-			if (chunkOwner != null)
-				event.setCanceled(true);
-		}
-	}
-
-	@SubscribeEvent
 	public void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		if(!event.getWorld().isRemote) {
 			Chunk c = event.getWorld().getChunk(event.getPos());
