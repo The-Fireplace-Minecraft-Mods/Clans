@@ -9,9 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
@@ -41,7 +40,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		NewClan target = ClanCache.getClanByName(args[0]);
+		Clan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
 			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 		else {
@@ -73,9 +72,9 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		HashMap<NewClan, Raid> raids = RaidingParties.getRaids();
+		HashMap<Clan, Raid> raids = RaidingParties.getRaids();
 		ArrayList<String> targetClanNames = Lists.newArrayList();
-		for(Map.Entry<NewClan, Raid> entry: raids.entrySet())
+		for(Map.Entry<Clan, Raid> entry: raids.entrySet())
 			if(sender.getCommandSenderEntity() != null && !entry.getKey().getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()))
 				targetClanNames.add(entry.getKey().getClanName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();

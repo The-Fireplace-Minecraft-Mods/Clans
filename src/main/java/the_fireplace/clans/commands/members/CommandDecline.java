@@ -7,9 +7,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -41,7 +41,7 @@ public class CommandDecline extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		NewClan declineClan = ClanCache.getInvite(sender.getUniqueID());
+		Clan declineClan = ClanCache.getInvite(sender.getUniqueID());
 		if(declineClan != null){
 			ClanCache.removeInvite(sender.getUniqueID());
 			sender.sendMessage(new TextComponentTranslation("You declined the invitation to join %s.", declineClan.getClanName()).setStyle(TextStyles.GREEN));

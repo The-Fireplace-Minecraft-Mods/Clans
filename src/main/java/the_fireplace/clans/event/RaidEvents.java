@@ -21,10 +21,10 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.raid.NewChunkRestoreData;
-import the_fireplace.clans.raid.NewRaidRestoreDatabase;
+import the_fireplace.clans.raid.ChunkRestoreData;
+import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
@@ -40,7 +40,7 @@ public class RaidEvents {
 			Chunk c = event.getWorld().getChunk(event.getPos());
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
-				NewClan chunkClan = ClanCache.getClanById(chunkOwner);
+				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
 					if (RaidingParties.hasActiveRaid(chunkClan)) {
 						//Double check that nothing gets dropped during a raid, to avoid block duping.
@@ -60,7 +60,7 @@ public class RaidEvents {
 		if(!event.getEntity().getEntityWorld().isRemote) {
 			if (event.getEntityLiving() instanceof EntityPlayerMP) {
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
-				for(NewClan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
+				for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
 					if (clan != null && RaidingParties.hasActiveRaid(clan))
 						RaidingParties.getActiveRaid(clan).removeDefender(player);
 					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
@@ -73,9 +73,9 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onChunkLoaded(ChunkEvent.Load event) {
 		if(!event.getWorld().isRemote) {
-			NewClan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
+			Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(event.getChunk()));
 			if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
-				NewChunkRestoreData data = NewRaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
+				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(event.getChunk().getWorld().provider.getDimension(), event.getChunk());
 				if (data != null)
 					data.restore(event.getChunk());
 			}
@@ -169,7 +169,7 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		if(event.getEntity() instanceof EntityFallingBlock) {
-			NewClan owningClan = ClanCache.getClanById(CapHelper.getClaimedLandCapability(event.getWorld().getChunk(event.getEntity().getPosition())).getClan());
+			Clan owningClan = ClanCache.getClanById(CapHelper.getClaimedLandCapability(event.getWorld().getChunk(event.getEntity().getPosition())).getClan());
 			if(owningClan != null && RaidingParties.hasActiveRaid(owningClan))
 				event.setCanceled(true);//TODO monitor where it goes rather than just preventing it from falling
 		}
@@ -208,10 +208,10 @@ public class RaidEvents {
 	}
 
 	private static void shiftBlocks(BlockEvent.NeighborNotifyEvent event, BlockPos oldPos, BlockPos newPos, Chunk oldChunk, Chunk newChunk) {
-		String oldBlock = NewRaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
+		String oldBlock = RaidRestoreDatabase.popRestoreBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos);
 		if (oldBlock != null)
-			NewRaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
-		if(NewRaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
-			NewRaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
+			RaidRestoreDatabase.addRestoreBlock(event.getWorld().provider.getDimension(), newChunk, newPos, oldBlock);
+		if(RaidRestoreDatabase.delRemoveBlock(event.getWorld().provider.getDimension(), oldChunk, oldPos))
+			RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), newChunk, newPos);
 	}
 }

@@ -10,9 +10,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import org.apache.commons.lang3.ArrayUtils;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -86,7 +86,7 @@ public class CommandKick extends ClanSubCommand {
 		return args.length == 1 ? playerNames : Collections.emptyList();
 	}
 
-	public static void removeMember(MinecraftServer server, ICommandSender sender, NewClan playerClan, GameProfile target) throws CommandException {
+	public static void removeMember(MinecraftServer server, ICommandSender sender, Clan playerClan, GameProfile target) throws CommandException {
 		if(playerClan.removeMember(target.getId())) {
 			sender.sendMessage(new TextComponentTranslation("You have kicked %s out of %s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.GREEN));
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {

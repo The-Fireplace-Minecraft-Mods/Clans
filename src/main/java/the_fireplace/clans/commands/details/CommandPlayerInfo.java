@@ -3,7 +3,6 @@ package the_fireplace.clans.commands.details;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -12,9 +11,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.ArrayUtils;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -75,10 +74,10 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	private void showDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
 		sender.sendMessage(new TextComponentTranslation("Player name: %s", target.getName()).setStyle(TextStyles.GREEN));
-		List<NewClan> leaders = Lists.newArrayList();
-		List<NewClan> admins = Lists.newArrayList();
-		List<NewClan> members = Lists.newArrayList();
-		for(NewClan clan: ClanCache.getPlayerClans(target.getId())) {
+		List<Clan> leaders = Lists.newArrayList();
+		List<Clan> admins = Lists.newArrayList();
+		List<Clan> members = Lists.newArrayList();
+		for(Clan clan: ClanCache.getPlayerClans(target.getId())) {
 			EnumRank rank = clan.getMembers().get(target.getId());
 			switch(rank){
 				case LEADER:
@@ -93,15 +92,15 @@ public class CommandPlayerInfo extends ClanSubCommand {
 			}
 		}
 		if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-			NewClan defaultClan = null;
+			Clan defaultClan = null;
 			if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target))
 				defaultClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability(server.getPlayerList().getPlayerByUUID(target.getId())).getDefaultClan());
 			sender.sendMessage(new TextComponentString("Clans: ").setStyle(TextStyles.GREEN));
-			for(NewClan leader: leaders)
+			for(Clan leader: leaders)
 				sender.sendMessage(new TextComponentTranslation("Leader of %s", leader.getClanName()).setStyle(defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
-			for(NewClan admin: admins)
+			for(Clan admin: admins)
 				sender.sendMessage(new TextComponentTranslation("Admin of %s", admin.getClanName()).setStyle(defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
-			for(NewClan member: members)
+			for(Clan member: members)
 				sender.sendMessage(new TextComponentTranslation("Member of %s", member.getClanName()).setStyle(defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 		} else
 			sender.sendMessage(new TextComponentTranslation("%s is not in any clans.", target.getName()).setStyle(TextStyles.GREEN));

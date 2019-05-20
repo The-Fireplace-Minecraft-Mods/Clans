@@ -1,19 +1,17 @@
 package the_fireplace.clans.commands.teleportation;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.block.BlockBed;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.CapHelper;
@@ -66,7 +64,7 @@ public class CommandHome extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You cannot use this command until your cooldown runs out in "+cooldown+" seconds.").setStyle(TextStyles.RED));
 	}
 
-	public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
+	public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
 		home = getSafeExitLocation(Objects.requireNonNull(player.getServer()).getWorld(playerClan.getHomeDim()), home, 5);
 		if (playerDim == playerClan.getHomeDim()) {
 			if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {

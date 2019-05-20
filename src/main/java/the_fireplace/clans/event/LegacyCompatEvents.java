@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
@@ -19,7 +19,7 @@ public class LegacyCompatEvents {
         Chunk c = event.getChunk();
         ClaimedLandCapability cap = CapHelper.getClaimedLandCapability(c);
         if(cap.pre120() && cap.getClan() != null) {
-            NewClan clan = ClanCache.getClanById(cap.getClan());
+            Clan clan = ClanCache.getClanById(cap.getClan());
             if(clan == null) {
                 ChunkUtils.clearChunkOwner(c);
                 return;

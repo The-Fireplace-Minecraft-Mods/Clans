@@ -12,9 +12,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -71,7 +71,7 @@ public class CommandForm extends ClanSubCommand {
 					}
 				}
 				if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, sender.getUniqueID())) {
-					NewClan c = new NewClan(newClanName, sender.getUniqueID(), banner);
+					Clan c = new Clan(newClanName, sender.getUniqueID(), banner);
 					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 						CapHelper.getPlayerClanCapability(sender).setDefaultClan(c.getClanId());
 					sender.sendMessage(new TextComponentString("Clan formed!").setStyle(TextStyles.GREEN));

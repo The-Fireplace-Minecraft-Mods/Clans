@@ -10,9 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -57,7 +57,7 @@ public class CommandDetails extends ClanSubCommand {
 			} else
 				showDetails(server, sender, selectedClan);
 		} else {
-			NewClan targetClan = ClanCache.getClanByName(args[0]);
+			Clan targetClan = ClanCache.getClanByName(args[0]);
 			if(targetClan == null)
 				sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
 			else
@@ -76,7 +76,7 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private void showDetails(MinecraftServer server, ICommandSender sender, NewClan clan) {
+	private void showDetails(MinecraftServer server, ICommandSender sender, Clan clan) {
 		sender.sendMessage(new TextComponentString("Clan name: "+clan.getClanName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(new TextComponentString("Clan description: "+clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(new TextComponentString("Number of claims: "+clan.getClaimCount()).setStyle(TextStyles.GREEN));

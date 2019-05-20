@@ -13,9 +13,9 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.compat.dynmap.data.GroupedChunks;
 import the_fireplace.clans.compat.dynmap.data.PositionPoint;
@@ -146,7 +146,7 @@ public class DynmapCompat implements IDynmapCompat {
     private boolean initializeMap() {
         Set<ClanDimInfo> teamDimList = Sets.newHashSet();
 
-        for(NewClan clan: ClanChunkCache.clansWithClaims()) {
+        for(Clan clan: ClanChunkCache.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
             for(ChunkPosition chunk: ClanChunkCache.getChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.dim)) {

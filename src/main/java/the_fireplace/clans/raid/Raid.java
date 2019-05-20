@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.NewClan;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.util.TextStyles;
 
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ import java.util.UUID;
 public class Raid {
 	private ArrayList<UUID> initMembers;
 	private HashMap<UUID, Integer> members, defenders;
-	private NewClan target;
+	private Clan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
 	private long cost;
 	private boolean isActive;
 
-	public Raid(EntityPlayerMP starter, NewClan targetClan){
+	public Raid(EntityPlayerMP starter, Clan targetClan){
 		members = Maps.newHashMap();
 		initMembers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
@@ -95,7 +95,7 @@ public class Raid {
 		return rm;
 	}
 
-	public NewClan getTarget() {
+	public Clan getTarget() {
 		return target;
 	}
 

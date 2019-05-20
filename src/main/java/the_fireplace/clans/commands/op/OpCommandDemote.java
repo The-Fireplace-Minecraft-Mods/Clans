@@ -5,15 +5,14 @@ import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import org.apache.commons.lang3.ArrayUtils;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -45,14 +44,14 @@ public class OpCommandDemote extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
-		NewClan c = ClanCache.getClanByName(clan);
+		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			demoteClanMember(server, sender, args[1], c);
 		} else
 			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
-	public static void demoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, NewClan clan) throws CommandException {
+	public static void demoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, Clan clan) throws CommandException {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
 		if(target != null) {
@@ -77,7 +76,7 @@ public class OpCommandDemote extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
 			return Lists.newArrayList();
-		NewClan target = ClanCache.getClanByName(args[0]);
+		Clan target = ClanCache.getClanByName(args[0]);
 		if(target != null && args.length == 2) {
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (UUID player : target.getMembers().keySet()) {

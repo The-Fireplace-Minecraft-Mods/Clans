@@ -5,11 +5,10 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -73,7 +72,7 @@ public class CommandLeave extends ClanSubCommand {
 	 * @param removeClan
 	 * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
 	 */
-	public static void updateDefaultClan(EntityPlayerMP player, @Nullable NewClan removeClan) {
+	public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
 		UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
 		if(removeClan == null || removeClan.getClanId().equals(oldDef))
 			if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())

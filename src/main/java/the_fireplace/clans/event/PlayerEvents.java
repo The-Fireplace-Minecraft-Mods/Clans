@@ -8,8 +8,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.PlayerClanCapability;
@@ -64,7 +64,7 @@ public class PlayerEvents {
         if(Clans.cfg.showDefaultClanInChat && event.getPlayer() != null) {
             PlayerClanCapability playerClanCap = CapHelper.getPlayerClanCapability(event.getPlayer());
             if(playerClanCap != null && playerClanCap.getDefaultClan() != null) {
-                NewClan playerDefaultClan = ClanCache.getClanById(playerClanCap.getDefaultClan());
+                Clan playerDefaultClan = ClanCache.getClanById(playerClanCap.getDefaultClan());
                 if(playerDefaultClan != null)
                     event.setComponent(new TextComponentString('<'+playerDefaultClan.getClanName()+"> ").setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(event.getComponent().setStyle(TextStyles.RESET)));
                 else

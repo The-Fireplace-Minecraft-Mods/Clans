@@ -15,9 +15,9 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.commands.teleportation.CommandHome;
-import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
-import the_fireplace.clans.raid.NewRaidRestoreDatabase;
 import the_fireplace.clans.raid.Raid;
+import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.*;
 
@@ -38,15 +38,15 @@ public class Timer {
 				executing = true;
 				fiveMinuteCounter -= 20*60*5;
 				ClanChunkCache.save();
-				NewClanDatabase.save();
-				NewRaidBlockPlacementDatabase.save();
-				NewRaidRestoreDatabase.save();
+				ClanDatabase.save();
+				RaidBlockPlacementDatabase.save();
+				RaidRestoreDatabase.save();
 				executing = false;
 			}
 			if(++minuteCounter >= 20*60) {
 				executing = true;
 				minuteCounter -= 20*60;
-				for (NewClan clan : NewClanDatabase.getClans())
+				for (Clan clan : ClanDatabase.getClans())
 					clan.decrementShield();
 				executing = false;
 			}
@@ -57,7 +57,7 @@ public class Timer {
 				RaidingParties.decrementBuffers();
 				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-						NewClan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
+						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
 					}
@@ -73,7 +73,7 @@ public class Timer {
 						raid.defenderVictory();
 
 				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-					for (NewClan clan : NewClanDatabase.getClans()) {
+					for (Clan clan : ClanDatabase.getClans()) {
 						if (Clans.cfg.chargeRentDays > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
 							Clans.LOGGER.debug("Charging rent for %s.", clan.getClanName());
 							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
@@ -148,7 +148,7 @@ public class Timer {
 				assert Clans.CLAIMED_LAND != null;
 				Chunk c = event.player.getEntityWorld().getChunk(event.player.getPosition());
 				UUID chunkClan = ChunkUtils.getChunkOwner(c);
-				ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
+				ArrayList<Clan> playerClans = ClanCache.getPlayerClans(event.player.getUniqueID());
 				if (event.player.hasCapability(Clans.CLAIMED_LAND, null)) {
 					UUID playerStoredClaimId = event.player.getCapability(Clans.CLAIMED_LAND, null).getClan();
 					if (chunkClan != null && ClanCache.getClanById(chunkClan) == null) {
@@ -158,7 +158,7 @@ public class Timer {
 
 					ClaimedLandCapability cap = CapHelper.getClaimedLandCapability(c);
 					if(cap.pre120() && cap.getClan() != null) {
-						NewClan clan = ClanCache.getClanById(cap.getClan());
+						Clan clan = ClanCache.getClanById(cap.getClan());
 						if(clan == null) {
 							ChunkUtils.clearChunkOwner(c);
 							return;
@@ -206,7 +206,7 @@ public class Timer {
 				}
 				EntityPlayerMP player = event.player instanceof EntityPlayerMP ? (EntityPlayerMP) event.player : null;
 				if (player != null) {
-					for(NewClan pc: playerClans)
+					for(Clan pc: playerClans)
 						if (RaidingParties.hasActiveRaid(pc)) {
 							Raid r = RaidingParties.getActiveRaid(pc);
 							if (pc.getClanId().equals(chunkClan))

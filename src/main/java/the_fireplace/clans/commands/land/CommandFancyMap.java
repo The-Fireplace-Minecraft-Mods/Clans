@@ -11,12 +11,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
@@ -61,7 +60,7 @@ public class CommandFancyMap extends ClanSubCommand {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
 					String wildernessColor = center.z == z && center.x == x ? "§9" : Clans.cfg.protectWilderness ? "§e" : "§2";
-					NewClan clan = ClanChunkCache.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
+					Clan clan = ClanChunkCache.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
 					if(clan == null)
 						row.append(wildernessColor).append('-');
 					else {
@@ -74,7 +73,7 @@ public class CommandFancyMap extends ClanSubCommand {
 			}
 			sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 			for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-				NewClan c = ClanCache.getClanById(symbol.getKey());
+				Clan c = ClanCache.getClanById(symbol.getKey());
 				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")).setStyle(new Style().setColor(c != null ? c.getTextColor() : TextFormatting.YELLOW)));
 			}
 		}).start();

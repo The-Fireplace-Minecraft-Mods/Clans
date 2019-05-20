@@ -1,60 +1,152 @@
 package the_fireplace.clans.clan;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraftforge.common.DimensionManager;
+import com.google.gson.*;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import the_fireplace.clans.Clans;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
-public final class ClanDatabase implements Serializable {
-	private static final long serialVersionUID = 0x1254367;
+public final class ClanDatabase {
+    private static ClanDatabase instance = null;
+    private static boolean isChanged = false;
 
-	private static ClanDatabase instance = null;
-	private static final String dataFileName = "clans.dat";
-	private static File saveDir = DimensionManager.getCurrentSaveRootDirectory();
+    public static ClanDatabase getInstance() {
+        if(instance == null) {
+            load();
+            if(instance.opclan == null)
+                if(instance.clans.containsKey(UUID.fromString("00000000-0000-0000-0000-000000000000")))
+                    instance.opclan = instance.clans.get(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+                else
+                    instance.opclan = new Clan();
+        }
+        return instance;
+    }
 
-	public static ClanDatabase getInstance() {
-		if(instance == null)
-			readFromFile();
-		return instance;
-	}
+    private HashMap<UUID, Clan> clans;
+    private Clan opclan = null;
 
-	private HashMap<UUID, Clan> clans;
-	private Clan opclan;
+    private ClanDatabase(){
+        clans = Maps.newHashMap();
+    }
 
-	private ClanDatabase(){
-		clans = Maps.newHashMap();
-	}
+    public static Clan getOpClan() {
+        Clan out = getInstance().opclan;
+        if(out == null) {
+            instance.opclan = new Clan();
+            out = instance.opclan;
+        }
+        return out;
+    }
 
-	private static void readFromFile() {
-		if (saveDir == null)
-			saveDir = DimensionManager.getCurrentSaveRootDirectory();
-		if (saveDir == null) {
-			instance = new ClanDatabase();
-			return;
-		}
-		File f = new File(saveDir, dataFileName);
-		if (f.exists()) {
-			try {
-				ObjectInputStream stream = new ObjectInputStream(new FileInputStream(f));
-				instance = (ClanDatabase) stream.readObject();
-				stream.close();
-				f.delete();
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-				instance = new ClanDatabase();
-				f.delete();
-			}
-		}
-		if (instance == null)
-			instance = new ClanDatabase();
-		for(Clan clan: instance.clans.values())
-			if(clan.getClanId().equals(UUID.fromString("00000000-0000-0000-0000-000000000000")) || !clan.isOpclan())
-				NewClanDatabase.addClan(clan.getClanId(), new NewClan(clan.toJsonObject()));
-	}
+    public static void markChanged() {
+        isChanged = true;
+    }
 
-	public Clan getOpclan() {
-		return opclan;
-	}
+    @Nullable
+    public static Clan getClan(@Nullable UUID clanId){
+        return getInstance().clans.get(clanId);
+    }
+
+    public static Collection<Clan> getClans(){
+        return getInstance().clans.values();
+    }
+
+    static boolean addClan(UUID clanId, Clan clan){
+        if(!getInstance().clans.containsKey(clanId)) {
+            getInstance().clans.put(clanId, clan);
+            ClanCache.addName(clan);
+            if(clan.getClanBanner() != null)
+                ClanCache.addBanner(clan.getClanBanner());
+            isChanged = true;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean removeClan(UUID clanId){
+        if(getInstance().clans.containsKey(clanId)){
+            Clan clan = getInstance().clans.remove(clanId);
+            ClanCache.removeName(clan.getClanName());
+            if(clan.getClanBanner() != null)
+                ClanCache.removeBanner(clan.getClanBanner());
+            for(UUID member: clan.getMembers().keySet())
+                ClanCache.purgePlayerCache(member);
+            ClanCache.clearClanHome(clan);
+            isChanged = true;
+            return true;
+        }
+        return false;
+    }
+
+    private static void setOpclan(Clan opclan) {
+        instance.opclan = opclan;
+    }
+
+    /**
+     * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClans(UUID)}
+     * @param player
+     * The player to get the clan of
+     * @return
+     * The player's clans, or an empty list if the player isn't in any
+     */
+    static ArrayList<Clan> lookupPlayerClans(UUID player){
+        ArrayList<Clan> clans = Lists.newArrayList();
+        for(Clan clan : getInstance().clans.values())
+            if(clan.getMembers().keySet().contains(player))
+                clans.add(clan);
+        return clans;
+    }
+
+    private static void load() {
+        instance = new ClanDatabase();
+        JsonParser jsonParser = new JsonParser();
+        try {
+            Object obj = jsonParser.parse(new FileReader(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json")));
+            if(obj instanceof JsonObject) {
+                JsonObject jsonObject = (JsonObject) obj;
+                JsonArray clanMap = jsonObject.get("clans").getAsJsonArray();
+                for (int i = 0; i < clanMap.size(); i++)
+                    addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
+                setOpclan(new Clan(jsonObject.getAsJsonObject("opclan")));
+            } else
+                Clans.LOGGER.warn("Json Clan Database not found! This is normal on your first run of Clans 1.2.0 and above.");
+        } catch (FileNotFoundException e) {
+            //do nothing, it just hasn't been created yet
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        isChanged = false;
+    }
+
+    public static void save() {
+        if(!isChanged)
+            return;
+        JsonObject obj = new JsonObject();
+        JsonArray clanMap = new JsonArray();
+        for(Clan clan: getClans()) {
+            JsonObject entry = new JsonObject();
+            entry.addProperty("key", clan.getClanId().toString());
+            entry.add("value", clan.toJsonObject());
+            clanMap.add(entry);
+        }
+        obj.add("clans", clanMap);
+        obj.add("opclan", getOpClan().toJsonObject());
+        try {
+            FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json"));
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(obj);
+            file.write(json);
+            file.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        isChanged = false;
+    }
 }

@@ -8,9 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
@@ -45,7 +45,7 @@ public class CommandTrapped extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP player, String[] args) {
 		Chunk origin = player.world.getChunk(player.getPosition());
-		NewClan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
+		Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
 		if(chunkOwner == null && Clans.cfg.protectWilderness && player.getPosition().getY() >= Clans.cfg.minWildernessY) {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
@@ -53,7 +53,7 @@ public class CommandTrapped extends ClanSubCommand {
 			int x = 0, z = 0, tmp, dx = 0, dz = -1;
 			while(true) {//Spiral out until a player friendly chunk is found
 				Chunk test = player.world.getChunk(origin.x + x, origin.z + z);
-				NewClan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
+				Clan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
 				if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(player.getUniqueID())) {
 					player.attemptTeleport((test.getPos().getXStart() + test.getPos().getXEnd())/2f, test.getHeight(new BlockPos((test.getPos().getXStart() + test.getPos().getXEnd())/2f, 0, (test.getPos().getZStart() + test.getPos().getZEnd())/2f)), (test.getPos().getZStart() + test.getPos().getZEnd())/2f);
 					break;

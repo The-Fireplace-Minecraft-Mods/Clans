@@ -13,9 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 
@@ -72,7 +72,7 @@ public class CommandSetBanner extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
 	}
 
-	private void setClanBannerFromItem(EntityPlayerMP sender, NewClan playerClan, @Nullable NBTTagCompound tags) {
+	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))
 			sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));

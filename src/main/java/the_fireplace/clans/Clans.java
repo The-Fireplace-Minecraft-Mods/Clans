@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.NewClanDatabase;
+import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
@@ -33,8 +33,8 @@ import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.compat.payment.IPaymentHandler;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.compat.payment.PaymentHandlerGE;
-import the_fireplace.clans.raid.NewRaidBlockPlacementDatabase;
-import the_fireplace.clans.raid.NewRaidRestoreDatabase;
+import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
+import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.util.PlayerClanCapability;
 
 import javax.annotation.Nonnull;
@@ -109,9 +109,9 @@ public final class Clans {
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent event) {
         ClanChunkCache.save();
-        NewClanDatabase.save();
-        NewRaidRestoreDatabase.save();
-        NewRaidBlockPlacementDatabase.save();
+        ClanDatabase.save();
+        RaidRestoreDatabase.save();
+        RaidBlockPlacementDatabase.save();
     }
 
     @SubscribeEvent

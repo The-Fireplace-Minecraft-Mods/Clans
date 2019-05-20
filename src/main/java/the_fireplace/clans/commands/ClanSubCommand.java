@@ -6,19 +6,17 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 
@@ -36,8 +34,8 @@ public abstract class ClanSubCommand extends CommandBase {
 		return "clan";
 	}
 
-	protected NewClan selectedClan;
-	protected NewClan opSelectedClan;
+	protected Clan selectedClan;
+	protected Clan opSelectedClan;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
@@ -78,14 +76,14 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
-				NewClan playerClan = null;
+				Clan playerClan = null;
 				if(greedyArgs ? args.length > 1 && CommandClan.greedyCommands.contains(args[1]) : args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else if(sender instanceof EntityPlayerMP)
 					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayerMP) sender).getDefaultClan());
 				if(sender instanceof EntityPlayerMP) {
-					ArrayList<NewClan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+					ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
 						sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
 						return;
@@ -93,7 +91,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				}
 				this.selectedClan = playerClan;
 				if(this.opSelectedClan == null)
-					this.opSelectedClan = NewClanDatabase.getOpClan();
+					this.opSelectedClan = ClanDatabase.getOpClan();
 				String[] args2 = args;
 				if(args.length == getMaxArgs()+1) {
 					if (args.length > 1)

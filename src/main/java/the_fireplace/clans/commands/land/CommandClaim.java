@@ -9,10 +9,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
-import the_fireplace.clans.clan.NewClan;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
@@ -64,7 +64,7 @@ public class CommandClaim extends ClanSubCommand {
 							claimChunk(sender, c, selectedClan);
 						else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
 							boolean inClanHomeRange = false;
-							for(Map.Entry<NewClan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
+							for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
 								if(!pos.getKey().getClanId().equals(selectedClan.getClanId()) && pos.getKey().hasHome() && pos.getValue() != null && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
 									inClanHomeRange = true;
 							if(inClanHomeRange) {
@@ -89,7 +89,7 @@ public class CommandClaim extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
 	}
 
-	private static void claimChunk(EntityPlayerMP sender, Chunk c, NewClan selectedClan) {
+	private static void claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
 		if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 			ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 			ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());

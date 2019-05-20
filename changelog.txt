@@ -1,1 +1,1 @@
-Fix issues with counting and using online players
+Remove compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher.

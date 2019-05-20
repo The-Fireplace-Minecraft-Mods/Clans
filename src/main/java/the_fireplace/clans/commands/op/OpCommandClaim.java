@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.op;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -10,10 +9,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanChunkCache;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.NewClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -48,7 +46,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimOwner = ChunkUtils.getChunkOwner(c);
-			NewClan claimOwnerClan = claimOwner != null ? ClanCache.getClanById(claimOwner) : null;
+			Clan claimOwnerClan = claimOwner != null ? ClanCache.getClanById(claimOwner) : null;
 			boolean force = (args.length == 1 && args[0].toLowerCase().equals("force"));
 			if(claimOwner != null && claimOwnerClan != null && (!force || claimOwner.equals(opSelectedClan.getClanId()))) {
 				if(claimOwner.equals(opSelectedClan.getClanId()))

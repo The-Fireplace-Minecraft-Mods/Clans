@@ -1,20 +1,22 @@
 package the_fireplace.clans.raid;
 
 import com.google.common.collect.Maps;
-import net.minecraftforge.common.DimensionManager;
+import com.google.gson.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.ChunkPosition;
-import the_fireplace.clans.util.Pair;
+import the_fireplace.clans.util.ChunkUtils;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-public final class RaidRestoreDatabase implements Serializable {
-	private static final long serialVersionUID = 0x69696969;
-
-	private static RaidRestoreDatabase instance = null;
-	private static final String dataFileName = "raids.dat";
-	private static File saveDir = DimensionManager.getCurrentSaveRootDirectory();
+public final class RaidRestoreDatabase {
+	static RaidRestoreDatabase instance = null;
+	static boolean isChanged = false;
 
 	public static RaidRestoreDatabase getInstance() {
 		if(instance == null)
@@ -22,33 +24,98 @@ public final class RaidRestoreDatabase implements Serializable {
 		return instance;
 	}
 
-	private HashMap<Pair<Integer, Pair<Integer, Integer>>, ChunkRestoreData> raidedChunks = Maps.newHashMap();
+	HashMap<ChunkPosition, ChunkRestoreData> raidedChunks = Maps.newHashMap();
+
+	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
+		addRestoreBlock(dim, c, pos, block, ChunkUtils.getChunkOwner(c));
+	}
+
+	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block, UUID chunkOwner) {
+		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
+		if(!getInstance().raidedChunks.containsKey(coords))
+			getInstance().raidedChunks.put(coords, new ChunkRestoreData(chunkOwner));
+		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
+			Clans.LOGGER.error("Block restore data being written when it already exists at position (%s, %s, %s). Block being written is: %s.", pos.getX(), pos.getY(), pos.getZ(), block);
+		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
+		isChanged = true;
+	}
+
+	public static String popRestoreBlock(int dim, Chunk c, BlockPos pos) {
+		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
+		if(!getInstance().raidedChunks.containsKey(coords))
+			return null;
+		String block = getInstance().raidedChunks.get(coords).popRestoreBlock(pos.getX(), pos.getY(), pos.getZ());
+		if(block != null)
+			isChanged = true;
+		return block;
+	}
+
+	public static void addRemoveBlock(int dim, Chunk c, BlockPos pos) {
+		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
+		if(!getInstance().raidedChunks.containsKey(coords))
+			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
+		getInstance().raidedChunks.get(coords).addRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
+		isChanged = true;
+	}
+
+	public static boolean delRemoveBlock(int dim, Chunk c, BlockPos pos) {
+		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
+		if(!getInstance().raidedChunks.containsKey(coords))
+			return false;
+		boolean block = getInstance().raidedChunks.get(coords).delRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
+		if(block)
+			isChanged = true;
+		return block;
+	}
+
+	public static ChunkRestoreData popChunkRestoreData(int dim, Chunk c) {
+		ChunkRestoreData d = getInstance().raidedChunks.remove(new ChunkPosition(c.x, c.z, dim));
+		if(d != null)
+			isChanged = true;
+		return d;
+	}
 
 	private static void load() {
-		if (saveDir == null)
-			saveDir = DimensionManager.getCurrentSaveRootDirectory();
-		if (saveDir == null) {
-			instance = new RaidRestoreDatabase();
+		instance = new RaidRestoreDatabase();
+		JsonParser jsonParser = new JsonParser();
+		try {
+			Object obj = jsonParser.parse(new FileReader(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json")));
+			if(obj instanceof JsonObject) {
+				JsonObject jsonObject = (JsonObject) obj;
+				JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
+				for (int i = 0; i < clanMap.size(); i++)
+					instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
+			} else
+				Clans.LOGGER.warn("Json Raid Restore Database not found! This is normal on your first run of Clans 1.2.0 and above, and when there is nothing to restore.");
+		} catch (FileNotFoundException e) {
+			//do nothing, it just hasn't been created yet
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		isChanged = false;
+	}
+
+	public static void save() {
+		if(!isChanged)
 			return;
+		JsonObject obj = new JsonObject();
+		JsonArray chunkRestoreMap = new JsonArray();
+		for(Map.Entry<ChunkPosition, ChunkRestoreData> entry: instance.raidedChunks.entrySet()) {
+			JsonObject outputEntry = new JsonObject();
+			outputEntry.add("key", entry.getKey().toJsonObject());
+			outputEntry.add("value", entry.getValue().toJsonObject());
+			chunkRestoreMap.add(outputEntry);
 		}
-		File f = new File(saveDir, dataFileName);
-		if (f.exists()) {
-			try {
-				ObjectInputStream stream = new ObjectInputStream(new FileInputStream(f));
-				instance = (RaidRestoreDatabase) stream.readObject();
-				stream.close();
-				f.delete();
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-				instance = new RaidRestoreDatabase();
-				f.delete();
-			}
+		obj.add("restoreChunks", chunkRestoreMap);
+		try {
+			FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json"));
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json = gson.toJson(obj);
+			file.write(json);
+			file.close();
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
-		if (instance == null)
-			instance = new RaidRestoreDatabase();
-		else
-			NewRaidRestoreDatabase.isChanged = true;
-		for(Map.Entry<Pair<Integer, Pair<Integer, Integer>>, ChunkRestoreData> entry: instance.raidedChunks.entrySet())
-			NewRaidRestoreDatabase.instance.raidedChunks.put(new ChunkPosition(entry.getKey().getValue2().getValue1(), entry.getKey().getValue2().getValue2(), entry.getKey().getValue1()), new NewChunkRestoreData(entry.getValue().toJsonObject()));
+		isChanged = false;
 	}
 }

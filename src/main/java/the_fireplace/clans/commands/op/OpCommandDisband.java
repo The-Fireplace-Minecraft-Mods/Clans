@@ -11,16 +11,19 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.NewClan;
-import the_fireplace.clans.clan.NewClanDatabase;
+import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,16 +46,16 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
-		NewClan c = ClanCache.getClanByName(clan);
+		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
 			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
 	}
 
-	public static void disbandClan(MinecraftServer server, ICommandSender sender, NewClan c) {
+	public static void disbandClan(MinecraftServer server, ICommandSender sender, Clan c) {
 		if(!c.isOpclan()) {
-			if (NewClanDatabase.removeClan(c.getClanId())) {
+			if (ClanDatabase.removeClan(c.getClanId())) {
 				long distFunds = Clans.getPaymentHandler().getBalance(c.getClanId());
 				distFunds += Clans.cfg.claimChunkCost * c.getClaimCount();
 				if (Clans.cfg.leaderRecieveDisbandFunds) {
@@ -85,7 +88,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> removable = Lists.newArrayList(ClanCache.getClanNames().keySet());
-		removable.remove(NewClanDatabase.getOpClan().getClanName());
+		removable.remove(ClanDatabase.getOpClan().getClanName());
 		return args.length == 1 ? removable : Collections.emptyList();
 	}
 }

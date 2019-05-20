@@ -26,12 +26,12 @@ public class ClanChunkCache {
         return claimed != null ? claimed : Collections.emptySet();
     }
 
-    public static Set<NewClan> clansWithClaims() {
+    public static Set<Clan> clansWithClaims() {
         if(!isLoaded)
             load();
-        Set<NewClan> claimClans = Sets.newHashSet();
+        Set<Clan> claimClans = Sets.newHashSet();
         for(UUID clanId: claimedChunks.keySet()) {
-            NewClan clan = ClanCache.getClanById(clanId);
+            Clan clan = ClanCache.getClanById(clanId);
             if(clan != null)
                 claimClans.add(clan);
             else {
@@ -42,7 +42,7 @@ public class ClanChunkCache {
         return claimClans;
     }
 
-    public static void addChunk(NewClan clan, int x, int z, int dim) {
+    public static void addChunk(Clan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
@@ -51,7 +51,7 @@ public class ClanChunkCache {
         isChanged = true;
     }
 
-    public static void delChunk(NewClan clan, int x, int z, int dim) {
+    public static void delChunk(Clan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
@@ -62,7 +62,7 @@ public class ClanChunkCache {
     }
 
     @Nullable
-    public static NewClan getChunkClan(int x, int z, int dim) {
+    public static Clan getChunkClan(int x, int z, int dim) {
         if(!isLoaded)
             load();
         for(Map.Entry<UUID, Set<ChunkPosition>> entry: Lists.newArrayList(claimedChunks.entrySet()))//New list with the data to prevent concurrent modification errors
