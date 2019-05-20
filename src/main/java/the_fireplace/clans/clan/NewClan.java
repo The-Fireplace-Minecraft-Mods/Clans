@@ -30,7 +30,7 @@ public class NewClan {
     private int wins = 0;
     private int losses = 0;
     private long shield = Clans.cfg.initialShield * 60;
-    private long rentTimestamp = System.currentTimeMillis(), upkeepTimestamp = System.currentTimeMillis();
+    private long rentTimestamp = System.currentTimeMillis() + Clans.cfg.chargeRentDays * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.cfg.clanUpkeepDays * 1000L * 60L * 60L * 24L;
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
 
