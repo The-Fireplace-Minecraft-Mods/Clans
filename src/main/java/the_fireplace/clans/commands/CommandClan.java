@@ -1143,15 +1143,26 @@ public class CommandClan {
 
     public static void teleportHome(EntityPlayerMP player, NewClan playerClan, BlockPos home, int playerDim) {
         home = getSafeExitLocation(Objects.requireNonNull(player.getServer()).getWorld(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim()))), home, 5);
-        if (playerDim == playerClan.getHomeDim() || player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim())), player.getServerWorld().getDefaultTeleporter()) != null) {
+        if (playerDim == playerClan.getHomeDim()) {
             if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
                 throwCommandFailure("Error teleporting to clan home. Ensure that it is not blocked.");
                 if (playerDim != player.dimension.getId() && player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerDim)), player.getServerWorld().getDefaultTeleporter()) == null)
                     throwCommandFailure("Error teleporting you back to the dimension you were in.");
             } else
                 CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
-        } else
-            throwCommandFailure("Error teleporting to clan home dimension.");
+        } else {
+            player.setPortal(player.getPosition());
+            if (player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerClan.getHomeDim())), player.getServerWorld().getDefaultTeleporter()) != null) {
+                if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
+                    player.sendMessage(new TextComponentString("Error teleporting to clan home. Ensure that it is not blocked.").setStyle(TextStyles.RED));
+                    if (playerDim != player.dimension.getId() && player.changeDimension(Objects.requireNonNull(DimensionType.getById(playerDim)), player.getServerWorld().getDefaultTeleporter()) == null)
+                        player.sendMessage(new TextComponentString("Error teleporting you back to the dimension you were in.").setStyle(TextStyles.RED));
+                } else
+                    CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
+            } else {
+                player.sendMessage(new TextComponentString("Error teleporting to clan home dimension.").setStyle(TextStyles.RED));
+            }
+        }
     }
 
     private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {
