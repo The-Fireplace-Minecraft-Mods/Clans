@@ -27,6 +27,7 @@ import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -85,7 +86,7 @@ public class CommandClan extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/clan [clan] <command> [parameters]";
+        return TranslationUtil.getRawTranslationString(sender, "commands.clan.usage");
     }
 
     public static final ArrayList<String> greedyCommands = Lists.newArrayList("setdesc", "setdescription");
@@ -93,7 +94,7 @@ public class CommandClan extends CommandBase {
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
-            throw new WrongUsageException("/clan <command> [parameters]");
+            throw new WrongUsageException(getUsage(sender));
         String tag = args[0];
         if(ClanCache.clanNameTaken(tag) && !ClanCache.forbiddenClanNames.contains(tag) && args.length >= 2) {
             tag = args[1];
@@ -199,15 +200,14 @@ public class CommandClan extends CommandBase {
                     commands.get("home").execute(server, sender, args);
                     return;
                 } else
-                    throw new CommandException("/clan home is disabled on this server.");
+                    throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
             case "trapped":
             case "t":
                 commands.get("trapped").execute(server, sender, args);
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder("/clan commands:\n" +
-                        "help");
+                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.clan.help")+"\nhelp");
                 buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
@@ -228,23 +228,23 @@ public class CommandClan extends CommandBase {
                     if(Clans.cfg.leaderWithdrawFunds)
                         commands.get("takefunds").execute(server, sender, args);
                     else
-                        throw new CommandException("/clan takefunds is disabled on this server.");
+                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.takefunds.disabled"));
                     return;
                 case "setrent":
                     if(Clans.cfg.chargeRentDays > 0)
                         commands.get("setrent").execute(server, sender, args);
                     else
-                        throw new CommandException("/clan setrent is disabled on this server.");
+                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
                     return;
                 case "finances":
                     if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
                         commands.get("finances").execute(server, sender, args);
                     else
-                        throw new CommandException("/clan finances is disabled on this server.");
+                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.finances.disabled"));
                     return;
             }
         }
-        throw new WrongUsageException("/clan [clan] <command> [parameters]");
+        throw new WrongUsageException(getUsage(sender));
     }
 
     @Override

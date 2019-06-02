@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.op.*;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,7 +23,7 @@ public class CommandOpClan extends CommandBase {
     private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
         put("claim", new OpCommandClaim());
-        put("abandonclaim", new OpCommandAbandomClaim());
+        put("abandonclaim", new OpCommandAbandonClaim());
         //clan constants
         put("setname", new OpCommandSetName());
         put("setdescription", new OpCommandSetDescription());
@@ -45,13 +46,13 @@ public class CommandOpClan extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/opclan <command> [parameters]";
+        return TranslationUtil.getRawTranslationString(sender, "commands.opclan.usage");
     }
 
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
-            throw new WrongUsageException("/opclan <command> [parameters]");
+            throw new WrongUsageException(getUsage(sender));
         String tag = args[0];
         if(args.length > 1)
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -108,8 +109,7 @@ public class CommandOpClan extends CommandBase {
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder("/opclan commands:\n" +
-                        "help");
+                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.opclan.help")+"\nhelp");
                 for (String command : commands.keySet()) {
                     if(commands.get(command) == null)
                         continue;
@@ -118,7 +118,7 @@ public class CommandOpClan extends CommandBase {
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
         }
-        throw new WrongUsageException("/opclan <command> [parameters]");
+        throw new WrongUsageException(getUsage(sender));
     }
 
     private static final ArrayList<String> aliases = Lists.newArrayList();

@@ -9,6 +9,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,17 +33,17 @@ public class CommandList extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan list";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.list.usage");
 	}
 
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-		sender.sendMessage(new TextComponentString("Clans on this server:").setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.clans").setStyle(TextStyles.GREEN));
 		if(!ClanDatabase.getClans().isEmpty()) {
 			for (Clan clan : ClanDatabase.getClans())
-				sender.sendMessage(new TextComponentString(clan.getClanName() + " - " + clan.getDescription()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClanName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("There are no clans on this server.").setStyle(TextStyles.YELLOW));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.noclans").setStyle(TextStyles.YELLOW));
 	}
 
 	@Override

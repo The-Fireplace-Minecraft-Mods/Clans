@@ -17,6 +17,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,7 +44,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan playerinfo [player]";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.playerinfo.usage");
 	}
 
 	@Override
@@ -52,11 +53,11 @@ public class CommandPlayerInfo extends ClanSubCommand {
 			if(sender instanceof EntityPlayerMP)
 				showDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
 			else
-				sender.sendMessage(new TextComponentString("You must specify a player to view details of when running this command from console.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.console", TranslationUtil.getStringTranslation(getUsage(sender))).setStyle(TextStyles.RED));
 		} else {
 			GameProfile targetPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args[0]);
 			if(targetPlayer == null)
-				sender.sendMessage(new TextComponentString("Target player not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.notfound", args[0]).setStyle(TextStyles.RED));
 			else
 				showDetails(server, sender, targetPlayer);
 		}
@@ -73,7 +74,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 	}
 
 	private void showDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
-		sender.sendMessage(new TextComponentTranslation("Player name: %s", target.getName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.name", target.getName()).setStyle(TextStyles.GREEN));
 		List<Clan> leaders = Lists.newArrayList();
 		List<Clan> admins = Lists.newArrayList();
 		List<Clan> members = Lists.newArrayList();
@@ -95,14 +96,14 @@ public class CommandPlayerInfo extends ClanSubCommand {
 			Clan defaultClan = null;
 			if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target))
 				defaultClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability(server.getPlayerList().getPlayerByUUID(target.getId())).getDefaultClan());
-			sender.sendMessage(new TextComponentString("Clans: ").setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.clans").setStyle(TextStyles.GREEN));
 			for(Clan leader: leaders)
-				sender.sendMessage(new TextComponentTranslation("Leader of %s", leader.getClanName()).setStyle(defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", leader.getClanName()).setStyle(defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 			for(Clan admin: admins)
-				sender.sendMessage(new TextComponentTranslation("Admin of %s", admin.getClanName()).setStyle(defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.admin", admin.getClanName()).setStyle(defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 			for(Clan member: members)
-				sender.sendMessage(new TextComponentTranslation("Member of %s", member.getClanName()).setStyle(defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.member", member.getClanName()).setStyle(defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentTranslation("%s is not in any clans.", target.getName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.noclans", target.getName()).setStyle(TextStyles.GREEN));
 	}
 }

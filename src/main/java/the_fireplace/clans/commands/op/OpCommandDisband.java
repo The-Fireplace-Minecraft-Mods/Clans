@@ -17,6 +17,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,17 +41,17 @@ public class OpCommandDisband extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan disband <clan>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.disband.usage");
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			disbandClan(server, sender, c);
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	public static void disbandClan(MinecraftServer server, ICommandSender sender, Clan c) {
@@ -69,20 +70,20 @@ public class OpCommandDisband extends OpClanSubCommand {
 					Clans.getPaymentHandler().ensureAccountExists(member);
 					if (!Clans.getPaymentHandler().addAmount(distFunds, member))
 						c.payLeaders(distFunds);
-					EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+					EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
 					//noinspection ConstantConditions
 					if (player != null) {
 						CommandLeave.updateDefaultClan(player, c);
 						if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
-							player.sendMessage(new TextComponentTranslation("%s has been disbanded by %s.", c.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+							player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.disband.disbanded", c.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 					}
 				}
 				Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(c.getClanId()), c.getClanId());
-				sender.sendMessage(new TextComponentTranslation("You have disbanded %s.", c.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.disband.success", c.getClanName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(new TextComponentTranslation("Internal error: Unable to disband %s.", c.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.disband.error", c.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation("You cannot disband %s because it is the opclan.", c.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.disband.opclan", c.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@Override

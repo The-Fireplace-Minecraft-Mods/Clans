@@ -15,6 +15,7 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,7 +40,7 @@ public class CommandTrapped extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan trapped";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.trapped.usage");
 	}
 
 	@Override
@@ -67,6 +68,6 @@ public class CommandTrapped extends ClanSubCommand {
 				z += dz;
 			}
 		} else
-			player.sendMessage(new TextComponentString("No, you're not trapped in someone else's claim.").setStyle(TextStyles.RED));
+			player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.trapped.fail").setStyle(TextStyles.RED));
 	}
 }

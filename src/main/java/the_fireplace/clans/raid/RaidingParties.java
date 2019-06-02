@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
@@ -13,6 +14,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import java.util.*;
 
@@ -93,41 +95,38 @@ public final class RaidingParties {
 
 	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
-		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
-			member.sendMessage(new TextComponentTranslation("A raiding party with %s members is preparing to raid %s. The raid will begin in %s seconds.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
-		for(UUID member: getRaids().get(raidTarget).getMembers())
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("Your raiding party, with %s members, is preparing to raid %s. The raid will begin in %s seconds.", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
+		for(EntityPlayerMP defender: raidTarget.getOnlineMembers().keySet())
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.init.defender", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
+		for(UUID attacker: getRaids().get(raidTarget).getMembers())
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
 	}
 
 	private static void activateRaid(Clan raidTarget) {
 		Raid startingRaid = raids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
-		for(EntityPlayerMP member: raidTarget.getOnlineMembers().keySet())
-			member.sendMessage(new TextComponentTranslation("The raid against %s has begun!", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
-		for(UUID member: getActiveRaid(raidTarget).getMembers())
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member).sendMessage(new TextComponentTranslation("The raid against %s has begun!", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
+		for(EntityPlayerMP defender: raidTarget.getOnlineMembers().keySet())
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
+		for(UUID attacker: getActiveRaid(raidTarget).getMembers())
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
 	}
 
 	public static void endRaid(Clan targetClan, boolean raiderVictory) {
-		TextComponentTranslation defenderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
-		if(raiderVictory)
-			defenderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.YELLOW);
-		else
-			defenderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.GREEN);
-		for(EntityPlayerMP member: targetClan.getOnlineMembers().keySet())
-			member.sendMessage(defenderMessage);
+		for(EntityPlayerMP defender: targetClan.getOnlineMembers().keySet()) {
+			ITextComponent defenderMessage = TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.end", targetClan.getClanName());
+			defenderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(defender.getUniqueID(), raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.YELLOW : TextStyles.GREEN);
+			defender.sendMessage(defenderMessage);
+		}
 
-		TextComponentTranslation raiderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
-		if(raiderVictory)
-			raiderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.GREEN);
-		else
-			raiderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.YELLOW);
-		for(UUID member: getActiveRaid(targetClan).getInitMembers()) {
-			EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+		for(UUID attackerId: getActiveRaid(targetClan).getInitMembers()) {
+			EntityPlayerMP attacker = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attackerId);
 			//noinspection ConstantConditions
-			if(player != null)
-				player.sendMessage(raiderMessage);
+			if(attacker != null) {
+				ITextComponent raiderMessage = TranslationUtil.getTranslation(attackerId, "clans.raid.end", targetClan.getClanName());
+				raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
+
+				attacker.sendMessage(raiderMessage);
+			}
 		}
 
 		Raid raid = activeraids.remove(targetClan);

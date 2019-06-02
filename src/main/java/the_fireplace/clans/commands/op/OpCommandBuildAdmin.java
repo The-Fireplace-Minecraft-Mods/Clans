@@ -8,6 +8,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,15 +29,15 @@ public class OpCommandBuildAdmin extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan buildadmin";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.buildadmin.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(ClanCache.toggleClaimAdmin(sender))
-			sender.sendMessage(new TextComponentString("You are now in Build Admin mode.").setStyle(TextStyles.YELLOW));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.buildadmin.on").setStyle(TextStyles.YELLOW));
 		else
-			sender.sendMessage(new TextComponentString("You are no longer in Build Admin mode.").setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.buildadmin.off").setStyle(TextStyles.GREEN));
 	}
 
 	@Override

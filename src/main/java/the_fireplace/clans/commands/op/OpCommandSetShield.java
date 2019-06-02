@@ -12,6 +12,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,11 +34,11 @@ public class OpCommandSetShield extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan setshield <clan> <duration>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setshield.usage");
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
@@ -47,13 +48,13 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				if(duration < 0)
 					duration = 0;
 			} catch(NumberFormatException e) {
-				sender.sendMessage(new TextComponentString("Improperly formatted shield duration.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.format").setStyle(TextStyles.RED));
 				return;
 			}
 			c.setShield(duration);
-			sender.sendMessage(new TextComponentTranslation("Clan shield for %s set to %s minutes!", c.getClanName(), duration).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getClanName(), duration).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,7 +45,7 @@ public class CommandClaim extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan claim";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.claim.usage");
 	}
 
 	@Override
@@ -52,11 +53,12 @@ public class CommandClaim extends ClanSubCommand {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)) {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
-			if(claimFaction != null) {
+			Clan claimClan = ClanCache.getClanById(claimFaction);
+			if(claimFaction != null && claimClan != null) {
 				if(claimFaction.equals(selectedClan.getClanId()))
-					sender.sendMessage(new TextComponentTranslation("%s has already claimed this land.", selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.taken", selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 				else
-					sender.sendMessage(new TextComponentTranslation("Another clan (%s) has already claimed this land.", Objects.requireNonNull(ClanCache.getClanById(claimFaction)).getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.taken_other", claimClan.getClanName()).setStyle(TextStyles.RED));
 			} else {
 				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
 					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
@@ -69,11 +71,11 @@ public class CommandClaim extends ClanSubCommand {
 									inClanHomeRange = true;
 							if(inClanHomeRange) {
 								if(Clans.cfg.enforceInitialClaimSeparation)
-									sender.sendMessage(new TextComponentTranslation("You cannot claim this chunk of land because it is too close to another clan's home. Make sure you are at least %s blocks away from other clans' homes before trying again. Try using /clan fancymap to help determine where other clans are.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
+									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
 								else if(CapHelper.getPlayerClanCapability(sender).getClaimWarning())
 									claimChunk(sender, c, selectedClan);
 								else {
-									sender.sendMessage(new TextComponentTranslation("It is recommended that you do not claim this chunk of land because it is within %s blocks of another clan's home. Type /clan claim again to claim this land anyways. Try using /clan fancymap to help determine where other clans are.", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
+									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
 							} else
@@ -81,12 +83,12 @@ public class CommandClaim extends ClanSubCommand {
 						} else
 							claimChunk(sender, c, selectedClan);
 					} else
-						sender.sendMessage(new TextComponentString(selectedClan.getClanName() + " is already at or above its max claim count of "+selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.maxed", selectedClan.getClanName(), selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentString("You cannot claim this chunk of land because it is not next to another of "+selectedClan.getClanName()+"'s claims.").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.disconnected", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.nochunkcap").setStyle(TextStyles.RED));
 	}
 
 	private static void claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
@@ -94,8 +96,8 @@ public class CommandClaim extends ClanSubCommand {
 			ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 			ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 			selectedClan.addClaimCount();
-			sender.sendMessage(new TextComponentString("Land claimed!").setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentTranslation("Insufficient funds in %s's account to claim chunk. It costs %s %s.", selectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", selectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
 	}
 }

@@ -16,6 +16,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +37,7 @@ public class OpCommandPromote extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan promote <clan> <member>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.promote.usage");
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class OpCommandPromote extends OpClanSubCommand {
 		if(c != null) {
 			promoteClanMember(server, sender, args[1], c);
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	public static void promoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, Clan clan) throws CommandException {
@@ -56,21 +57,23 @@ public class OpCommandPromote extends OpClanSubCommand {
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
 					if (clan.promoteMember(target.getId())) {
-						sender.sendMessage(new TextComponentTranslation("You have promoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.promote.success", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
 						for(Map.Entry<EntityPlayerMP, EnumRank> m : clan.getOnlineMembers().entrySet())
 							if(m.getValue().greaterOrEquals(clan.getMembers().get(target.getId())))
 								if(!m.getKey().getUniqueID().equals(target.getId()))
-									m.getKey().sendMessage(new TextComponentTranslation("%s has been promoted to %s in %s by %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
-						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been promoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.GREEN));
+									m.getKey().sendMessage(TranslationUtil.getTranslation(m.getKey().getUniqueID(), "commands.opclan.promote.notify", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
+						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
+							EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
+							targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.opclan.promote.promoted", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.GREEN));
+						}
 					} else
-						sender.sendMessage(new TextComponentTranslation("The player %s could not be promoted.", target.getName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.promote.error", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation("The player %s was not found.", playerName).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

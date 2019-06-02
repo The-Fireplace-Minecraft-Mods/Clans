@@ -17,6 +17,7 @@ import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,7 +43,7 @@ public class CommandHome extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan home";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.home.usage");
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class CommandHome extends ClanSubCommand {
 		int cooldown = CapHelper.getPlayerClanCapability(sender).getCooldown();
 		if(cooldown <= 0) {
 			if (!selectedClan.hasHome() || home == null)
-				sender.sendMessage(new TextComponentTranslation("Error: %s does not have a set home. The clan leader should use /clan sethome to set one.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.cfg.clanHomeWarmupTime > 0)
 					Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
@@ -61,31 +62,30 @@ public class CommandHome extends ClanSubCommand {
 					teleportHome(sender, selectedClan, home, playerDim);
 			}
 		} else
-			sender.sendMessage(new TextComponentString("You cannot use this command until your cooldown runs out in "+cooldown+" seconds.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.cooldown", cooldown).setStyle(TextStyles.RED));
 	}
 
 	public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
 		home = getSafeExitLocation(Objects.requireNonNull(player.getServer()).getWorld(playerClan.getHomeDim()), home, 5);
 		if (playerDim == playerClan.getHomeDim()) {
-			if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
-				player.sendMessage(new TextComponentString("Error teleporting to clan home. Ensure that it is not blocked.").setStyle(TextStyles.RED));
-				if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
-					player.sendMessage(new TextComponentString("Error teleporting you back to the dimension you were in.").setStyle(TextStyles.RED));
-			} else
-				CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
+			completeTeleportHome(player, home, playerDim);
 		} else {
 			player.setPortal(player.getPosition());
 			if (player.changeDimension(playerClan.getHomeDim()) != null) {
-				if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
-					player.sendMessage(new TextComponentString("Error teleporting to clan home. Ensure that it is not blocked.").setStyle(TextStyles.RED));
-					if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
-						player.sendMessage(new TextComponentString("Error teleporting you back to the dimension you were in.").setStyle(TextStyles.RED));
-				} else
-					CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
+				completeTeleportHome(player, home, playerDim);
 			} else {
-				player.sendMessage(new TextComponentString("Error teleporting to clan home dimension.").setStyle(TextStyles.RED));
+				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.dim_error").setStyle(TextStyles.RED));
 			}
 		}
+	}
+
+	private static void completeTeleportHome(EntityPlayerMP player, BlockPos home, int playerDim) {
+		if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
+			player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.blocked").setStyle(TextStyles.RED));
+			if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
+				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
+		} else
+			CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
 	}
 
 	private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {

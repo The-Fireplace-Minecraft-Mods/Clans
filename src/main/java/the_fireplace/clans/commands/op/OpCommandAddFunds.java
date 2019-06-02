@@ -13,6 +13,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,11 +35,11 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan addfunds <clan> <amount>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.addfunds.usage");
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
@@ -48,15 +49,15 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 				if(amount < 0)
 					amount = 0;
 			} catch(NumberFormatException e) {
-				sender.sendMessage(new TextComponentString("Improperly formatted amount.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 				return;
 			}
 			if(Clans.getPaymentHandler().addAmount(amount, c.getClanId()))
-				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
 			else
-				sender.sendMessage(new TextComponentString("Internal error: Clan account not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	@Override

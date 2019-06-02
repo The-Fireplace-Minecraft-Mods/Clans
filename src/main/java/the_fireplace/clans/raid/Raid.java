@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,13 +110,13 @@ public class Raid {
 				EntityPlayerMP d2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
 				if (d2 != null)
-					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
+					d2.sendMessage(TranslationUtil.getTranslation(d2.getUniqueID(), "clans.raid.glowing.defender", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
 			}
 			for(UUID member: getMembers()) {
-				EntityPlayerMP d2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
+				EntityPlayerMP m2 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
-				if(d2 != null)
-					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
+				if(m2 != null)
+					m2.sendMessage(TranslationUtil.getTranslation(m2.getUniqueID(), "clans.raid.glowing.attacker", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
 			}
 		}
 		if(remainingSeconds-- <= Clans.cfg.remainingTimeToGlow * 60)
@@ -136,9 +137,9 @@ public class Raid {
 		members.put(member.getUniqueID(), members.get(member.getUniqueID()) + 1);
 		if(members.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
 			removeMember(member);
-			member.sendMessage(new TextComponentString("You have been removed from your raid because you spent too long outside the target's territory.").setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getClanName()).setStyle(TextStyles.YELLOW));
 		} else if(members.get(member.getUniqueID()) == 1)
-			member.sendMessage(new TextComponentTranslation("You are not in the target clan's territory. If you stay outside it for longer than %s seconds, you will be removed from the raiding party.", Clans.cfg.maxAttackerAbandonmentTime).setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getClanName(), Clans.cfg.maxAttackerAbandonmentTime).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetAttackerAbandonmentTime(EntityPlayerMP member) {
@@ -153,10 +154,11 @@ public class Raid {
 		if(defender == null)
 			return;
 		defenders.put(defender.getUniqueID(), members.get(defender.getUniqueID()) + 1);
-		if(defenders.get(defender.getUniqueID()) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
+		if(defenders.get(defender.getUniqueID()) > Clans.cfg.maxClanDesertionTime * 2) {//Times two because this is called every half second
 			removeDefender(defender);
-		else if(defenders.get(defender.getUniqueID()) == 1)
-			defender.sendMessage(new TextComponentTranslation("You have left your clan's territory. If you stay outside it for longer than %s seconds, you will be considered dead when determining if your clan wins the raid.", Clans.cfg.maxClanDesertionTime).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", Clans.cfg.maxClanDesertionTime).setStyle(TextStyles.YELLOW));
+		} else if(defenders.get(defender.getUniqueID()) == 1)
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", Clans.cfg.maxClanDesertionTime).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetDefenderAbandonmentTime(EntityPlayerMP defender) {

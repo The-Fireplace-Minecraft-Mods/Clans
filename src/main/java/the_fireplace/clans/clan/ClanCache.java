@@ -53,7 +53,7 @@ public final class ClanCache {
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);
-		return clanName.toLowerCase().equals("wilderness") || clanName.toLowerCase().equals("underground") || clanName.toLowerCase().equals("opclan") || forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
+		return forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
 	}
 
 	public static boolean clanBannerTaken(String clanBanner) {

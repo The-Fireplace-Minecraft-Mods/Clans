@@ -12,6 +12,7 @@ import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +33,7 @@ public class CommandStartRaid extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid start";
+		return TranslationUtil.getRawTranslationString(sender, "commands.raid.start.usage");
 	}
 
 	@Override
@@ -51,18 +52,20 @@ public class CommandStartRaid extends RaidSubCommand {
 							raid.setCost(raidCost);
 							if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
 								RaidingParties.initRaid(raid.getTarget());
-								sender.sendMessage(new TextComponentTranslation("You successfully started the raid against %s!", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(new TextComponentTranslation("You have insufficient funds to start the raid against %s. It costs %s %s.", raid.getTarget().getClanName(), raidCost, Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getClanName(), raidCost, Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
 						} else
-							sender.sendMessage(new TextComponentString("The raid has already been started!").setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible
-						sender.sendMessage(new TextComponentTranslation("Internal error: Another raiding party is raiding this clan right now. Try again in %s hours.", Math.round(100f*(Clans.cfg.defenseShield*60f*60f+raid.getRemainingSeconds())/60f/60f)/100f).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.error", Math.round(100f*(Clans.cfg.defenseShield*60f*60f+raid.getRemainingSeconds())/60f/60f)/100f).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("Your raiding party has too many people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
-			} else//Internal error because we should not reach this point
-				sender.sendMessage(new TextComponentString("Internal error: You are not in a raiding party!").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+			} else {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
+				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");
+			}
 		} else
-			sender.sendMessage(new TextComponentString("You are not in a raiding party!").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 	}
 }

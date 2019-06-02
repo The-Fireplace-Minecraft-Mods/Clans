@@ -17,11 +17,13 @@ import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TransferQueue;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -44,7 +46,7 @@ public class CommandFancyMap extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan fancymap";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.fancymap.usage");
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class CommandFancyMap extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 			for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
 				Clan c = ClanCache.getClanById(symbol.getKey());
-				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : "Wilderness")).setStyle(new Style().setColor(c != null ? c.getTextColor() : TextFormatting.YELLOW)));
+				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : TranslationUtil.getStringTranslation(sender.getUniqueID(), "clans.wilderness"))).setStyle(new Style().setColor(c != null ? c.getTextColor() : TextFormatting.YELLOW)));
 			}
 		}).start();
 	}

@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +33,7 @@ public class CommandCollect extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid collect";
+		return TranslationUtil.getRawTranslationString(sender, "commands.raid.collect.usage");
 	}
 
 	@Override
@@ -51,10 +52,10 @@ public class CommandCollect extends RaidSubCommand {
 			}
 			RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(sender.getUniqueID(), removeItems);
 			if(RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID()))
-				sender.sendMessage(new TextComponentString("You have run out of room for collection. Make room in your inventory and try again.").setStyle(TextStyles.YELLOW));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
 			else
-				sender.sendMessage(new TextComponentString("Collection successful.").setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("You don't have anything to collect.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.empty").setStyle(TextStyles.RED));
 	}
 }

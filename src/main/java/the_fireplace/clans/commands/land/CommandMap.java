@@ -14,6 +14,7 @@ import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,7 +42,7 @@ public class CommandMap extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan map";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.map.usage");
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class CommandMap extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 			for (Map.Entry<UUID, Character> symbol : symbolMap.entrySet()) {
 				Clan c = ClanCache.getClanById(symbol.getKey());
-				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " + (c != null ? c.getClanName() : "Wilderness")).setStyle(TextStyles.GREEN));
+				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " + (c != null ? c.getClanName() : TranslationUtil.getStringTranslation(sender.getUniqueID(), "clans.wilderness"))).setStyle(TextStyles.GREEN));
 			}
 		}).start();
 	}

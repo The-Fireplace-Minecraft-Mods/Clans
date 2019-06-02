@@ -12,6 +12,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +37,7 @@ public class CommandDecline extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan decline";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.decline.usage");
 	}
 
 	@Override
@@ -44,8 +45,8 @@ public class CommandDecline extends ClanSubCommand {
 		Clan declineClan = ClanCache.getInvite(sender.getUniqueID());
 		if(declineClan != null){
 			ClanCache.removeInvite(sender.getUniqueID());
-			sender.sendMessage(new TextComponentTranslation("You declined the invitation to join %s.", declineClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("You don't have any pending invites.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +33,7 @@ public class CommandSetDescription extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setdescription <new description>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setdescription.usage");
 	}
 
 	@Override
@@ -41,6 +42,6 @@ public class CommandSetDescription extends ClanSubCommand {
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
 		selectedClan.setDescription(newTagline.toString());
-		sender.sendMessage(new TextComponentTranslation("Clan description for %s set!", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}
 }

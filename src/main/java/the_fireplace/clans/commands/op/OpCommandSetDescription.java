@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,15 +26,15 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan setdescription <new description>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setdescription.usage");
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		StringBuilder newDescription = new StringBuilder();
 		for(String arg: args)
 			newDescription.append(arg).append(' ');
 		opSelectedClan.setDescription(newDescription.toString());
-		sender.sendMessage(new TextComponentTranslation("%s description set!", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setdescription.success", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}
 }

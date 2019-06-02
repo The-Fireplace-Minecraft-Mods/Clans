@@ -13,6 +13,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,7 +38,7 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan accept";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.accept.usage");
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class CommandAccept extends ClanSubCommand {
 			acceptClan.addMember(sender.getUniqueID());
 			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 				CapHelper.getPlayerClanCapability(sender).setDefaultClan(acceptClan.getClanId());
-			sender.sendMessage(new TextComponentTranslation("You joined %s.", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("You don't have any pending invites.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}
 }

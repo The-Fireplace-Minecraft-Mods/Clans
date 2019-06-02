@@ -13,6 +13,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.op.OpCommandPromote;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,7 +42,7 @@ public class CommandPromote extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan promote <player>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.promote.usage");
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class CommandPromote extends ClanSubCommand {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
 			OpCommandPromote.promoteClanMember(server, sender, args[0], selectedClan);
 		else
-			sender.sendMessage(new TextComponentString("You are not a leader of " + selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

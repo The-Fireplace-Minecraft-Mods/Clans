@@ -10,6 +10,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,7 +35,7 @@ public class CommandSetRent extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setrent <amount>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.usage");
 	}
 
 	@Override
@@ -46,10 +47,10 @@ public class CommandSetRent extends ClanSubCommand {
 				maxRent *= selectedClan.getClaimCount();
 			if(maxRent <= 0 || newRent <= maxRent) {
 				selectedClan.setRent(newRent);
-				sender.sendMessage(new TextComponentTranslation("Clan rent for %s set to %s!", selectedClan.getClanName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getClanName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(new TextComponentString("Cannot set rent above your maximum("+maxRent+' '+Clans.getPaymentHandler().getCurrencyName(maxRent)+")!").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getClanName(), maxRent, Clans.getPaymentHandler().getCurrencyName(maxRent)).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Cannot set negative rent!").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 	}
 }

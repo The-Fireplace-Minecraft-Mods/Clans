@@ -9,6 +9,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,17 +28,17 @@ public class OpCommandSetName extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan [target clan] setname <newname>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setname.usage");
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String newName = args[0];
 		if(!ClanCache.clanNameTaken(newName)) {
 			String oldName = opSelectedClan.getClanName();
 			opSelectedClan.setClanName(newName);
-			sender.sendMessage(new TextComponentTranslation("%s %srenamed to %s!", oldName, opSelectedClan.isOpclan() ? "(Opclan) " : "", newName).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName + (opSelectedClan.isOpclan() ? " (Opclan)" : ""), newName).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("The clan name you have specified is already taken.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
 	}
 }

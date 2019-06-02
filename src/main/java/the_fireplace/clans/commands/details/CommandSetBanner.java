@@ -18,6 +18,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,7 +43,7 @@ public class CommandSetBanner extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setbanner [banner]";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setbanner.usage");
 	}
 
 	@Override
@@ -50,17 +51,17 @@ public class CommandSetBanner extends ClanSubCommand {
 		if(args.length == 1){
 			try {
 				if(new ItemStack(JsonToNBT.getTagFromJson(args[0])).isEmpty()) {
-					sender.sendMessage(new TextComponentString("The clan banner you have specified is invalid.").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.invalid").setStyle(TextStyles.RED));
 					return;
 				}
 				if(ClanCache.clanBannerTaken(args[0]))
-					sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 				else {
 					selectedClan.setClanBanner(args[0]);
-					sender.sendMessage(new TextComponentTranslation("Clan banner for %s set!", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				}
 			} catch(NBTException e){
-				throw new SyntaxErrorException("The clan banner you have specified is invalid.");
+				throw new SyntaxErrorException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.setbanner.invalid"));
 			}
 		} else if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
 			NBTTagCompound tags = sender.getHeldItemMainhand().writeToNBT(new NBTTagCompound());
@@ -69,16 +70,16 @@ public class CommandSetBanner extends ClanSubCommand {
 			NBTTagCompound tags = sender.getHeldItemOffhand().writeToNBT(new NBTTagCompound());
 			setClanBannerFromItem(sender, selectedClan, tags);
 		} else
-			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.notheld").setStyle(TextStyles.RED));
 	}
 
 	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanCache.clanBannerTaken(banner))
-			sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 		else {
 			playerClan.setClanBanner(banner);
-			sender.sendMessage(new TextComponentTranslation("Clan banner for %s set!", playerClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

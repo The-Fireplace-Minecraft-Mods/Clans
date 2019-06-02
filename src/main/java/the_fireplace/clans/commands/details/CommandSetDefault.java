@@ -13,6 +13,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,7 +38,7 @@ public class CommandSetDefault extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setdefault <clan>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setdefault.usage");
 	}
 
 	@Override
@@ -48,12 +49,12 @@ public class CommandSetDefault extends ClanSubCommand {
 				//noinspection ConstantConditions
 				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null)) {
 					CapHelper.getPlayerClanCapability(sender).setDefaultClan(def.getClanId());
-					sender.sendMessage(new TextComponentTranslation("Your default clan has been set to %s.", def.getClanName()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanName()).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(new TextComponentString("Internal error: Player cannot set default clan.").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.noplayercap").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("You are not in %s.", def.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("The clan you have specified does not exist.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound").setStyle(TextStyles.RED));
 	}
 }

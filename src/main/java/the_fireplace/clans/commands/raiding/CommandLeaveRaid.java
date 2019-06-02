@@ -6,10 +6,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,7 +31,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid leave";
+		return TranslationUtil.getRawTranslationString(sender, "commands.raid.leave.usage");
 	}
 
 	@Override
@@ -38,10 +40,12 @@ public class CommandLeaveRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				raid.removeMember(sender);
-				sender.sendMessage(new TextComponentTranslation("You successfully left the raiding party against %s!", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
-			} else//Internal error because we should not reach this point
-				sender.sendMessage(new TextComponentString("Internal error: You are not in a raiding party!").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.leave.success", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+			} else {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
+				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");
+			}
 		} else
-			sender.sendMessage(new TextComponentString("You are not in a raiding party!").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 	}
 }

@@ -15,6 +15,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.commands.members.CommandKick;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +39,7 @@ public class OpCommandKick extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan kick <clan> <member>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.kick.usage");
 	}
 
 	@Override
@@ -53,13 +54,13 @@ public class OpCommandKick extends OpClanSubCommand {
 					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
 						CommandKick.removeMember(server, sender, selectedClan, target);
 					} else
-						sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", args[0]).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

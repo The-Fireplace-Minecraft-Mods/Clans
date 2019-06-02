@@ -17,6 +17,10 @@ public class LegacyCompatEvents {
     @SubscribeEvent
     public static void onChunkLoad(ChunkDataEvent.Load event) {
         Chunk c = event.getChunk();
+        checkPre120Compat(c);
+    }
+
+    static void checkPre120Compat(Chunk c) {
         ClaimedLandCapability cap = CapHelper.getClaimedLandCapability(c);
         if(cap.pre120() && cap.getClan() != null) {
             Clan clan = ClanCache.getClanById(cap.getClan());

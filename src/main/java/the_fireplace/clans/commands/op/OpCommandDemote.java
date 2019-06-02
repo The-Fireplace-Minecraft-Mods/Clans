@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -15,6 +16,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +40,7 @@ public class OpCommandDemote extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan demote <clan> <member>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.demote.usage");
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class OpCommandDemote extends OpClanSubCommand {
 		if(c != null) {
 			demoteClanMember(server, sender, args[1], c);
 		} else
-			sender.sendMessage(new TextComponentString("Clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	public static void demoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, Clan clan) throws CommandException {
@@ -58,17 +60,19 @@ public class OpCommandDemote extends OpClanSubCommand {
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
 					if (clan.demoteMember(target.getId())) {
-						sender.sendMessage(new TextComponentTranslation("You have demoted %s to %s in %s.", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
-						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target))
-							getPlayer(server, sender, target.getName()).sendMessage(new TextComponentTranslation("You have been demoted in %s to %s by %s.", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.YELLOW));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.demote.success", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
+						if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
+							EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
+							targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.opclan.demote.demoted", clan.getClanName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.YELLOW));
+						}
 					} else
-						sender.sendMessage(new TextComponentTranslation("The player %s could not be demoted.", target.getName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.demote.error", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), clan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation("The player %s was not found.", playerName).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

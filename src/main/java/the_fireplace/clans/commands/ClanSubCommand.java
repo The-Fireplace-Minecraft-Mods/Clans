@@ -19,6 +19,7 @@ import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,7 +73,7 @@ public abstract class ClanSubCommand extends CommandBase {
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(server == null)
-			throw new WrongUsageException("Internal error: The server must not be null!");
+			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "clans.error.nullserver"));
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
@@ -85,7 +86,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				if(sender instanceof EntityPlayerMP) {
 					ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
-						sender.sendMessage(new TextComponentString("You are not in that clan.").setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
 						return;
 					}
 				}
@@ -109,7 +110,7 @@ public abstract class ClanSubCommand extends CommandBase {
 			} else
 				throwWrongUsage(sender);
 		} else
-			throw new WrongUsageException("You must be a player to do this");
+			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "commands.clan.common.player"));
 	}
 
 	protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
@@ -117,9 +118,8 @@ public abstract class ClanSubCommand extends CommandBase {
     }
 
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		//noinspection PlaceholderCountMatchesArgumentCount
 		Clans.LOGGER.error("This point should not have been reached. Command sender is a %s.", sender.getClass().getCanonicalName());
-		throw new WrongUsageException("You must be a player to do this");
+		throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "commands.clan.common.player"));
 	}
 
 	protected boolean allowConsoleUsage() {

@@ -9,6 +9,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,12 +34,12 @@ public class CommandBalance extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan balance";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.balance.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
-		sender.sendMessage(new TextComponentString("Clan balance: " + balance + ' ' + Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getClanName(), balance, Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
 	}
 }

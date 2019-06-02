@@ -12,6 +12,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +39,7 @@ public class CommandLeave extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan leave";
+		return TranslationUtil.getRawTranslationString(sender, "clans.command.leave.usage");
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class CommandLeave extends ClanSubCommand {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 		if(senderRank == EnumRank.LEADER) {
 			if(selectedClan.getMembers().size() == 1){
-				sender.sendMessage(new TextComponentTranslation("You are the last member of %s. To disband it, use /clan disband.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
 			}
 			List<UUID> leaders = Lists.newArrayList();
@@ -54,15 +55,15 @@ public class CommandLeave extends ClanSubCommand {
 				if(selectedClan.getMembers().get(member).equals(EnumRank.LEADER))
 					leaders.add(member);
 			if(leaders.size() <= 1) {
-				sender.sendMessage(new TextComponentTranslation("You cannot leave %s without a leader. Promote someone else to be a leader before leaving.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.promote", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
 			}
 		}
 		if(selectedClan.removeMember(sender.getUniqueID())) {
 			updateDefaultClan(sender, selectedClan);
-			sender.sendMessage(new TextComponentTranslation("You have left %s.", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else //Internal error because this should be unreachable
-			sender.sendMessage(new TextComponentTranslation("Internal Error: You were unable to be removed from %s.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	/**

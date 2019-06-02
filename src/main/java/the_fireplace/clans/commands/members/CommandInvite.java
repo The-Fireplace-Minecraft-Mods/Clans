@@ -14,6 +14,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,7 +42,7 @@ public class CommandInvite extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan invite <player>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.invite.usage");
 	}
 
 	@Override
@@ -51,14 +52,14 @@ public class CommandInvite extends ClanSubCommand {
 		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
 			if(!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
 				if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
-					sender.sendMessage(new TextComponentTranslation("You have invited %s to join %s.", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-					target.sendMessage(new TextComponentTranslation("You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s has already been invited to join a clan. They must accept or decline that invitation first.", target.getName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("The player %s is already in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation("The player %s is already in a clan.", target.getName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
 	}
 
 	@Override

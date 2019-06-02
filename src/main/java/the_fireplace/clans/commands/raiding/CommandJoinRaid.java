@@ -15,6 +15,7 @@ import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,14 +36,14 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/raid join <clan name>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.raid.join.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Clan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
-			sender.sendMessage(new TextComponentString("Target clan not found.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 		else {
 			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 				if(!target.getMembers().containsKey(sender.getUniqueID())) {
@@ -50,23 +51,23 @@ public class CommandJoinRaid extends RaidSubCommand {
 						if(!target.isShielded()) {
 							if (target.getOnlineMembers().size() > 0 && target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset > 0) {
 								new Raid(sender, target);
-								sender.sendMessage(new TextComponentTranslation("You successfully created the raiding party against %s!", target.getClanName()).setStyle(TextStyles.GREEN));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.created", target.getClanName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(new TextComponentTranslation("%s does not have enough online members to get raided!", target.getClanName()).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.create_fail", target.getClanName()).setStyle(TextStyles.RED));
 						} else
-							sender.sendMessage(new TextComponentTranslation("%s is currently shielded! Try again in %s hours.", target.getClanName(), Math.round(100f*target.getShield()*60)/100f).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getClanName(), Math.round(100f*target.getShield()*60)/100f).setStyle(TextStyles.RED));
 					} else { //Join an existing raid
 						Raid raid = RaidingParties.getRaid(target);
 						if(target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset > raid.getMemberCount()) {
 							raid.addMember(sender);
-							sender.sendMessage(new TextComponentTranslation("You successfully joined the raiding party against %s!", target.getClanName()).setStyle(TextStyles.GREEN));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getClanName()).setStyle(TextStyles.GREEN));
 						} else
-							sender.sendMessage(new TextComponentTranslation("The raiding party against %s cannot hold any more people! It has %s raiders and the limit is currently %s.", target.getClanName(), raid.getMemberCount(), target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.limit", target.getClanName(), raid.getMemberCount(), target.getOnlineMembers().size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
 					}
 				} else
-					sender.sendMessage(new TextComponentString("You cannot raid a clan you are in!").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.inclan").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString("You are already in a raiding party, and cannot join another unless you leave the one you are currently in.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.inparty").setStyle(TextStyles.RED));
 		}
 	}
 

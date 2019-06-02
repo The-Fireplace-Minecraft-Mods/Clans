@@ -18,6 +18,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,7 +43,7 @@ public class CommandForm extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan form <name> [banner]";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.form.usage");
 	}
 
 	@Override
@@ -50,35 +51,35 @@ public class CommandForm extends ClanSubCommand {
 		if(selectedClan == null || Clans.cfg.allowMultiClanMembership) {
 			String newClanName = args[0];
 			if (Clans.cfg.maxNameLength > 0 && newClanName.length() > Clans.cfg.maxNameLength)
-				sender.sendMessage(new TextComponentString("The clan name you have specified is too long. This server's maximum name length is: " + Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", newClanName, Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
 			else if (ClanCache.clanNameTaken(newClanName))
-				sender.sendMessage(new TextComponentString("The clan name you have specified is already taken.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newClanName).setStyle(TextStyles.RED));
 			else {
 				String banner = null;
 				if (args.length == 2) {
 					try {
 						banner = args[1];
 						if(new ItemStack(JsonToNBT.getTagFromJson(banner)).isEmpty()) {
-							sender.sendMessage(new TextComponentString("The clan banner you have specified is invalid.").setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.invalid").setStyle(TextStyles.RED));
 							return;
 						}
 						if (ClanCache.clanBannerTaken(banner)) {
-							sender.sendMessage(new TextComponentString("The clan banner you have specified is already taken.").setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 							return;
 						}
 					} catch (NBTException e) {
-						throw new SyntaxErrorException("The clan banner you have specified is invalid.");
+						throw new SyntaxErrorException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.setbanner.invalid"));
 					}
 				}
 				if (Clans.getPaymentHandler().deductAmount(Clans.cfg.formClanCost, sender.getUniqueID())) {
 					Clan c = new Clan(newClanName, sender.getUniqueID(), banner);
 					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 						CapHelper.getPlayerClanCapability(sender).setDefaultClan(c.getClanId());
-					sender.sendMessage(new TextComponentString("Clan formed!").setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(new TextComponentTranslation("Insufficient funds to form clan. It costs %s %s.", Clans.cfg.formClanCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", Clans.cfg.formClanCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.formClanCost)).setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString("You are already in a clan.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.already_in_clan").setStyle(TextStyles.RED));
 	}
 }

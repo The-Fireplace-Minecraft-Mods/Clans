@@ -10,6 +10,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,19 +35,19 @@ public class CommandSetName extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan setname <newname>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setname.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
 		if(Clans.cfg.maxNameLength > 0 && newName.length() > Clans.cfg.maxNameLength)
-			sender.sendMessage(new TextComponentTranslation("The clan name you have specified is too long. This server's maximum name length is %s.", Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
 		else if(!ClanCache.clanNameTaken(newName)) {
 			String oldName = selectedClan.getClanName();
 			selectedClan.setClanName(newName);
-			sender.sendMessage(new TextComponentTranslation("You have renamed %s to %s!", oldName, newName).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentTranslation("The clan name \"%s\" is already taken.", newName).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
 	}
 }

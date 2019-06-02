@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,7 +40,7 @@ public class CommandBanner extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan banner";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.banner.usage");
 	}
 
 	@Override
@@ -49,11 +50,11 @@ public class CommandBanner extends ClanSubCommand {
 			try {
 				banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
 			} catch (NBTException e) {
-				sender.sendMessage(new TextComponentTranslation("%s does not have a banner.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
 			}
 		} else {
-			sender.sendMessage(new TextComponentTranslation("%s does not have a banner.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			return;
 		}
 		if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
@@ -67,6 +68,6 @@ public class CommandBanner extends ClanSubCommand {
 			bannerStack.setCount(count);
 			sender.setHeldItem(EnumHand.OFF_HAND, bannerStack);
 		} else
-			sender.sendMessage(new TextComponentString("You are not holding a banner!").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.player_nobanner").setStyle(TextStyles.RED));
 	}
 }

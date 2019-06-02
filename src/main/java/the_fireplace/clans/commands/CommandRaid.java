@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.raiding.*;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,13 +37,13 @@ public class CommandRaid extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/raid <command> [parameters]";
+        return TranslationUtil.getRawTranslationString(sender, "commands.raid.usage");
     }
 
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
-            throw new WrongUsageException("/raid <command> [parameters]");
+            throw new WrongUsageException(getUsage(sender));
         String tag = args[0];
         if(args.length > 1)
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -71,13 +72,12 @@ public class CommandRaid extends CommandBase {
                 return;
             //Help command
             case "help":
-                StringBuilder commandsHelp = new StringBuilder("/raid commands:\n" +
-                        "help");
+                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.raid.help")+"\nhelp");
                 CommandClan.buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
         }
-        throw new WrongUsageException("/raid <command> [parameters]");
+        throw new WrongUsageException(getUsage(sender));
     }
 
     @Override

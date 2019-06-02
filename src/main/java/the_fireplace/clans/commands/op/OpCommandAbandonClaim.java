@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
@@ -18,6 +17,7 @@ import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandAbandomClaim extends OpClanSubCommand {
+public class OpCommandAbandonClaim extends OpClanSubCommand {
 	@Override
 	public int getMinArgs() {
 		return 0;
@@ -40,7 +40,7 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/opclan abandonclaim [force]";
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.abandonclaim.usage");
 	}
 
 	@Override
@@ -55,23 +55,23 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 					if(targetClan != null) {
 						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
 							//Unset clan home if it is in the chunk
-							OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
+							OpCommandAbandonClaim.abandonClaim(sender, c, targetClan);
 							ChunkUtils.clearChunkOwner(c);
-							sender.sendMessage(new TextComponentTranslation("Claim abandoned from %s!", targetClan.getClanName()).setStyle(TextStyles.GREEN));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.abandonclaim.success", targetClan.getClanName()).setStyle(TextStyles.GREEN));
 						} else {//We are forcing connected claims and there is a claim connected
 							//Prevent creation of disconnected claims
 							abandonClaimWithAdjacencyCheck(sender, c, targetClan);
 						}
 					} else {
 						ChunkUtils.clearChunkOwner(c);
-						sender.sendMessage(new TextComponentString("Claim abandoned!").setStyle(TextStyles.GREEN));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.abandonclaim.success").setStyle(TextStyles.GREEN));
 					}
 				} else
-					sender.sendMessage(new TextComponentString("This land does not belong to opclan. To force "+targetClan.getClanName()+" to abandon it, use /opclan abandonclaim force").setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.abandonclaim.wrongclan", opClan.getClanName(), targetClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentString("This land is not claimed.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.abandonclaim.notclaimed").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentString("Internal error: This chunk doesn't appear to be claimable.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.nochunkcap").setStyle(TextStyles.RED));
 	}
 
 	@Override
@@ -105,11 +105,11 @@ public class OpCommandAbandomClaim extends OpClanSubCommand {
 			}
 		if (allowed) {
 			//Unset clan home if it is in the chunk
-			OpCommandAbandomClaim.abandonClaim(sender, c, targetClan);
+			OpCommandAbandonClaim.abandonClaim(sender, c, targetClan);
 			ChunkUtils.clearChunkOwner(c);
-			sender.sendMessage(new TextComponentTranslation("Claim abandoned from %s!", targetClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.abandonclaim.success", targetClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(new TextComponentString("You cannot abandon this chunk of land because doing so would create at least one disconnected claim.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.abandonclaim.disconnected").setStyle(TextStyles.RED));
 	}
 
 	@Override

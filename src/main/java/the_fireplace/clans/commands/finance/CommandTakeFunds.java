@@ -11,6 +11,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,22 +36,22 @@ public class CommandTakeFunds extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan takefunds <amount>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.takefunds.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(!Clans.cfg.leaderWithdrawFunds)
-			throw new CommandException("/clan takefunds is disabled on this server.");
+			throw new CommandException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.takefunds.disabled"));
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
 			if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID()))
-				sender.sendMessage(new TextComponentTranslation("Successfully took %s %s from %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
-				sender.sendMessage(new TextComponentString("Internal error: Your currency account not found.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_player_econ_acct").setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentTranslation("%s does not have enough funds to do this.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_clan_funds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

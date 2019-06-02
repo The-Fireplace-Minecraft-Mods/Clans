@@ -12,13 +12,14 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class Clan {
     private String clanName, clanBanner;
-    private String description = "This is a new clan.";
+    private String description = TranslationUtil.getStringTranslation("clan.default_description");
     private HashMap<UUID, EnumRank> members;
     private UUID clanId;
     private float homeX, homeY, homeZ;
@@ -63,8 +64,8 @@ public class Clan {
      * Generate OpClan
      */
     Clan(){
-        this.clanName = "Server";
-        this.description = "Server Operator Clan";
+        this.clanName = TranslationUtil.getStringTranslation("clan.default_opclan_name");
+        this.description = TranslationUtil.getStringTranslation("clan.default_opclan_description");
         this.members = Maps.newHashMap();
         this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
         if(!ClanDatabase.addClan(this.clanId, this))

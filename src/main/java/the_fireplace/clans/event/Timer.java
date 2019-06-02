@@ -86,7 +86,7 @@ public class Timer {
 										//noinspection ConstantConditions
 										if (player != null) {
 											CommandLeave.updateDefaultClan(player, clan);
-											player.sendMessage(new TextComponentTranslation("You have been kicked out of %s due to inability to pay rent.", clan.getClanName()).setStyle(TextStyles.YELLOW));
+											player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getClanName()).setStyle(TextStyles.YELLOW));
 										}
 									}
 							}
@@ -117,7 +117,7 @@ public class Timer {
 									//noinspection ConstantConditions
 									if (player != null) {
 										CommandLeave.updateDefaultClan(player, clan);
-										player.sendMessage(new TextComponentTranslation("%s has been disbanded due to inability to pay upkeep costs.", clan.getClanName()).setStyle(TextStyles.YELLOW));
+										player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.upkeep.disbanded", clan.getClanName()).setStyle(TextStyles.YELLOW));
 									}
 								}
 							}
@@ -156,16 +156,7 @@ public class Timer {
 						chunkClan = null;
 					}
 
-					ClaimedLandCapability cap = CapHelper.getClaimedLandCapability(c);
-					if(cap.pre120() && cap.getClan() != null) {
-						Clan clan = ClanCache.getClanById(cap.getClan());
-						if(clan == null) {
-							ChunkUtils.clearChunkOwner(c);
-							return;
-						}
-						ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().provider.getDimension());
-						cap.setPre120(false);
-					}
+					LegacyCompatEvents.checkPre120Compat(c);
 
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 						CapHelper.getClaimedLandCapability(event.player).setClan(chunkClan);
@@ -174,33 +165,38 @@ public class Timer {
 							color = TextStyles.YELLOW;
 						if (chunkClan == null)
 							color = TextStyles.DARK_GREEN;
-						String endMsg;
+						String territoryName;
+						String territoryDesc;
 						if (chunkClan == null) {
 							if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.player.posY < event.player.world.getSeaLevel() : event.player.posY < Clans.cfg.minWildernessY)) {
-								endMsg = "Underground.";
-								endMsg += "\n~This land is not claimed.";
+								territoryName = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.underground");
+								territoryDesc = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.unclaimed");
 							} else {
-								endMsg = "Wilderness.";
+								territoryName = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.wilderness");
 								if(Clans.cfg.protectWilderness) {
 									color = TextStyles.YELLOW;
-									endMsg += "\n~This land is not claimed, and is protected.";
+									territoryDesc = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.protected");
 								} else
-									endMsg += "\n~This land is not claimed.";
+									territoryDesc = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.unclaimed");
 							}
 						} else {
-							endMsg = ClanCache.getClanById(chunkClan).getClanName() + "'s territory.";
-							endMsg += "\n~" + ClanCache.getClanById(chunkClan).getDescription();
+							territoryName = TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.clanterritory", ClanCache.getClanById(chunkClan).getClanName());
+							territoryDesc = ClanCache.getClanById(chunkClan).getDescription();
 						}
 
-						event.player.sendMessage(new TextComponentString("You are now entering " + endMsg).setStyle(color));
+						event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color));
+						event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
 						int curY = (int) Math.round(event.player.posY);
 						int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
 						int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
-						if (curY >= yBound && prevY < yBound)
-							event.player.sendMessage(new TextComponentString("You are now entering Wilderness.\n~This land is not claimed, and is protected.").setStyle(TextStyles.YELLOW));
-						else if (prevY >= yBound && curY < yBound)
-							event.player.sendMessage(new TextComponentString("You are now entering Underground.\n~This land is not claimed.").setStyle(TextStyles.DARK_GREEN));
+						if (curY >= yBound && prevY < yBound) {
+							event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW));
+							event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.protected")).setStyle(TextStyles.YELLOW));
+						} else if (prevY >= yBound && curY < yBound) {
+							event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
+							event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
+						}
 						prevYs.put(event.player, curY);
 					}
 				}

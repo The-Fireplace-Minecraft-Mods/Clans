@@ -16,6 +16,7 @@ import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,7 +45,7 @@ public class CommandKick extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan kick <player>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.kick.usage");
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -54,7 +55,7 @@ public class CommandKick extends ClanSubCommand {
 
 		if(target != null) {
 			if(target.getId().equals(sender.getUniqueID())) {
-				sender.sendMessage(new TextComponentTranslation("To leave a clan, use /clan leave.").setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.leave").setStyle(TextStyles.RED));
 				return;
 			}
 			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
@@ -66,13 +67,13 @@ public class CommandKick extends ClanSubCommand {
 					} else if (targetRank == EnumRank.MEMBER) {
 						removeMember(server, sender, selectedClan, target);
 					} else
-						sender.sendMessage(new TextComponentTranslation("You do not have the authority to kick out %s.", target.getName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(new TextComponentTranslation("The player %s is not in %s.", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(new TextComponentTranslation("The player %s was not found.", args[0]));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.playernotfound", args[0]));
 	}
 
 	@Override
@@ -88,14 +89,14 @@ public class CommandKick extends ClanSubCommand {
 
 	public static void removeMember(MinecraftServer server, ICommandSender sender, Clan playerClan, GameProfile target) throws CommandException {
 		if(playerClan.removeMember(target.getId())) {
-			sender.sendMessage(new TextComponentTranslation("You have kicked %s out of %s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.success", target.getName(), playerClan.getClanName()).setStyle(TextStyles.GREEN));
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
-				targetPlayer.sendMessage(new TextComponentTranslation("You have been kicked out of %s by %s.", playerClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+				targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", playerClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 				if(playerClan.getClanId().equals(CapHelper.getPlayerClanCapability(targetPlayer).getDefaultClan()))
 					CommandLeave.updateDefaultClan(targetPlayer, playerClan);
 			}
 		} else
-			sender.sendMessage(new TextComponentTranslation("The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.", target.getName(), playerClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.fail", target.getName(), playerClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

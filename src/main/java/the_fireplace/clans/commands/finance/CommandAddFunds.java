@@ -10,6 +10,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,20 +35,28 @@ public class CommandAddFunds extends ClanSubCommand {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/clan addfunds <amount>";
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan.addfunds.usage");
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		long amount = Long.valueOf(args[0]);
+		long amount;
+		try {
+			amount = Long.valueOf(args[0]);
+			if(amount < 0)
+				amount = 0;
+		} catch(NumberFormatException e) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.format").setStyle(TextStyles.RED));
+			return;
+		}
 		if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 			if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId()))
-				sender.sendMessage(new TextComponentTranslation("Successfully added %s %s to %s's balance.", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
-				sender.sendMessage(new TextComponentTranslation("Internal error: Clan account not found for %s.", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			}
 		} else
-			sender.sendMessage(new TextComponentString("You do not have enough funds to do this.").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_funds").setStyle(TextStyles.RED));
 	}
 }
