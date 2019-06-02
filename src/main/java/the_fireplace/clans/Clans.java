@@ -74,7 +74,6 @@ public final class Clans {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        PacketDispatcher.registerPackets();
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
         LOGGER = event.getModLog();

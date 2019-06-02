@@ -1,22 +1,16 @@
 package the_fireplace.clans.network;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import the_fireplace.clans.Clans;
-
 /**
  * @author coolAlias
  * @author The_Fireplace
  */
 public final class PacketDispatcher {
-    private static byte packetId = 0;
+    /*private static byte packetId = 0;
 
     private static final SimpleNetworkWrapper dispatcher = NetworkRegistry.INSTANCE.newSimpleChannel(Clans.MODID);
 
     public static void registerPackets() {
-        PacketDispatcher.registerMessage(ClansClientConnectedMessage.Handler.class, ClansClientConnectedMessage.class, Side.SERVER);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -25,7 +19,7 @@ public final class PacketDispatcher {
     }
 
     //Wrapper methods
-    /*public static void sendTo(IMessage message, EntityPlayerMP player) {
+    public static void sendTo(IMessage message, EntityPlayerMP player) {
         PacketDispatcher.dispatcher.sendTo(message, player);
     }
 
@@ -47,9 +41,9 @@ public final class PacketDispatcher {
 
     public static void sendToDimension(IMessage message, int dimensionId) {
         PacketDispatcher.dispatcher.sendToDimension(message, dimensionId);
-    }*/
+    }
 
     public static void sendToServer(IMessage message) {
         dispatcher.sendToServer(message);
-    }
+    }*/
 }
