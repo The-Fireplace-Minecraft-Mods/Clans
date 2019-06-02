@@ -33,6 +33,7 @@ import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.compat.payment.IPaymentHandler;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.compat.payment.PaymentHandlerGE;
+import the_fireplace.clans.network.PacketDispatcher;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.util.PlayerClanCapability;
@@ -73,6 +74,7 @@ public final class Clans {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        PacketDispatcher.registerPackets();
         CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
         LOGGER = event.getModLog();
