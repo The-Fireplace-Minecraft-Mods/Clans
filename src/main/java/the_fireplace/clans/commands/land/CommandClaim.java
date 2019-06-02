@@ -5,8 +5,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
@@ -22,7 +20,6 @@ import the_fireplace.clans.util.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault

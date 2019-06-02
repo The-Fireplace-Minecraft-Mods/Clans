@@ -1,10 +1,8 @@
 package the_fireplace.clans.commands.op;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.TranslationUtil;

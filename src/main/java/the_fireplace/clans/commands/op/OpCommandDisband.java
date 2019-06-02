@@ -2,14 +2,10 @@ package the_fireplace.clans.commands.op;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;

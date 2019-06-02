@@ -3,7 +3,6 @@ package the_fireplace.clans.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.EnumRank;

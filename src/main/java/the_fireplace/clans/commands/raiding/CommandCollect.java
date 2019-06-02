@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.TextStyles;

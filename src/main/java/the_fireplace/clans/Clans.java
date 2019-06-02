@@ -33,7 +33,6 @@ import the_fireplace.clans.compat.dynmap.IDynmapCompat;
 import the_fireplace.clans.compat.payment.IPaymentHandler;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.compat.payment.PaymentHandlerGE;
-import the_fireplace.clans.network.PacketDispatcher;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.util.PlayerClanCapability;
