@@ -12,7 +12,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.TextStyles;
-import the_fireplace.clans.util.TranslationUtil;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;

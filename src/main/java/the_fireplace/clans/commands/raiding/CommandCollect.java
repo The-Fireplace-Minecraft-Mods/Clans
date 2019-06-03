@@ -11,7 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.TextStyles;
-import the_fireplace.clans.util.TranslationUtil;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

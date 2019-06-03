@@ -15,7 +15,7 @@ import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.TextStyles;
-import the_fireplace.clans.util.TranslationUtil;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

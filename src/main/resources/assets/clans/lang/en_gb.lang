@@ -1,0 +1,5 @@
+commands.clan.setcolor.usage=/clan setcolour <colour>
+commands.clan.setcolor.success=%s colour set.
+commands.clan.setcolor.invalid=The colour integer %s is invalid.
+
+commands.opclan.setcolor.usage=/opclan [target clan] setcolour <colour>

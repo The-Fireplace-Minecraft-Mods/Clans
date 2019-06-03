@@ -32,7 +32,7 @@ import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
-import the_fireplace.clans.util.TranslationUtil;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -138,7 +138,7 @@ public class LandProtectionEvents {
 					if(((EntityPlayerMP) placingPlayer).connection != null)
 						((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
 					event.getPlayer().inventory.markDirty();
-					event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "protection.wilderness.place.wilderness").setStyle(TextStyles.RED));
+					event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.place.wilderness").setStyle(TextStyles.RED));
 				}
 			}
 		}

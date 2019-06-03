@@ -215,6 +215,8 @@ public final class Clans {
         public static int maxClanPlayerClaims = 0;
         @Config.Comment("Show player's default clan in chat.")
         public static boolean showDefaultClanInChat = true;
+        @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
+        public static String locale = "en_us";
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;

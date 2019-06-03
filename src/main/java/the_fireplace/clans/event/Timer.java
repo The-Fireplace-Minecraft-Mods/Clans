@@ -18,6 +18,7 @@ import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.*;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.*;
 
