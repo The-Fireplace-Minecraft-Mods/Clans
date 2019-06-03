@@ -16,6 +16,7 @@ commands.opclan.help=/opclan commands:
 
 commands.raid.usage=/raid <command> [parameters]
 commands.raid.help=/raid commands:
+commands.raid.disabled=Raiding is disabled on this server.
 
 commands.clan.common.player=You must be a player to do this.
 commands.clan.common.not_in_clan=You are not in %s.

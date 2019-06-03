@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.raiding.*;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -49,6 +50,8 @@ public class CommandRaid extends CommandBase {
             args = Arrays.copyOfRange(args, 1, args.length);
         else
             args = new String[]{};
+        if(Clans.cfg.maxRaidDuration <= 0 && !tag.equals("collect") && !tag.equals("c"))
+            throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
         switch(tag){
             //Commands for raiding parties
             case "join":

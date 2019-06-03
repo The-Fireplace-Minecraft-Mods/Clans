@@ -225,7 +225,7 @@ public final class Clans {
         //Raid configuration
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;
-        @Config.Comment("Maximum duration a raid can last for, in minutes.")
+        @Config.Comment("Maximum duration a raid can last for, in minutes. If set to 0, raids will be disabled.")
         @Config.RangeInt(min=0,max=Integer.MAX_VALUE/60)
         public static int maxRaidDuration = 30;
         @Config.Comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
