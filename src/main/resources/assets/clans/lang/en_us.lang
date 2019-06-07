@@ -90,7 +90,8 @@ commands.clan.setname.success=You have renamed %s to %s.
 
 commands.clan.addfunds.usage=/clan addfunds <amount>
 commands.clan.addfunds.format=Improperly formatted amount.
-commands.clan.addfunds.success=Successfully added %s %s to %s's balance.
+commands.clan.addfunds.success=You added %s %s to %s's balance.
+commands.clan.addfunds.added=%s added %s %s to %s's balance.
 
 commands.clan.balance.usage=/clan balance
 commands.clan.balance.balance=%s's clan balance: %s %s.
@@ -112,7 +113,8 @@ commands.clan.setrent.disabled=/clan setrent is disabled on this server.
 
 commands.clan.takefunds.usage=/clan takefunds <amount>
 commands.clan.takefunds.disabled=/clan takefunds is disabled on this server.
-commands.clan.takefunds.success=Successfully took %s %s from %s's balance.
+commands.clan.takefunds.success=You took %s %s from %s's balance.
+commands.clan.takefunds.taken=%s took %s %s from %s's balance.
 
 commands.clan.abandonclaim.usage=/clan abandonclaim
 commands.clan.abandonclaim.success=Claim abandoned.
