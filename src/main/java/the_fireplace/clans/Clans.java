@@ -192,16 +192,6 @@ public final class Clans {
         @Config.Comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type to avoid getting raided. Set to 0 for no limit.")
         @Config.RangeInt(min=0)
         public static int maxNameLength = 32;
-        @Config.Comment("Minimum number of blocks between clan homes.")
-        @Config.RangeInt(min=0)
-        public static int minClanHomeDist = 320;
-        @Config.Comment("This multiplied by the minimum clan home distance is how far away from other clans' homes to make the initial claim for a clan.")
-        @Config.RangeDouble(min=0)
-        public static double initialClaimSeparationMultiplier = 1.25;
-        @Config.Comment("If set to false, players will be warned if making the initial claim within the claim separation range, but not prevented from making the claim if they want to.")
-        public static boolean enforceInitialClaimSeparation = true;
-        @Config.Comment("Force clans to have connected claims.")
-        public static boolean forceConnectedClaims = true;
         @Config.Comment("Allow players to be a member of multiple clans at once.")
         public static boolean allowMultiClanMembership = true;
         @Config.Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported. Set to -1 to disable /clan home.")
@@ -217,9 +207,30 @@ public final class Clans {
         public static boolean showDefaultClanInChat = true;
         @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public static String locale = "en_us";
+        @Config.Comment("A list of Fake Players that are allowed to build, destroy, interact, and injure things on claimed land. These are typically machines added by mods. If it contains a *, this list is a blacklist, so everything is allowed by default. Otherwise, it is a whitelist.")
+        public static String[] tolerableFakePlayers = {"*"};
+        //Clan guard
+        @Config.Comment("Minimum number of blocks between clan homes.")
+        @Config.RangeInt(min=0)
+        public static int minClanHomeDist = 320;
+        @Config.Comment("This multiplied by the minimum clan home distance is how far away from other clans' homes to make the initial claim for a clan.")
+        @Config.RangeDouble(min=0)
+        public static double initialClaimSeparationMultiplier = 1.25;
+        @Config.Comment("If set to false, players will be warned if making the initial claim within the claim separation range, but not prevented from making the claim if they want to.")
+        public static boolean enforceInitialClaimSeparation = true;
+        @Config.Comment("Force clans to have connected claims.")
+        public static boolean forceConnectedClaims = true;
+        @Config.Comment("Prevents other clans from claiming around the edges of a clan's territory. When a chunk of land is between two clans' territories, the first clan to be near it takes precedence.")
+        public static boolean enableBorderlands = true;
+        @Config.Comment("Prevent mobs from spawning on claimed land")
+        public static boolean preventMobsOnClaims = true;
+        @Config.Comment("Prevents mobs from spawning in borderlands. Requires enableBorderlands and preventMobsOnClaims.")
+        public static boolean preventMobsOnBorderlands = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
+        @Config.Comment("Protect borderland from the members of the clan it borders. Requires protectWilderness and enableBorderlands.")
+        public static boolean protectEdgeTerritory = false;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
         //Raid configuration
@@ -246,6 +257,8 @@ public final class Clans {
         @Config.Comment("Amount of shield given to newly formed clans, in hours.")
         @Config.RangeInt(min=0)
         public static int initialShield = 24*3;
+        @Config.Comment("Prevents reclaiming TNT that was placed while raiding.")
+        public static boolean noReclaimTNT = true;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
