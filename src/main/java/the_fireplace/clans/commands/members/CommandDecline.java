@@ -14,6 +14,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -40,10 +41,12 @@ public class CommandDecline extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan declineClan = ClanCache.getInvite(sender.getUniqueID());
-		if(declineClan != null){
-			ClanCache.removeInvite(sender.getUniqueID());
+		Clan declineClan = ClanCache.removeInvite(sender.getUniqueID());
+		if(declineClan != null) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getClanName()).setStyle(TextStyles.GREEN));
+			for (Map.Entry<EntityPlayerMP, EnumRank> target : selectedClan.getOnlineMembers().entrySet())
+				if(target.getValue().greaterOrEquals(EnumRank.ADMIN))
+					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.decline.declined", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}

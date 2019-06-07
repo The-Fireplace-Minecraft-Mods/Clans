@@ -109,8 +109,9 @@ public final class ClanCache {
 		clanInvites.remove(player);
 	}
 
-	public static void removeInvite(UUID player) {
-		clanInvites.remove(player);
+	@Nullable
+	public static Clan removeInvite(UUID player) {
+		return clanInvites.remove(player);
 	}
 
 	public static HashMap<Clan, BlockPos> getClanHomes() {

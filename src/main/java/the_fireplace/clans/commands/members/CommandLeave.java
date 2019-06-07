@@ -16,6 +16,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -61,6 +62,8 @@ public class CommandLeave extends ClanSubCommand {
 		if(selectedClan.removeMember(sender.getUniqueID())) {
 			updateDefaultClan(sender, selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			for (Map.Entry<EntityPlayerMP, EnumRank> target : selectedClan.getOnlineMembers().entrySet())
+				target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.leave.left", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 		} else //Internal error because this should be unreachable
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}

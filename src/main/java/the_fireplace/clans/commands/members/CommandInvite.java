@@ -20,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,8 +54,10 @@ public class CommandInvite extends ClanSubCommand {
 				if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 					target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-				} else
+				} else {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
+					target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getClanName()).setStyle(TextStyles.YELLOW));
+				}
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else

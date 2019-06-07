@@ -137,10 +137,12 @@ commands.clan.map.usage=/clan map
 
 commands.clan.accept.usage=/clan accept
 commands.clan.accept.success=You joined %s.
+commands.clan.accept.accepted=%s joined %s.
 commands.clan.accept.no_invites=You don't have any pending invites.
 
 commands.clan.decline.usage=/clan decline
 commands.clan.decline.success=You declined the invitation to join %s.
+commands.clan.decline.declined=%s declined an invitation to join %s.
 
 commands.clan.demote.usage=/clan demote <player>
 
@@ -148,6 +150,7 @@ commands.clan.invite.usage=/clan invite <player>
 commands.clan.invite.success=You have invited %s to join %s.
 commands.clan.invite.invited=You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.
 commands.clan.invite.pending=The player %s has already been invited to join a clan. They must accept or decline that invitation first.
+commands.clan.invite.failedinvite=%s attempted to invite you, but you already have a pending invite from %2$s. You must accept or decline the invitation from %2$s before you can receive another invitation.
 commands.clan.invite.already_in_this=The player %s is already in %s.
 commands.clan.invite.already_in_any=The player %s is already in a clan.
 
@@ -156,12 +159,14 @@ commands.clan.kick.leave=To leave a clan, use /clan leave.
 commands.clan.kick.authority=You do not have the authority to kick out %s.
 commands.clan.kick.success=You have kicked %s out of %s.
 commands.clan.kick.kicked=You have been kicked out of %s by %s.
+commands.clan.kick.kicked=%s has been kicked out of %s by %s.
 commands.clan.kick.fail=The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.
 
 commands.clan.leave.usage=/clan leave
 commands.clan.leave.disband=You are the last member of %s. To disband it, use /clan disband.
 commands.clan.leave.promote=You cannot leave %s without a leader. Promote someone else to be a leader before leaving.
 commands.clan.leave.success=You have left %s.
+commands.clan.leave.left=%s has left %s.
 commands.clan.leave.error=Internal Error: You were unable to be removed from %s. Server owners, please report this.
 
 commands.clan.promote.usage=/clan promote <player>
