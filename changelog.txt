@@ -1,3 +1,5 @@
 Remove compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
 Made it possible to localize the mod
 Improved the consistency and quality of feedback messages
+Improved the feedback of member management commands
+Made commands dealing with clan funds give more feedback, making the clan financial management more transparent.
