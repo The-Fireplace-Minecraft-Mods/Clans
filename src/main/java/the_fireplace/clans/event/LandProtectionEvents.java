@@ -1,10 +1,7 @@
 package the_fireplace.clans.event;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDragonEgg;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
@@ -123,7 +120,8 @@ public class LandProtectionEvents {
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
-							RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
+							if(!Clans.cfg.noReclaimTNT || !(event.getBlockSnapshot().getCurrentBlock().getBlock() instanceof BlockTNT))
+								RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
 							RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
 						}
 					}
