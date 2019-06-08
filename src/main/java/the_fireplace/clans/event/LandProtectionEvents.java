@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,6 +15,7 @@ import net.minecraft.network.play.server.SPacketEntityEquipment;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -28,6 +30,7 @@ import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.BlockSerializeUtil;
+import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -264,6 +267,14 @@ public class LandProtectionEvents {
 					event.setCanceled(true);
                 }
             }
+		}
+	}
+
+	@SubscribeEvent
+	public static void onEntitySpawn(EntityJoinWorldEvent event) {
+		if(Clans.cfg.preventMobsOnClaims && !event.getWorld().isRemote && event.getEntity() instanceof IMob) {
+			if(CapHelper.getClaimedLandCapability(event.getWorld().getChunk(event.getEntity().getPosition())).getClan() != null)
+				event.setCanceled(true);
 		}
 	}
 }

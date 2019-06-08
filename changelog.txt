@@ -1,7 +1,14 @@
-Remove compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
+Additions:
+Added config option to prevent reclaiming TNT used in a raid
+Added support for clans subcommand permissions in permission managers that use Sponge or Forge
+Two additional permissions have been added to allow overriding wilderness protections for specific roles or players
+Added an option to prevent mobs from spawning on claimed land
+
+Changes:
+Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
 Made it possible to localize the mod
 Improved the consistency and quality of feedback messages
 Improved the feedback of member management commands
 Made commands dealing with clan funds give more feedback, making the clan financial management more transparent.
-Made it so TNT is not able to be reclaimed by default after using it in a raid
-All Clans subcommands now have permissions in any permission manager that uses Sponge or Forge.
+
+Fixes:
