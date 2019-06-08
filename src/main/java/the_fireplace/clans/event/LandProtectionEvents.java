@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
@@ -69,7 +70,7 @@ public class LandProtectionEvents {
 					ChunkUtils.clearChunkOwner(c);
 				}
 			}
-			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && (!(event.getPlayer() instanceof EntityPlayerMP) || !ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()))) {
+			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
 				event.setCanceled(true);
 				event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
 			}
@@ -130,7 +131,7 @@ public class LandProtectionEvents {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-				if (!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
 					event.setCanceled(true);
 					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 					if(((EntityPlayerMP) placingPlayer).connection != null)

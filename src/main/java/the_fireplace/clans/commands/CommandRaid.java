@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -12,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.raiding.*;
+import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -30,6 +32,19 @@ public class CommandRaid extends CommandBase {
 	    put("start", new CommandStartRaid());
         put("collect", new CommandCollect());
 	}};
+
+    private static final Map<String, String> aliases = Maps.newHashMap();
+
+    static {
+        aliases.put("j", "join");
+        aliases.put("l", "leave");
+        aliases.put("i", "invite");
+        aliases.put("c", "collect");
+    }
+
+    private static String processAlias(String subCommand) {
+        return aliases.getOrDefault(subCommand, subCommand);
+    }
 
     @Override
     public String getName() {
@@ -50,37 +65,19 @@ public class CommandRaid extends CommandBase {
             args = Arrays.copyOfRange(args, 1, args.length);
         else
             args = new String[]{};
-        if(Clans.cfg.maxRaidDuration <= 0 && !tag.equals("collect") && !tag.equals("c"))
+        if(Clans.cfg.maxRaidDuration <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
-        switch(tag){
-            //Commands for raiding parties
-            case "join":
-            case "j":
-                commands.get("join").execute(server, sender, args);
-                return;
-            case "leave":
-            case "l":
-                commands.get("leave").execute(server, sender, args);
-                return;
-            case "invite":
-            case "i":
-                commands.get("invite").execute(server, sender, args);
-                return;
-	        case "start":
-		        commands.get("start").execute(server, sender, args);
-		        return;
-            case "collect":
-            case "c":
-                commands.get("collect").execute(server, sender, args);
-                return;
-            //Help command
-            case "help":
-                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.raid.help")+"\nhelp");
+        if(PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {
+            if ("help".equals(tag)) {
+                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.raid.help") + "\nhelp");
                 CommandClan.buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
-                return;
-        }
-        throw new WrongUsageException(getUsage(sender));
+            } else if(commands.containsKey(processAlias(tag)))
+                commands.get(processAlias(tag)).execute(server, sender, args);
+            else
+                throw new WrongUsageException(getUsage(sender));
+        } else
+            throw new CommandException("commands.generic.permission");
     }
 
     @Override
@@ -92,11 +89,6 @@ public class CommandRaid extends CommandBase {
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return sender instanceof EntityPlayer;
-    }
-
-    private static final ArrayList<String> aliases = Lists.newArrayList();
-    static {
-        aliases.add("r");
     }
 
     @SuppressWarnings("Duplicates")
@@ -112,6 +104,6 @@ public class CommandRaid extends CommandBase {
 
     @Override
     public List<String> getAliases() {
-        return aliases;
+        return Lists.newArrayList("r");
     }
 }

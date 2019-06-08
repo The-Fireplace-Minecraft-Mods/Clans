@@ -41,20 +41,23 @@ minecraft {
 }
 
 dependencies {
-    //provided 'io.github.nucleuspowered:nucleus-api:1.9.2-S7.1'
     compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.2"
-    deobfProvided "us.dynmap:DynmapCoreAPI:${dynmapapi_version}"
-    //compile 'org.spongepowered:spongeapi:7.1.0'
+    deobfProvided "us.dynmap:DynmapCoreAPI:3.0-SNAPSHOT"
+    deobfProvided "journeymap-api:journeymap-api:1.12:1.4"
+    provided 'org.spongepowered:spongeapi:7.1.0'
 }
 
 repositories {
-    //maven {url='https://repo.drnaylor.co.uk/artifactory/minecraft/'}
     jcenter()
-	maven {
-		url "http://maven.shadowfacts.net/"
-	}
-	// Maven repo for Dynmap
-    maven { url = "http://repo.mikeprimm.com" }
+    mavenCentral()
+    // Sponge
+    maven { url 'https://repo.spongepowered.org/maven' }
+    // Forgelin
+	maven { url "http://maven.shadowfacts.net/" }
+	// Dynmap
+    maven { url "http://repo.mikeprimm.com" }
+    //iChunUtil, JourneyMap API, Chisels & Bits
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
 }
 
 processResources

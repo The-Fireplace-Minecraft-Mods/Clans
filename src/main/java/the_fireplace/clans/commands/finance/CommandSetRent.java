@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.finance;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -37,7 +38,9 @@ public class CommandSetRent extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+		if(Clans.cfg.chargeRentDays <= 0)
+			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
 		int newRent = Integer.valueOf(args[0]);
 		if(newRent >= 0) {
 			long maxRent = Clans.cfg.maxRent;

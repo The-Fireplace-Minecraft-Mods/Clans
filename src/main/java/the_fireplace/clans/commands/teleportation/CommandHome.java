@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.teleportation;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -45,7 +46,9 @@ public class CommandHome extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+		if(Clans.cfg.clanHomeWarmupTime <= -1)
+			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
 

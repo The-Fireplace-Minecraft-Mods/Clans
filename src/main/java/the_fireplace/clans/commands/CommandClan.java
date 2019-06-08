@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,6 +27,7 @@ import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
+import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -70,14 +72,38 @@ public class CommandClan extends CommandBase {
         if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
             put("balance", new CommandBalance());
             put("addfunds", new CommandAddFunds());
-            if(Clans.cfg.leaderWithdrawFunds)
-                put("takefunds", new CommandTakeFunds());
-            if(Clans.cfg.chargeRentDays > 0)
-                put("setrent", new CommandSetRent());
-            if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-                put("finances", new CommandFinances());
+            put("takefunds", new CommandTakeFunds());
+            put("setrent", new CommandSetRent());
+            put("finances", new CommandFinances());
         }
 	}};
+
+    private static final Map<String, String> aliases = Maps.newHashMap();
+    private static final List<String> financeCommands = Lists.newArrayList("balance", "addfunds", "takefunds", "setrent", "finances");
+
+    static {
+        aliases.put("c", "claim");
+        aliases.put("ac", "abandonclaim");
+        aliases.put("m", "map");
+        aliases.put("fm", "fancymap");
+        aliases.put("i", "invite");
+        aliases.put("create", "form");
+        aliases.put("b", "banner");
+        aliases.put("info", "details");
+        aliases.put("d", "details");
+        aliases.put("setdesc", "setdescription");
+        aliases.put("pi", "playerinfo");
+        aliases.put("setcolour", "setcolor");
+        aliases.put("h", "home");
+        aliases.put("t", "trapped");
+        aliases.put("deposit", "addfunds");
+        aliases.put("af", "addfunds");
+        aliases.put("withdraw", "takefunds");
+    }
+
+    private static String processAlias(String subCommand) {
+        return aliases.getOrDefault(subCommand, subCommand);
+    }
 
     @Override
     public String getName() {
@@ -108,159 +134,32 @@ public class CommandClan extends CommandBase {
                 args = Arrays.copyOfRange(args, 1, args.length);
             else
                 args = new String[]{};
-        switch(tag){
-            //Land Claiming
-            case "claim":
-            case "c":
-                commands.get("claim").execute(server, sender, args);
-                return;
-            case "abandonclaim":
-            case "ac":
-                commands.get("abandonclaim").execute(server, sender, args);
-                return;
-            case "map":
-            case "m":
-                commands.get("map").execute(server, sender, args);
-                return;
-            case "fancymap":
-            case "fm":
-                commands.get("fancymap").execute(server, sender, args);
-                return;
-            //Managing members
-            case "invite":
-            case "i":
-                commands.get("invite").execute(server, sender, args);
-                return;
-            case "kick":
-                commands.get("kick").execute(server, sender, args);
-                return;
-            case "accept":
-                commands.get("accept").execute(server, sender, args);
-                return;
-            case "decline":
-                commands.get("decline").execute(server, sender, args);
-                return;
-            case "leave":
-                commands.get("leave").execute(server, sender, args);
-                return;
-            case "promote":
-                commands.get("promote").execute(server, sender, args);
-                return;
-            case "demote":
-                commands.get("demote").execute(server, sender, args);
-                return;
-            //Setting clan details and home
-            case "form":
-            case "create":
-                commands.get("form").execute(server, sender, args);
-                return;
-	        case "disband":
-		        commands.get("disband").execute(server, sender, args);
-		        return;
-            case "sethome":
-                commands.get("sethome").execute(server, sender, args);
-                return;
-            case "banner":
-            case "b":
-                commands.get("banner").execute(server, sender, args);
-                return;
-            case "setbanner":
-                commands.get("setbanner").execute(server, sender, args);
-                return;
-            case "setname":
-                commands.get("setname").execute(server, sender, args);
-                return;
-            case "details":
-            case "info":
-            case "d":
-                commands.get("details").execute(server, sender, args);
-                return;
-            case "setdescription":
-            case "setdesc":
-                commands.get("setdescription").execute(server, sender, args);
-                return;
-            case "setdefault":
-                commands.get("setdefault").execute(server, sender, args);
-                return;
-            case "playerinfo":
-            case "pi":
-                commands.get("playerinfo").execute(server, sender, args);
-                return;
-            case "setcolor":
-            case "setcolour":
-                commands.get("setcolor").execute(server, sender, args);
-                return;
-            case "list":
-                commands.get("list").execute(server, sender, args);
-                return;
-            //Teleportation related
-            case "home":
-            case "h":
-                if(Clans.cfg.clanHomeWarmupTime > -1) {
-                    commands.get("home").execute(server, sender, args);
-                    return;
-                } else
-                    throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
-            case "trapped":
-            case "t":
-                commands.get("trapped").execute(server, sender, args);
-                return;
-            //Help command
-            case "help":
-                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.clan.help")+"\nhelp");
+        if(PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
+            if ("help".equals(tag)) {
+                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.clan.help") + "\nhelp");
                 buildHelpCommand(sender, commandsHelp, commands);
                 sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
                 return;
-        }
-        //Payment commands
-        if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
-            switch(tag){
-                case "balance":
-                    commands.get("balance").execute(server, sender, args);
-                    return;
-                case "addfunds":
-                case "deposit":
-                case "af":
-                    commands.get("addfunds").execute(server, sender, args);
-                    return;
-                case "takefunds":
-                case "withdraw":
-                    if(Clans.cfg.leaderWithdrawFunds)
-                        commands.get("takefunds").execute(server, sender, args);
-                    else
-                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.takefunds.disabled"));
-                    return;
-                case "setrent":
-                    if(Clans.cfg.chargeRentDays > 0)
-                        commands.get("setrent").execute(server, sender, args);
-                    else
-                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
-                    return;
-                case "finances":
-                    if(Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
-                        commands.get("finances").execute(server, sender, args);
-                    else
-                        throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.finances.disabled"));
-                    return;
+            } else if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
+                if(commands.containsKey(processAlias(tag)))
+                    commands.get(processAlias(tag)).execute(server, sender, args);
+                else
+                    throw new WrongUsageException(getUsage(sender));
+                return;
             }
-        }
+        } else
+            throw new CommandException("commands.generic.permission");
         throw new WrongUsageException(getUsage(sender));
     }
 
     @Override
-    public int getRequiredPermissionLevel()
-    {
+    public int getRequiredPermissionLevel() {
         return 0;
-    }
-
-    private static final ArrayList<String> aliases = Lists.newArrayList();
-    static {
-        aliases.add("c");
     }
 
     @Override
     public List<String> getAliases() {
-        return aliases;
+        return Lists.newArrayList("c");
     }
 
     @Override
