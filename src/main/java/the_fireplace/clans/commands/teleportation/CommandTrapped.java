@@ -49,7 +49,7 @@ public class CommandTrapped extends ClanSubCommand {
 		if(chunkOwner == null && Clans.cfg.protectWilderness && player.getPosition().getY() >= Clans.cfg.minWildernessY) {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
-		} else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getMembers().contains(player.getUniqueID()))) {
+		} else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {
 			int x = 0, z = 0, tmp, dx = 0, dz = -1;
 			while(true) {//Spiral out until a player friendly chunk is found
 				Chunk test = player.world.getChunk(origin.x + x, origin.z + z);

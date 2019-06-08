@@ -57,7 +57,7 @@ public final class RaidingParties {
 	}
 
 	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
-		return hasActiveRaid(c) && activeraids.get(c).getMembers().contains(player.getUniqueID());
+		return hasActiveRaid(c) && activeraids.get(c).getAttackers().contains(player.getUniqueID());
 	}
 
 	static void addRaid(Clan clan, Raid raid){
@@ -95,9 +95,9 @@ public final class RaidingParties {
 	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
 		for(EntityPlayerMP defender: raidTarget.getOnlineMembers().keySet())
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.init.defender", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
-		for(UUID attacker: getRaids().get(raidTarget).getMembers())
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getMemberCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
+		for(UUID attacker: getRaids().get(raidTarget).getAttackers())
+			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
 	}
 
 	private static void activateRaid(Clan raidTarget) {
@@ -106,7 +106,7 @@ public final class RaidingParties {
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		for(EntityPlayerMP defender: raidTarget.getOnlineMembers().keySet())
 			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
-		for(UUID attacker: getActiveRaid(raidTarget).getMembers())
+		for(UUID attacker: getActiveRaid(raidTarget).getAttackers())
 			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
 	}
 
@@ -117,7 +117,7 @@ public final class RaidingParties {
 			defender.sendMessage(defenderMessage);
 		}
 
-		for(UUID attackerId: getActiveRaid(targetClan).getInitMembers()) {
+		for(UUID attackerId: getActiveRaid(targetClan).getInitAttackers()) {
 			EntityPlayerMP attacker = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attackerId);
 			//noinspection ConstantConditions
 			if(attacker != null) {
@@ -129,7 +129,7 @@ public final class RaidingParties {
 		}
 
 		Raid raid = activeraids.remove(targetClan);
-		for(UUID player: raid.getMembers())
+		for(UUID player: raid.getAttackers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
 		for(int id: DimensionManager.getIDs())

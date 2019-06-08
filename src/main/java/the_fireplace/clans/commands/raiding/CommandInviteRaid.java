@@ -50,14 +50,14 @@ public class CommandInviteRaid extends RaidSubCommand {
 				assert server != null;
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, args[0]);
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-				if(clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
+				if(clanPlayers.size() > raid.getAttackerCount() - Clans.cfg.maxRaidersOffset) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
 						targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", targetPlayer.getName()).setStyle(TextStyles.GREEN));
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");

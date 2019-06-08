@@ -41,7 +41,7 @@ public class CommandStartRaid extends RaidSubCommand {
 			if (raid != null) {
 				assert server != null;
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-				if(clanPlayers.size() >= raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
+				if(clanPlayers.size() >= raid.getAttackerCount() - Clans.cfg.maxRaidersOffset) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
 							long raidCost = Clans.cfg.startRaidCost;
@@ -58,7 +58,7 @@ public class CommandStartRaid extends RaidSubCommand {
 					} else //This should not be possible
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.error", Math.round(100f*(Clans.cfg.defenseShield*60f*60f+raid.getRemainingSeconds())/60f/60f)/100f).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");

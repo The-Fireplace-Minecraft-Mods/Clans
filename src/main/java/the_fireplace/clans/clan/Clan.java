@@ -383,6 +383,9 @@ public class Clan {
         return shield > 0;
     }
 
+    /**
+     * Gets the amount of shield remaining on the clan, in minutes.
+     */
     public long getShield() {
         return shield;
     }
