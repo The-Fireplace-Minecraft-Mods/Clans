@@ -29,10 +29,7 @@ import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
 import the_fireplace.clans.raid.RaidRestoreDatabase;
 import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.BlockSerializeUtil;
-import the_fireplace.clans.util.CapHelper;
-import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.ArrayList;
@@ -52,7 +49,7 @@ public class LandProtectionEvents {
 					if (breakingPlayer instanceof EntityPlayerMP) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
 						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
-						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided) {
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !FakePlayerUtil.isAllowedFakePlayer(breakingPlayer)) {
 							event.setCanceled(true);
 							breakingPlayer.sendMessage(TranslationUtil.getTranslation(breakingPlayer.getUniqueID(), "clans.protection.break.claimed").setStyle(TextStyles.RED));
 						} else if (isRaided) {
@@ -73,7 +70,7 @@ public class LandProtectionEvents {
 					ChunkUtils.clearChunkOwner(c);
 				}
 			}
-			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
+			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer()) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
 				event.setCanceled(true);
 				event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
 			}
@@ -115,7 +112,7 @@ public class LandProtectionEvents {
 					Clan chunkClan = ClanCache.getClanById(chunkOwner);
 					if (chunkClan != null) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
-						if (!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) {
+						if ((!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
 							event.setCanceled(true);
 							EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 							if(((EntityPlayerMP) placingPlayer).connection != null)
@@ -134,7 +131,7 @@ public class LandProtectionEvents {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY)) {
+				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
 					event.setCanceled(true);
 					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 					if(((EntityPlayerMP) placingPlayer).connection != null)
@@ -248,9 +245,9 @@ public class LandProtectionEvents {
             	return;
             if(entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
 				ArrayList<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
-				if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)))
+				if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null)) && !FakePlayerUtil.isAllowedFakePlayer(event.getSource().getTrueSource()))
 					event.setCanceled(true);
-				else if(RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null))) {
+				else if((RaidingParties.hasActiveRaid(chunkClan) && (source instanceof EntityPlayer || (source instanceof EntityTameable && ((EntityTameable) source).getOwnerId() != null))) && !FakePlayerUtil.isAllowedFakePlayer(event.getSource().getTrueSource())) {
 					for (Clan entityClan : entityClans)
 						if (RaidingParties.isRaidedBy(entityClan, source instanceof EntityPlayer ? (EntityPlayer) source : (((EntityTameable) source).getOwner() instanceof EntityPlayer ? (EntityPlayer) ((EntityTameable) source).getOwner() : null)))
 							return;
@@ -262,7 +259,7 @@ public class LandProtectionEvents {
                         return;//Raiders can harm things
                     UUID sourceId = source instanceof EntityPlayer ? source.getUniqueID() : ((EntityTameable) source).getOwnerId();
                     ArrayList<Clan> sourceClans = ClanCache.getPlayerClans(sourceId);
-                    if(sourceClans.contains(chunkClan) || chunkClan == null || RaidingParties.hasActiveRaid(chunkClan))
+                    if(sourceClans.contains(chunkClan) || chunkClan == null || RaidingParties.hasActiveRaid(chunkClan) || FakePlayerUtil.isAllowedFakePlayer(event.getSource().getTrueSource()))
                         return;//Players can harm things
 					event.setCanceled(true);
                 }
