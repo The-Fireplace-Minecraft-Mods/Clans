@@ -3,9 +3,11 @@ package the_fireplace.clans.util;
 import com.google.common.collect.Maps;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import the_fireplace.clans.commands.details.CommandSetColor;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TextStyles {
     public static final Style RED = new Style().setColor(TextFormatting.RED);
@@ -18,7 +20,8 @@ public class TextStyles {
     public static final Style OFFLINE_LEADER = new Style().setBold(Boolean.TRUE).setItalic(Boolean.TRUE).setColor(TextFormatting.YELLOW);
     public static final Style OFFLINE_ADMIN = new Style().setBold(Boolean.TRUE).setColor(TextFormatting.YELLOW);
 
-    private static HashMap<Color, TextFormatting> colorMap = Maps.newHashMap();
+    private static final HashMap<Color, TextFormatting> colorMap = Maps.newHashMap();
+    public static final HashMap<String, Integer> colorStrings = Maps.newHashMap();
     static {
         colorMap.put(new Color(0x000000), TextFormatting.BLACK);
         colorMap.put(new Color(0x0000AA), TextFormatting.DARK_BLUE);
@@ -36,6 +39,9 @@ public class TextStyles {
         colorMap.put(new Color(0xFF55FF), TextFormatting.LIGHT_PURPLE);
         colorMap.put(new Color(0xFFFF55), TextFormatting.YELLOW);
         colorMap.put(new Color(0xFFFFFF), TextFormatting.WHITE);
+
+        for(Map.Entry<Color, TextFormatting> entry : colorMap.entrySet())
+            colorStrings.put(entry.getValue().toString().toLowerCase(), entry.getKey().getRGB());
     }
 
     public static TextFormatting getNearestTextColor(int exactColor) {

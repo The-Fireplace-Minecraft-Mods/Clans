@@ -4,6 +4,7 @@ Added support for clans subcommand permissions in permission managers that use S
 Two additional permissions have been added to allow overriding wilderness protections for specific roles or players
 Added an option to prevent mobs from spawning on claimed land
 Added a way to set which FakePlayers are allowed to do things
+Added support for basic minecraft color strings in /clan setcolor
 
 Changes:
 Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
