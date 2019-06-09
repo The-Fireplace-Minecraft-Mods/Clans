@@ -1,12 +1,10 @@
 package the_fireplace.clans.permissions;
 
-import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Loader;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.compat.sponge.SpongePermissionHandler;
-
-import java.util.List;
 
 public final class PermissionManager {
 
@@ -15,19 +13,20 @@ public final class PermissionManager {
     public static final String RAID_COMMAND_PREFIX = "command.clans.raid.";
     public static final String PROTECTION_PREFIX = "clans.protection.";
 
-    private static List<IPermissionHandler> permissionManagers = Lists.newArrayList();
+    private static IPermissionHandler permissionManager;
 
     public static void registerPermissionHandlers() {
-        permissionManagers.add(new ForgePermissionHandler());
-        if(Loader.isModLoaded("spongeapi"))
-            permissionManagers.add(new SpongePermissionHandler());
+        if(Loader.isModLoaded("spongeapi") && !Clans.cfg.forgePermissionPrecedence)
+            permissionManager = new SpongePermissionHandler();
+        else
+            permissionManager = new ForgePermissionHandler();
     }
 
     public static boolean hasPermission(EntityPlayerMP player, String permissionKey) {
-        for(IPermissionHandler perm: permissionManagers)
-            if(!perm.hasPermission(player, permissionKey))
-                return false;
-        return true;
+        if(permissionManager != null)
+            return permissionManager.hasPermission(player, permissionKey);
+        else
+            return true;
     }
 
     public static boolean hasPermission(ICommandSender sender, String permissionKey) {

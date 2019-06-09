@@ -213,6 +213,8 @@ public final class Clans {
         public static String[] tolerableFakePlayers = {"*"};
         @Config.Comment("Dump FakePlayer names to the console/log as they're discovered. Used to find out what to use to enable/disable a FakePlayer in tolerableFakePlayers")
         public static boolean fakePlayerDump = false;
+        @Config.Comment("Whether Forge takes precedence over Sponge when finding permissions. Set this to true if your permissions manager uses Forge.")
+        public static boolean forgePermissionPrecedence = false;
         //Clan guard
         @Config.Comment("Minimum number of blocks between clan homes.")
         @Config.RangeInt(min=0)
