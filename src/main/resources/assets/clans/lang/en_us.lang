@@ -52,7 +52,7 @@ commands.clan.form.success=Clan formed.
 commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s %s.
 commands.clan.form.already_in_clan=You are already in a clan.
 
-commands.clan.list.usage=/clan list
+commands.clan.list.usage=/clan list [sort]
 commands.clan.list.clans=Clans on this server:
 commands.clan.list.listitem=%s - %s
 commands.clan.list.noclans=There are no clans on this server.

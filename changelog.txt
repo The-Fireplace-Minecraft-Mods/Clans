@@ -11,5 +11,6 @@ Made it possible to localize the mod
 Improved the consistency and quality of feedback messages
 Improved the feedback of member management commands
 Made commands dealing with clan funds give more feedback, making the clan financial management more transparent.
+It is now possible to sort /clan list, with the default being alphabetical sort. Other options are sort by money, land, and members.
 
 Fixes:
