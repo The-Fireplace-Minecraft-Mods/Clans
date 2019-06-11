@@ -51,9 +51,8 @@ public class NewClan {
 
         // Ensure that the starting balance of the account is 0,
         //  to prevent "free money" from the creation of a new bank account
-        if (Clans.getPaymentHandler().getBalance(clanId) > 0) {
+        if (Clans.getPaymentHandler().getBalance(clanId) > 0)
             Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
-        }
 
         Clans.getPaymentHandler().addAmount(Clans.cfg.formClanBankAmount, clanId);
         ClanCache.purgePlayerCache(leader);
@@ -145,9 +144,10 @@ public class NewClan {
         return leaders;
     }
 
-    public void payLeaders(long totalAmount) {
+    public long payLeaders(long totalAmount) {
         ArrayList<UUID> leaders = getLeaders();
-        if(leaders.isEmpty()) return;
+        if(leaders.isEmpty())
+            return totalAmount;
         long remainder = totalAmount % leaders.size();
         totalAmount /= leaders.size();
         for(UUID leader: leaders) {
@@ -155,6 +155,7 @@ public class NewClan {
             if(remainder-- > 0)
                 Clans.getPaymentHandler().addAmount(1, leader);
         }
+        return 0;
     }
 
     public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {

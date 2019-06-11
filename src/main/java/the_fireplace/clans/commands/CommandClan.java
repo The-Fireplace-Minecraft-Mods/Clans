@@ -470,18 +470,20 @@ public class CommandClan {
         if(!clan.isOpclan()) {
             if (NewClanDatabase.removeClan(clan.getClanId())) {
                 long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
+                long rem;
                 distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
                 if (Clans.cfg.leaderRecieveDisbandFunds) {
-                    clan.payLeaders(distFunds);
-                    distFunds = 0;
+                    distFunds = clan.payLeaders(distFunds);
+                    rem = distFunds % clan.getMemberCount();
+                    distFunds /= clan.getMemberCount();
                 } else {
-                    clan.payLeaders(distFunds % clan.getMemberCount());
+                    rem = clan.payLeaders(distFunds % clan.getMemberCount());
                     distFunds /= clan.getMemberCount();
                 }
                 for (UUID member : clan.getMembers().keySet()) {
                     Clans.getPaymentHandler().ensureAccountExists(member);
-                    if (!Clans.getPaymentHandler().addAmount(distFunds, member))
-                        clan.payLeaders(distFunds);
+                    if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
+                        rem += clan.payLeaders(distFunds);
                     EntityPlayerMP player;
                     try {
                         player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
