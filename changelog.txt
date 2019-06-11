@@ -1,1 +1,3 @@
 Fixed clan members getting disconnected if they were removed from a raid
+Fixed the spacing of the raid completion message
+Fixed a crash if clans are leaderless when disbanded (its_meow)

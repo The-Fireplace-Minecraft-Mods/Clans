@@ -109,17 +109,17 @@ public final class RaidingParties {
 	public static void endRaid(NewClan targetClan, boolean raiderVictory) {
 		TextComponentTranslation defenderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
 		if(raiderVictory)
-			defenderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.YELLOW);
+			defenderMessage.appendSibling(new TextComponentString(" The raiders were victorious!")).setStyle(TextStyles.YELLOW);
 		else
-			defenderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.GREEN);
+			defenderMessage.appendSibling(new TextComponentTranslation(" %s was victorious!", targetClan.getClanName())).setStyle(TextStyles.GREEN);
 		for(EntityPlayerMP member: targetClan.getOnlineMembers().keySet())
 			member.sendMessage(defenderMessage);
 
 		TextComponentTranslation raiderMessage = new TextComponentTranslation("The raid against %s has ended!", targetClan.getClanName());
 		if(raiderVictory)
-			raiderMessage.appendSibling(new TextComponentString("The raiders were victorious!")).setStyle(TextStyles.GREEN);
+			raiderMessage.appendSibling(new TextComponentString(" The raiders were victorious!")).setStyle(TextStyles.GREEN);
 		else
-			raiderMessage.appendSibling(new TextComponentTranslation("%s was victorious!", targetClan.getClanName())).setStyle(TextStyles.YELLOW);
+			raiderMessage.appendSibling(new TextComponentTranslation(" %s was victorious!", targetClan.getClanName())).setStyle(TextStyles.YELLOW);
 		for(UUID member: getActiveRaid(targetClan).getInitAttackers()) {
 			EntityPlayerMP player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
 			if(player != null)
