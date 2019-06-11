@@ -67,7 +67,7 @@ public class Timer {
 				if (Clans.cfg.clanUpkeepDays > 0 || Clans.cfg.chargeRentDays > 0)
 					for (NewClan clan : NewClanDatabase.getClans()) {
 						if (Clans.cfg.chargeRentDays > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
-							Clans.LOGGER.debug("Charging rent for %s.", clan.getClanName());
+							Clans.LOGGER.debug("Charging rent for {}.", clan.getClanName());
 							for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
 								if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
 									Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
@@ -84,7 +84,7 @@ public class Timer {
 							clan.updateNextRentTimeStamp();
 						}
 						if (Clans.cfg.clanUpkeepDays > 0 && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
-							Clans.LOGGER.debug("Charging upkeep for %s.", clan.getClanName());
+							Clans.LOGGER.debug("Charging upkeep for {}.", clan.getClanName());
 							int upkeep = Clans.cfg.clanUpkeepCost;
 							if (Clans.cfg.multiplyUpkeepMembers)
 								upkeep *= clan.getMemberCount();
@@ -198,14 +198,15 @@ public class Timer {
 					for(NewClan pc: playerClans)
 						if (RaidingParties.hasActiveRaid(pc)) {
 							Raid r = RaidingParties.getActiveRaid(pc);
-							if (pc.getClanId().equals(chunkClan))
-								r.resetDefenderAbandonmentTime(player.getUniqueID());
-							else
-								r.incrementDefenderAbandonmentTime(player);
+							if(r.getDefenders().contains(player.getUniqueID()))
+								if (pc.getClanId().equals(chunkClan))
+									r.resetDefenderAbandonmentTime(player.getUniqueID());
+								else
+									r.incrementDefenderAbandonmentTime(player);
 						}
 					if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID())) {
 						Raid r = RaidingParties.getRaid(player);
-						if (r.isActive()) {
+						if (r.isActive() && r.getAttackers().contains(player.getUniqueID())) {
 							if (r.getTarget().getClanId().equals(chunkClan))
 								r.resetAttackerAbandonmentTime(player.getUniqueID());
 							else

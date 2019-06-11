@@ -1,1 +1,1 @@
-Fix issues with counting and using online players
+Fixed clan members getting disconnected if they were removed from a raid
