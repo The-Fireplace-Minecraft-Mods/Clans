@@ -147,6 +147,7 @@ public class NewClan {
 
     public void payLeaders(long totalAmount) {
         ArrayList<UUID> leaders = getLeaders();
+        if(leaders.isEmpty()) return;
         long remainder = totalAmount % leaders.size();
         totalAmount /= leaders.size();
         for(UUID leader: leaders) {
