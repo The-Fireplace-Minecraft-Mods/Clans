@@ -23,7 +23,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'net.cazzar.gradle.modsio'
 
-version = "1.2.9"
+version = "1.2.11"
 group = "the_fireplace.clans"
 archivesBaseName = "Clans-1.13.2"
 
@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
+	minecraft 'net.minecraftforge:forge:1.13.2-25.0.219'
     compile name:'GrandEconomy-1.13.2-1.1.1-deobf'
 }
 
@@ -99,7 +99,7 @@ curseforge {
     mainArtifact(jar) {
         displayName = jar.archiveName.replace(".jar", "")
         relations{
-            optionalLibrary 'grand-economy'
+            optionalDependency 'grand-economy'
         }
     }
     addArtifact(deobfJar) {

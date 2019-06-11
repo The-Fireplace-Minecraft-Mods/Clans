@@ -15,18 +15,18 @@ import the_fireplace.clans.util.TextStyles;
 import java.util.*;
 
 public class Raid {
-	private ArrayList<UUID> initMembers;
-	private HashMap<UUID, Integer> members, defenders;
+	private ArrayList<UUID> initAttackers;
+	private HashMap<UUID, Integer> attackers, defenders;
 	private NewClan target;
 	private int remainingSeconds = Clans.cfg.maxRaidDuration * 60;
 	private long cost;
 	private boolean isActive;
 
 	public Raid(UUID starter, NewClan targetClan){
-		members = Maps.newHashMap();
-		initMembers = Lists.newArrayList();
+		attackers = Maps.newHashMap();
+		initAttackers = Lists.newArrayList();
 		defenders = Maps.newHashMap();
-		addMember(starter);
+		addAttacker(starter);
 		this.target = targetClan;
 		cost = 0;
 		RaidingParties.addRaid(target, this);
@@ -40,9 +40,9 @@ public class Raid {
 		if(Clans.cfg.winRaidMultiplierPlayers)
 			reward *= defenders.size();
 		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getClanId());
-		long remainder = reward % initMembers.size();
-		reward /= initMembers.size();
-		for(UUID player: initMembers) {
+		long remainder = reward % initAttackers.size();
+		reward /= initAttackers.size();
+		for(UUID player: initAttackers) {
 			Clans.getPaymentHandler().ensureAccountExists(player);
 			Clans.getPaymentHandler().addAmount(reward, player);
 			if(remainder-- > 0)
@@ -60,29 +60,33 @@ public class Raid {
 		target.addWin();
 	}
 
-	public Set<UUID> getMembers() {
-		return members.keySet();
+	public Set<UUID> getAttackers() {
+		return attackers.keySet();
 	}
 
-	public ArrayList<UUID> getInitMembers() {
-		return initMembers;
+	public Set<UUID> getDefenders() {
+		return defenders.keySet();
 	}
 
-	public int getMemberCount(){
-		return members.size();
+	public ArrayList<UUID> getInitAttackers() {
+		return initAttackers;
 	}
 
-	public void addMember(UUID player) {
-		this.members.put(player, 0);
-		this.initMembers.add(player);
+	public int getAttackerCount(){
+		return attackers.size();
+	}
+
+	public void addAttacker(UUID player) {
+		this.attackers.put(player, 0);
+		this.initAttackers.add(player);
 		RaidingParties.addRaider(player, this);
 	}
 
-	public boolean removeMember(UUID player) {
-		boolean rm = this.members.remove(player) != null;
+	public boolean removeAttacker(UUID player) {
+		boolean rm = this.attackers.remove(player) != null;
 		if(rm) {
 			RaidingParties.removeRaider(player);
-			if(this.members.isEmpty()) {
+			if(this.attackers.isEmpty()) {
 				if(isActive)
 					defenderVictory();
 				else
@@ -105,9 +109,9 @@ public class Raid {
 			for(UUID defender: defenders.keySet()) {
 				EntityPlayerMP d2 = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(defender);
 				if(d2 != null)
-					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, members.size()).setStyle(TextStyles.YELLOW));
+					d2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! You will glow until the raid ends! There are %s raiders still alive.", target.getClanName(), Clans.cfg.remainingTimeToGlow, attackers.size()).setStyle(TextStyles.YELLOW));
 			}
-			for(UUID member: getMembers()) {
+			for(UUID member: getAttackers()) {
 				EntityPlayerMP m2 = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(member);
 				if(m2 != null)
 					m2.sendMessage(new TextComponentTranslation("The raid against %s has %s minutes remaining! The %s remaining defending players will glow until the raid ends!", target.getClanName(), Clans.cfg.remainingTimeToGlow, defenders.size()).setStyle(TextStyles.YELLOW));
@@ -123,20 +127,20 @@ public class Raid {
 	}
 
 	public int getAttackerAbandonmentTime(UUID member) {
-		return members.get(member);
+		return attackers.get(member);
 	}
 
 	public void incrementAttackerAbandonmentTime(EntityPlayerMP member) {
-		members.put(member.getUniqueID(), members.get(member.getUniqueID()) + 1);
-		if(members.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
-			removeMember(member.getUniqueID());
+		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
+		if(attackers.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
+			removeAttacker(member.getUniqueID());
 			member.sendMessage(new TextComponentString("You have been removed from your raid because you spent too long outside the target's territory.").setStyle(TextStyles.YELLOW));
-		} else if(members.get(member.getUniqueID()) == 1)
+		} else if(attackers.get(member.getUniqueID()) == 1)
 			member.sendMessage(new TextComponentString("You are not in the target clan's territory. If you stay outside it for longer than "+Clans.cfg.maxAttackerAbandonmentTime+" seconds, you will be removed from the raiding party.").setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetAttackerAbandonmentTime(UUID member) {
-		members.put(member, 0);
+		attackers.put(member, 0);
 	}
 
 	public int getDefenderAbandonmentTime(UUID member) {
@@ -146,7 +150,7 @@ public class Raid {
 	public void incrementDefenderAbandonmentTime(EntityPlayerMP defender) {
 		if(defender == null)
 			return;
-		defenders.put(defender.getUniqueID(), members.get(defender.getUniqueID()) + 1);
+		defenders.put(defender.getUniqueID(), attackers.get(defender.getUniqueID()) + 1);
 		if(defenders.get(defender.getUniqueID()) > Clans.cfg.maxClanDesertionTime * 2)//Times two because this is called every half second
 			removeDefender(defender.getUniqueID());
 		else if(defenders.get(defender.getUniqueID()) == 1)

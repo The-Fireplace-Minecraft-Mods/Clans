@@ -92,11 +92,11 @@ public class CommandRaid {
                         } else
                             throwCommandFailure("Target clan is currently shielded! Try again in %s hours.", Math.round(100f*target.getShield()/60)/100f);
                     } else { //Join an existing raid
-                        if(clanPlayers.size() + Clans.cfg.maxRaidersOffset > raid.getMemberCount()) {
-                            raid.addMember(context.getSource().assertIsEntity().getUniqueID());
+                        if(clanPlayers.size() + Clans.cfg.maxRaidersOffset > raid.getAttackerCount()) {
+                            raid.addAttacker(context.getSource().assertIsEntity().getUniqueID());
                             sendFeedback(context, TextStyles.GREEN,"You successfully joined the raiding party against %s!", target.getClanName());
                         } else
-                            throwCommandFailure("Target raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
+                            throwCommandFailure("Target raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
                     }
                 } else
                     throwCommandFailure("You cannot raid your own clan!");
@@ -135,14 +135,14 @@ public class CommandRaid {
             if (raid != null) {
                 EntityPlayerMP targetPlayer = EntityArgument.getPlayer(context, "player");
                 HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-                if (clanPlayers.size() > raid.getMemberCount() - Clans.cfg.maxRaidersOffset) {
+                if (clanPlayers.size() > raid.getAttackerCount() - Clans.cfg.maxRaidersOffset) {
                     if (!clanPlayers.containsKey(targetPlayer)) {
                         targetPlayer.sendMessage(new TextComponentTranslation("You have been invited to a raiding party against %1$s! To join, type /raid join %1$s", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
                         sendFeedback(context, TextStyles.GREEN,"You successfully invited %s to the raiding party!", targetPlayer.getName());
                     } else
                         throwCommandFailure("You cannot invite someone to raid their own clan!");
                 } else
-                    throwCommandFailure("Your raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
+                    throwCommandFailure("Your raiding party cannot hold any more people! It has %s raiders and the limit is currently %s.", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
             } else//Internal error because we should not reach this point
                 throwCommandFailure("Internal error: You are not in a raiding party!");
         } else
@@ -154,7 +154,7 @@ public class CommandRaid {
         if(RaidingParties.getRaidingPlayers().contains(context.getSource().assertIsEntity().getUniqueID())) {
             Raid raid = RaidingParties.getRaid(context.getSource().asPlayer());
             if (raid != null) {
-                raid.removeMember(context.getSource().assertIsEntity().getUniqueID());
+                raid.removeAttacker(context.getSource().assertIsEntity().getUniqueID());
                 sendFeedback(context, TextStyles.GREEN,"You successfully left the raiding party against %s!", raid.getTarget().getClanName());
             } else//Internal error because we should not reach this point
                 throwCommandFailure("Internal error: You are not in a raiding party!");
@@ -168,7 +168,7 @@ public class CommandRaid {
             Raid raid = RaidingParties.getRaid(context.getSource().asPlayer());
             if (raid != null) {
                 HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-                if(clanPlayers.size() + Clans.cfg.maxRaidersOffset >= raid.getMemberCount()) {
+                if(clanPlayers.size() + Clans.cfg.maxRaidersOffset >= raid.getAttackerCount()) {
                     if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
                         if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
                             long raidCost = Clans.cfg.startRaidCost;
@@ -185,7 +185,7 @@ public class CommandRaid {
                     } else//This should not be possible
                         throwCommandFailure("Internal error: Another raiding party is raiding this clan right now. Try again in %s hours.", Math.round(100f*(Clans.cfg.defenseShield*60f*60f+raid.getRemainingSeconds())/60f/60f)/100f);
                 } else
-                    throwCommandFailure("Your raiding party has too many people! It has %s raiders and the limit is currently %s.", raid.getMemberCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
+                    throwCommandFailure("Your raiding party has too many people! It has %s raiders and the limit is currently %s.", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset);
             } else//Internal error because we should not reach this point
                 throwCommandFailure("Internal error: You are not in a raiding party!");
         } else

@@ -17,13 +17,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBanner;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -1220,7 +1218,7 @@ public class CommandClan {
         if(chunkOwner == null && Clans.cfg.protectWilderness && context.getSource().asPlayer().getPosition().getY() >= Clans.cfg.minWildernessY) {
             BlockPos spawn = context.getSource().asPlayer().world.getSpawnPoint();
             context.getSource().asPlayer().attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
-        } else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getMembers().contains(context.getSource().asPlayer()))) {
+        } else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(context.getSource().asPlayer()))) {
             int x = 0, z = 0, tmp, dx = 0, dz = -1;
             while(true) {//Spiral out until a player friendly chunk is found
                 Chunk test = context.getSource().asPlayer().world.getChunk(origin.x + x, origin.z + z);
