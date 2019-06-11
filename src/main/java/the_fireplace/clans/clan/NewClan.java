@@ -147,14 +147,13 @@ public class NewClan {
 
     public void payLeaders(long totalAmount) {
         ArrayList<UUID> leaders = getLeaders();
-        if(leaders.size() > 0) {
-            long remainder = totalAmount % leaders.size();
-            totalAmount /= leaders.size();
-            for(UUID leader: leaders) {
-                Clans.getPaymentHandler().addAmount(totalAmount, leader);
-                if(remainder-- > 0)
-                    Clans.getPaymentHandler().addAmount(1, leader);
-            }
+        if(leaders.isEmpty()) return;
+        long remainder = totalAmount % leaders.size();
+        totalAmount /= leaders.size();
+        for(UUID leader: leaders) {
+            Clans.getPaymentHandler().addAmount(totalAmount, leader);
+            if(remainder-- > 0)
+                Clans.getPaymentHandler().addAmount(1, leader);
         }
     }
 
