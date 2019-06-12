@@ -117,7 +117,7 @@ public abstract class ClanSubCommand extends CommandBase {
     }
 
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		Clans.LOGGER.error("This point should not have been reached. Command sender is a %s.", sender.getClass().getCanonicalName());
+		Clans.LOGGER.error("This point should not have been reached. Command sender is a {}.", sender.getClass().getCanonicalName());
 		throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "commands.clan.common.player"));
 	}
 

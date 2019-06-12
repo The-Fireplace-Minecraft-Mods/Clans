@@ -19,7 +19,7 @@ public class ClansLanguageMap {
     /** A Splitter that splits a string on the first "=".  For example, "a=b=c" would split into ["a", "b=c"]. */
     private static final Splitter EQUAL_SIGN_SPLITTER = Splitter.on('=').limit(2);
     private static final ClansLanguageMap instance = new ClansLanguageMap(Clans.cfg.locale);
-    private final Map<String, String> languageList = Maps.<String, String>newHashMap();
+    private final Map<String, String> languageList = Maps.newHashMap();
 
     ClansLanguageMap(String locale) {
         InputStream inputstream = ClansLanguageMap.class.getResourceAsStream("/assets/clans/lang/" + locale + ".lang");

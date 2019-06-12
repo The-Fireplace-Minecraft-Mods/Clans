@@ -3,7 +3,6 @@ package the_fireplace.clans.util;
 import com.google.common.collect.Maps;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.commands.details.CommandSetColor;
 
 import java.awt.*;
 import java.util.HashMap;

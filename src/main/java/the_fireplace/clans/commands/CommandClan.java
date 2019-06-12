@@ -167,7 +167,6 @@ public class CommandClan extends CommandBase {
         return sender instanceof EntityPlayer;
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         String[] args2;

@@ -10,7 +10,6 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.permissions.IPermissionHandler;
 
 import static the_fireplace.clans.permissions.PermissionManager.*;
-import static the_fireplace.clans.permissions.PermissionManager.PROTECTION_PREFIX;
 
 public class SpongePermissionHandler implements IPermissionHandler {
 

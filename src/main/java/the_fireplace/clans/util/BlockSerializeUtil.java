@@ -8,10 +8,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import java.util.Objects;
+
 public class BlockSerializeUtil {
 	public static String blockToString(IBlockState state) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("name", state.getBlock().getRegistryName().toString());
+		nbt.setString("name", Objects.requireNonNull(state.getBlock().getRegistryName()).toString());
 		nbt.setInteger("meta", state.getBlock().getMetaFromState(state));
 		return nbt.toString();
 	}
@@ -24,6 +26,6 @@ public class BlockSerializeUtil {
 			e.printStackTrace();
 			return Blocks.AIR.getDefaultState();
 		}
-		return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("name"))).getStateFromMeta(nbt.getInteger("meta"));
+		return Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("name")))).getStateFromMeta(nbt.getInteger("meta"));
 	}
 }

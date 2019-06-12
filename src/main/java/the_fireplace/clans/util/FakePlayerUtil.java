@@ -8,7 +8,7 @@ public class FakePlayerUtil {
     public static boolean isAllowedFakePlayer(Object entity) {
         if(entity instanceof FakePlayer) {
             if(Clans.cfg.fakePlayerDump)
-                Clans.LOGGER.info("Fake Player is being checked: %s", ((FakePlayer) entity).getName());
+                Clans.LOGGER.info("Fake Player is being checked: {}", ((FakePlayer) entity).getName());
             return ArrayUtils.contains(Clans.cfg.tolerableFakePlayers, "*") != ArrayUtils.contains(Clans.cfg.tolerableFakePlayers, ((FakePlayer) entity).getName());
         } else
             return false;
