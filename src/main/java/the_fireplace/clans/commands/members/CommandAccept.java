@@ -48,7 +48,7 @@ public class CommandAccept extends ClanSubCommand {
 			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 				CapHelper.getPlayerClanCapability(sender).setDefaultClan(acceptClan.getClanId());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
-			for (Map.Entry<EntityPlayerMP, EnumRank> target : selectedClan.getOnlineMembers().entrySet())
+			for (Map.Entry<EntityPlayerMP, EnumRank> target : acceptClan.getOnlineMembers().entrySet())
 				if(!sender.getUniqueID().equals(target.getKey().getUniqueID()))
 					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.accept.accepted", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else

@@ -44,7 +44,7 @@ public class CommandDecline extends ClanSubCommand {
 		Clan declineClan = ClanCache.removeInvite(sender.getUniqueID());
 		if(declineClan != null) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getClanName()).setStyle(TextStyles.GREEN));
-			for (Map.Entry<EntityPlayerMP, EnumRank> target : selectedClan.getOnlineMembers().entrySet())
+			for (Map.Entry<EntityPlayerMP, EnumRank> target : declineClan.getOnlineMembers().entrySet())
 				if(target.getValue().greaterOrEquals(EnumRank.ADMIN))
 					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.decline.declined", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
 		} else
