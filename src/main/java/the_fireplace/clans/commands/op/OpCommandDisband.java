@@ -50,22 +50,25 @@ public class OpCommandDisband extends OpClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
+	@SuppressWarnings("Duplicates")
 	public static void disbandClan(MinecraftServer server, ICommandSender sender, Clan c) {
 		if(!c.isOpclan()) {
 			if (ClanDatabase.removeClan(c.getClanId())) {
 				long distFunds = Clans.getPaymentHandler().getBalance(c.getClanId());
+				long rem;
 				distFunds += Clans.cfg.claimChunkCost * c.getClaimCount();
 				if (Clans.cfg.leaderRecieveDisbandFunds) {
-					c.payLeaders(distFunds);
-					distFunds = 0;
+					distFunds = c.payLeaders(distFunds);
+					rem = distFunds % c.getMemberCount();
+					distFunds /= c.getMemberCount();
 				} else {
-					c.payLeaders(distFunds % c.getMemberCount());
+					rem = c.payLeaders(distFunds % c.getMemberCount());
 					distFunds /= c.getMemberCount();
 				}
 				for (UUID member : c.getMembers().keySet()) {
 					Clans.getPaymentHandler().ensureAccountExists(member);
-					if (!Clans.getPaymentHandler().addAmount(distFunds, member))
-						c.payLeaders(distFunds);
+					if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
+						rem += c.payLeaders(distFunds);
 					EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
 					//noinspection ConstantConditions
 					if (player != null) {

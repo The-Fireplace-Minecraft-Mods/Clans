@@ -30,7 +30,7 @@ public class ClanChunkCache {
         if(!isLoaded)
             load();
         Set<Clan> claimClans = Sets.newHashSet();
-        for(UUID clanId: claimedChunks.keySet()) {
+        for(UUID clanId: Sets.newHashSet(claimedChunks.keySet())) {
             Clan clan = ClanCache.getClanById(clanId);
             if(clan != null)
                 claimClans.add(clan);
@@ -42,6 +42,7 @@ public class ClanChunkCache {
         return claimClans;
     }
 
+    @SuppressWarnings("Duplicates")
     public static void addChunk(Clan clan, int x, int z, int dim) {
         if(!isLoaded)
             load();
@@ -119,7 +120,7 @@ public class ClanChunkCache {
             return;
         JsonObject obj = new JsonObject();
         JsonArray claimedChunkMap = new JsonArray();
-        for(Map.Entry<UUID, Set<ChunkPosition>> position : claimedChunks.entrySet()) {
+        for(Map.Entry<UUID, Set<ChunkPosition>> position : Sets.newHashSet(claimedChunks.entrySet())) {
             JsonArray positionArray = new JsonArray();
             for(ChunkPosition pos: position.getValue()) {
                 JsonObject chunkPositionObject = new JsonObject();

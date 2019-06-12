@@ -84,7 +84,7 @@ public class Raid {
 		RaidingParties.addRaider(player, this);
 	}
 
-	public boolean removeMember(EntityPlayerMP player) {
+	public boolean removeAttacker(EntityPlayerMP player) {
 		boolean rm = this.attackers.remove(player.getUniqueID()) != null;
 		if(rm) {
 			RaidingParties.removeRaider(player.getUniqueID());
@@ -138,7 +138,7 @@ public class Raid {
 	public void incrementAttackerAbandonmentTime(EntityPlayerMP member) {
 		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
 		if(attackers.get(member.getUniqueID()) > Clans.cfg.maxAttackerAbandonmentTime * 2) {//Times two because this is called every half second
-			removeMember(member);
+			removeAttacker(member);
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getClanName()).setStyle(TextStyles.YELLOW));
 		} else if(attackers.get(member.getUniqueID()) == 1)
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getClanName(), Clans.cfg.maxAttackerAbandonmentTime).setStyle(TextStyles.YELLOW));
