@@ -33,7 +33,7 @@ public class TranslationUtil {
      * Gets the translation for the given key and arguments and returns the formatted string.
      */
     public static String getStringTranslation(@Nullable UUID target, String translationKey, Object... args) {
-        return getTranslation(target, translationKey, args).getFormattedText();
+        return getTranslation(target, translationKey, args).getUnformattedText();
     }
 
     /**
