@@ -34,7 +34,6 @@ public class CommandOpClan {
 
     private static Predicate<CommandSource> isOp = commandSource -> commandSource.hasPermissionLevel(commandSource.getServer().getOpPermissionLevel());
 
-    @SuppressWarnings("Duplicates")
     public static void register(CommandDispatcher<CommandSource> commandDispatcher) {
         LiteralArgumentBuilder<CommandSource> opclanCommand = Commands.literal("opclan").requires(isOp);
 

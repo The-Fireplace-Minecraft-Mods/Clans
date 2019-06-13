@@ -48,7 +48,6 @@ public class CommandRaid {
         return builder.buildFuture();
     };
 
-    @SuppressWarnings("Duplicates")
     public static void register(CommandDispatcher<CommandSource> commandDispatcher) {
         LiteralArgumentBuilder<CommandSource> raidCommand = Commands.literal("raid").requires((iCommandSender) -> iCommandSender.getEntity() instanceof EntityPlayerMP);
 
@@ -84,7 +83,7 @@ public class CommandRaid {
                 if(!clanPlayers.containsKey(context.getSource().asPlayer())) {
                     if (!RaidingParties.getRaidedClans().contains(target)) { //Form a new raid because one doesn't exist
                         if(!target.isShielded()) {
-                            if (target.getOnlineMembers().size() > 0) {
+                            if (!target.getOnlineMembers().isEmpty()) {
                                 new Raid(context.getSource().assertIsEntity().getUniqueID(), target);
                                 sendFeedback(context, TextStyles.GREEN,"You successfully created the raiding party against %s!", target.getClanName());
                             } else

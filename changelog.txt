@@ -1,1 +1,2 @@
 Fixed crash if a raid ends while the raid data is being used in another place
+Code cleanup

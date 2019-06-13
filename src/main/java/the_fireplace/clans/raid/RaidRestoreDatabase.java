@@ -1,11 +1,8 @@
 package the_fireplace.clans.raid;
 
 import com.google.common.collect.Maps;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.ChunkPosition;
-import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.Pair;
 
 import java.io.*;

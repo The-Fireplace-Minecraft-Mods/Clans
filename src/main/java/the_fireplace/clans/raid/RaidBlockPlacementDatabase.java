@@ -1,9 +1,6 @@
 package the_fireplace.clans.raid;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import the_fireplace.clans.Clans;
 
 import java.io.*;

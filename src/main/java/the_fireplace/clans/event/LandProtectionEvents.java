@@ -195,7 +195,6 @@ public class LandProtectionEvents {
 		event.getWorld().notifyBlockUpdate(event.getPos().south(), targetState, targetState, 2);
 	}
 
-	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public void onDetonate(ExplosionEvent.Detonate event) {
 		if(!event.getWorld().isRemote) {
@@ -231,7 +230,6 @@ public class LandProtectionEvents {
 		}
 	}
 
-	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public void onLivingDamage(LivingDamageEvent event) {
 		Entity entity = event.getEntityLiving();

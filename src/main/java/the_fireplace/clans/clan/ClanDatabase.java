@@ -1,13 +1,9 @@
 package the_fireplace.clans.clan;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import the_fireplace.clans.Clans;
 
-import javax.annotation.Nullable;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 

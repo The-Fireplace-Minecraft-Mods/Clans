@@ -72,7 +72,6 @@ public class CommandClan {
         return builder.buildFuture();
     };
 
-    @SuppressWarnings("Duplicates")
     public static void register(CommandDispatcher<CommandSource> commandDispatcher) {
         LiteralArgumentBuilder<CommandSource> clanCommand = Commands.literal("clan").requires((iCommandSender) -> iCommandSender.getEntity() instanceof EntityPlayerMP);
         RequiredArgumentBuilder<CommandSource, String> clanCommandWithClan = Commands.argument("clan", StringArgumentType.word()).suggests(playerClanSuggestion);
@@ -407,7 +406,7 @@ public class CommandClan {
             }
         } else if(!clan.isOpclan()) {
             throwCommandFailure("Error: %s has no members.", clan.getClanName());
-            Clans.LOGGER.error("Clan %s has no members.", clan.getClanName());
+            Clans.LOGGER.error("Clan {} has no members.", clan.getClanName());
         }
         return 1;
     }
@@ -806,7 +805,6 @@ public class CommandClan {
         return 1;
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runAbandonClaimCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
@@ -861,7 +859,6 @@ public class CommandClan {
             throwCommandFailure("You cannot abandon this chunk of land because doing so would create at least one disconnected claim.");
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runClaimCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if (!validateClanRank(context, clan, EnumRank.ADMIN))
             return 0;
@@ -914,7 +911,6 @@ public class CommandClan {
             throwCommandFailure("Insufficient funds in clan account to claim chunk. It costs %s %s.", Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost));
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runAcceptCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN))
             return 0;
@@ -929,7 +925,6 @@ public class CommandClan {
         return 1;
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runDeclineCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) throws CommandSyntaxException {
         if(!validateClanRank(context, clan, Clans.cfg.allowMultiClanMembership ? EnumRank.ANY : EnumRank.NOCLAN))
             return 0;
@@ -942,7 +937,6 @@ public class CommandClan {
         return 1;
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runDemoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
@@ -972,7 +966,6 @@ public class CommandClan {
             throwCommandFailure("The player %s was not found.", playerName);
     }
 
-    @SuppressWarnings("Duplicates")
     private static int runPromoteCommand(CommandContext<CommandSource> context, @Nullable NewClan clan) {
         if(!validateClanRank(context, clan, EnumRank.LEADER))
             return 0;
@@ -1220,7 +1213,7 @@ public class CommandClan {
         if(chunkOwner == null && Clans.cfg.protectWilderness && context.getSource().asPlayer().getPosition().getY() >= Clans.cfg.minWildernessY) {
             BlockPos spawn = context.getSource().asPlayer().world.getSpawnPoint();
             context.getSource().asPlayer().attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
-        } else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(context.getSource().asPlayer()))) {
+        } else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(context.getSource().asPlayer().getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(context.getSource().asPlayer().getUniqueID()))) {
             int x = 0, z = 0, tmp, dx = 0, dz = -1;
             while(true) {//Spiral out until a player friendly chunk is found
                 Chunk test = context.getSource().asPlayer().world.getChunk(origin.x + x, origin.z + z);

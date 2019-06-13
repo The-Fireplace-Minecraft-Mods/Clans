@@ -2,7 +2,6 @@ package the_fireplace.clans.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import the_fireplace.clans.Clans;
