@@ -158,7 +158,7 @@ public class DynmapCompat implements IDynmapCompat {
         for (ClanDimInfo teamDim : teamDimList)
             queueClaimEventReceived(teamDim);
 
-        return teamDimList.size() > 0;
+        return !teamDimList.isEmpty();
     }
 
 
@@ -229,7 +229,7 @@ public class DynmapCompat implements IDynmapCompat {
 
             Set<UUID> teamMembers = Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
 
-            if (teamMembers.size() > 0) {
+            if (!teamMembers.isEmpty()) {
                 stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
 
                 for (UUID member : teamMembers)
