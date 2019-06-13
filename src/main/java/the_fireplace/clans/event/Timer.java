@@ -1,6 +1,7 @@
 package the_fireplace.clans.event;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
@@ -47,14 +48,13 @@ public class Timer {
 				ticks -= 20;
 
 				RaidingParties.decrementBuffers();
-				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : clanHomeWarmups.entrySet())
+				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : Sets.newHashSet(clanHomeWarmups.entrySet()))
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isAlive()) {
 						NewClan c = ClanCache.getClansByPlayer(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandClan.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension.getId());
 					}
-				Set<EntityPlayerMP> players = clanHomeWarmups.keySet();
-				for(EntityPlayerMP player: players)
+				for(EntityPlayerMP player: Sets.newHashSet(clanHomeWarmups.keySet()))
 					if(clanHomeWarmups.get(player).getValue1() > 0)
 						clanHomeWarmups.put(player, new Pair<>(clanHomeWarmups.get(player).getValue1() - 1, clanHomeWarmups.get(player).getValue2()));
 					else

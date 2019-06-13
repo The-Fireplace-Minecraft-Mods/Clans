@@ -1,4 +1,1 @@
-Fixed clan members getting disconnected if they were removed from a raid
-Fixed the spacing of the raid completion message
-Fixed a crash if clans are leaderless when disbanded (its_meow)
-Fixed crash caused by writing to chunk cache while it is being read from
+Fixed crash if a raid ends while the raid data is being used in another place
