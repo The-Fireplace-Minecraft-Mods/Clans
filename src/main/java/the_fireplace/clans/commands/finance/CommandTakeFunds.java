@@ -47,7 +47,7 @@ public class CommandTakeFunds extends ClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				for(EntityPlayerMP target: selectedClan.getOnlineMembers().keySet())
 					if(!target.getUniqueID().equals(sender.getUniqueID()))
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.takefunds.taken", sender.getDisplayName(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.takefunds.taken", sender.getDisplayNameString(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			} else {
 				Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_player_econ_acct").setStyle(TextStyles.RED));

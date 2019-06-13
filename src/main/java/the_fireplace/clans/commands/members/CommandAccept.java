@@ -50,7 +50,7 @@ public class CommandAccept extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 			for (Map.Entry<EntityPlayerMP, EnumRank> target : acceptClan.getOnlineMembers().entrySet())
 				if(!sender.getUniqueID().equals(target.getKey().getUniqueID()))
-					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.accept.accepted", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}
