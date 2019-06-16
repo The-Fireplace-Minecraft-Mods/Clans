@@ -18,10 +18,7 @@ import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.finance.*;
-import the_fireplace.clans.commands.land.CommandAbandonClaim;
-import the_fireplace.clans.commands.land.CommandClaim;
-import the_fireplace.clans.commands.land.CommandFancyMap;
-import the_fireplace.clans.commands.land.CommandMap;
+import the_fireplace.clans.commands.land.*;
 import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
@@ -42,6 +39,8 @@ public class CommandClan extends CommandBase {
         //land claiming
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonClaim());
+        put("autoclaim", new CommandAutoClaim());
+        put("autoabandon", new CommandAutoAbandon());
 	    put("map", new CommandMap());
         put("fancymap", new CommandFancyMap());
         //managing members
@@ -83,7 +82,9 @@ public class CommandClan extends CommandBase {
 
     static {
         aliases.put("c", "claim");
-        aliases.put("ac", "abandonclaim");
+        aliases.put("abc", "abandonclaim");
+        aliases.put("ac", "autoclaim");
+        aliases.put("aa", "autoabandon");
         aliases.put("m", "map");
         aliases.put("fm", "fancymap");
         aliases.put("i", "invite");

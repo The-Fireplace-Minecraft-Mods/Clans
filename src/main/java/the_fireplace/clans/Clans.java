@@ -45,7 +45,7 @@ import static the_fireplace.clans.Clans.MODID;
 
 @SuppressWarnings({"WeakerAccess"})
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi")
 public final class Clans {
     public static final String MODID = "clans";
     public static final String MODNAME = "Clans";

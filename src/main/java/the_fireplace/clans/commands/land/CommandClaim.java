@@ -47,6 +47,10 @@ public class CommandClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		checkAndAttemptClaim(sender, selectedClan);
+	}
+
+	public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)) {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
@@ -70,15 +74,15 @@ public class CommandClaim extends ClanSubCommand {
 								if(Clans.cfg.enforceInitialClaimSeparation)
 									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
 								else if(CapHelper.getPlayerClanCapability(sender).getClaimWarning())
-									claimChunk(sender, c, selectedClan);
+									return claimChunk(sender, c, selectedClan);
 								else {
 									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
 							} else
-								claimChunk(sender, c, selectedClan);
+								return claimChunk(sender, c, selectedClan);
 						} else
-							claimChunk(sender, c, selectedClan);
+							return claimChunk(sender, c, selectedClan);
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.maxed", selectedClan.getClanName(), selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
 				} else
@@ -86,15 +90,18 @@ public class CommandClaim extends ClanSubCommand {
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.nochunkcap").setStyle(TextStyles.RED));
+		return false;
 	}
 
-	private static void claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
+	private static boolean claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
 		if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 			ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 			ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 			selectedClan.addClaimCount();
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success").setStyle(TextStyles.GREEN));
+			return true;
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", selectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
+		return false;
 	}
 }

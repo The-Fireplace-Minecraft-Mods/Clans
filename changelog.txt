@@ -5,6 +5,7 @@ Two additional permissions have been added to allow overriding wilderness protec
 Added an option to prevent mobs from spawning on claimed land
 Added a way to set which FakePlayers are allowed to do things
 Added support for basic minecraft color strings in /clan setcolor
+New commands: /clan autoclaim and /clan autoabandon
 
 Changes:
 Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
@@ -15,5 +16,5 @@ Online clan admins/leaders are now notified if someone declines an invitation to
 Users are now notified if someone tried to invite them to a clan but they already have a pending invite.
 Clan deposit/withdraw commands now notify all online clan members that the deposit/withdrawal was made and the amount.
 It is now possible to sort /clan list, with the default being alphabetical sort. Other options are sort by money, land, and members.
-
-Fixes:
+The command alias /c ac is now used for /clan autoclaim.
+The command alias for /clan abandonclaim is now /c abc
