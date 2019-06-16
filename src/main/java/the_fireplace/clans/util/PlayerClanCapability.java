@@ -1,16 +1,35 @@
 package the_fireplace.clans.util;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.ClanCache;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface PlayerClanCapability {
 
-	int getCooldown();
+    /**
+     * Check if a clan is the player's default clan, and if it is, update the player's default clan to something else.
+     * @param player
+     * The player to check and update (if needed)
+     * @param removeClan
+     * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
+     */
+    static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
+        UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
+        if(removeClan == null || removeClan.getClanId().equals(oldDef))
+            if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())
+                CapHelper.getPlayerClanCapability(player).setDefaultClan(null);
+            else
+                CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
+    }
+
+    int getCooldown();
 	void setCooldown(int cooldown);
 	UUID getDefaultClan();
 	void setDefaultClan(UUID defaultClan);

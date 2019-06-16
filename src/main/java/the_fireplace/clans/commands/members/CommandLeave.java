@@ -5,11 +5,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.util.CapHelper;
+import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -60,7 +58,7 @@ public class CommandLeave extends ClanSubCommand {
 			}
 		}
 		if(selectedClan.removeMember(sender.getUniqueID())) {
-			updateDefaultClan(sender, selectedClan);
+			PlayerClanCapability.updateDefaultClan(sender, selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			for (Map.Entry<EntityPlayerMP, EnumRank> target : selectedClan.getOnlineMembers().entrySet())
 				target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.leave.left", sender.getDisplayName(), selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
@@ -68,19 +66,4 @@ public class CommandLeave extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
-	/**
-	 * Check if a clan is the player's default clan, and if it is, update the player's default clan to something else.
-	 * @param player
-	 * The player to check and update (if needed)
-	 * @param removeClan
-	 * The clan the player is being removed from. Use null to forcibly change the player's default clan, regardless of what it currently is.
-	 */
-	public static void updateDefaultClan(EntityPlayerMP player, @Nullable Clan removeClan) {
-		UUID oldDef = CapHelper.getPlayerClanCapability(player).getDefaultClan();
-		if(removeClan == null || removeClan.getClanId().equals(oldDef))
-			if(ClanCache.getPlayerClans(player.getUniqueID()).isEmpty())
-				CapHelper.getPlayerClanCapability(player).setDefaultClan(null);
-			else
-				CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
-	}
 }

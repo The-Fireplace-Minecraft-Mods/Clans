@@ -14,7 +14,6 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
-import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
 import the_fireplace.clans.commands.op.land.OpCommandClaim;
 import the_fireplace.clans.commands.teleportation.CommandHome;
@@ -88,7 +87,7 @@ public class Timer {
 										EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member.getKey());
 										//noinspection ConstantConditions
 										if (player != null) {
-											CommandLeave.updateDefaultClan(player, clan);
+											PlayerClanCapability.updateDefaultClan(player, clan);
 											player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getClanName()).setStyle(TextStyles.YELLOW));
 										}
 									}
@@ -121,7 +120,7 @@ public class Timer {
 									EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
 									//noinspection ConstantConditions
 									if (player != null) {
-										CommandLeave.updateDefaultClan(player, clan);
+										PlayerClanCapability.updateDefaultClan(player, clan);
 										player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.upkeep.disbanded", clan.getClanName()).setStyle(TextStyles.YELLOW));
 									}
 								}

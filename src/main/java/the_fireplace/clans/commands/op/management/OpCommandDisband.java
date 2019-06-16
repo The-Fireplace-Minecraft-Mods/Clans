@@ -11,7 +11,7 @@ import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.commands.members.CommandLeave;
+import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -72,7 +72,7 @@ public class OpCommandDisband extends OpClanSubCommand {
 					EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
 					//noinspection ConstantConditions
 					if (player != null) {
-						CommandLeave.updateDefaultClan(player, c);
+						PlayerClanCapability.updateDefaultClan(player, c);
 						if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
 							player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.disband.disbanded", c.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
 					}
