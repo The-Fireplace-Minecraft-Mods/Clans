@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.op;
+package the_fireplace.clans.commands.op.management;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;

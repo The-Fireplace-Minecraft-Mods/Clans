@@ -202,6 +202,12 @@ commands.opclan.abandonclaim.disconnected=You cannot abandon this chunk of land 
 
 commands.opclan.addfunds.usage=/opclan addfunds <clan> <amount>
 
+commands.opclan.autoabandon.usage=/opclan autoabandon [force]
+commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
+commands.opclan.autoabandon.stop=You are no longer autoabandoning land for everyone.
+
+commands.opclan.autoclaim.usage=/opclan autoclaim [force]
+
 commands.opclan.buildadmin.usage=/opclan buildadmin
 commands.opclan.buildadmin.on=You are now in Build Admin mode.
 commands.opclan.buildadmin.off=You are no longer in Build Admin mode.

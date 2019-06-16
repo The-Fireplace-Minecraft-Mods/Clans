@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.op;
+package the_fireplace.clans.commands.op.land;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
@@ -42,6 +42,10 @@ public class OpCommandClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		checkAndAttemptOpClaim(sender, args, opSelectedClan);
+	}
+
+	public static void checkAndAttemptOpClaim(EntityPlayerMP sender, String[] args, Clan opSelectedClan) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
 			UUID claimOwner = ChunkUtils.getChunkOwner(c);

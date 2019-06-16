@@ -15,6 +15,8 @@ import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
 import the_fireplace.clans.commands.members.CommandLeave;
+import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
+import the_fireplace.clans.commands.op.land.OpCommandClaim;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.raid.Raid;
 import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
@@ -140,6 +142,8 @@ public class Timer {
 	//Maps of (Player Unique ID) -> (Clan)
 	public static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
 	public static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
+	public static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
+	public static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -167,8 +171,12 @@ public class Timer {
 
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 
+						if(opAutoAbandonClaims.containsKey(event.player.getUniqueID()))
+							OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)event.player, opAutoAbandonClaims.get(event.player.getUniqueID()) ? new String[]{"force"} : new String[]{});
 						if(autoAbandonClaims.containsKey(event.player.getUniqueID()))
 							CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)event.player, autoAbandonClaims.get(event.player.getUniqueID()));
+						if(opAutoClaimLands.containsKey(event.player.getUniqueID()))
+							OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)event.player, opAutoClaimLands.get(event.player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, opAutoClaimLands.get(event.player.getUniqueID()).getValue1());
 						if(autoClaimLands.containsKey(event.player.getUniqueID()))
 							CommandClaim.checkAndAttemptClaim((EntityPlayerMP) event.player, autoClaimLands.get(event.player.getUniqueID()));
 

@@ -11,7 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.commands.op.*;
+import the_fireplace.clans.commands.op.land.*;
+import the_fireplace.clans.commands.op.management.*;
 import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
 import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
@@ -28,6 +29,8 @@ public class CommandOpClan extends CommandBase {
         //land claiming
         put("claim", new OpCommandClaim());
         put("abandonclaim", new OpCommandAbandonClaim());
+        put("autoclaim", new OpCommandAutoClaim());
+        put("autoabandon", new OpCommandAutoAbandon());
         //clan constants
         put("setname", new OpCommandSetName());
         put("setdescription", new OpCommandSetDescription());
@@ -48,7 +51,9 @@ public class CommandOpClan extends CommandBase {
 
     static {
         aliases.put("c", "claim");
-        aliases.put("ac", "abandonclaim");
+        aliases.put("ac", "autoclaim");
+        aliases.put("abc", "abandonclaim");
+        aliases.put("aa", "autoabandon");
         aliases.put("shield", "setshield");
         aliases.put("setdesc", "setdescription");
         aliases.put("ba", "buildadmin");

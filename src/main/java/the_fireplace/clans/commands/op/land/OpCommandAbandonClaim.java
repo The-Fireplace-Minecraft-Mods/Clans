@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.op;
+package the_fireplace.clans.commands.op.land;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
@@ -44,6 +44,10 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+		checkAndAttemptOpAbandon(sender, args);
+	}
+
+	public static void checkAndAttemptOpAbandon(EntityPlayerMP sender, String[] args) {
 		Clan opClan = ClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
