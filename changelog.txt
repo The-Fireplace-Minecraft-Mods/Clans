@@ -8,7 +8,7 @@ Added support for basic minecraft color strings in /clan setcolor
 New commands: /clan autoclaim, /clan autoabandon, /opclan autoclaim, /opclan autoabandon
 
 Changes:
-Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to preserve data from those versions.
+Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to copy data from those versions.
 Made it possible to localize the mod
 Improved the consistency and quality of feedback messages
 Online clan members are now notified when someone accepts an invitation to the clan, when someone leaves the clan, and when someone is kicked from the clan.
