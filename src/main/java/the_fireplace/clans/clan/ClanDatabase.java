@@ -3,6 +3,8 @@ package the_fireplace.clans.clan;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 
@@ -64,22 +66,20 @@ public final class ClanDatabase {
             ClanCache.addName(clan);
             if(clan.getClanBanner() != null)
                 ClanCache.addBanner(clan.getClanBanner());
-            isChanged = true;
+            markChanged();
             return true;
         }
         return false;
     }
 
-    public static boolean removeClan(UUID clanId){
-        if(getInstance().clans.containsKey(clanId)){
-            Clan clan = getInstance().clans.remove(clanId);
-            ClanCache.removeName(clan.getClanName());
-            if(clan.getClanBanner() != null)
-                ClanCache.removeBanner(clan.getClanBanner());
-            for(UUID member: clan.getMembers().keySet())
-                ClanCache.purgePlayerCache(member);
-            ClanCache.clearClanHome(clan);
-            isChanged = true;
+    /**
+     * For internal use only. Anyone wishing to do this, use {@link Clan#disband(MinecraftServer, ICommandSender, String, Object...)}
+     */
+    static boolean removeClan(UUID clanId){
+        if(getInstance().clans.containsKey(clanId)) {
+            ClanCache.removeClan(getInstance().clans.remove(clanId));
+            ClanChunkCache.delClan(clanId);
+            markChanged();
             return true;
         }
         return false;
@@ -90,7 +90,7 @@ public final class ClanDatabase {
     }
 
     /**
-     * An inefficient way to look up a player's clan. For efficiency, use {@link ClanCache#getPlayerClans(UUID)}
+     * For internal use only. Anyone wishing to do this, use {@link ClanCache#getPlayerClans(UUID)}
      * @param player
      * The player to get the clan of
      * @return

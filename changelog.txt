@@ -20,3 +20,8 @@ The command alias /c ac is now used for /clan autoclaim.
 The command alias for /clan abandonclaim is now /c abc
 The command alias /oc ac is now used for /opclan autoclaim.
 The command alias for /opclan abandonclaim is now /oc abc
+
+Fixes:
+Raid Restoration Data takes up slightly less space
+The handling of clans disbanding is now greatly improved, properly terminating raids and updating caches as needed
+Fixed pending clan invite getting cleared when forming a clan on servers that allow multi-clan membership

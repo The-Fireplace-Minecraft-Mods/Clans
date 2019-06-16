@@ -65,7 +65,7 @@ public final class RaidingParties {
 		raidedClans.add(raid.getTarget());
 	}
 
-	static void removeRaid(Raid raid) {
+	public static void removeRaid(Raid raid) {
 		raids.remove(raid.getTarget());
 		raidedClans.remove(raid.getTarget());
 	}
@@ -110,7 +110,7 @@ public final class RaidingParties {
 			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
 	}
 
-	public static void endRaid(Clan targetClan, boolean raiderVictory) {
+	static void endRaid(Clan targetClan, boolean raiderVictory) {
 		for(EntityPlayerMP defender: targetClan.getOnlineMembers().keySet()) {
 			ITextComponent defenderMessage = TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.end", targetClan.getClanName());
 			defenderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(defender.getUniqueID(), raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.YELLOW : TextStyles.GREEN);

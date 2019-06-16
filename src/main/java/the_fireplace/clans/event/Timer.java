@@ -33,7 +33,6 @@ public class Timer {
 	private static int fiveMinuteCounter = 0;
 	private static boolean executing = false;
 	public static HashMap<EntityPlayerMP, Pair<Integer, Integer>> clanHomeWarmups = Maps.newHashMap();
-	@SuppressWarnings("Duplicates")
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
@@ -101,31 +100,10 @@ public class Timer {
 								upkeep *= clan.getMemberCount();
 							if (Clans.cfg.multiplyUpkeepClaims)
 								upkeep *= clan.getClaimCount();
-							if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getClanId()) > 0 && Clans.cfg.disbandNoUpkeep) {
-								long distFunds = Clans.getPaymentHandler().getBalance(clan.getClanId());
-								long rem;
-								distFunds += Clans.cfg.claimChunkCost * clan.getClaimCount();
-								if (Clans.cfg.leaderRecieveDisbandFunds) {
-									distFunds = clan.payLeaders(distFunds);
-									rem = distFunds % clan.getMemberCount();
-									distFunds /= clan.getMemberCount();
-								} else {
-									rem = clan.payLeaders(distFunds % clan.getMemberCount());
-									distFunds /= clan.getMemberCount();
-								}
-								for (UUID member : clan.getMembers().keySet()) {
-									Clans.getPaymentHandler().ensureAccountExists(member);
-									if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
-										rem += clan.payLeaders(distFunds);
-									EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member);
-									//noinspection ConstantConditions
-									if (player != null) {
-										PlayerClanCapability.updateDefaultClan(player, clan);
-										player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.upkeep.disbanded", clan.getClanName()).setStyle(TextStyles.YELLOW));
-									}
-								}
-							}
-							clan.updateNextUpkeepTimeStamp();
+							if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getClanId()) > 0 && Clans.cfg.disbandNoUpkeep)
+								clan.disband(FMLCommonHandler.instance().getMinecraftServerInstance(), null, "clans.upkeep.disbanded", clan.getClanName());
+							else
+								clan.updateNextUpkeepTimeStamp();
 						}
 					}
 

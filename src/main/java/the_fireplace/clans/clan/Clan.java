@@ -6,11 +6,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.raid.RaidingParties;
+import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -50,18 +54,18 @@ public class Clan {
         } while(!ClanDatabase.addClan(this.clanId, this));
         Clans.getPaymentHandler().ensureAccountExists(clanId);
     
-        // Ensure that the starting balance of the account is 0,
-        //  to prevent "free money" from the creation of a new bank account
-        if (Clans.getPaymentHandler().getBalance(clanId) > 0) {
+        // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
+        if (Clans.getPaymentHandler().getBalance(clanId) > 0)
             Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
-        }
         
         Clans.getPaymentHandler().addAmount(Clans.cfg.formClanBankAmount, clanId);
-        ClanCache.purgePlayerCache(leader);
+        ClanCache.addPlayerClan(leader, this);
+        if(!Clans.cfg.allowMultiClanMembership)
+            ClanCache.removeInvite(leader);
     }
 
     /**
-     * Generate OpClan
+     * For internal use only. Generates OpClan.
      */
     Clan(){
         this.clanName = TranslationUtil.getStringTranslation("clan.default_opclan_name");
@@ -271,7 +275,9 @@ public class Clan {
         if(isOpclan)
             return;
         this.members.put(player, EnumRank.MEMBER);
-        ClanCache.purgePlayerCache(player);
+        ClanCache.addPlayerClan(player, this);
+        if(!Clans.cfg.allowMultiClanMembership || equals(ClanCache.getInvite(player)))
+            ClanCache.removeInvite(player);
         ClanDatabase.markChanged();
     }
 
@@ -282,7 +288,7 @@ public class Clan {
             return false;
         boolean removed = this.members.remove(player) != null;
         if(removed) {
-            ClanCache.purgePlayerCache(player);
+            ClanCache.removePlayerClan(player, this);
             ClanDatabase.markChanged();
         }
         return removed;
@@ -302,7 +308,8 @@ public class Clan {
                 members.put(player, EnumRank.ADMIN);
                 ClanDatabase.markChanged();
                 return true;
-            } else return false;
+            } else
+                return false;
         }
     }
 
@@ -420,5 +427,70 @@ public class Clan {
 
     public TextFormatting getTextColor() {
         return TextFormatting.fromColorIndex(textColor);
+    }
+
+    /**
+     * Disbands a clan and unregisters data for it where needed.
+     * @param server
+     * The Minecraft Server instance
+     * @param sender
+     * The player that initiated this disband, if any. Used to determine which clan member, if any, should be exempt from the disband message
+     * @param disbandMessageTranslationKey
+     * The translation key of the message to go out to all online clan members when it gets disbanded
+     * @param translationArgs
+     * The arguments to pass in to the translation
+     */
+    public void disband(MinecraftServer server, @Nullable ICommandSender sender, String disbandMessageTranslationKey, Object... translationArgs) {
+        if(RaidingParties.hasActiveRaid(this))
+            RaidingParties.getActiveRaid(this).raiderVictory();
+        if(RaidingParties.isPreparingRaid(this))
+            RaidingParties.removeRaid(RaidingParties.getRaid(this));
+        ClanDatabase.removeClan(getClanId());
+
+        long distFunds = Clans.getPaymentHandler().getBalance(this.getClanId());
+        long rem;
+        distFunds += Clans.cfg.claimChunkCost * this.getClaimCount();
+        if (Clans.cfg.leaderRecieveDisbandFunds) {
+            distFunds = this.payLeaders(distFunds);
+            rem = distFunds % this.getMemberCount();
+            distFunds /= this.getMemberCount();
+        } else {
+            rem = this.payLeaders(distFunds % this.getMemberCount());
+            distFunds /= this.getMemberCount();
+        }
+        for (UUID member : this.getMembers().keySet()) {
+            Clans.getPaymentHandler().ensureAccountExists(member);
+            if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
+                rem += this.payLeaders(distFunds);
+            EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
+            //noinspection ConstantConditions
+            if (player != null) {
+                PlayerClanCapability.updateDefaultClan(player, this);
+                if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
+                    player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), disbandMessageTranslationKey, translationArgs).setStyle(TextStyles.YELLOW));
+            }
+        }
+        Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getClanId()), this.getClanId());
+    }
+
+    /**
+     * Compares the object to this object
+     * @param obj The object to compare this object too
+     * @return Returns true if the object is the same type and the contents match.
+     */
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        else if (obj == this)
+            return true;
+        else
+            return obj instanceof Clan && equals((Clan) obj);
+    }
+
+    public boolean equals(@Nullable Clan clan) {
+        if (clan == null)
+            return false;
+        return getClanId().equals(clan.getClanId());
     }
 }

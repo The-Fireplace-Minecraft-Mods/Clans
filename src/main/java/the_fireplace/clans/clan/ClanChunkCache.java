@@ -34,10 +34,8 @@ public class ClanChunkCache {
             Clan clan = ClanCache.getClanById(clanId);
             if(clan != null)
                 claimClans.add(clan);
-            else {
-                claimedChunks.remove(clanId);
-                //TODO: Make sure the deleted clan is removed from Dynmap
-            }
+            else
+                delClan(clanId);
         }
         return claimClans;
     }
@@ -71,6 +69,11 @@ public class ClanChunkCache {
                 if(pos.posX == x && pos.posZ == z && pos.dim == dim)
                     return ClanCache.getClanById(entry.getKey());
         return null;
+    }
+
+    public static boolean delClan(UUID clan) {
+        return claimedChunks.remove(clan) != null;
+        //TODO: Make sure the deleted clan is removed from Dynmap
     }
 
     private static void load() {

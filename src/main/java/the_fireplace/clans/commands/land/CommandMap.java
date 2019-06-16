@@ -45,7 +45,8 @@ public class CommandMap extends ClanSubCommand {
 		return TranslationUtil.getRawTranslationString(sender, "commands.clan.map.usage");
 	}
 
-	@Override
+	@SuppressWarnings("Duplicates")
+    @Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		assert server != null;
 		World w = sender.getEntityWorld();

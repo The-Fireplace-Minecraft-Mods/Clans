@@ -4,24 +4,14 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.event.Timer;
-import the_fireplace.clans.util.CapHelper;
-import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Map;
-import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

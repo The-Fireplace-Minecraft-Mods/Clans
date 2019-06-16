@@ -224,7 +224,6 @@ commands.opclan.demote.error=The player %s could not be demoted.
 commands.opclan.disband.usage=/opclan disband <clan>
 commands.opclan.disband.success=You have disbanded %s.
 commands.opclan.disband.disbanded=%s has been disbanded by %s.
-commands.opclan.disband.error=Internal Error: Unable to disband %s. Server owners, please report this.
 commands.opclan.disband.opclan=You cannot disband %s because it is the opclan.
 
 commands.opclan.kick.usage=/opclan kick <clan> <member>

@@ -7,12 +7,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.util.ChunkPosition;
-import the_fireplace.clans.util.ChunkUtils;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class RaidRestoreDatabase {
 	static RaidRestoreDatabase instance = null;
@@ -27,13 +25,9 @@ public final class RaidRestoreDatabase {
 	HashMap<ChunkPosition, ChunkRestoreData> raidedChunks = Maps.newHashMap();
 
 	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
-		addRestoreBlock(dim, c, pos, block, ChunkUtils.getChunkOwner(c));
-	}
-
-	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block, UUID chunkOwner) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
-			getInstance().raidedChunks.put(coords, new ChunkRestoreData(chunkOwner));
+			getInstance().raidedChunks.put(coords, new ChunkRestoreData());
 		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
 			Clans.LOGGER.error("Block restore data being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
@@ -53,7 +47,7 @@ public final class RaidRestoreDatabase {
 	public static void addRemoveBlock(int dim, Chunk c, BlockPos pos) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
-			getInstance().raidedChunks.put(coords, new ChunkRestoreData(ChunkUtils.getChunkOwner(c)));
+			getInstance().raidedChunks.put(coords, new ChunkRestoreData());
 		getInstance().raidedChunks.get(coords).addRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
 		isChanged = true;
 	}

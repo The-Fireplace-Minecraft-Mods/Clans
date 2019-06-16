@@ -48,6 +48,7 @@ public class CommandFancyMap extends ClanSubCommand {
 		return TranslationUtil.getRawTranslationString(sender, "commands.clan.fancymap.usage");
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		assert server != null;

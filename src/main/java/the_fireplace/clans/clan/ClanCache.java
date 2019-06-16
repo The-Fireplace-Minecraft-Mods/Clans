@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -99,14 +100,19 @@ public final class ClanCache {
 		return false;
 	}
 
+	public static void addPlayerClan(UUID player, Clan clan) {
+		getPlayerClans(player);
+		playerClans.get(player).add(clan);
+	}
+
+	public static void removePlayerClan(UUID player, Clan clan) {
+		getPlayerClans(player);
+		playerClans.get(player).remove(clan);
+	}
+
 	@Nullable
 	public static Clan getInvite(UUID player) {
 		return clanInvites.get(player);
-	}
-
-	public static void purgePlayerCache(UUID player) {
-		playerClans.remove(player);
-		clanInvites.remove(player);
 	}
 
 	@Nullable
@@ -131,6 +137,17 @@ public final class ClanCache {
 
 	public static void clearClanHome(Clan c) {
 		clanHomes.remove(c);
+	}
+
+	public static void removeClan(Clan c) {
+		clearClanHome(c);
+		for(Map.Entry<UUID, Clan> clanInvite: clanInvites.entrySet())
+			if(clanInvite.getValue().equals(c))
+				clanInvites.remove(clanInvite.getKey());
+		for(UUID player: playerClans.keySet())
+			removePlayerClan(player, c);
+		removeName(c.getClanName());
+		removeBanner(c.getClanBanner());
 	}
 
 	public static boolean toggleClaimAdmin(EntityPlayerMP admin){

@@ -25,18 +25,15 @@ import java.util.UUID;
 public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        //noinspection ConstantConditions
-        assert Clans.CLAN_DATA_CAP != null;
-        if(!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
-            PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.player);
-            assert c != null;
-            if ((c.getDefaultClan() != null && ClanCache.getClanById(c.getDefaultClan()) == null) || (c.getDefaultClan() == null && !ClanCache.getPlayerClans(event.player.getUniqueID()).isEmpty()) || (c.getDefaultClan() != null && !ClanCache.getPlayerClans(event.player.getUniqueID()).contains(ClanCache.getClanById(c.getDefaultClan()))))
-                PlayerClanCapability.updateDefaultClan((EntityPlayerMP)event.player, null);
-        }
+        checkUpdateDefaultClan(event);
     }
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        checkUpdateDefaultClan(event);
+    }
+
+    private static void checkUpdateDefaultClan(PlayerEvent event) {
         //noinspection ConstantConditions
         assert Clans.CLAN_DATA_CAP != null;
         if(!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
