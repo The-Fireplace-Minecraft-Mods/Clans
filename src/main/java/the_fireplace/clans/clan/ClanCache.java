@@ -172,4 +172,11 @@ public final class ClanCache {
 	public static boolean isClaimAdmin(EntityPlayerMP admin) {
 		return buildAdmins.contains(admin.getUniqueID());
 	}
+
+	public static void updateChat(UUID uuid, Clan clan) {
+		if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
+			clanChattingPlayers.remove(uuid);
+		else
+			clanChattingPlayers.put(uuid, clan);
+	}
 }

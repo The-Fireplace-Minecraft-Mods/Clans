@@ -5,7 +5,7 @@ Two additional permissions have been added to allow overriding wilderness protec
 Added an option to prevent mobs from spawning on claimed land
 Added a way to set which FakePlayers are allowed to do things
 Added support for basic minecraft color strings in /clan setcolor
-New commands: /clan autoclaim, /clan autoabandon, /opclan autoclaim, /opclan autoabandon
+New commands: /clan autoclaim, /clan autoabandon, /opclan autoclaim, /opclan autoabandon, /clan clanchat
 Added Chinese localization (zh_cn) (xiaoxixi)
 
 Changes:

@@ -51,7 +51,7 @@ public class CommandClan extends CommandBase {
         put("leave", new CommandLeave());
         put("promote", new CommandPromote());
         put("demote", new CommandDemote());
-        //clan constants
+        //clan constants/details/other
         put("form", new CommandForm());
 	    put("disband", new CommandDisband());
         put("sethome", new CommandSetHome());
@@ -64,6 +64,7 @@ public class CommandClan extends CommandBase {
         put("playerinfo", new CommandPlayerInfo());
         put("setcolor", new CommandSetColor());
         put("list", new CommandList());
+        put("clanchat", new CommandClanChat());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -82,6 +83,7 @@ public class CommandClan extends CommandBase {
 
     static {
         aliases.put("c", "claim");
+        aliases.put("cc", "clanchat");
         aliases.put("abc", "abandonclaim");
         aliases.put("ac", "autoclaim");
         aliases.put("aa", "autoabandon");

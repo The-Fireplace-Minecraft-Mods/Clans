@@ -32,6 +32,8 @@ commands.clan.banner.usage=/clan banner
 commands.clan.banner.clan_nobanner=%s does not have a banner.
 commands.clan.banner.player_nobanner=You are not holding a banner.
 
+commands.clan.clanchat.usage=/clan clanchat
+
 commands.clan.details.usage=/clan details [clan]
 commands.clan.details.noclan=You are not in a clan. Use %s to get the details of another clan.
 commands.clan.details.console=You must specify a clan when viewing details from console. Use %s to get the details of a clan.
