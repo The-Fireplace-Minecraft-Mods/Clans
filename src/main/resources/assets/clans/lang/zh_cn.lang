@@ -1,0 +1,302 @@
+clan.default_description=这是一个新的部落
+clan.default_opclan_name=服务器
+clan.default_opclan_description=服务器保护的部落土地
+
+clans.error.noplayercap=Internal Error: 内部错误：玩家缺少部落能力。请报告此事给服务器管理员。
+clans.error.nochunkcap=Internal Error: 内部错误：块丢失了部落块能力。请报告此事给服务器管理员。
+clans.error.no_clan_econ_acct=Internal Error: 内部错误：未找到部落经济帐户。请报告此事给服务器管理员。
+clans.error.no_player_econ_acct=Internal Error: 内部错误：未找到玩家经济帐户。请报告此事给服务器管理员。
+clans.error.nullserver=Internal Error: 内部错误：服务器为空！请报告此事给服务器管理员。
+
+commands.clan.usage=/clan [部落名] <指令> [参数]
+commands.clan.help=/clan 指令:
+
+commands.opclan.usage=/opclan <指令> [参数]
+commands.opclan.help=/opclan 指令:
+
+commands.raid.usage=/raid <指令> [参数]
+commands.raid.help=/raid 指令:
+commands.raid.disabled=此服务器上禁用了袭击模式。
+
+commands.clan.common.player=你必须是一名玩家才能做到这一点
+commands.clan.common.not_in_clan=你不在 %s中
+commands.clan.common.notfound=这个 %s 部落找不到
+commands.clan.common.playernotfound=这个 %s 播放器无法找到
+commands.clan.common.insufficient_funds=金钱不足。
+commands.clan.common.insufficient_clan_funds=%s 金钱不足
+commands.clan.common.not_leader=你不是 %s部落的族长
+commands.clan.common.not_admin=你不是 %s部落的长老
+commands.clan.common.not_in_clan=这个玩家 %s 不在 %s部落中
+
+commands.clan.banner.usage=/clan banner 部落图腾。
+commands.clan.banner.clan_nobanner=%s 没有图腾。
+commands.clan.banner.player_nobanner=你没有拿图腾。
+
+commands.clan.details.usage=/clan details <部落> （使用此命令查看部落详情）
+commands.clan.details.noclan=你没有在部落里。使用 %s 获取另一个部落的详细信息。
+commands.clan.details.console=您必须在从控制台查看详细信息时指定一个部落。使用 %s 获取部落的详细信息。
+commands.clan.details.notfound=目标部落 %s 不存在。
+commands.clan.details.name=部落名称： %s
+commands.clan.details.description=部落描述 %s
+commands.clan.details.claimcount=索赔数量: %s
+commands.clan.details.membercount=成员数量: %s
+commands.clan.details.members=成员:
+commands.clan.details.leader=族长 %s
+commands.clan.details.admin=长老 %s
+commands.clan.details.no_members=错误： %s 没有成员
+
+commands.clan.disband.usage=/clan disband（解散部落）
+
+commands.clan.form.usage=/clan form <名称> [图腾] （创建一个部落）
+commands.clan.form.success=部落创建成功。
+commands.clan.form.insufficient_funds=你没有足够的资金来组建一个部落。创建成本为 %s %s。
+commands.clan.form.already_in_clan=你已经在一个部落里。
+
+commands.clan.list.usage=/clan list [种类]  （查看部落列表）
+commands.clan.list.clans=此服务器部落有：
+commands.clan.list.listitem=%s - %s
+commands.clan.list.noclans=此服务器上还没有部落
+
+commands.clan.playerinfo.usage=/clan playerinfo [玩家] （查看部落中的玩家信息）
+commands.clan.playerinfo.console=你必须从控制台查看详细信息时指定玩家，使用 %s 获取部落中玩家的详细信息。
+commands.clan.playerinfo.notfound=目标玩家 %s 找不到。
+commands.clan.playerinfo.name=玩家名称: %s
+commands.clan.playerinfo.clans=部落:
+commands.clan.playerinfo.leader= %s部落的族长
+commands.clan.playerinfo.admin= %s部落的长老
+commands.clan.playerinfo.member= %s部落的成员
+commands.clan.playerinfo.noclans=%s 不在任何部落中
+
+commands.clan.setbanner.usage=/clan setbanner [图腾名称] （创建部落图腾）
+commands.clan.setbanner.invalid=你指定的部落图腾无效
+commands.clan.setbanner.taken=你指定的部落图腾已被占用
+commands.clan.setbanner.success=已设置 %s 部落的图腾
+commands.clan.setbanner.notheld=你的图腾没有拿在手上
+
+commands.clan.setcolor.usage=/clan setcolor <颜色代码> (设置部落颜色)
+commands.clan.setcolor.success=%s 颜色已设置
+commands.clan.setcolor.invalid=颜色代码 %s 无效
+
+commands.clan.setdefault.usage=/clan setdefault <部落> <设置默认部落）
+commands.clan.setdefault.success=你的默认部落 %s
+
+commands.clan.setdescription.usage=/clan setdescription (创建一个新的部落宣言)
+commands.clan.setdescription.success=部落宣言设置为 %s 
+
+commands.clan.setname.usage=/clan setname <新名称> （设置部落名称）
+commands.clan.setname.toolong=这个 %s 部落名称太长。此服务器的最大名称长度为 %s 个字符。
+commands.clan.setname.taken= %s 部落名称已被使用。
+commands.clan.setname.success=你已经将 %s 重命名为 %s
+
+commands.clan.addfunds.usage=/clan addfunds <金额> （增加部落资金）
+commands.clan.addfunds.format=资金格式不正确
+commands.clan.addfunds.success=你将 %s %s 添加到 %s部落的账户中
+commands.clan.addfunds.added=%s 将 %s %s 添加到 %s部落的账户中
+
+commands.clan.balance.usage=/clan balance 查看部落余额
+commands.clan.balance.balance=%s 的部落资金: %s %s
+
+commands.clan.finances.usage=/clan finances （交付部落维护费用）
+commands.clan.finances.upkeep=维护（费用）为 %s %s 每 %s 一天
+commands.clan.finances.rent=赋税 (收入) 是 %s %s 每 %s 一天
+commands.clan.finances.trend=预估收入 %s %s 每天
+commands.clan.finances.increase_rent=您可能需要将赋税增加到 %s 或者找到减少维护费的方法
+commands.clan.finances.reduce_upkeep=你可能需要找到一种减少维护费的方法
+commands.clan.finances.breaking_even=%s 是没有盈利或负债的。
+commands.clan.finances.disabled=/clan finances 此服务器上禁用部落维护指令
+
+commands.clan.setrent.usage=/clan setrent <赋税金额> （设置部落赋税，默认真实一天的赋税标准）
+commands.clan.setrent.success=%s 将部落的赋税标准设置为 %s
+commands.clan.setrent.overmax=无法将赋税设置为高于 %s的当前最大值(%s %s)
+commands.clan.setrent.negative=无法设置负赋税
+commands.clan.setrent.disabled=/clan setrent 赋税设置被此服务禁用
+
+commands.clan.takefunds.usage=/clan takefunds <数量> 领取津贴
+commands.clan.takefunds.disabled=/clan takefunds 此服务器禁用职位津贴奖励
+commands.clan.takefunds.success=你将获取 %s %s 津贴从 %s部落的余额中
+commands.clan.takefunds.taken=%s 获取 %s %s 职位津贴从 %s部落余额中
+
+commands.clan.abandonclaim.usage=/clan abandonclaim （放弃土地）
+commands.clan.abandonclaim.success=土地已成功放弃
+commands.clan.abandonclaim.wrongclan=这块土地不属于 %s
+commands.clan.abandonclaim.notclaimed=这块土地未被放弃
+
+commands.clan.claim.usage=/clan claim （占领土地）
+commands.clan.claim.taken=%s 已被占领
+commands.clan.claim.taken_other=另一个部落 (%s) 已占领这块土地
+commands.clan.claim.proximity_error=你不能占领这块土地，因为它太靠近另一个部落的领土。在再次尝试之前，请确保距离其他部落的领土至少有 %s 个方块距离。你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
+commands.clan.claim.proximity_warning=建议你不要占领这块土地，因为它位于另一个部落领土中的 %s 范围领土内， 使用 /clan claim 再次占领这片土地。 你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
+commands.clan.claim.maxed=s 已经达到或高于其当前最大领土数量 %s
+commands.clan.claim.disconnected=您不能申请这块土地，因为它不在另一块%s土地的旁边。
+commands.clan.claim.success=Land claimed.
+commands.clan.claim.insufficient_funds=%s部落中的资金不足，无法占领土地。它需要%s%s
+
+commands.clan.fancymap.usage=/clan fancymap （部落大地图）
+
+commands.clan.map.usage=/clan map （查看部落地图）
+
+commands.clan.accept.usage=/clan accept （接受部落邀请）
+commands.clan.accept.success=你加入了 %s 部落
+commands.clan.accept.accepted=%s 加入了 %s 部落
+commands.clan.accept.no_invites=您没有任何待处理的邀请
+
+commands.clan.decline.usage=/clan decline （拒绝加入部落）
+commands.clan.decline.success=你拒绝了加入 %s 部落
+commands.clan.decline.declined=%s 拒绝加入 %s 的邀请
+
+commands.clan.demote.usage=/clan demote <玩家名称> （降低玩家的职位）
+
+commands.clan.invite.usage=/clan invite <玩家名称> （邀请玩家加入部落）
+commands.clan.invite.success=你已邀请 %s 加入 %s 部落
+commands.clan.invite.invited=您已被邀请加入 %1$s部落，同意输入 %1$s /clan accept 拒绝输入 /clan decline 
+commands.clan.invite.pending=玩家 %s 已被邀请加入部落，等待该玩家同意或拒绝邀请。
+commands.clan.invite.failedinvite=%s 尝试邀请你加入部落,但你已经有 %2$s待处理的邀请，你在同意此条邀请之前，你必须先处理 %2$s 的邀请。
+commands.clan.invite.already_in_this=玩家 %s 已经在 %s 邀请中
+commands.clan.invite.already_in_any=玩家 %s 已经加入过部落
+
+commands.clan.kick.usage=/clan kick <玩家> （从部落踢出玩家）
+commands.clan.kick.leave=要离开部落, 使用 /clan leave指令退出部落
+commands.clan.kick.authority=你没有权限踢出 %s
+commands.clan.kick.success=你已经从 %s 部落中请离了 %s 玩家
+commands.clan.kick.kicked=你被 %s 请离了 %s 部落
+commands.clan.kick.kicked=%s 已被 %s 从 %s 部落中请离
+commands.clan.kick.fail=玩家 %s 无法从 %s 部落中踢出，如果%1$s 是 %2$s 的唯一族长，在尝试踢出 %1$s 之前，应该讲另一位玩家提升为族长
+
+commands.clan.leave.usage=/clan leave （离开当前部落）
+commands.clan.leave.disband=你是 %s 部落最后一个成员， 要离开之前，请使用 /clan disband 解散部落
+commands.clan.leave.promote=你不能在没有族长的情况下离开 %s 部落，离开之前需要一个族长
+commands.clan.leave.success=你退出了 %s 部落
+commands.clan.leave.left=%s 退出了 %s 部落
+commands.clan.leave.error=内部错误：您无法从 %s 中退出，请将此情况报告给服务器管理员
+
+commands.clan.promote.usage=/clan promote <玩家> （提升玩家职位）
+
+commands.clan.home.usage=/clan home （传送到部落之家）
+commands.clan.home.nohome=%s 部落没有设置部落之家，部落族长应该使用/clan sethome 来创建一个
+commands.clan.home.cooldown=你需要等待 %s 后才能使用此命令
+commands.clan.home.blocked=传送到部落之家错误，请确保没有被挡住
+commands.clan.home.return_dim=将你传送回你所在的维度时出错
+commands.clan.home.dim_error=传送到部落之家时出错
+commands.clan.home.disabled=/clan home 命令被服务器禁用
+
+commands.clan.sethome.usage=/clan sethome （设置部落之家位置）
+commands.clan.sethome.proximity=你太靠近另一个部落的家了。你必须至少与其他氏族的家隔离 %s ，才能回到你的部落之家。使用/clan fancymap查看附近部落的位置。
+commands.clan.sethome.success=部落之家已设置
+commands.clan.sethome.territory=部落之家只能在你部落领土范围内设置
+
+commands.clan.trapped.usage=/clan trapped （传送到部落边界）
+commands.clan.trapped.fail=部落中无法使用
+
+commands.opclan.abandonclaim.usage=/opclan abandonclaim [强制] （管理员放弃领土指令）
+commands.opclan.abandonclaim.success=从 %s 放弃领土
+commands.opclan.abandonclaim.wrongclan=这片土地不属于 %s 要强制 %s 放弃它，请使用/opclan abandonclaim
+commands.opclan.abandonclaim.disconnected=你不能放弃这块土地，因为这样做会造成至少一个断开连接的土地
+
+commands.opclan.addfunds.usage=/opclan addfunds <部落> <资金> （增加部落资金）
+
+commands.opclan.buildadmin.usage=/opclan buildadmin （设置管理员自由建造权限）
+commands.opclan.buildadmin.on=你现在处于管理员自由建造模式
+commands.opclan.buildadmin.off=你不再处于管理员自由建造模式
+
+commands.opclan.claim.usage=/opclan claim [强制] （管理员强制占领土地）
+commands.opclan.claim.taken_other=另一个部落 (%1$s) 已经占领这块土地，想要从 %1$s 部落获取此土地，请使用/opclan claim 管理员命令
+commands.opclan.claim.success=为 %s 占领土地
+
+commands.opclan.demote.usage=/opclan demote <部落> <玩家> 管理员降低玩家职位 
+commands.opclan.demote.success=你已将 %s 降低为 %s 在 %s 中
+commands.opclan.demote.demoted=你已被 %s 降低为 %s 在 %s 中
+commands.opclan.demote.error=玩家 %s 不能被降级
+
+commands.opclan.disband.usage=/opclan disband <部落>  （管理员解散部落）
+commands.opclan.disband.success=你解散了 %s 部落
+commands.opclan.disband.disbanded=%s 已被 %s 解散
+commands.opclan.disband.error=内部错误: 无法解散 %s 请将此事件报告给服务器管理员
+commands.opclan.disband.opclan=你不能解散 %s 部落，因为它是OP创建的
+
+commands.opclan.kick.usage=/opclan kick <部落> <玩家> OP踢出玩家指令
+
+commands.opclan.promote.usage=/opclan promote <部落> <玩家> （管理员提示玩家职位）
+commands.opclan.promote.success=你已在 %s 中将 %s 提升为 %s
+commands.opclan.promote.notify=%s 已被 %s 提升为 %s 中的 %s
+commands.opclan.promote.promoted=你已被 %s 从 %s 提升为 %s
+commands.opclan.promote.error=玩家 %s 不能被提升
+
+commands.opclan.setcolor.usage=/opclan [目标部落] setcolor <颜色代码> （管理员设置部落颜色）
+
+commands.opclan.setdescription.usage=/opclan [目标部落] setdescription <新描述> （管理员设置部落宣言）
+
+commands.opclan.setname.usage=/opclan [目标部落] setname <新名称> （管理员设置部落名称）
+
+commands.opclan.setshield.usage=/opclan setshield <部落> <时长.分钟> （管理员设置部落保护时长）
+commands.opclan.setshield.format=设置保护时间格式不正确
+commands.opclan.setshield.success=部落保护时间从 %s 设置为 %s 分钟
+
+commands.raid.common.notinparty=你没有在一个突袭模式中
+
+commands.raid.collect.usage=/raid collect （收集物品）
+commands.raid.collect.makespace=你的剩余空间已经用完了。在您的库存中腾出空间，然后重试。
+commands.raid.collect.success=收集成功
+commands.raid.collect.empty=你没有使用任何东西
+
+commands.raid.invite.usage=/raid invite <玩家> （邀请玩家一起突袭部落）
+commands.raid.invite.invited=你被邀请参加针对 %1$s 部落的突袭行动，参加请输入/raid join %1$s
+commands.raid.invite.success=你成功邀请 %s 参加突袭行动
+commands.raid.invite.inclan=你不能邀请别人袭击他们自己的部落
+commands.raid.invite.limit=你的突袭行动不能容纳更多的玩家，此次活动有 %s 是进攻人员，目前限制 %s 人
+
+commands.raid.join.usage=/raid join <目标部落> （发起针对目标部落的突袭行动）
+commands.raid.join.created=你成功发起了针对 %s 部落的突袭行动
+commands.raid.join.create_fail=%s 你没有足够的在线玩家进行行动
+commands.raid.join.shield=%s 正在保护期间，请在 %s 小时候重试
+commands.raid.join.success=你成功加入了针对 %s 部落的突袭行动
+commands.raid.join.limit=针对 %s 的突袭行动人员已满，最大容纳 %s 人
+commands.raid.join.inclan=你不能突袭你自己的部落
+commands.raid.join.inparty=你已经在一个突袭行动中，想要继续你必须先离开你所在的突袭行动。
+
+commands.raid.leave.usage=/raid leave （离开突袭行动）
+commands.raid.leave.success=你成功离开了针对 %s 部落的突袭行动
+
+commands.raid.start.usage=/raid start （开始突袭行动）
+commands.raid.start.success=你成功启动了针对 %s 部落的突袭行动
+commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落发动突袭，它需要 %s %s 
+commands.raid.start.raiding=突袭行动已经启动
+commands.raid.start.error=内部错误：另一个突袭行动正在袭击这个部落。请在 %s 小时内重试。请将此情况报告给服务器管理员
+
+clans.protection.break.claimed=你不能破坏另一个部落领土上的方块
+clans.protection.break.raid=你不能在突袭过程中破坏这个方块，请等待突袭完成后再试
+clans.protection.break.claimed_raid=你不能在另一个部落的领土上破坏这个方块
+clans.protection.break.wilderness=未归属的荒野领土不能放置任何方块
+
+clans.protection.place.territory=你没有权限在别人部落领土建造
+clans.protection.place.wilderness=你无法在未归属的荒野领土建造任何东西
+
+clans.protection.interact.territory=你没有权限在别人部落领土上交互任何方块
+
+clans.rent.kicked=由于无力支付赋税，你已被踢出 %s 
+
+clans.upkeep.disbanded=%s 部落由于没有资金用于维护而被解散
+
+clans.wilderness=荒野
+clans.underground=地下
+
+clans.territory.entry=你正在输入 %s 
+clans.territory.entrydesc=~%s
+clans.territory.unclaimed=这块土地是无主的
+clans.territory.protected=这块土地是无主的并受到保护
+clans.territory.clanterritory=部落 %s 的领土
+
+clans.raid.glowing.defender=针对 %s 部落的突袭行动，还有 %s 分钟结束，你会发光发热一直到结束，还有 %s 的突袭队员还活着
+clans.raid.glowing.attacker=针对 %s 部落的突袭行动，还有 %s 分钟结束，剩余的防御玩家 %s 将发光发热，直到突袭结束
+
+clans.raid.rmtimer.rm_attacker=你已从突袭行动中被踢出了，因为你在 %s 的领土外围花费了太长时间
+clans.raid.rmtimer.rm_defender=您现在被判定为被杀，因为您在 %s 的领土之外花费了太长时间
+clans.raid.rmtimer.warn_attacker=你不在 %s的领土，如果你在领土外围呆的世界超过 %s 秒，你将从突袭行动中被踢出
+clans.raid.rmtimer.warn_defender=你现在不在 %s 的领土内，如果你在外面呆的时间超过 %s 秒，突袭行动胜利后会被判定为死亡
+
+clans.raid.init.defender=有 %s 成员将对 %s 部落发动突袭，行动开始后将以秒计时
+clans.raid.init.attacker=你的突袭行动有 %s 成员，正准备突袭 %s 部落，将在 %s 秒后开始
+
+clans.raid.activate=突袭 %s 部落的行动已经开始！ 
+clans.raid.end=针对 %s 部落的突袭行动已经结束！
+clans.raid.victory.raider=进攻成员获得胜利
+clans.raid.victory.clan=%s 取得了胜利！
