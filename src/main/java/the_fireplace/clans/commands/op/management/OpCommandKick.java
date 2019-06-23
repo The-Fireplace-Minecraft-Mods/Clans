@@ -50,7 +50,7 @@ public class OpCommandKick extends OpClanSubCommand {
 			if(target != null) {
 				if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
-						CommandKick.removeMember(server, sender, selectedClan, target);
+						CommandKick.kickMember(server, sender, selectedClan, target);
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 				} else

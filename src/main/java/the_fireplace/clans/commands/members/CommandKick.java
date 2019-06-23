@@ -20,7 +20,10 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -59,9 +62,9 @@ public class CommandKick extends ClanSubCommand {
 					EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 					EnumRank targetRank = selectedClan.getMembers().get(target.getId());
 					if (senderRank == EnumRank.LEADER) {
-						removeMember(server, sender, selectedClan, target);
+						kickMember(server, sender, selectedClan, target);
 					} else if (targetRank == EnumRank.MEMBER) {
-						removeMember(server, sender, selectedClan, target);
+						kickMember(server, sender, selectedClan, target);
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 				} else
@@ -84,12 +87,10 @@ public class CommandKick extends ClanSubCommand {
 		return args.length == 1 ? playerNames : Collections.emptyList();
 	}
 
-	public static void removeMember(MinecraftServer server, ICommandSender sender, Clan selectedClan, GameProfile target) throws CommandException {
+	public static void kickMember(MinecraftServer server, ICommandSender sender, Clan selectedClan, GameProfile target) throws CommandException {
 		if(selectedClan.removeMember(target.getId())) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.success", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-			for (Map.Entry<EntityPlayerMP, EnumRank> messageTarget : selectedClan.getOnlineMembers().entrySet())
-				if(!(sender instanceof EntityPlayerMP) || !((EntityPlayerMP)sender).getUniqueID().equals(messageTarget.getKey().getUniqueID()))
-					messageTarget.getKey().sendMessage(TranslationUtil.getTranslation(messageTarget.getKey().getUniqueID(), "commands.clan.kick.kicked_other", target.getName(), selectedClan.getClanName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.YELLOW));
+			selectedClan.messageAllOnline(sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null, TextStyles.YELLOW, "commands.clan.kick.kicked_other", target.getName(), selectedClan.getClanName(), sender.getDisplayName().getFormattedText());
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
 				targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", selectedClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));

@@ -313,3 +313,6 @@ clans.raid.activate=The raid against %s has begun!
 clans.raid.end=The raid against %s has ended!
 clans.raid.victory.raider=The raiders were victorious!
 clans.raid.victory.clan=%s was victorious!
+
+clans.chat.prefix=<%s Chat>
+clans.chat.defaultclan=<%s>

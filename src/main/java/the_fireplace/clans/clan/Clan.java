@@ -10,6 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
@@ -471,6 +472,25 @@ public class Clan {
             }
         }
         Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getClanId()), this.getClanId());
+    }
+
+    public void messageAllOnline(Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(EnumRank.ANY, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(EnumRank.ANY, excluded, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(EnumRank minRank, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(minRank, null, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(EnumRank minRank, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+        HashMap<EntityPlayerMP, EnumRank> online = getOnlineMembers();
+        for(EntityPlayerMP member : online.keySet())
+            if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
+                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle));
     }
 
     /**

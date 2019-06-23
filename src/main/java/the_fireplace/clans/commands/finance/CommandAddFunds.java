@@ -50,9 +50,7 @@ public class CommandAddFunds extends ClanSubCommand {
 		if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 			if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId())) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-				for (EntityPlayerMP target : selectedClan.getOnlineMembers().keySet())
-					if (!target.getUniqueID().equals(sender.getUniqueID()))
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.addfunds.added", sender.getDisplayNameString(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+				selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName());
 			} else {
 				Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));

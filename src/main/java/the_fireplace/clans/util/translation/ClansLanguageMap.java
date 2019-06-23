@@ -3,15 +3,15 @@ package the_fireplace.clans.util.translation;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.io.IOUtils;
+import the_fireplace.clans.Clans;
+
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.IllegalFormatException;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.io.IOUtils;
-import the_fireplace.clans.Clans;
 
 public class ClansLanguageMap {
     /** Pattern that matches numeric variable placeholders in a resource string, such as "%d", "%3$d", "%.2f" */

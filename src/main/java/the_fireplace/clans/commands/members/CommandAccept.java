@@ -15,7 +15,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -48,9 +47,7 @@ public class CommandAccept extends ClanSubCommand {
 			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 				CapHelper.getPlayerClanCapability(sender).setDefaultClan(acceptClan.getClanId());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
-			for (Map.Entry<EntityPlayerMP, EnumRank> target : acceptClan.getOnlineMembers().entrySet())
-				if(!sender.getUniqueID().equals(target.getKey().getUniqueID()))
-					target.getKey().sendMessage(TranslationUtil.getTranslation(target.getKey().getUniqueID(), "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanName()).setStyle(TextStyles.GREEN));
+			acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanName());
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}

@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.util.PlayerPositionCache;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
@@ -23,7 +22,9 @@ import the_fireplace.clans.raid.RaidingParties;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
 public class Timer {
