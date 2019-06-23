@@ -61,7 +61,7 @@ public class LandProtectionEvents {
 								else
 									breakingPlayer.sendMessage(TranslationUtil.getTranslation(breakingPlayer.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
 							} else
-								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState), chunkOwner);
+								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
 						}
 					}
 					return;
@@ -207,7 +207,7 @@ public class LandProtectionEvents {
 				if (chunkClan != null) {
 					IBlockState targetState = event.getWorld().getBlockState(pos);
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
-						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState), chunkOwner);
+						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
 					else
 						removeBlocks.add(pos);
 				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY))

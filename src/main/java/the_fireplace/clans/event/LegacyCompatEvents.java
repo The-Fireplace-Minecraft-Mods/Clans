@@ -8,7 +8,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.ClaimedLandCapability;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.ClanChunkData;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
@@ -28,7 +28,7 @@ public class LegacyCompatEvents {
                 ChunkUtils.clearChunkOwner(c);
                 return;
             }
-            ClanChunkCache.addChunk(clan, c.x, c.z, c.getWorld().provider.getDimension());
+            ClanChunkData.addChunk(clan, c.x, c.z, c.getWorld().provider.getDimension());
             cap.setPre120(false);
         }
     }

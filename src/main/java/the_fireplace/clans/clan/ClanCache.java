@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.util.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,7 +21,15 @@ public final class ClanCache {
 	private static ArrayList<String> clanBanners = Lists.newArrayList();
 	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
-	private static ArrayList<UUID> claimAdmins = Lists.newArrayList();
+
+	private static ArrayList<UUID> buildAdmins = Lists.newArrayList();
+	public static HashMap<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
+
+	//Maps of (Player Unique ID) -> (Clan)
+	public static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
+	public static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
+	public static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
+	public static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
 
 	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi", "list", "fancymap", "fm");
 
@@ -151,16 +160,16 @@ public final class ClanCache {
 	}
 
 	public static boolean toggleClaimAdmin(EntityPlayerMP admin){
-		if(claimAdmins.contains(admin.getUniqueID())) {
-			claimAdmins.remove(admin.getUniqueID());
+		if(buildAdmins.contains(admin.getUniqueID())) {
+			buildAdmins.remove(admin.getUniqueID());
 			return false;
 		} else {
-			claimAdmins.add(admin.getUniqueID());
+			buildAdmins.add(admin.getUniqueID());
 			return true;
 		}
 	}
 
 	public static boolean isClaimAdmin(EntityPlayerMP admin) {
-		return claimAdmins.contains(admin.getUniqueID());
+		return buildAdmins.contains(admin.getUniqueID());
 	}
 }

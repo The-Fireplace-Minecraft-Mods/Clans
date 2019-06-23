@@ -430,7 +430,7 @@ public class Clan {
     }
 
     /**
-     * Disbands a clan and unregisters data for it where needed.
+     * Disbands a clan and unregisters cache for it where needed.
      * @param server
      * The Minecraft Server instance
      * @param sender

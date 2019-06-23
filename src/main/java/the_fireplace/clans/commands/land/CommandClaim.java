@@ -9,7 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.ClanChunkData;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.CapHelper;
@@ -96,7 +96,7 @@ public class CommandClaim extends ClanSubCommand {
 	private static boolean claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
 		if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
 			ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
-			ClanChunkCache.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
+			ClanChunkData.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 			selectedClan.addClaimCount();
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success").setStyle(TextStyles.GREEN));
 			return true;

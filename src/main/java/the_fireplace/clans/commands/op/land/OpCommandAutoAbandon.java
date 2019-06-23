@@ -5,9 +5,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -37,8 +37,8 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		boolean force = args.length == 1 && args[0].equals("force");
-		if(Timer.opAutoAbandonClaims.remove(sender.getUniqueID()) == null) {
-			Timer.opAutoAbandonClaims.put(sender.getUniqueID(), force);
+		if(ClanCache.opAutoAbandonClaims.remove(sender.getUniqueID()) == null) {
+			ClanCache.opAutoAbandonClaims.put(sender.getUniqueID(), force);
 			if(force)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
 			else

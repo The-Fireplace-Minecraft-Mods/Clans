@@ -4,9 +4,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -38,8 +38,8 @@ public class CommandAutoAbandon extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(Timer.autoAbandonClaims.remove(sender.getUniqueID()) == null) {
-			Timer.autoAbandonClaims.put(sender.getUniqueID(), selectedClan);
+		if(ClanCache.autoAbandonClaims.remove(sender.getUniqueID()) == null) {
+			ClanCache.autoAbandonClaims.put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));

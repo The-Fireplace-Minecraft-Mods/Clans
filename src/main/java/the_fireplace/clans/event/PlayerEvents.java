@@ -1,6 +1,5 @@
 package the_fireplace.clans.event;
 
-import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -9,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.util.PlayerPositionCache;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.ClanDatabase;
@@ -17,9 +17,6 @@ import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
 public class PlayerEvents {
@@ -48,13 +45,13 @@ public class PlayerEvents {
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
-            Timer.prevChunkXs.remove(event.player);
-            Timer.prevChunkZs.remove(event.player);
-            Timer.opAutoClaimLands.remove(event.player.getUniqueID());
-            Timer.opAutoAbandonClaims.remove(event.player.getUniqueID());
-            Timer.autoAbandonClaims.remove(event.player.getUniqueID());
-            Timer.autoClaimLands.remove(event.player.getUniqueID());
-            clanChattingPlayers.remove(event.player.getUniqueID());
+            PlayerPositionCache.prevChunkXs.remove(event.player);
+            PlayerPositionCache.prevChunkZs.remove(event.player);
+            ClanCache.opAutoClaimLands.remove(event.player.getUniqueID());
+            ClanCache.opAutoAbandonClaims.remove(event.player.getUniqueID());
+            ClanCache.autoAbandonClaims.remove(event.player.getUniqueID());
+            ClanCache.autoClaimLands.remove(event.player.getUniqueID());
+            ClanCache.clanChattingPlayers.remove(event.player.getUniqueID());
         }
     }
 
@@ -62,12 +59,12 @@ public class PlayerEvents {
     public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
-            Timer.prevChunkXs.remove(event.player);
-            Timer.prevChunkZs.remove(event.player);
-            Pair<Clan, Boolean> ocAutoClaim = Timer.opAutoClaimLands.remove(event.player.getUniqueID());
-            Boolean ocAutoAbandon = Timer.opAutoAbandonClaims.remove(event.player.getUniqueID());
-            Clan cAutoAbandon = Timer.autoAbandonClaims.remove(event.player.getUniqueID());
-            Clan cAutoClaim = Timer.autoClaimLands.remove(event.player.getUniqueID());
+            PlayerPositionCache.prevChunkXs.remove(event.player);
+            PlayerPositionCache.prevChunkZs.remove(event.player);
+            Pair<Clan, Boolean> ocAutoClaim = ClanCache.opAutoClaimLands.remove(event.player.getUniqueID());
+            Boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(event.player.getUniqueID());
+            Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(event.player.getUniqueID());
+            Clan cAutoClaim = ClanCache.autoClaimLands.remove(event.player.getUniqueID());
             if(ocAutoAbandon != null) {
                 if (ocAutoAbandon)
                     event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
@@ -82,8 +79,6 @@ public class PlayerEvents {
                 event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
         }
     }
-
-    public static HashMap<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
 
     @SubscribeEvent
     public static void onServerChat(ServerChatEvent event) {

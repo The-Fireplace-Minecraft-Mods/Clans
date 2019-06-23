@@ -6,6 +6,7 @@ Added an option to prevent mobs from spawning on claimed land
 Added a way to set which FakePlayers are allowed to do things
 Added support for basic minecraft color strings in /clan setcolor
 New commands: /clan autoclaim, /clan autoabandon, /opclan autoclaim, /opclan autoabandon
+Added Chinese localization (zh_cn) (xiaoxixi)
 
 Changes:
 Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to copy data from those versions.

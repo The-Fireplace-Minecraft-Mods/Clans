@@ -1,8 +1,6 @@
 package the_fireplace.clans.event;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
@@ -11,6 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.util.PlayerPositionCache;
 import the_fireplace.clans.clan.*;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.land.CommandClaim;
@@ -32,14 +31,14 @@ public class Timer {
 	private static int minuteCounter = 0;
 	private static int fiveMinuteCounter = 0;
 	private static boolean executing = false;
-	public static HashMap<EntityPlayerMP, Pair<Integer, Integer>> clanHomeWarmups = Maps.newHashMap();
+
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
 		if(!executing) {
 			if(++fiveMinuteCounter >= 20*60*5) {
 				executing = true;
 				fiveMinuteCounter -= 20*60*5;
-				ClanChunkCache.save();
+				ClanChunkData.save();
 				ClanDatabase.save();
 				RaidBlockPlacementDatabase.save();
 				RaidRestoreDatabase.save();
@@ -57,17 +56,17 @@ public class Timer {
 				ticks -= 20;
 
 				RaidingParties.decrementBuffers();
-				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : Sets.newHashSet(clanHomeWarmups.entrySet()))
+				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : Sets.newHashSet(PlayerPositionCache.clanHomeWarmups.entrySet()))
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
 						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
 					}
-				for(EntityPlayerMP player: Sets.newHashSet(clanHomeWarmups.keySet()))
-					if(clanHomeWarmups.get(player).getValue1() > 0)
-						clanHomeWarmups.put(player, new Pair<>(clanHomeWarmups.get(player).getValue1() - 1, clanHomeWarmups.get(player).getValue2()));
+				for(EntityPlayerMP player: Sets.newHashSet(PlayerPositionCache.clanHomeWarmups.keySet()))
+					if(PlayerPositionCache.clanHomeWarmups.get(player).getValue1() > 0)
+						PlayerPositionCache.clanHomeWarmups.put(player, new Pair<>(PlayerPositionCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerPositionCache.clanHomeWarmups.get(player).getValue2()));
 					else
-						clanHomeWarmups.remove(player);
+						PlayerPositionCache.clanHomeWarmups.remove(player);
 
 				for (Raid raid : RaidingParties.getActiveRaids())
 					if (raid.checkRaidEndTimer())
@@ -112,16 +111,6 @@ public class Timer {
 		}
 	}
 
-	//These three are used for the chunk claim warning
-	private static HashMap<EntityPlayer, Integer> prevYs = Maps.newHashMap();
-	static HashMap<EntityPlayer, Integer> prevChunkXs = Maps.newHashMap();
-	static HashMap<EntityPlayer, Integer> prevChunkZs = Maps.newHashMap();
-	//Maps of (Player Unique ID) -> (Clan)
-	public static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
-	public static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
-	public static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
-	public static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
-
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(!event.player.getEntityWorld().isRemote) {
@@ -148,14 +137,14 @@ public class Timer {
 
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 
-						if(opAutoAbandonClaims.containsKey(event.player.getUniqueID()))
-							OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)event.player, opAutoAbandonClaims.get(event.player.getUniqueID()) ? new String[]{"force"} : new String[]{});
-						if(autoAbandonClaims.containsKey(event.player.getUniqueID()))
-							CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)event.player, autoAbandonClaims.get(event.player.getUniqueID()));
-						if(opAutoClaimLands.containsKey(event.player.getUniqueID()))
-							OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)event.player, opAutoClaimLands.get(event.player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, opAutoClaimLands.get(event.player.getUniqueID()).getValue1());
-						if(autoClaimLands.containsKey(event.player.getUniqueID()))
-							CommandClaim.checkAndAttemptClaim((EntityPlayerMP) event.player, autoClaimLands.get(event.player.getUniqueID()));
+						if(ClanCache.opAutoAbandonClaims.containsKey(event.player.getUniqueID()))
+							OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)event.player, ClanCache.opAutoAbandonClaims.get(event.player.getUniqueID()) ? new String[]{"force"} : new String[]{});
+						if(ClanCache.autoAbandonClaims.containsKey(event.player.getUniqueID()))
+							CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)event.player, ClanCache.autoAbandonClaims.get(event.player.getUniqueID()));
+						if(ClanCache.opAutoClaimLands.containsKey(event.player.getUniqueID()))
+							OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)event.player, ClanCache.opAutoClaimLands.get(event.player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, ClanCache.opAutoClaimLands.get(event.player.getUniqueID()).getValue1());
+						if(ClanCache.autoClaimLands.containsKey(event.player.getUniqueID()))
+							CommandClaim.checkAndAttemptClaim((EntityPlayerMP) event.player, ClanCache.autoClaimLands.get(event.player.getUniqueID()));
 
 						handleTerritoryChangedMessage(event, chunkClan, playerClans);
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
@@ -174,7 +163,7 @@ public class Timer {
 
 	private static void handleDepthChangedMessage(TickEvent.PlayerTickEvent event) {
 		int curY = (int) Math.round(event.player.posY);
-		int prevY = prevYs.get(event.player) != null ? prevYs.get(event.player) : curY;
+		int prevY = PlayerPositionCache.prevYs.get(event.player) != null ? PlayerPositionCache.prevYs.get(event.player) : curY;
 		int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
 		if (curY >= yBound && prevY < yBound) {
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW));
@@ -183,7 +172,7 @@ public class Timer {
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
 		}
-		prevYs.put(event.player, curY);
+		PlayerPositionCache.prevYs.put(event.player, curY);
 	}
 
 	private static void handleTerritoryChangedMessage(TickEvent.PlayerTickEvent event, UUID chunkClanId, ArrayList<Clan> playerClans) {
@@ -220,14 +209,14 @@ public class Timer {
 
 	private static void handleClaimWarning(EntityPlayerMP player) {
 		if(CapHelper.getPlayerClanCapability(player).getClaimWarning()) {
-			if(!prevChunkXs.containsKey(player))
-				prevChunkXs.put(player, player.getServerWorld().getChunk(player.getPosition()).x);
-			if(!prevChunkZs.containsKey(player))
-				prevChunkZs.put(player, player.getServerWorld().getChunk(player.getPosition()).z);
-			if(prevChunkXs.get(player) != player.getServerWorld().getChunk(player.getPosition()).x || prevChunkZs.get(player) != player.getServerWorld().getChunk(player.getPosition()).z) {
+			if(!PlayerPositionCache.prevChunkXs.containsKey(player))
+				PlayerPositionCache.prevChunkXs.put(player, player.getServerWorld().getChunk(player.getPosition()).x);
+			if(!PlayerPositionCache.prevChunkZs.containsKey(player))
+				PlayerPositionCache.prevChunkZs.put(player, player.getServerWorld().getChunk(player.getPosition()).z);
+			if(PlayerPositionCache.prevChunkXs.get(player) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerPositionCache.prevChunkZs.get(player) != player.getServerWorld().getChunk(player.getPosition()).z) {
 				CapHelper.getPlayerClanCapability(player).setClaimWarning(false);
-				prevChunkXs.remove(player);
-				prevChunkZs.remove(player);
+				PlayerPositionCache.prevChunkXs.remove(player);
+				PlayerPositionCache.prevChunkZs.remove(player);
 			}
 		}
 	}

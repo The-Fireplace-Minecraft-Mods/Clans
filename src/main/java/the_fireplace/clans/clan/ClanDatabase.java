@@ -78,7 +78,7 @@ public final class ClanDatabase {
     static boolean removeClan(UUID clanId){
         if(getInstance().clans.containsKey(clanId)) {
             ClanCache.removeClan(getInstance().clans.remove(clanId));
-            ClanChunkCache.delClan(clanId);
+            ClanChunkData.delClan(clanId);
             markChanged();
             return true;
         }

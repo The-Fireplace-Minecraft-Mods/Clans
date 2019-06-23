@@ -5,14 +5,15 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.util.PlayerPositionCache;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
 import the_fireplace.clans.clan.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.event.Timer;
 import the_fireplace.clans.util.CapHelper;
 import the_fireplace.clans.util.Pair;
 import the_fireplace.clans.util.TextStyles;
@@ -58,7 +59,7 @@ public class CommandHome extends ClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.cfg.clanHomeWarmupTime > 0)
-					Timer.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
+					PlayerPositionCache.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
 				else
 					teleportHome(sender, selectedClan, home, playerDim);
 			}
@@ -114,6 +115,6 @@ public class CommandHome extends ClanSubCommand {
 	}
 
 	private static boolean hasRoomForPlayer(World worldIn, BlockPos pos) {
-		return worldIn.getBlockState(pos.down()).isTopSolid() && !worldIn.getBlockState(pos).getMaterial().isSolid() && !worldIn.getBlockState(pos.up()).getMaterial().isSolid();
+		return worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP) && !worldIn.getBlockState(pos).getMaterial().isSolid() && !worldIn.getBlockState(pos.up()).getMaterial().isSolid();
 	}
 }

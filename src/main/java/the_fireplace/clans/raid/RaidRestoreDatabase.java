@@ -29,7 +29,7 @@ public final class RaidRestoreDatabase {
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData());
 		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
-			Clans.LOGGER.error("Block restore data being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
+			Clans.LOGGER.error("Block restore cache being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		isChanged = true;
 	}

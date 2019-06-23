@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.clan.ClaimedLandCapability;
-import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.ClanChunkData;
 import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
@@ -110,7 +110,7 @@ public final class Clans {
 
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent event) {
-        ClanChunkCache.save();
+        ClanChunkData.save();
         ClanDatabase.save();
         RaidRestoreDatabase.save();
         RaidBlockPlacementDatabase.save();

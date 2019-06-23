@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
-public class ClanChunkCache {
+public class ClanChunkData {
 
     private static boolean isLoaded = false;
     private static boolean isChanged = false;
@@ -64,7 +64,7 @@ public class ClanChunkCache {
     public static Clan getChunkClan(int x, int z, int dim) {
         if(!isLoaded)
             load();
-        for(Map.Entry<UUID, Set<ChunkPosition>> entry: Lists.newArrayList(claimedChunks.entrySet()))//New list with the data to prevent concurrent modification errors
+        for(Map.Entry<UUID, Set<ChunkPosition>> entry: Lists.newArrayList(claimedChunks.entrySet()))//New list with the cache to prevent concurrent modification errors
             for(ChunkPosition pos: entry.getValue())
                 if(pos.posX == x && pos.posZ == z && pos.dim == dim)
                     return ClanCache.getClanById(entry.getKey());

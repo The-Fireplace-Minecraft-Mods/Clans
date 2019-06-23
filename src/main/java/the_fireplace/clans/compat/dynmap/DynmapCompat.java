@@ -15,7 +15,7 @@ import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.ClanChunkData;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.compat.dynmap.data.GroupedChunks;
 import the_fireplace.clans.compat.dynmap.data.PositionPoint;
@@ -108,7 +108,7 @@ public class DynmapCompat implements IDynmapCompat {
         startTimeNS = System.nanoTime();
         Clans.LOGGER.trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> teamClaimsList = Sets.newHashSet(ClanChunkCache.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent data from getting removed from the chunk cache
+        Set<ChunkPosition> teamClaimsList = Sets.newHashSet(ClanChunkData.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
         totalChunks = teamClaimsList.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
@@ -146,9 +146,9 @@ public class DynmapCompat implements IDynmapCompat {
     private boolean initializeMap() {
         Set<ClanDimInfo> teamDimList = Sets.newHashSet();
 
-        for(Clan clan: ClanChunkCache.clansWithClaims()) {
+        for(Clan clan: ClanChunkData.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClanChunkCache.getChunks(clan.getClanId()))
+            for(ChunkPosition chunk: ClanChunkData.getChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.dim)) {
                     teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
                     addedDims.add(chunk.dim);
@@ -218,7 +218,7 @@ public class DynmapCompat implements IDynmapCompat {
                 zList[index] = perimeterPoints.get(index).getY();
             }
 
-            // Build the data going in to the Dynmap tooltip
+            // Build the cache going in to the Dynmap tooltip
             StringBuilder stToolTip = new StringBuilder("<div class=\"infowindow\">");
 
             stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(clanDimInfo.getClanName()).append("</span></div>");

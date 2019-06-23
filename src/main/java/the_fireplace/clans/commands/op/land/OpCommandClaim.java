@@ -9,7 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkCache;
+import the_fireplace.clans.clan.ClanChunkData;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
@@ -63,7 +63,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 				}
 				if(opSelectedClan.isOpclan()) {
 					ChunkUtils.setChunkOwner(c, opSelectedClan.getClanId());
-					ClanChunkCache.addChunk(opSelectedClan, c.x, c.z, c.getWorld().provider.getDimension());
+					ClanChunkData.addChunk(opSelectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 					opSelectedClan.addClaimCount();
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.claim.success", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				} else {
