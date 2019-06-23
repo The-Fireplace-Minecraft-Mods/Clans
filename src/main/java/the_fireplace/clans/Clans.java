@@ -238,6 +238,8 @@ public final class Clans {
         public static boolean protectEdgeTerritory = false;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
+        @Config.Comment("Always allow TNT to ignite other TNT, regardless of whether other blocks are protected.")
+        public static boolean chainTNT = true;
         //Raid configuration
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;

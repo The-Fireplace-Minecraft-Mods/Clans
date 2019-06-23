@@ -204,13 +204,13 @@ public class LandProtectionEvents {
 				Chunk c = event.getWorld().getChunk(pos);
 				UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 				Clan chunkClan = ClanCache.getClanById(chunkOwner);
+				IBlockState targetState = event.getWorld().getBlockState(pos);
 				if (chunkClan != null) {
-					IBlockState targetState = event.getWorld().getBlockState(pos);
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
 						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-					else
+					else if(!Clans.cfg.chainTNT || !(targetState.getBlock() instanceof BlockTNT))
 						removeBlocks.add(pos);
-				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY))
+				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY) && (!Clans.cfg.chainTNT || !(targetState.getBlock() instanceof BlockTNT)))
 					removeBlocks.add(pos);
 			}
 			for (BlockPos pos : removeBlocks)
