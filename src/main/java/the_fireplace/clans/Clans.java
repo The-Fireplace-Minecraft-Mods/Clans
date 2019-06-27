@@ -231,6 +231,11 @@ public final class Clans {
         public static boolean preventMobsOnClaims = true;
         @Config.Comment("Prevents mobs from spawning in borderlands. Requires enableBorderlands and preventMobsOnClaims.")
         public static boolean preventMobsOnBorderlands = true;
+        @Config.Comment("Maximum number of claims per clan. Set to 0 for unlimited.")
+        @Config.RangeInt(min=0)
+        public static int maxClaims = 0;
+        @Config.Comment("If enabled, multiplies the max claim count by the number of players in the clan.")
+        public static boolean multiplyMaxClaimsByPlayers = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;

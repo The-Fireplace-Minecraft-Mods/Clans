@@ -46,6 +46,13 @@ commands.clan.details.members=Members:
 commands.clan.details.leader=Leader %s
 commands.clan.details.admin=Admin %s
 commands.clan.details.no_members=Error: %s has no members.
+commands.clan.finances.upkeep=Upkeep (expenses) is %s %s every %s days.
+commands.clan.finances.rent=Rent (income) is %s %s every %s days.
+commands.clan.finances.trend=Approximate financial trend is %s %s every day.
+commands.clan.finances.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
+commands.clan.finances.reduce_upkeep=You may want to find a way to reduce upkeep.
+commands.clan.finances.breaking_even=%s is not earning or losing money.
+commands.clan.finances.disabled=/clan finances is disabled on this server.
 
 commands.clan.disband.usage=/clan disband
 
@@ -97,15 +104,6 @@ commands.clan.addfunds.added=%s added %s %s to %s's balance.
 
 commands.clan.balance.usage=/clan balance
 commands.clan.balance.balance=%s's clan balance: %s %s.
-
-commands.clan.finances.usage=/clan finances
-commands.clan.finances.upkeep=Upkeep (expenses) is %s %s every %s days.
-commands.clan.finances.rent=Rent (income) is %s %s every %s days.
-commands.clan.finances.trend=Approximate financial trend is %s %s every day.
-commands.clan.finances.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
-commands.clan.finances.reduce_upkeep=You may want to find a way to reduce upkeep.
-commands.clan.finances.breaking_even=%s is not earning or losing money.
-commands.clan.finances.disabled=/clan finances is disabled on this server.
 
 commands.clan.setrent.usage=/clan setrent <amount>
 commands.clan.setrent.success=Clan rent for %s set to %s.

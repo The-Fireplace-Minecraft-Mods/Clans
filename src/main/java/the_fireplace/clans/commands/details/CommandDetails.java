@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.details;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -47,7 +48,7 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(args.length == 0) {
 			if(selectedClan == null) {
 				if(sender instanceof EntityPlayerMP)
@@ -76,7 +77,7 @@ public class CommandDetails extends ClanSubCommand {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private void showDetails(MinecraftServer server, ICommandSender sender, Clan clan) {
+	private void showDetails(MinecraftServer server, ICommandSender sender, Clan clan) throws CommandException {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", clan.getClanName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.description", clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", clan.getClaimCount()).setStyle(TextStyles.GREEN));
@@ -118,6 +119,44 @@ public class CommandDetails extends ClanSubCommand {
 		} else if(!clan.isOpclan()) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getClanName()).setStyle(TextStyles.RED));
 			Clans.LOGGER.error("Clan {} has no members.", clan.getClanName());
+		}
+		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
+		if(senderId != null && leaders.contains(senderId) || sender instanceof MinecraftServer) {
+			if(Clans.cfg.chargeRentDays <= 0 && Clans.cfg.clanUpkeepDays <= 0)
+				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.finances.disabled"));
+			long upkeep = 0;
+			long rent = 0;
+			if(Clans.cfg.clanUpkeepDays > 0) {
+				upkeep += Clans.cfg.clanUpkeepCost;
+				if(Clans.cfg.multiplyUpkeepClaims)
+					upkeep *= selectedClan.getClaimCount();
+				if(Clans.cfg.multiplyUpkeepMembers)
+					upkeep *= selectedClan.getMemberCount();
+				if(upkeep > 0)
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.upkeep", upkeep, Clans.getPaymentHandler().getCurrencyName(upkeep), Clans.cfg.clanUpkeepDays).setStyle(TextStyles.GREEN));
+			}
+			if(Clans.cfg.chargeRentDays > 0) {
+				rent += selectedClan.getRent();
+				rent *= selectedClan.getMemberCount();
+				if(rent > 0)
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.rent", rent, Clans.getPaymentHandler().getCurrencyName(rent), Clans.cfg.chargeRentDays).setStyle(TextStyles.GREEN));
+			}
+			if(upkeep > 0 && rent > 0) {
+				upkeep /= Clans.cfg.clanUpkeepDays;
+				rent /= Clans.cfg.chargeRentDays;
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.trend", (rent-upkeep) <= 0 ? (rent-upkeep) : '+'+(rent-upkeep), Clans.getPaymentHandler().getCurrencyName(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
+				if(upkeep > rent) {
+					long maxRent = Clans.cfg.maxRent;
+					if(Clans.cfg.multiplyMaxRentClaims)
+						maxRent *= selectedClan.getClaimCount();
+					if(selectedClan.getRent() < maxRent) {
+						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.increase_rent", maxRent/Clans.cfg.chargeRentDays < upkeep ? maxRent : Clans.cfg.chargeRentDays*upkeep/selectedClan.getMemberCount()).setStyle(TextStyles.YELLOW));
+					} else
+						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.reduce_upkeep").setStyle(TextStyles.YELLOW));
+				}
+			}
+			if(rent <= 0 && upkeep <= 0)
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.breaking_even", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

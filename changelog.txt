@@ -22,6 +22,7 @@ The command alias /c ac is now used for /clan autoclaim.
 The command alias for /clan abandonclaim is now /c abc
 The command alias /oc ac is now used for /opclan autoclaim.
 The command alias for /opclan abandonclaim is now /oc abc
+Removed /clan finances, its functionality has been merged into /clan details
 
 Fixes:
 Raid Restoration Data takes up slightly less space

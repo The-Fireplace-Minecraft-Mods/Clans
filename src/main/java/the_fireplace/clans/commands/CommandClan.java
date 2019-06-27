@@ -74,7 +74,6 @@ public class CommandClan extends CommandBase {
             put("addfunds", new CommandAddFunds());
             put("takefunds", new CommandTakeFunds());
             put("setrent", new CommandSetRent());
-            put("finances", new CommandFinances());
         }
 	}};
 
