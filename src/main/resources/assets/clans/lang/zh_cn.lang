@@ -159,7 +159,7 @@ commands.clan.kick.leave=要离开部落, 使用 /clan leave指令退出部落
 commands.clan.kick.authority=你没有权限踢出 %s
 commands.clan.kick.success=你已经从 %s 部落中请离了 %s 玩家
 commands.clan.kick.kicked=你被 %s 请离了 %s 部落
-commands.clan.kick.kicked=%s 已被 %s 从 %s 部落中请离
+commands.clan.kick.kicked_other=%s 已被 %s 从 %s 部落中请离
 commands.clan.kick.fail=玩家 %s 无法从 %s 部落中踢出，如果%1$s 是 %2$s 的唯一族长，在尝试踢出 %1$s 之前，应该讲另一位玩家提升为族长
 
 commands.clan.leave.usage=/clan leave （离开当前部落）

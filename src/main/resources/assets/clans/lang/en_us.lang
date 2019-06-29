@@ -167,7 +167,7 @@ commands.clan.kick.leave=To leave a clan, use /clan leave.
 commands.clan.kick.authority=You do not have the authority to kick out %s.
 commands.clan.kick.success=You have kicked %s out of %s.
 commands.clan.kick.kicked=You have been kicked out of %s by %s.
-commands.clan.kick.kicked=%s has been kicked out of %s by %s.
+commands.clan.kick.kicked_other=%s has been kicked out of %s by %s.
 commands.clan.kick.fail=The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.
 
 commands.clan.leave.usage=/clan leave
