@@ -1,8 +1,10 @@
 package the_fireplace.clans.compat.payment;
 
 import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.grandeconomy.GrandEconomy;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;
-import the_fireplace.grandeconomy.economy.Account;
+import the_fireplace.grandeconomy.econhandlers.ge.Account;
+import the_fireplace.grandeconomy.econhandlers.ge.GrandEconomyEconHandler;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -13,7 +15,7 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
 		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, false);
-		if(ret && ClanCache.getClanById(account) != null)
+		if(ret && ClanCache.getClanById(account) != null && GrandEconomy.economy instanceof GrandEconomyEconHandler)
 			try {
 				Objects.requireNonNull(Account.get(account)).writeIfChanged();
 			} catch(IOException e) {
@@ -36,10 +38,8 @@ public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public boolean addAmount(long amount, UUID account) {
-		if(Account.get(account) == null)
-			return false;
 		GrandEconomyApi.addToBalance(account, amount, false);
-		if(ClanCache.getClanById(account) != null)
+		if(ClanCache.getClanById(account) != null && GrandEconomy.economy instanceof GrandEconomyEconHandler)
 			try {
 				Objects.requireNonNull(Account.get(account)).writeIfChanged();
 			} catch(IOException e) {
@@ -51,13 +51,12 @@ public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public void ensureAccountExists(UUID account) {
-		Account.get(account);
+		GrandEconomyApi.hasAccount(account);
 	}
 
 	@Override
 	public long getBalance(UUID account) {
-		Account acct = Account.get(account);
-		return acct != null ? acct.getBalance() : -1;
+		return GrandEconomyApi.getBalance(account);
 	}
 
 	@Override
