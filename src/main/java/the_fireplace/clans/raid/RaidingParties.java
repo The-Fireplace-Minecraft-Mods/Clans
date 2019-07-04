@@ -2,6 +2,7 @@ package the_fireplace.clans.raid;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
@@ -41,7 +42,7 @@ public final class RaidingParties {
 	}
 
 	public static Set<UUID> getRaidingPlayers() {
-		return raidingPlayers.keySet();
+		return Sets.newHashSet(raidingPlayers.keySet());
 	}
 
 	public static boolean hasActiveRaid(Clan clan){
@@ -53,7 +54,7 @@ public final class RaidingParties {
 	}
 
 	public static Collection<Raid> getActiveRaids() {
-		return activeraids.values();
+		return Sets.newHashSet(activeraids.values());
 	}
 
 	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
@@ -138,7 +139,7 @@ public final class RaidingParties {
 			}
 	}
 
-	public static ArrayList<Clan> getRaidedClans() {
+	public static Collection<Clan> getRaidedClans() {
 		return raidedClans;
 	}
 }

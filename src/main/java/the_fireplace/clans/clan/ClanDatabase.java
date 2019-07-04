@@ -2,6 +2,7 @@ package the_fireplace.clans.clan;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -57,7 +58,7 @@ public final class ClanDatabase {
     }
 
     public static Collection<Clan> getClans(){
-        return getInstance().clans.values();
+        return Sets.newHashSet(getInstance().clans.values());
     }
 
     static boolean addClan(UUID clanId, Clan clan){

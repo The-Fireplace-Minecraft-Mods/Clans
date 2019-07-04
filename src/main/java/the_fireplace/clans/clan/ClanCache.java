@@ -52,7 +52,7 @@ public final class ClanCache {
 		if(playerClans.containsKey(player))
 			return (playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
 		playerClans.put(player, ClanDatabase.lookupPlayerClans(player));
-		return (playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
+		return (playerClans.get(player) != null ? Lists.newArrayList(playerClans.get(player)) : Lists.newArrayList());
 	}
 
 	public static EnumRank getPlayerRank(UUID player, Clan clan) {
@@ -87,7 +87,7 @@ public final class ClanCache {
 	}
 
 	public static HashMap<String, Clan> getClanNames() {
-		return clanNames;
+		return Maps.newHashMap(clanNames);
 	}
 
 	static void addName(Clan nameClan){
@@ -134,7 +134,7 @@ public final class ClanCache {
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.hasHome())
 					clanHomes.put(clan, clan.getHome());
-		return clanHomes;
+		return Maps.newHashMap(clanHomes);
 	}
 
 	public static void setClanHome(Clan c, BlockPos home) {

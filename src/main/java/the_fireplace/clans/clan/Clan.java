@@ -140,7 +140,7 @@ public class Clan {
     }
 
     public HashMap<UUID, EnumRank> getMembers() {
-        return members;
+        return Maps.newHashMap(members);
     }
 
     public ArrayList<UUID> getLeaders() {
