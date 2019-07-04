@@ -225,7 +225,7 @@ public final class Clans {
         public static boolean enforceInitialClaimSeparation = true;
         @Config.Comment("Force clans to have connected claims.")
         public static boolean forceConnectedClaims = true;
-        @Config.Comment("What algorithm is used for the connected claim check. 'sloppy' is quickest but can be outsmarted. 'thorough' is quick, but may falsely prevent claim abandonment. 'smart' is slowest, but enforces connected claims the best.")
+        @Config.Comment("What algorithm is used for the connected claim check. 'quick' is generally quicker, but may falsely prevent claim abandonment. 'smart' is generally slower, but enforces connected claims the best.")
         public static String connectedClaimCheck = "smart";
         @Config.Comment("Prevents other clans from claiming around the edges of a clan's territory. When a chunk of land is between two clans' territories, the first clan to be near it takes precedence.")
         public static boolean enableBorderlands = true;

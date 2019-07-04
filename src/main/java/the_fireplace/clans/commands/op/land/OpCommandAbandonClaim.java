@@ -56,7 +56,7 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 				Clan targetClan = ClanCache.getClanById(claimFaction);
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
 					if(targetClan != null) {
-						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, targetClan.getClanId())) {
+						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || ChunkUtils.canBeAbandoned(c, targetClan.getClanId())) {
 							//Unset clan home if it is in the chunk
 							OpCommandAbandonClaim.abandonClaim(sender, c, targetClan);
 							ChunkUtils.clearChunkOwner(c);

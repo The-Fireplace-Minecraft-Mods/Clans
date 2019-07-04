@@ -52,7 +52,7 @@ public class CommandAbandonClaim extends ClanSubCommand {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId())) {
-					if(!Clans.cfg.forceConnectedClaims || !ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId())) {
+					if(!Clans.cfg.forceConnectedClaims || ChunkUtils.canBeAbandoned(c, selectedClan.getClanId())) {
 						OpCommandAbandonClaim.abandonClaim(sender, c, selectedClan);
 						ChunkUtils.clearChunkOwner(c);
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.abandonclaim.success").setStyle(TextStyles.GREEN));

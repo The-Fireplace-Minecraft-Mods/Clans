@@ -58,14 +58,14 @@ public class ChunkUtils {
 	}
 
 	@SuppressWarnings("Duplicates")
-	public static boolean canBeDisconnected(Chunk c, @Nullable UUID checkOwner) {
+	public static boolean canBeAbandoned(Chunk c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
 			checkOwner = getChunkOwner(c);
 		if(checkOwner == null)
 			return false;
 		ChunkPos cPos = c.getPos();
 		switch (Clans.cfg.connectedClaimCheck.toLowerCase()) {
-			case "sloppy":
+			case "quicker":
 				ArrayList<Chunk> conn = getConnectedClaims(c, checkOwner);
 				for(Chunk chunk: conn) {
 					ArrayList<Chunk> connected = getConnectedClaims(chunk, checkOwner);
@@ -74,7 +74,8 @@ public class ChunkUtils {
 						return false;
 				}
 				return true;
-			case "thorough":
+			case "quick":
+				//TODO simplify these variables into booleans
 				Chunk north = c.getWorld().getChunk(cPos.x, cPos.z - 1);
 				if(!checkOwner.equals(getChunkOwner(north)))
 					north = null;
