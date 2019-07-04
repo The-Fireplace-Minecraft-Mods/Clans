@@ -38,8 +38,8 @@ public class CommandAutoClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(ClanCache.autoClaimLands.remove(sender.getUniqueID()) == null) {
-			ClanCache.autoClaimLands.put(sender.getUniqueID(), selectedClan);
+		if(ClanCache.getAutoClaimLands().remove(sender.getUniqueID()) == null) {
+			ClanCache.getAutoClaimLands().put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));

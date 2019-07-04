@@ -1,5 +1,6 @@
 package the_fireplace.clans.util;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -7,7 +8,7 @@ import java.io.Serializable;
  * @author MRebhan
  * @author The_Fireplace
  *
- * @param <V1> First variable (mostly {@link String})
+ * @param <V1> First variable
  * @param <V2> Second variable
  */
 
@@ -32,5 +33,21 @@ public class Pair<V1, V2> implements Serializable {
 
     @Override public String toString() {
         return Pair.class.getName() + "@" + Integer.toHexString(this.hashCode()) + " [" + this.obj1.toString() + ", " + this.obj2.toString() + "]";
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        else if (obj == this)
+            return true;
+        else
+            return obj instanceof Pair && equals((Pair) obj);
+    }
+
+    public boolean equals(@Nullable Pair pair) {
+        if (pair == null)
+            return false;
+        return pair.obj1.equals(obj1) && pair.obj2.equals(obj2);
     }
 }

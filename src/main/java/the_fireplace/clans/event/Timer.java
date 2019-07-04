@@ -138,14 +138,14 @@ public class Timer {
 
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 
-						if(ClanCache.opAutoAbandonClaims.containsKey(event.player.getUniqueID()))
-							OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)event.player, ClanCache.opAutoAbandonClaims.get(event.player.getUniqueID()) ? new String[]{"force"} : new String[]{});
-						if(ClanCache.autoAbandonClaims.containsKey(event.player.getUniqueID()))
-							CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)event.player, ClanCache.autoAbandonClaims.get(event.player.getUniqueID()));
-						if(ClanCache.opAutoClaimLands.containsKey(event.player.getUniqueID()))
-							OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)event.player, ClanCache.opAutoClaimLands.get(event.player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, ClanCache.opAutoClaimLands.get(event.player.getUniqueID()).getValue1());
-						if(ClanCache.autoClaimLands.containsKey(event.player.getUniqueID()))
-							CommandClaim.checkAndAttemptClaim((EntityPlayerMP) event.player, ClanCache.autoClaimLands.get(event.player.getUniqueID()));
+						if(ClanCache.getOpAutoAbandonClaims().containsKey(event.player.getUniqueID()))
+							OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)event.player, ClanCache.getOpAutoAbandonClaims().get(event.player.getUniqueID()) ? new String[]{"force"} : new String[]{});
+						if(ClanCache.getAutoAbandonClaims().containsKey(event.player.getUniqueID()))
+							CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)event.player, ClanCache.getAutoAbandonClaims().get(event.player.getUniqueID()));
+						if(ClanCache.getOpAutoClaimLands().containsKey(event.player.getUniqueID()))
+							OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)event.player, ClanCache.getOpAutoClaimLands().get(event.player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, ClanCache.getOpAutoClaimLands().get(event.player.getUniqueID()).getValue1());
+						if(ClanCache.getAutoClaimLands().containsKey(event.player.getUniqueID()))
+							CommandClaim.checkAndAttemptClaim((EntityPlayerMP) event.player, ClanCache.getAutoClaimLands().get(event.player.getUniqueID()));
 
 						handleTerritoryChangedMessage(event, chunkClan, playerClans);
 					} else if (Clans.cfg.protectWilderness && Clans.cfg.minWildernessY != 0 && event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {

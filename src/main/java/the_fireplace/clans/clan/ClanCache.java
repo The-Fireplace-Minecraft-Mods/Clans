@@ -9,10 +9,8 @@ import the_fireplace.clans.util.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public final class ClanCache {
@@ -23,13 +21,13 @@ public final class ClanCache {
 	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
 
 	private static ArrayList<UUID> buildAdmins = Lists.newArrayList();
-	public static HashMap<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
+	private static HashMap<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
 
 	//Maps of (Player Unique ID) -> (Clan)
-	public static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
-	public static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
-	public static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
-	public static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
+	private static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
+	private static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
+	private static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
+	private static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
 
 	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi", "list", "fancymap", "fm");
 
@@ -174,9 +172,29 @@ public final class ClanCache {
 	}
 
 	public static void updateChat(UUID uuid, Clan clan) {
-		if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
-			clanChattingPlayers.remove(uuid);
+		if(getClanChattingPlayers().containsKey(uuid) && getClanChattingPlayers().get(uuid).equals(clan))
+			getClanChattingPlayers().remove(uuid);
 		else
-			clanChattingPlayers.put(uuid, clan);
+			getClanChattingPlayers().put(uuid, clan);
+	}
+
+	public static HashMap<UUID, Clan> getClanChattingPlayers() {
+		return clanChattingPlayers;
+	}
+
+	public static HashMap<UUID, Clan> getAutoAbandonClaims() {
+		return autoAbandonClaims;
+	}
+
+	public static HashMap<UUID, Clan> getAutoClaimLands() {
+		return autoClaimLands;
+	}
+
+	public static HashMap<UUID, Boolean> getOpAutoAbandonClaims() {
+		return opAutoAbandonClaims;
+	}
+
+	public static HashMap<UUID, Pair<Clan, Boolean>> getOpAutoClaimLands() {
+		return opAutoClaimLands;
 	}
 }

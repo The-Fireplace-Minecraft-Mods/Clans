@@ -37,8 +37,8 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		boolean force = args.length == 1 && args[0].equals("force");
-		if(ClanCache.opAutoAbandonClaims.remove(sender.getUniqueID()) == null) {
-			ClanCache.opAutoAbandonClaims.put(sender.getUniqueID(), force);
+		if(ClanCache.getOpAutoAbandonClaims().remove(sender.getUniqueID()) == null) {
+			ClanCache.getOpAutoAbandonClaims().put(sender.getUniqueID(), force);
 			if(force)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
 			else

@@ -42,11 +42,11 @@ public class PlayerEvents {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
             PlayerPositionCache.prevChunkXs.remove(event.player);
             PlayerPositionCache.prevChunkZs.remove(event.player);
-            ClanCache.opAutoClaimLands.remove(event.player.getUniqueID());
-            ClanCache.opAutoAbandonClaims.remove(event.player.getUniqueID());
-            ClanCache.autoAbandonClaims.remove(event.player.getUniqueID());
-            ClanCache.autoClaimLands.remove(event.player.getUniqueID());
-            ClanCache.clanChattingPlayers.remove(event.player.getUniqueID());
+            ClanCache.getOpAutoClaimLands().remove(event.player.getUniqueID());
+            ClanCache.getOpAutoAbandonClaims().remove(event.player.getUniqueID());
+            ClanCache.getAutoAbandonClaims().remove(event.player.getUniqueID());
+            ClanCache.getAutoClaimLands().remove(event.player.getUniqueID());
+            ClanCache.getClanChattingPlayers().remove(event.player.getUniqueID());
         }
     }
 
@@ -56,10 +56,10 @@ public class PlayerEvents {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
             PlayerPositionCache.prevChunkXs.remove(event.player);
             PlayerPositionCache.prevChunkZs.remove(event.player);
-            Pair<Clan, Boolean> ocAutoClaim = ClanCache.opAutoClaimLands.remove(event.player.getUniqueID());
-            Boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(event.player.getUniqueID());
-            Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(event.player.getUniqueID());
-            Clan cAutoClaim = ClanCache.autoClaimLands.remove(event.player.getUniqueID());
+            Pair<Clan, Boolean> ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(event.player.getUniqueID());
+            Boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(event.player.getUniqueID());
+            Clan cAutoAbandon = ClanCache.getAutoAbandonClaims().remove(event.player.getUniqueID());
+            Clan cAutoClaim = ClanCache.getAutoClaimLands().remove(event.player.getUniqueID());
             if(ocAutoAbandon != null) {
                 if (ocAutoAbandon)
                     event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
@@ -78,9 +78,9 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onServerChat(ServerChatEvent event) {
         if(event.getPlayer() != null) {
-            if(ClanCache.clanChattingPlayers.containsKey(event.getPlayer().getUniqueID())) {
+            if(ClanCache.getClanChattingPlayers().containsKey(event.getPlayer().getUniqueID())) {
                 event.setCanceled(true);
-                Clan clanChat = ClanCache.clanChattingPlayers.get(event.getPlayer().getUniqueID());
+                Clan clanChat = ClanCache.getClanChattingPlayers().get(event.getPlayer().getUniqueID());
                 for(EntityPlayerMP member: clanChat.getOnlineMembers().keySet())
                     member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(event.getComponent()));
             } else if (Clans.cfg.showDefaultClanInChat) {

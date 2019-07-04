@@ -36,8 +36,8 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(ClanCache.opAutoClaimLands.remove(sender.getUniqueID()) == null) {
-			ClanCache.opAutoClaimLands.put(sender.getUniqueID(), new Pair<>(opSelectedClan, args.length == 1 && args[0].equals("force")));
+		if(ClanCache.getOpAutoClaimLands().remove(sender.getUniqueID()) == null) {
+			ClanCache.getOpAutoClaimLands().put(sender.getUniqueID(), new Pair<>(opSelectedClan, args.length == 1 && args[0].equals("force")));
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));

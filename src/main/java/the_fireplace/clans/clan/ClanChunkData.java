@@ -23,7 +23,7 @@ public class ClanChunkData {
         if(!isLoaded)
             load();
         Set<ChunkPosition> claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed : Collections.emptySet();
+        return claimed != null ? Sets.newHashSet(claimed) : Collections.emptySet();
     }
 
     public static Set<Clan> clansWithClaims() {
