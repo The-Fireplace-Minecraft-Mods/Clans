@@ -1,6 +1,6 @@
-package the_fireplace.clans.compat.dynmap;
+package the_fireplace.clans.abstraction;
 
-import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
+import the_fireplace.clans.model.ClanDimInfo;
 
 public interface IDynmapCompat {
     void init();

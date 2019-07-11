@@ -495,11 +495,6 @@ public class Clan {
                 member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle));
     }
 
-    /**
-     * Compares the object to this object
-     * @param obj The object to compare this object too
-     * @return Returns true if the object is the same type and the contents match.
-     */
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == null)
@@ -513,6 +508,11 @@ public class Clan {
     public boolean equals(@Nullable Clan clan) {
         if (clan == null)
             return false;
-        return getClanId().equals(clan.getClanId());
+        return clanId.equals(clan.clanId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clanId);
     }
 }

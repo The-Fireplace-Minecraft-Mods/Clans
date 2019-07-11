@@ -7,7 +7,7 @@ import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
+import the_fireplace.clans.model.ClanDimInfo;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.ChunkPosition;
 

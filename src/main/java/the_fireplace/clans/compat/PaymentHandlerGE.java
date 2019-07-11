@@ -1,5 +1,6 @@
-package the_fireplace.clans.compat.payment;
+package the_fireplace.clans.compat;
 
+import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.grandeconomy.GrandEconomy;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;

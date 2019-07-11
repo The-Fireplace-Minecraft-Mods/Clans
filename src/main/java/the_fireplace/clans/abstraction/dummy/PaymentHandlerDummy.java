@@ -1,4 +1,6 @@
-package the_fireplace.clans.compat.payment;
+package the_fireplace.clans.abstraction.dummy;
+
+import the_fireplace.clans.abstraction.IPaymentHandler;
 
 import java.util.UUID;
 

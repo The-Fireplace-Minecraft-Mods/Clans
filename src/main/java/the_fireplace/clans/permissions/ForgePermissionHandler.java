@@ -3,6 +3,7 @@ package the_fireplace.clans.permissions;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
+import the_fireplace.clans.abstraction.IPermissionHandler;
 
 import static the_fireplace.clans.permissions.PermissionManager.*;
 

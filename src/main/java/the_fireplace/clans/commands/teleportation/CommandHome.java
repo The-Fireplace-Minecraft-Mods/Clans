@@ -14,8 +14,8 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.CapHelper;
-import the_fireplace.clans.model.Pair;
-import the_fireplace.clans.cache.PlayerPositionCache;
+import the_fireplace.clans.model.OrderedPair;
+import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -59,7 +59,7 @@ public class CommandHome extends ClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.cfg.clanHomeWarmupTime > 0)
-					PlayerPositionCache.clanHomeWarmups.put(sender, new Pair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
+					PlayerDataCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
 				else
 					teleportHome(sender, selectedClan, home, playerDim);
 			}

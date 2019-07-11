@@ -17,12 +17,12 @@ import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.cache.PlayerPositionCache;
+import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.legacy.CapHelper;
 import the_fireplace.clans.legacy.PlayerClanCapability;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.model.Pair;
+import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
@@ -65,17 +65,17 @@ public class Timer {
 				ticks -= 20;
 
 				RaidingParties.decrementBuffers();
-				for(Map.Entry<EntityPlayerMP, Pair<Integer, Integer>> entry : Sets.newHashSet(PlayerPositionCache.clanHomeWarmups.entrySet()))
+				for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, Integer>> entry : Sets.newHashSet(PlayerDataCache.clanHomeWarmups.entrySet()))
 					if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
 						Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
 						if(c != null && c.getHome() != null)
 							CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
 					}
-				for(EntityPlayerMP player: Sets.newHashSet(PlayerPositionCache.clanHomeWarmups.keySet()))
-					if(PlayerPositionCache.clanHomeWarmups.get(player).getValue1() > 0)
-						PlayerPositionCache.clanHomeWarmups.put(player, new Pair<>(PlayerPositionCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerPositionCache.clanHomeWarmups.get(player).getValue2()));
+				for(EntityPlayerMP player: Sets.newHashSet(PlayerDataCache.clanHomeWarmups.keySet()))
+					if(PlayerDataCache.clanHomeWarmups.get(player).getValue1() > 0)
+						PlayerDataCache.clanHomeWarmups.put(player, new OrderedPair<>(PlayerDataCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerDataCache.clanHomeWarmups.get(player).getValue2()));
 					else
-						PlayerPositionCache.clanHomeWarmups.remove(player);
+						PlayerDataCache.clanHomeWarmups.remove(player);
 
 				for (Raid raid : RaidingParties.getActiveRaids())
 					if (raid.checkRaidEndTimer())
@@ -172,7 +172,7 @@ public class Timer {
 
 	private static void handleDepthChangedMessage(TickEvent.PlayerTickEvent event) {
 		int curY = (int) Math.round(event.player.posY);
-		int prevY = PlayerPositionCache.prevYs.get(event.player) != null ? PlayerPositionCache.prevYs.get(event.player) : curY;
+		int prevY = PlayerDataCache.prevYs.get(event.player) != null ? PlayerDataCache.prevYs.get(event.player) : curY;
 		int yBound = (Clans.cfg.minWildernessY < 0 ? event.player.world.getSeaLevel() : Clans.cfg.minWildernessY);
 		if (curY >= yBound && prevY < yBound) {
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW));
@@ -181,7 +181,7 @@ public class Timer {
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
 			event.player.sendMessage(TranslationUtil.getTranslation(event.player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(event.player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
 		}
-		PlayerPositionCache.prevYs.put(event.player, curY);
+		PlayerDataCache.prevYs.put(event.player, curY);
 	}
 
 	private static void handleTerritoryChangedMessage(TickEvent.PlayerTickEvent event, UUID chunkClanId, ArrayList<Clan> playerClans) {
@@ -218,14 +218,14 @@ public class Timer {
 
 	private static void handleClaimWarning(EntityPlayerMP player) {
 		if(CapHelper.getPlayerClanCapability(player).getClaimWarning()) {
-			if(!PlayerPositionCache.prevChunkXs.containsKey(player))
-				PlayerPositionCache.prevChunkXs.put(player, player.getServerWorld().getChunk(player.getPosition()).x);
-			if(!PlayerPositionCache.prevChunkZs.containsKey(player))
-				PlayerPositionCache.prevChunkZs.put(player, player.getServerWorld().getChunk(player.getPosition()).z);
-			if(PlayerPositionCache.prevChunkXs.get(player) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerPositionCache.prevChunkZs.get(player) != player.getServerWorld().getChunk(player.getPosition()).z) {
+			if(!PlayerDataCache.prevChunkXs.containsKey(player))
+				PlayerDataCache.prevChunkXs.put(player, player.getServerWorld().getChunk(player.getPosition()).x);
+			if(!PlayerDataCache.prevChunkZs.containsKey(player))
+				PlayerDataCache.prevChunkZs.put(player, player.getServerWorld().getChunk(player.getPosition()).z);
+			if(PlayerDataCache.prevChunkXs.get(player) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerDataCache.prevChunkZs.get(player) != player.getServerWorld().getChunk(player.getPosition()).z) {
 				CapHelper.getPlayerClanCapability(player).setClaimWarning(false);
-				PlayerPositionCache.prevChunkXs.remove(player);
-				PlayerPositionCache.prevChunkZs.remove(player);
+				PlayerDataCache.prevChunkXs.remove(player);
+				PlayerDataCache.prevChunkZs.remove(player);
 			}
 		}
 	}

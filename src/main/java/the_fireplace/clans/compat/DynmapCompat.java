@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat.dynmap;
+package the_fireplace.clans.compat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -13,12 +13,13 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
-import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
-import the_fireplace.clans.compat.dynmap.data.GroupedChunks;
-import the_fireplace.clans.compat.dynmap.data.PositionPoint;
+import the_fireplace.clans.model.ClanDimInfo;
+import the_fireplace.clans.model.GroupedChunks;
+import the_fireplace.clans.model.CoordinatePair;
 import the_fireplace.clans.model.ChunkPosition;
 
 import java.util.*;
@@ -127,7 +128,7 @@ public class DynmapCompat implements IDynmapCompat {
         clearAllTeamMarkers(clanDimInfo);
         int nIndex = 0;
         for (GroupedChunks group : groupList) {
-            List<PositionPoint> perimeterPoints = group.traceShapePerimeter();
+            List<CoordinatePair> perimeterPoints = group.traceShapePerimeter();
 
             createAreaMarker(clanDimInfo, nIndex++, perimeterPoints);
         }
@@ -205,7 +206,7 @@ public class DynmapCompat implements IDynmapCompat {
      * @param groupIndex Defines the index number for how many claims this team has
      * @param perimeterPoints A list of X Z points representing the perimeter of the claim to draw.
      */
-    public void createAreaMarker(ClanDimInfo clanDimInfo, int groupIndex, List<PositionPoint> perimeterPoints) {
+    public void createAreaMarker(ClanDimInfo clanDimInfo, int groupIndex, List<CoordinatePair> perimeterPoints) {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
             String markerID = worldName + "_" + clanDimInfo.getClanIdString() + "_" + groupIndex;

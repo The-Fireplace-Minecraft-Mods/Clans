@@ -1,4 +1,6 @@
-package the_fireplace.clans.compat.dynmap.data;
+package the_fireplace.clans.model;
+
+import java.util.Objects;
 
 public class ChunkEdge {
     public enum Edge {
@@ -8,8 +10,8 @@ public class ChunkEdge {
     private static final int CHUNK_SIZE = 16;
 
     private Edge m_edgeType = Edge.LEFT;
-    private PositionPoint m_p1 = new PositionPoint();
-    private PositionPoint m_p2 = new PositionPoint();
+    private CoordinatePair m_p1 = new CoordinatePair();
+    private CoordinatePair m_p2 = new CoordinatePair();
 
     /**
      * Construct an edge based on the chunk and edge position provided.
@@ -60,7 +62,7 @@ public class ChunkEdge {
      * @return Returns the first point of the edge.
      */
 
-    public PositionPoint point1() {
+    public CoordinatePair point1() {
         return m_p1;
     }
 
@@ -68,7 +70,7 @@ public class ChunkEdge {
      * @return Returns the second point of the edge.
      */
 
-    public PositionPoint point2() {
+    public CoordinatePair point2() {
         return m_p2;
     }
 
@@ -78,7 +80,7 @@ public class ChunkEdge {
      * @param obj The edge to compare against.
      * @return Returns true if the edges match with the same coordinates.
      */
-
+    @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
@@ -94,12 +96,16 @@ public class ChunkEdge {
      * @param edge The edge to compare against.
      * @return Returns true if the edges match with the same coordinates.
      */
-
     private boolean equals(ChunkEdge edge) {
         if (edge == null)
             return false;
         else
             return m_p1 == edge.m_p1 && m_p2 == edge.m_p2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(m_p1, m_p2);
     }
 }
 

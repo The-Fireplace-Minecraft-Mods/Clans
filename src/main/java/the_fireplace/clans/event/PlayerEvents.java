@@ -7,13 +7,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.cache.PlayerPositionCache;
+import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.legacy.CapHelper;
 import the_fireplace.clans.legacy.PlayerClanCapability;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.model.Pair;
+import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -44,8 +44,8 @@ public class PlayerEvents {
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
-            PlayerPositionCache.prevChunkXs.remove(event.player);
-            PlayerPositionCache.prevChunkZs.remove(event.player);
+            PlayerDataCache.prevChunkXs.remove(event.player);
+            PlayerDataCache.prevChunkZs.remove(event.player);
             ClanCache.getOpAutoClaimLands().remove(event.player.getUniqueID());
             ClanCache.getOpAutoAbandonClaims().remove(event.player.getUniqueID());
             ClanCache.getAutoAbandonClaims().remove(event.player.getUniqueID());
@@ -58,9 +58,9 @@ public class PlayerEvents {
     public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if(CapHelper.getPlayerClanCapability(event.player).getClaimWarning()) {
             CapHelper.getPlayerClanCapability(event.player).setClaimWarning(false);
-            PlayerPositionCache.prevChunkXs.remove(event.player);
-            PlayerPositionCache.prevChunkZs.remove(event.player);
-            Pair<Clan, Boolean> ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(event.player.getUniqueID());
+            PlayerDataCache.prevChunkXs.remove(event.player);
+            PlayerDataCache.prevChunkZs.remove(event.player);
+            OrderedPair<Clan, Boolean> ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(event.player.getUniqueID());
             Boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(event.player.getUniqueID());
             Clan cAutoAbandon = ClanCache.getAutoAbandonClaims().remove(event.player.getUniqueID());
             Clan cAutoClaim = ClanCache.getAutoClaimLands().remove(event.player.getUniqueID());

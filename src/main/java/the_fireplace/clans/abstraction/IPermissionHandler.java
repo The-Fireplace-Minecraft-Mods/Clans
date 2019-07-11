@@ -1,4 +1,4 @@
-package the_fireplace.clans.permissions;
+package the_fireplace.clans.abstraction;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 

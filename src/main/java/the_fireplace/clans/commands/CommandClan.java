@@ -23,7 +23,7 @@ import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
-import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
+import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;

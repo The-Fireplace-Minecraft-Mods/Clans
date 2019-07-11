@@ -4,7 +4,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Loader;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.compat.sponge.SpongePermissionHandler;
+import the_fireplace.clans.abstraction.IPermissionHandler;
+import the_fireplace.clans.compat.SpongePermissionHandler;
 
 public final class PermissionManager {
 

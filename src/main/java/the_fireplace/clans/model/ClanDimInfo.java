@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat.dynmap.data;
+package the_fireplace.clans.model;
 
 public class ClanDimInfo {
     private String clanName;
@@ -57,6 +57,5 @@ public class ClanDimInfo {
     public int hashCode() {
         return clanUniqueID.hashCode() + clanDimension;
     }
-
 }
 

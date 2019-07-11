@@ -188,7 +188,7 @@ public class Raid {
 
 	public void activate() {
 		isActive = true;
-		setDefenders(target.getOnlineMembers().keySet());//TODO test that this works
+		setDefenders(target.getOnlineMembers().keySet());
 	}
 
 	public void setCost(long cost) {

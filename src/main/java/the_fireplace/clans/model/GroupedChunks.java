@@ -1,8 +1,7 @@
-package the_fireplace.clans.compat.dynmap.data;
+package the_fireplace.clans.model;
 
 import com.google.common.collect.Maps;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.model.ChunkPosition;
 
 import java.util.*;
 
@@ -37,11 +36,11 @@ public class GroupedChunks {
      *
      * @return Returns a list of points in a path to draw the perimeter of the claim chunk.
      */
-    public List<PositionPoint> traceShapePerimeter() {
+    public List<CoordinatePair> traceShapePerimeter() {
         ChunkEdge startEdge = null;
         int nTotalEdgeCount = 0;
 
-        Map<PositionPoint, List<ChunkEdge>> pointSearchMap = new HashMap<>();
+        Map<CoordinatePair, List<ChunkEdge>> pointSearchMap = new HashMap<>();
 
         //Loop through all the chunks and get a list of open edges.
         for (Map.Entry<ChunkPosition, AdjacentChunk> chunk : chunkGroupMap.entrySet()) {
@@ -70,7 +69,7 @@ public class GroupedChunks {
 
         // Build a list of perimeter points by finding the next edge moving clockwise around the edges.
         // Once we get back to the starting edge we are done.
-        List<PositionPoint> perimeterPoints = new ArrayList<>();
+        List<CoordinatePair> perimeterPoints = new ArrayList<>();
 
         boolean bTraceError = false;
         if (!pointSearchMap.isEmpty()) {

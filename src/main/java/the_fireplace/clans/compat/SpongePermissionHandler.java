@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat.sponge;
+package the_fireplace.clans.compat;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.spongepowered.api.Sponge;
@@ -7,7 +7,7 @@ import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.permissions.IPermissionHandler;
+import the_fireplace.clans.abstraction.IPermissionHandler;
 
 import static the_fireplace.clans.permissions.PermissionManager.*;
 

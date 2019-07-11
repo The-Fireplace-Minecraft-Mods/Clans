@@ -7,24 +7,24 @@ import java.util.Set;
 import java.util.UUID;
 
 public class CoordNodeTree {
-    private Set<Pair<Integer, Integer>> coordNodes = Sets.newConcurrentHashSet();
+    private Set<OrderedPair<Integer, Integer>> coordNodes = Sets.newConcurrentHashSet();
 
     public CoordNodeTree(int x, int z, UUID checkOwner) {
         for(ChunkPosition pos: ClanChunkData.getChunks(checkOwner))
             if(pos.posX != x || pos.posZ != z)
-                coordNodes.add(new Pair<>(pos.posX, pos.posZ));
+                coordNodes.add(new OrderedPair<>(pos.posX, pos.posZ));
         if(!coordNodes.isEmpty())
             //noinspection unchecked
-            activateNodeTree((Pair<Integer, Integer>) coordNodes.toArray()[0]);
+            activateNodeTree((OrderedPair<Integer, Integer>) coordNodes.toArray()[0]);
     }
 
     public boolean hasDetachedNodes() {
         return !coordNodes.isEmpty();
     }
 
-    private void activateNodeTree(Pair<Integer, Integer> node) {
+    private void activateNodeTree(OrderedPair<Integer, Integer> node) {
         coordNodes.remove(node);
-        for(Pair<Integer, Integer> node2: coordNodes)
+        for(OrderedPair<Integer, Integer> node2: coordNodes)
             if(node2.getValue1() == node.getValue1() + 1 && node2.getValue2().equals(node.getValue2())
                     || node2.getValue1() == node.getValue1() - 1 && node2.getValue2().equals(node.getValue2())
                     || node2.getValue1().equals(node.getValue1()) && node2.getValue2() == node.getValue2() + 1

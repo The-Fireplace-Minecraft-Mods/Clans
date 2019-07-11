@@ -1,6 +1,7 @@
-package the_fireplace.clans.compat.dynmap;
+package the_fireplace.clans.abstraction.dummy;
 
-import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
+import the_fireplace.clans.abstraction.IDynmapCompat;
+import the_fireplace.clans.model.ClanDimInfo;
 
 public class DynmapCompatDummy implements IDynmapCompat {
     @Override

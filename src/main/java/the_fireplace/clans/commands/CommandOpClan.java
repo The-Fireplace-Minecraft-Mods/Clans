@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.op.land.*;
 import the_fireplace.clans.commands.op.management.*;
-import the_fireplace.clans.compat.payment.PaymentHandlerDummy;
+import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.permissions.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;

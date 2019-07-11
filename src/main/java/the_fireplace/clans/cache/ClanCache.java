@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.model.Pair;
+import the_fireplace.clans.model.OrderedPair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,7 +30,7 @@ public final class ClanCache {
 	private static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
 	private static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
 	private static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
-	private static HashMap<UUID, Pair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
+	private static HashMap<UUID, OrderedPair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
 
 	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi", "list", "fancymap", "fm");
 
@@ -197,7 +197,7 @@ public final class ClanCache {
 		return opAutoAbandonClaims;
 	}
 
-	public static HashMap<UUID, Pair<Clan, Boolean>> getOpAutoClaimLands() {
+	public static HashMap<UUID, OrderedPair<Clan, Boolean>> getOpAutoClaimLands() {
 		return opAutoClaimLands;
 	}
 }
