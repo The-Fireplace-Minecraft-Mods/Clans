@@ -1,4 +1,4 @@
-package the_fireplace.clans.raid;
+package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

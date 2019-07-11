@@ -21,12 +21,12 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.raid.ChunkRestoreData;
-import the_fireplace.clans.raid.RaidRestoreDatabase;
-import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.CapHelper;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ChunkRestoreData;
+import the_fireplace.clans.data.RaidRestoreDatabase;
+import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.legacy.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.model;
 
 import com.google.gson.JsonObject;
 

@@ -1,16 +1,17 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.legacy;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.cache.ClanCache;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Deprecated
 public interface PlayerClanCapability {
 
     /**
@@ -29,11 +30,17 @@ public interface PlayerClanCapability {
                 CapHelper.getPlayerClanCapability(player).setDefaultClan(ClanCache.getPlayerClans(player.getUniqueID()).get(0).getClanId());
     }
 
+	@Deprecated
     int getCooldown();
+	@Deprecated
 	void setCooldown(int cooldown);
+	@Deprecated
 	UUID getDefaultClan();
+	@Deprecated
 	void setDefaultClan(UUID defaultClan);
+	@Deprecated
 	boolean getClaimWarning();
+	@Deprecated
 	void setClaimWarning(boolean claimWarning);
 
 	class Default implements PlayerClanCapability {

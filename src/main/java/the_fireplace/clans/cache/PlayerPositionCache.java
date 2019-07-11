@@ -1,8 +1,9 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.cache;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import the_fireplace.clans.model.Pair;
 
 import java.util.HashMap;
 

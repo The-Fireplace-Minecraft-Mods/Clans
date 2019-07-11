@@ -1,4 +1,4 @@
-package the_fireplace.clans.raid;
+package the_fireplace.clans.data;
 
 import com.google.common.collect.Maps;
 import com.google.gson.*;
@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.util.ChunkPosition;
+import the_fireplace.clans.model.ChunkPosition;
 
 import java.io.*;
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package the_fireplace.clans.compat.dynmap.data;
 
 import com.google.common.collect.Maps;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.util.ChunkPosition;
+import the_fireplace.clans.model.ChunkPosition;
 
 import java.util.*;
 

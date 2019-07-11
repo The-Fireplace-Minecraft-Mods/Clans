@@ -1,4 +1,4 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.model;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;

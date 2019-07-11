@@ -1,11 +1,14 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.cache;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.util.Pair;
+import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.model.Pair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,7 +75,7 @@ public final class ClanCache {
 		return clanBanners.contains(clanBanner);
 	}
 
-	static void addBanner(String banner) {
+	public static void addBanner(String banner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.getClanBanner() != null)
@@ -80,7 +83,7 @@ public final class ClanCache {
 		clanBanners.add(banner);
 	}
 
-	static void removeBanner(String banner){
+	public static void removeBanner(String banner){
 		clanBanners.remove(banner);
 	}
 
@@ -88,14 +91,14 @@ public final class ClanCache {
 		return Maps.newHashMap(clanNames);
 	}
 
-	static void addName(Clan nameClan){
+	public static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				clanNames.put(clan.getClanName(), clan);
 		clanNames.put(nameClan.getClanName(), nameClan);
 	}
 
-	static void removeName(String name){
+	public static void removeName(String name){
 		clanNames.remove(name);
 	}
 

@@ -5,11 +5,11 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.ClaimedLandCapability;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkData;
-import the_fireplace.clans.util.CapHelper;
+import the_fireplace.clans.legacy.ClaimedLandCapability;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.legacy.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)

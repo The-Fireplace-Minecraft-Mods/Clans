@@ -9,7 +9,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.RaidSubCommand;
-import the_fireplace.clans.raid.RaidBlockPlacementDatabase;
+import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 

@@ -1,4 +1,4 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -8,6 +8,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.model.Clan;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -61,7 +63,7 @@ public final class ClanDatabase {
         return Sets.newHashSet(getInstance().clans.values());
     }
 
-    static boolean addClan(UUID clanId, Clan clan){
+    public static boolean addClan(UUID clanId, Clan clan){
         if(!getInstance().clans.containsKey(clanId)) {
             getInstance().clans.put(clanId, clan);
             ClanCache.addName(clan);
@@ -76,7 +78,7 @@ public final class ClanDatabase {
     /**
      * For internal use only. Anyone wishing to do this, use {@link Clan#disband(MinecraftServer, ICommandSender, String, Object...)}
      */
-    static boolean removeClan(UUID clanId){
+    public static boolean removeClan(UUID clanId){
         if(getInstance().clans.containsKey(clanId)) {
             ClanCache.removeClan(getInstance().clans.remove(clanId));
             ClanChunkData.delClan(clanId);
@@ -97,7 +99,7 @@ public final class ClanDatabase {
      * @return
      * The player's clans, or an empty list if the player isn't in any
      */
-    static ArrayList<Clan> lookupPlayerClans(UUID player){
+    public static ArrayList<Clan> lookupPlayerClans(UUID player){
         ArrayList<Clan> clans = Lists.newArrayList();
         for(Clan clan : getInstance().clans.values())
             if(clan.getMembers().keySet().contains(player))

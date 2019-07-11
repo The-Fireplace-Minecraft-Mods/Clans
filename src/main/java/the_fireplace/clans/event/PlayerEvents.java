@@ -7,9 +7,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.cache.PlayerPositionCache;
+import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.legacy.PlayerClanCapability;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.model.Pair;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 

@@ -13,13 +13,13 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanCache;
-import the_fireplace.clans.clan.ClanChunkData;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
 import the_fireplace.clans.compat.dynmap.data.GroupedChunks;
 import the_fireplace.clans.compat.dynmap.data.PositionPoint;
-import the_fireplace.clans.util.ChunkPosition;
+import the_fireplace.clans.model.ChunkPosition;
 
 import java.util.*;
 import java.util.regex.Pattern;

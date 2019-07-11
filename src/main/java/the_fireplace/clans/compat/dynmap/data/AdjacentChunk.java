@@ -1,6 +1,6 @@
 package the_fireplace.clans.compat.dynmap.data;
 
-import the_fireplace.clans.util.ChunkPosition;
+import the_fireplace.clans.model.ChunkPosition;
 
 import java.util.ArrayList;
 import java.util.List;

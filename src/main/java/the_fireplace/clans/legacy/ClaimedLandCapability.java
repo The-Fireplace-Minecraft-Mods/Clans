@@ -1,4 +1,4 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.legacy;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,11 +9,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@Deprecated
 public interface ClaimedLandCapability {
 
+	@Deprecated
 	UUID getClan();
+	@Deprecated
 	void setClan(UUID faction);
+	@Deprecated
 	boolean pre120();
+	@Deprecated
 	void setPre120(boolean p120);
 
 	class Default implements ClaimedLandCapability {

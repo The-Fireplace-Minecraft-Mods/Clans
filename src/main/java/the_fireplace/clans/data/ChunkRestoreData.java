@@ -1,4 +1,4 @@
-package the_fireplace.clans.raid;
+package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.model.SerialBlockPos;
 import the_fireplace.clans.util.BlockSerializeUtil;
 
 import java.util.ArrayList;

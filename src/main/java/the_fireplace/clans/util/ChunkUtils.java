@@ -1,18 +1,14 @@
 package the_fireplace.clans.util;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.ClaimedLandCapability;
-import the_fireplace.clans.clan.ClanChunkData;
+import the_fireplace.clans.legacy.ClaimedLandCapability;
+import the_fireplace.clans.model.CoordNodeTree;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 public class ChunkUtils {
@@ -75,56 +71,39 @@ public class ChunkUtils {
 				}
 				return true;
 			case "quick":
-				//TODO simplify these variables into booleans
-				Chunk north = c.getWorld().getChunk(cPos.x, cPos.z - 1);
-				if(!checkOwner.equals(getChunkOwner(north)))
-					north = null;
-				Chunk northeast = c.getWorld().getChunk(cPos.x + 1, cPos.z - 1);
-				if(!checkOwner.equals(getChunkOwner(northeast)))
-					northeast = null;
-				Chunk east = c.getWorld().getChunk(cPos.x + 1, cPos.z);
-				if(!checkOwner.equals(getChunkOwner(east)))
-					east = null;
-				Chunk southeast = c.getWorld().getChunk(cPos.x + 1, cPos.z + 1);
-				if(!checkOwner.equals(getChunkOwner(southeast)))
-					southeast = null;
-				Chunk south = c.getWorld().getChunk(cPos.x, cPos.z + 1);
-				if(!checkOwner.equals(getChunkOwner(south)))
-					south = null;
-				Chunk southwest = c.getWorld().getChunk(cPos.x - 1, cPos.z + 1);
-				if(!checkOwner.equals(getChunkOwner(southwest)))
-					southwest = null;
-				Chunk west = c.getWorld().getChunk(cPos.x - 1, cPos.z);
-				if(!checkOwner.equals(getChunkOwner(west)))
-					west = null;
-				Chunk northwest = c.getWorld().getChunk(cPos.x - 1, cPos.z - 1);
-				if(!checkOwner.equals(getChunkOwner(northwest)))
-					northwest = null;
+				boolean north = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x, cPos.z - 1)));
+				boolean northeast = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x + 1, cPos.z - 1)));
+				boolean east = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x + 1, cPos.z)));
+				boolean southeast = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x + 1, cPos.z + 1)));
+				boolean south = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x, cPos.z + 1)));
+				boolean southwest = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x - 1, cPos.z + 1)));
+				boolean west = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x - 1, cPos.z)));
+				boolean northwest = checkOwner.equals(getChunkOwner(c.getWorld().getChunk(cPos.x - 1, cPos.z - 1)));
 
-				if(north == null && east == null && south == null && west == null)
+				if(!north && !east && !south && !west)
 					return true;
-				if(northeast == null && northwest == null && southeast == null && southwest == null
-						|| north != null && northeast == null && northwest == null
-						|| east != null && northeast == null && southeast == null
-						|| south != null && southeast == null && southwest == null
-						|| west != null && southwest == null && northwest == null)
+				if(!northeast && !northwest && !southeast && !southwest
+						|| north && !northeast && !northwest
+						|| east && !northeast && !southeast
+						|| south && !southeast && !southwest
+						|| west && !southwest && !northwest)
 					return false;
 				int nullcount = 0;
-				if(north == null)
+				if(!north)
 					nullcount++;
-				if(east == null)
+				if(!east)
 					nullcount++;
-				if(south == null)
+				if(!south)
 					nullcount++;
-				if(west == null)
+				if(!west)
 					nullcount++;
-				if(northeast == null)
+				if(!northeast)
 					nullcount++;
-				if(northwest == null)
+				if(!northwest)
 					nullcount++;
-				if(southeast == null)
+				if(!southeast)
 					nullcount++;
-				if(southwest == null)
+				if(!southwest)
 					nullcount++;
 				switch(nullcount) {
 					case 0:
@@ -132,46 +111,46 @@ public class ChunkUtils {
 					default:
 						return true;
 					case 2:
-						return north == null && northeast == null
-								|| northeast == null && east == null
-								|| east == null && southeast == null
-								|| southeast == null && south == null
-								|| south == null && southwest == null
-								|| southwest == null && west == null
-								|| west == null && northwest == null
-								|| northwest == null && north == null;
+						return !north && !northeast
+								|| !northeast && !east
+								|| !east && !southeast
+								|| !southeast && !south
+								|| !south && !southwest
+								|| !southwest && !west
+								|| !west && !northwest
+								|| !northwest && !north;
 					case 3:
-						return northwest == null && north == null && northeast == null
-								|| north == null && northeast == null && east == null
-								|| northeast == null && east == null && southeast == null
-								|| east == null && southeast == null && south == null
-								|| southeast == null && south == null && southwest == null
-								|| south == null && southwest == null && west == null
-								|| southwest == null && west == null && northwest == null
-								|| west == null && northwest == null && north == null;
+						return !northwest && !north && !northeast
+								|| !north && !northeast && !east
+								|| !northeast && !east && !southeast
+								|| !east && !southeast && !south
+								|| !southeast && !south && !southwest
+								|| !south && !southwest && !west
+								|| !southwest && !west && !northwest
+								|| !west && !northwest && !north;
 					case 4:
-						return (north == null) != (south == null)
-								&& (northeast == null) != (southwest == null)
-								&& (east == null) != (west == null)
-								&& (southeast == null) != (northwest == null);
+						return north == !south
+								&& northeast == !southwest
+								&& east == !west
+								&& southeast == !northwest;
 					case 5:
-						return northwest != null && north != null && northeast != null
-								|| north != null && northeast != null && east != null
-								|| northeast != null && east != null && southeast != null
-								|| east != null && southeast != null && south != null
-								|| southeast != null && south != null && southwest != null
-								|| south != null && southwest != null && west != null
-								|| southwest != null && west != null && northwest != null
-								|| west != null && northwest != null && north != null;
+						return northwest && north && northeast
+								|| north && northeast && east
+								|| northeast && east && southeast
+								|| east && southeast && south
+								|| southeast && south && southwest
+								|| south && southwest && west
+								|| southwest && west && northwest
+								|| west && northwest && north;
 					case 6:
-						return north != null && northeast != null
-								|| northeast != null && east != null
-								|| east != null && southeast != null
-								|| southeast != null && south != null
-								|| south != null && southwest != null
-								|| southwest != null && west != null
-								|| west != null && northwest != null
-								|| northwest != null && north != null;
+						return north && northeast
+								|| northeast && east
+								|| east && southeast
+								|| southeast && south
+								|| south && southwest
+								|| southwest && west
+								|| west && northwest
+								|| northwest && north;
 				}
 				
 			case "smart":

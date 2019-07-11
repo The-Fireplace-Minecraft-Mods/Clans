@@ -1,4 +1,4 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.model;
 
 import java.io.Serializable;
 

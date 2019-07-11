@@ -1,4 +1,4 @@
-package the_fireplace.clans.raid;
+package the_fireplace.clans.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -7,7 +7,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -186,7 +186,7 @@ public class Raid {
 		return isActive;
 	}
 
-	void activate() {
+	public void activate() {
 		isActive = true;
 		setDefenders(target.getOnlineMembers().keySet());//TODO test that this works
 	}

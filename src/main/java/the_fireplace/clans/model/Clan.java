@@ -1,4 +1,4 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -14,8 +14,10 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.raid.RaidingParties;
-import the_fireplace.clans.util.PlayerClanCapability;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.legacy.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -68,7 +70,7 @@ public class Clan {
     /**
      * For internal use only. Generates OpClan.
      */
-    Clan(){
+    public Clan(){
         this.clanName = TranslationUtil.getStringTranslation("clan.default_opclan_name");
         this.description = TranslationUtil.getStringTranslation("clan.default_opclan_description");
         this.members = Maps.newHashMap();

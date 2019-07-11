@@ -1,4 +1,4 @@
-package the_fireplace.clans.raid;
+package the_fireplace.clans.model;
 
 import com.google.common.base.MoreObjects;
 import com.google.gson.JsonObject;

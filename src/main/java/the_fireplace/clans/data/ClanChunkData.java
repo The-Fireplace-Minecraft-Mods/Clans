@@ -1,4 +1,4 @@
-package the_fireplace.clans.clan;
+package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -6,8 +6,10 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.compat.dynmap.data.ClanDimInfo;
-import the_fireplace.clans.util.ChunkPosition;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.ChunkPosition;
 
 import javax.annotation.Nullable;
 import java.io.*;

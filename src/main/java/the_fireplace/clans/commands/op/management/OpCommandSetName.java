@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.op.management;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.ClanCache;
+import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;

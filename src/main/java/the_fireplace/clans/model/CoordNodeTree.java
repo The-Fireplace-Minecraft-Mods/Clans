@@ -1,7 +1,7 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.model;
 
 import com.google.common.collect.Sets;
-import the_fireplace.clans.clan.ClanChunkData;
+import the_fireplace.clans.data.ClanChunkData;
 
 import java.util.Set;
 import java.util.UUID;
