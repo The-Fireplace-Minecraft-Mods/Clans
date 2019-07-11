@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -48,11 +50,11 @@ public class CommandAbandonClaim extends ClanSubCommand {
 
 	public static void checkAndAttemptAbandon(EntityPlayerMP sender, Clan selectedClan) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
+		if(c.hasCapability(ClansForge.CLAIMED_LAND, null)){
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			if(claimFaction != null) {
 				if(claimFaction.equals(selectedClan.getClanId())) {
-					if(!Clans.cfg.forceConnectedClaims || ChunkUtils.canBeAbandoned(c, selectedClan.getClanId())) {
+					if(!Clans.getConfig().isForceConnectedClaims() || ChunkUtils.canBeAbandoned(c, selectedClan.getClanId())) {
 						OpCommandAbandonClaim.abandonClaim(sender, c, selectedClan);
 						ChunkUtils.clearChunkOwner(c);
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.abandonclaim.success").setStyle(TextStyles.GREEN));

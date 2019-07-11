@@ -1,4 +1,4 @@
-package the_fireplace.clans.event;
+package the_fireplace.clans.forge.event;
 
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraftforge.fml.common.Mod;
@@ -10,7 +10,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid=Clans.MODID)
+@Mod.EventBusSubscriber(modid= Clans.MODID)
 public class NetworkEvents {
 
     @SubscribeEvent

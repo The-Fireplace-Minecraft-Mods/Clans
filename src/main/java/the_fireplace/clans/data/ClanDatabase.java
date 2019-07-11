@@ -111,7 +111,7 @@ public final class ClanDatabase {
         instance = new ClanDatabase();
         JsonParser jsonParser = new JsonParser();
         try {
-            Object obj = jsonParser.parse(new FileReader(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json")));
+            Object obj = jsonParser.parse(new FileReader(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json")));
             if(obj instanceof JsonObject) {
                 JsonObject jsonObject = (JsonObject) obj;
                 JsonArray clanMap = jsonObject.get("clans").getAsJsonArray();
@@ -119,7 +119,7 @@ public final class ClanDatabase {
                     addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
                 setOpclan(new Clan(jsonObject.getAsJsonObject("opclan")));
             } else
-                Clans.LOGGER.warn("Json Clan Database not found! This is normal on your first run of Clans 1.2.0 and above.");
+                Clans.getMinecraftHelper().getLogger().warn("Json Clan Database not found! This is normal on your first run of ClansForge 1.2.0 and above.");
         } catch (FileNotFoundException e) {
             //do nothing, it just hasn't been created yet
         } catch (Exception e) {
@@ -142,7 +142,7 @@ public final class ClanDatabase {
         obj.add("clans", clanMap);
         obj.add("opclan", getOpClan().toJsonObject());
         try {
-            FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json"));
+            FileWriter file = new FileWriter(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json"));
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(obj);
             file.write(json);

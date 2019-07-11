@@ -8,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
@@ -96,10 +94,10 @@ public final class RaidingParties {
     }
 
 	public static void initRaid(Clan raidTarget){
-		bufferTimes.put(raidTarget, Clans.cfg.raidBufferTime);
-		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime);
+		bufferTimes.put(raidTarget, Clans.getConfig().getRaidBufferTime());
+		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime());
 		for(UUID attacker: getRaids().get(raidTarget).getAttackers())
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.cfg.raidBufferTime).setStyle(TextStyles.GREEN));
+			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN));
 	}
 
 	private static void activateRaid(Clan raidTarget) {
@@ -108,7 +106,7 @@ public final class RaidingParties {
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.activate", raidTarget.getClanName());
 		for(UUID attacker: getActiveRaid(raidTarget).getAttackers())
-			FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
+			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
 	}
 
 	public static void endRaid(Clan targetClan, boolean raiderVictory) {
@@ -119,7 +117,7 @@ public final class RaidingParties {
 		}
 
 		for(UUID attackerId: getActiveRaid(targetClan).getInitAttackers()) {
-			EntityPlayerMP attacker = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(attackerId);
+			EntityPlayerMP attacker = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attackerId);
 			//noinspection ConstantConditions
 			if(attacker != null) {
 				ITextComponent raiderMessage = TranslationUtil.getTranslation(attackerId, "clans.raid.end", targetClan.getClanName());
@@ -133,8 +131,8 @@ public final class RaidingParties {
 		for(UUID player: raid.getAttackers())
 			removeRaider(player);
 		raidedClans.remove(targetClan);
-		for(int id: DimensionManager.getIDs())
-			for(Chunk c: FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(id).getChunkProvider().getLoadedChunks()) {
+		for(int id: Clans.getMinecraftHelper().getDimensionIds())
+			for(Chunk c: Clans.getMinecraftHelper().getServer().getWorld(id).getChunkProvider().getLoadedChunks()) {
 				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
 				if(data != null)
 					data.restore(c);

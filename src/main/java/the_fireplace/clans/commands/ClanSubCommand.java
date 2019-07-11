@@ -16,7 +16,7 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -117,7 +117,7 @@ public abstract class ClanSubCommand extends CommandBase {
     }
 
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		Clans.LOGGER.error("This point should not have been reached. Command sender is a {}.", sender.getClass().getCanonicalName());
+		Clans.getMinecraftHelper().getLogger().error("This point should not have been reached. Command sender is a {}.", sender.getClass().getCanonicalName());
 		throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "commands.clan.common.player"));
 	}
 

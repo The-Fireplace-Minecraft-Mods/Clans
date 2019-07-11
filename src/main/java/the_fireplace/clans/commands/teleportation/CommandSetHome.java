@@ -7,6 +7,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
@@ -45,10 +47,10 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null) && selectedClan.getClanId().equals(Objects.requireNonNull(c.getCapability(Clans.CLAIMED_LAND, null)).getClan())) {
+		if(c.hasCapability(ClansForge.CLAIMED_LAND, null) && selectedClan.getClanId().equals(Objects.requireNonNull(c.getCapability(ClansForge.CLAIMED_LAND, null)).getClan())) {
 			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
-				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", Clans.cfg.minClanHomeDist).setStyle(TextStyles.RED));
+				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.getConfig().getMinClanHomeDist()) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", Clans.getConfig().getMinClanHomeDist()).setStyle(TextStyles.RED));
 					return;
 				}
 			selectedClan.setHome(sender.getPosition(), sender.dimension);

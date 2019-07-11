@@ -12,8 +12,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.commands.raiding.*;
-import the_fireplace.clans.permissions.PermissionManager;
+import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -65,7 +66,7 @@ public class CommandRaid extends CommandBase {
             args = Arrays.copyOfRange(args, 1, args.length);
         else
             args = new String[]{};
-        if(Clans.cfg.maxRaidDuration <= 0 && !"collect".equals(processAlias(tag)))
+        if(Clans.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
         if(PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {
             if ("help".equals(tag)) {

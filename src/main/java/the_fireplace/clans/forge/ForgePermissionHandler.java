@@ -1,15 +1,15 @@
-package the_fireplace.clans.permissions;
+package the_fireplace.clans.forge;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import the_fireplace.clans.abstraction.IPermissionHandler;
 
-import static the_fireplace.clans.permissions.PermissionManager.*;
+import static the_fireplace.clans.util.PermissionManager.*;
 
-class ForgePermissionHandler implements IPermissionHandler {
+public class ForgePermissionHandler implements IPermissionHandler {
 
-    ForgePermissionHandler() {
+    public ForgePermissionHandler() {
         registerPermission(CLAN_COMMAND_PREFIX+"help", DefaultPermissionLevel.ALL, "");
         registerPermission(CLAN_COMMAND_PREFIX+"banner", DefaultPermissionLevel.ALL, "");
         registerPermission(CLAN_COMMAND_PREFIX+"details", DefaultPermissionLevel.ALL, "");

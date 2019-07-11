@@ -1,9 +1,10 @@
-package the_fireplace.clans.permissions;
+package the_fireplace.clans.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.Loader;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.abstraction.IPermissionHandler;
 import the_fireplace.clans.compat.SpongePermissionHandler;
 
@@ -17,7 +18,7 @@ public final class PermissionManager {
     private static IPermissionHandler permissionManager;
 
     public static void registerPermissionHandlers() {
-        if(Loader.isModLoaded("spongeapi") && !Clans.cfg.forgePermissionPrecedence)
+        if(Clans.getMinecraftHelper().isPluginLoaded("spongeapi") && !Clans.getConfig().isForgePermissionPrecedence())
             permissionManager = new SpongePermissionHandler();
         else
             permissionManager = new ForgePermissionHandler();

@@ -9,9 +9,9 @@ import java.util.UUID;
 public class CoordNodeTree {
     private Set<OrderedPair<Integer, Integer>> coordNodes = Sets.newConcurrentHashSet();
 
-    public CoordNodeTree(int x, int z, UUID checkOwner) {
+    public CoordNodeTree(int x, int z, int dim, UUID checkOwner) {
         for(ChunkPosition pos: ClanChunkData.getChunks(checkOwner))
-            if(pos.posX != x || pos.posZ != z)
+            if((pos.posX != x || pos.posZ != z) && pos.dim == dim)
                 coordNodes.add(new OrderedPair<>(pos.posX, pos.posZ));
         if(!coordNodes.isEmpty())
             //noinspection unchecked

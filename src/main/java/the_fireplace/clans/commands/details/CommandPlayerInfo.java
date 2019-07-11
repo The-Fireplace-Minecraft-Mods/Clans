@@ -9,11 +9,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.ArrayUtils;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -53,7 +54,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.console", TranslationUtil.getStringTranslation(getUsage(sender))).setStyle(TextStyles.RED));
 		} else {
-			GameProfile targetPlayer = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getGameProfileForUsername(args[0]);
+			GameProfile targetPlayer = Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getGameProfileForUsername(args[0]);
 			if(targetPlayer == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.notfound", args[0]).setStyle(TextStyles.RED));
 			else

@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -40,8 +41,8 @@ public class CommandSetName extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
-		if(Clans.cfg.maxNameLength > 0 && newName.length() > Clans.cfg.maxNameLength)
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", Clans.cfg.maxNameLength).setStyle(TextStyles.RED));
+		if(Clans.getConfig().getMaxNameLength() > 0 && newName.length() > Clans.getConfig().getMaxNameLength())
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", Clans.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
 		else if(!ClanCache.clanNameTaken(newName)) {
 			String oldName = selectedClan.getClanName();
 			selectedClan.setClanName(newName);

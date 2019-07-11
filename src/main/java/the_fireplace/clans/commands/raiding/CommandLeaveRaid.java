@@ -41,7 +41,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.leave.success", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
-				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");
+				Clans.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));

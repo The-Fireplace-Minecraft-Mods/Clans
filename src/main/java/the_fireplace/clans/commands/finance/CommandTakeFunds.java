@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
@@ -39,7 +40,7 @@ public class CommandTakeFunds extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(!Clans.cfg.leaderWithdrawFunds)
+		if(!Clans.getConfig().isLeaderWithdrawFunds())
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.takefunds.disabled"));
 		long amount = Long.valueOf(args[0]);
 		if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {

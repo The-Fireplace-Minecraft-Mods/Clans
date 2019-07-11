@@ -1,4 +1,4 @@
-package the_fireplace.clans.event;
+package the_fireplace.clans.forge.event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,7 +26,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 
 import java.util.HashMap;

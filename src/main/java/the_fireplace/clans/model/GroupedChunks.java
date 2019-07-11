@@ -140,14 +140,14 @@ public class GroupedChunks {
                     lastEdgeType = curEdge.edgeType();
                 }
                 else {
-                    Clans.LOGGER.error("Unable to successfully trace claim chunk perimeter. This claim will not be visible on dynmap.");
+                    Clans.getMinecraftHelper().getLogger().error("Unable to successfully trace claim chunk perimeter. This claim will not be visible on dynmap.");
                     bTraceError = true;
                     break;
                 }
 
                 // This is extra protection to ensure we don't end up in an infinite loop on some type of error.
                 if (nLoopLimit <= 0) {
-                    Clans.LOGGER.error("Unable to find starting point in claim trace. This claim will not be visible on dynmap.");
+                    Clans.getMinecraftHelper().getLogger().error("Unable to find starting point in claim trace. This claim will not be visible on dynmap.");
                     bTraceError = true;
                     break;
                 }

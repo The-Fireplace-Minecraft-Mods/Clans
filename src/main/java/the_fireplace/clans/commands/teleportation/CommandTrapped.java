@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
@@ -46,7 +47,7 @@ public class CommandTrapped extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP player, String[] args) {
 		Chunk origin = player.world.getChunk(player.getPosition());
 		Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
-		if(chunkOwner == null && Clans.cfg.protectWilderness && player.getPosition().getY() >= Clans.cfg.minWildernessY) {
+		if(chunkOwner == null && Clans.getConfig().isProtectWilderness() && player.getPosition().getY() >= Clans.getConfig().getMinWildernessY()) {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
 		} else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {

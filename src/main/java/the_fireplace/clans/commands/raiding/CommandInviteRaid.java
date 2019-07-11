@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -50,17 +51,17 @@ public class CommandInviteRaid extends RaidSubCommand {
 				assert server != null;
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, args[0]);
 				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-				if(clanPlayers.size() > raid.getAttackerCount() - Clans.cfg.maxRaidersOffset) {
+				if(clanPlayers.size() > raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
 					if(!clanPlayers.containsKey(targetPlayer)) {
 						targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", targetPlayer.getName()).setStyle(TextStyles.GREEN));
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.cfg.maxRaidersOffset).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
-				Clans.LOGGER.error("Player was in getRaidingPlayers but getRaid was null!");
+				Clans.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));

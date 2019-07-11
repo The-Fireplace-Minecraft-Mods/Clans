@@ -9,11 +9,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.util.TextStyles;
@@ -48,7 +49,7 @@ public class CommandHome extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(Clans.cfg.clanHomeWarmupTime <= -1)
+		if(Clans.getConfig().getClanHomeWarmupTime() <= -1)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
@@ -58,8 +59,8 @@ public class CommandHome extends ClanSubCommand {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
-				if(Clans.cfg.clanHomeWarmupTime > 0)
-					PlayerDataCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.cfg.clanHomeWarmupTime, ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
+				if(Clans.getConfig().getClanHomeWarmupTime() > 0)
+					PlayerDataCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
 				else
 					teleportHome(sender, selectedClan, home, playerDim);
 			}
@@ -87,7 +88,7 @@ public class CommandHome extends ClanSubCommand {
 			if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
 				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
 		} else
-			CapHelper.getPlayerClanCapability(player).setCooldown(Clans.cfg.clanHomeCooldownTime);
+			CapHelper.getPlayerClanCapability(player).setCooldown(Clans.getConfig().getClanHomeCooldownTime());
 	}
 
 	private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {

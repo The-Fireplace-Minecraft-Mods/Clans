@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
@@ -61,7 +62,7 @@ public class CommandFancyMap extends ClanSubCommand {
 			for(int z=center.z-26; z <= center.z + 26; z++) {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
-					String wildernessColor = center.z == z && center.x == x ? "§9" : Clans.cfg.protectWilderness ? "§e" : "§2";
+					String wildernessColor = center.z == z && center.x == x ? "§9" : Clans.getConfig().isProtectWilderness() ? "§e" : "§2";
 					Clan clan = ClanChunkData.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
 					if(clan == null)
 						row.append(wildernessColor).append('-');

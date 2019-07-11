@@ -51,7 +51,7 @@ public final class RaidBlockPlacementDatabase {
 		instance = new RaidBlockPlacementDatabase();
 		JsonParser jsonParser = new JsonParser();
 		try {
-			Object obj = jsonParser.parse(new FileReader(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raidblockplacement.json")));
+			Object obj = jsonParser.parse(new FileReader(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raidblockplacement.json")));
 			if(obj instanceof JsonObject) {
 				JsonObject jsonObject = (JsonObject) obj;
 				JsonArray clanMap = jsonObject.get("placedBlocks").getAsJsonArray();
@@ -63,7 +63,7 @@ public final class RaidBlockPlacementDatabase {
 					instance.placedBlocks.put(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), values);
 				}
 			} else
-				Clans.LOGGER.warn("Json Raid Placed Block Database not found! This is normal on your first run of Clans 1.2.0 and above, and when there is nothing to restore.");
+				Clans.getMinecraftHelper().getLogger().warn("Json Raid Placed Block Database not found! This is normal on your first run of ClansForge 1.2.0 and above, and when there is nothing to restore.");
 		} catch (FileNotFoundException e) {
 			//do nothing, it just hasn't been created yet
 		} catch (Exception e) {
@@ -88,7 +88,7 @@ public final class RaidBlockPlacementDatabase {
 		}
 		obj.add("placedBlocks", placedBlocksMap);
 		try {
-			FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raidblockplacement.json"));
+			FileWriter file = new FileWriter(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raidblockplacement.json"));
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String json = gson.toJson(obj);
 			file.write(json);

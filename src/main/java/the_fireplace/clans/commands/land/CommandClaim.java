@@ -7,12 +7,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -52,7 +54,7 @@ public class CommandClaim extends ClanSubCommand {
 
 	public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null)) {
+		if(c.hasCapability(ClansForge.CLAIMED_LAND, null)) {
 			UUID claimFaction = ChunkUtils.getChunkOwner(c);
 			Clan claimClan = ClanCache.getClanById(claimFaction);
 			if(claimFaction != null && claimClan != null) {
@@ -61,22 +63,22 @@ public class CommandClaim extends ClanSubCommand {
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.taken_other", claimClan.getClanName()).setStyle(TextStyles.RED));
 			} else {
-				if(!Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
-					if(Clans.cfg.maxClanPlayerClaims <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
+				if(!Clans.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(c, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
+					if(Clans.getConfig().getMaxClanPlayerClaims() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
 						if(selectedClan.getClaimCount() > 0)
 							claimChunk(sender, c, selectedClan);
-						else if(Clans.cfg.minClanHomeDist > 0 && Clans.cfg.initialClaimSeparationMultiplier > 0) {
+						else if(Clans.getConfig().getMinClanHomeDist() > 0 && Clans.getConfig().getInitialClaimSeparationMultiplier() > 0) {
 							boolean inClanHomeRange = false;
 							for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
-								if(!pos.getKey().getClanId().equals(selectedClan.getClanId()) && pos.getKey().hasHome() && pos.getValue() != null && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier)
+								if(!pos.getKey().getClanId().equals(selectedClan.getClanId()) && pos.getKey().hasHome() && pos.getValue() != null && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier())
 									inClanHomeRange = true;
 							if(inClanHomeRange) {
-								if(Clans.cfg.enforceInitialClaimSeparation)
-									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.RED));
+								if(Clans.getConfig().isEnforceInitialClaimSeparation())
+									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
 								else if(CapHelper.getPlayerClanCapability(sender).getClaimWarning())
 									return claimChunk(sender, c, selectedClan);
 								else {
-									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.cfg.minClanHomeDist*Clans.cfg.initialClaimSeparationMultiplier).setStyle(TextStyles.YELLOW));
+									sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
 									CapHelper.getPlayerClanCapability(sender).setClaimWarning(true);
 								}
 							} else
@@ -94,14 +96,14 @@ public class CommandClaim extends ClanSubCommand {
 	}
 
 	private static boolean claimChunk(EntityPlayerMP sender, Chunk c, Clan selectedClan) {
-		if (Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, selectedClan.getClanId())) {
+		if (Clans.getPaymentHandler().deductAmount(Clans.getConfig().getClaimChunkCost(), selectedClan.getClanId())) {
 			ChunkUtils.setChunkOwner(c, selectedClan.getClanId());
 			ClanChunkData.addChunk(selectedClan, c.x, c.z, c.getWorld().provider.getDimension());
 			selectedClan.addClaimCount();
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success").setStyle(TextStyles.GREEN));
 			return true;
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", selectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", selectedClan.getClanName(), Clans.getConfig().getClaimChunkCost(), Clans.getPaymentHandler().getCurrencyName(Clans.getConfig().getClaimChunkCost())).setStyle(TextStyles.RED));
 		return false;
 	}
 }

@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -49,7 +50,7 @@ public class CommandInvite extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		assert server != null;
 		EntityPlayerMP target = getPlayer(server, sender, args[0]);
-		if(Clans.cfg.allowMultiClanMembership || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+		if(Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
 			if(!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
 				if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
@@ -67,7 +68,7 @@ public class CommandInvite extends ClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-		if(!Clans.cfg.allowMultiClanMembership)
+		if(!Clans.getConfig().isAllowMultiClanMembership())
 			players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)

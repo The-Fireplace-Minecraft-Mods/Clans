@@ -4,12 +4,12 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -45,7 +45,7 @@ public class CommandSetDefault extends ClanSubCommand {
 		if(def != null) {
 			if(def.getMembers().containsKey(sender.getUniqueID())) {
 				//noinspection ConstantConditions
-				if (sender.hasCapability(Clans.CLAN_DATA_CAP, null)) {
+				if (sender.hasCapability(ClansForge.CLAN_DATA_CAP, null)) {
 					CapHelper.getPlayerClanCapability(sender).setDefaultClan(def.getClanId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanName()).setStyle(TextStyles.GREEN));
 				} else

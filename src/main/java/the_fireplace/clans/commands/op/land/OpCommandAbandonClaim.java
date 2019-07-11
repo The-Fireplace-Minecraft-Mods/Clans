@@ -8,12 +8,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -50,13 +52,13 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 	public static void checkAndAttemptOpAbandon(EntityPlayerMP sender, String[] args) {
 		Clan opClan = ClanDatabase.getOpClan();
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
+		if(c.hasCapability(ClansForge.CLAIMED_LAND, null)){
 			UUID claimFaction = CapHelper.getClaimedLandCapability(c).getClan();
 			if(claimFaction != null) {
 				Clan targetClan = ClanCache.getClanById(claimFaction);
 				if(claimFaction.equals(opClan.getClanId()) || (args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan == null) {
 					if(targetClan != null) {
-						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.cfg.forceConnectedClaims || ChunkUtils.canBeAbandoned(c, targetClan.getClanId())) {
+						if ((args.length == 1 && args[0].toLowerCase().equals("force")) || targetClan.isOpclan() || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.canBeAbandoned(c, targetClan.getClanId())) {
 							//Unset clan home if it is in the chunk
 							OpCommandAbandonClaim.abandonClaim(sender, c, targetClan);
 							ChunkUtils.clearChunkOwner(c);
@@ -96,7 +98,7 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 
 		ClanChunkData.delChunk(targetClan, c.x, c.z, c.getWorld().provider.getDimension());
 		targetClan.subClaimCount();
-		Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, targetClan.getClanId());
+		Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
 	}
 
 	public static void abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, Clan targetClan) {

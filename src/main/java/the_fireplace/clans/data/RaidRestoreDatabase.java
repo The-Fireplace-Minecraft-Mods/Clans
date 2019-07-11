@@ -29,7 +29,7 @@ public final class RaidRestoreDatabase {
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData());
 		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
-			Clans.LOGGER.error("Block restore cache being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
+			Clans.getMinecraftHelper().getLogger().error("Block restore cache being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);
 		isChanged = true;
 	}
@@ -73,14 +73,14 @@ public final class RaidRestoreDatabase {
 		instance = new RaidRestoreDatabase();
 		JsonParser jsonParser = new JsonParser();
 		try {
-			Object obj = jsonParser.parse(new FileReader(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json")));
+			Object obj = jsonParser.parse(new FileReader(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json")));
 			if(obj instanceof JsonObject) {
 				JsonObject jsonObject = (JsonObject) obj;
 				JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
 				for (int i = 0; i < clanMap.size(); i++)
 					instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
 			} else
-				Clans.LOGGER.warn("Json Raid Restore Database not found! This is normal on your first run of Clans 1.2.0 and above, and when there is nothing to restore.");
+				Clans.getMinecraftHelper().getLogger().warn("Json Raid Restore Database not found! This is normal on your first run of ClansForge 1.2.0 and above, and when there is nothing to restore.");
 		} catch (FileNotFoundException e) {
 			//do nothing, it just hasn't been created yet
 		} catch (Exception e) {
@@ -102,7 +102,7 @@ public final class RaidRestoreDatabase {
 		}
 		obj.add("restoreChunks", chunkRestoreMap);
 		try {
-			FileWriter file = new FileWriter(new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json"));
+			FileWriter file = new FileWriter(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json"));
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String json = gson.toJson(obj);
 			file.write(json);

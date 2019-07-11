@@ -1,4 +1,4 @@
-package the_fireplace.clans.legacy;
+package the_fireplace.clans.forge.legacy;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

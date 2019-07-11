@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.ClanDimInfo;
 import the_fireplace.clans.model.Clan;
@@ -48,7 +49,7 @@ public class ClanChunkData {
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
         claimedChunks.get(clan.getClanId()).add(new ChunkPosition(x, z, dim));
-        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+        ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
         isChanged = true;
     }
 
@@ -57,7 +58,7 @@ public class ClanChunkData {
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
         if(claimedChunks.get(clan.getClanId()).remove(new ChunkPosition(x, z, dim))) {
-            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+            ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
             isChanged = true;
         }
     }
@@ -84,7 +85,7 @@ public class ClanChunkData {
     }
 
     private static File getFile() {
-        return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclancache.json");
+        return new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclancache.json");
     }
 
     private static boolean reading;
@@ -105,7 +106,7 @@ public class ClanChunkData {
                         claimedChunks.put(UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString()), positions);
                     }
                 } else
-                    Clans.LOGGER.warn("Claim Cache not found! This is normal when no chunks have been claimed on Clans 1.2.0 and above.");
+                    Clans.getMinecraftHelper().getLogger().warn("Claim Cache not found! This is normal when no chunks have been claimed on ClansForge 1.2.0 and above.");
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
             } catch (Exception e) {

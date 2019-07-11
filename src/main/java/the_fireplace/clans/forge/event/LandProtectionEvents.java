@@ -1,4 +1,4 @@
-package the_fireplace.clans.event;
+package the_fireplace.clans.forge.event;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.*;
@@ -23,10 +23,11 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.legacy.CapHelper;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.permissions.PermissionManager;
+import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.cache.RaidingParties;
@@ -36,7 +37,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid=Clans.MODID)
+@Mod.EventBusSubscriber(modid= Clans.MODID)
 public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
@@ -71,7 +72,7 @@ public class LandProtectionEvents {
 					ChunkUtils.clearChunkOwner(c);
 				}
 			}
-			if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer()) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
+			if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer()) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
 				event.setCanceled(true);
 				event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
 			}
@@ -121,7 +122,7 @@ public class LandProtectionEvents {
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
 							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
 							out.setCount(1);
-							if(!Clans.cfg.noReclaimTNT || !(event.getBlockSnapshot().getCurrentBlock().getBlock() instanceof BlockTNT))
+							if(!Clans.getConfig().isNoReclaimTNT() || !(event.getBlockSnapshot().getCurrentBlock().getBlock() instanceof BlockTNT))
 								RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
 							RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
 						}
@@ -131,7 +132,7 @@ public class LandProtectionEvents {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.cfg.minWildernessY) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
+				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
 					event.setCanceled(true);
 					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
 					if(((EntityPlayerMP) placingPlayer).connection != null)
@@ -209,9 +210,9 @@ public class LandProtectionEvents {
 				if (chunkClan != null) {
 					if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
 						RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-					else if(!Clans.cfg.chainTNT || !(targetState.getBlock() instanceof BlockTNT))
+					else if(!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
 						removeBlocks.add(pos);
-				} else if (Clans.cfg.protectWilderness && (Clans.cfg.minWildernessY < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.cfg.minWildernessY) && (!Clans.cfg.chainTNT || !(targetState.getBlock() instanceof BlockTNT)))
+				} else if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= event.getWorld().getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT)))
 					removeBlocks.add(pos);
 			}
 			for (BlockPos pos : removeBlocks)
@@ -267,7 +268,7 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onEntitySpawn(EntityJoinWorldEvent event) {
-		if(Clans.cfg.preventMobsOnClaims && !event.getWorld().isRemote && event.getEntity() instanceof IMob) {
+		if(Clans.getConfig().isPreventMobsOnClaims() && !event.getWorld().isRemote && event.getEntity() instanceof IMob) {
 			if(CapHelper.getClaimedLandCapability(event.getWorld().getChunk(event.getEntity().getPosition())).getClan() != null)
 				event.setCanceled(true);
 		}

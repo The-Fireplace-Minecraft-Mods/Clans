@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.legacy.ClaimedLandCapability;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
 import the_fireplace.clans.model.CoordNodeTree;
 
 import javax.annotation.Nullable;
@@ -14,7 +16,7 @@ import java.util.UUID;
 public class ChunkUtils {
 	@Nullable
 	public static UUID getChunkOwner(Chunk c){
-		ClaimedLandCapability cap = c.getCapability(Clans.CLAIMED_LAND, null);
+		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
 		if(cap == null)
 			return null;
 		return cap.getClan();
@@ -30,7 +32,7 @@ public class ChunkUtils {
 	 * The old owner, or null if there wasn't one.
 	 */
 	public static UUID setChunkOwner(Chunk c, UUID newOwner){
-		ClaimedLandCapability cap = c.getCapability(Clans.CLAIMED_LAND, null);
+		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
 		if(cap == null)
 			return null;
 		UUID oldOwner = cap.getClan();
@@ -39,7 +41,7 @@ public class ChunkUtils {
 	}
 
 	public static void clearChunkOwner(Chunk c){
-		ClaimedLandCapability cap = c.getCapability(Clans.CLAIMED_LAND, null);
+		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
 		if(cap == null)
 			return;
 		cap.setClan(null);
@@ -60,7 +62,7 @@ public class ChunkUtils {
 		if(checkOwner == null)
 			return false;
 		ChunkPos cPos = c.getPos();
-		switch (Clans.cfg.connectedClaimCheck.toLowerCase()) {
+		switch (Clans.getConfig().getConnectedClaimCheck().toLowerCase()) {
 			case "quicker":
 				ArrayList<Chunk> conn = getConnectedClaims(c, checkOwner);
 				for(Chunk chunk: conn) {
@@ -155,7 +157,7 @@ public class ChunkUtils {
 				
 			case "smart":
 			default:
-				return !new CoordNodeTree(c.x, c.z, checkOwner).hasDetachedNodes();
+				return !new CoordNodeTree(c.x, c.z, c.getWorld().provider.getDimension(), checkOwner).hasDetachedNodes();
 		}
 	}
 

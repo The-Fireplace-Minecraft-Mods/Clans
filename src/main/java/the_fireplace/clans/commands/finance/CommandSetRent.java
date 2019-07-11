@@ -6,6 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.util.TextStyles;
@@ -39,12 +40,12 @@ public class CommandSetRent extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(Clans.cfg.chargeRentDays <= 0)
+		if(Clans.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
 		int newRent = Integer.valueOf(args[0]);
 		if(newRent >= 0) {
-			long maxRent = Clans.cfg.maxRent;
-			if(Clans.cfg.multiplyMaxRentClaims)
+			long maxRent = Clans.getConfig().getMaxRent();
+			if(Clans.getConfig().isMultiplyMaxRentClaims())
 				maxRent *= selectedClan.getClaimCount();
 			if(maxRent <= 0 || newRent <= maxRent) {
 				selectedClan.setRent(newRent);

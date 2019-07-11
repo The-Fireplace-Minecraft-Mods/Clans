@@ -7,6 +7,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
@@ -47,7 +49,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 
 	public static void checkAndAttemptOpClaim(EntityPlayerMP sender, String[] args, Clan opSelectedClan) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(Clans.CLAIMED_LAND, null)){
+		if(c.hasCapability(ClansForge.CLAIMED_LAND, null)){
 			UUID claimOwner = ChunkUtils.getChunkOwner(c);
 			Clan claimOwnerClan = claimOwner != null ? ClanCache.getClanById(claimOwner) : null;
 			boolean force = (args.length == 1 && args[0].toLowerCase().equals("force"));
@@ -59,7 +61,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 			} else {
 				if(claimOwnerClan != null) {
 					claimOwnerClan.subClaimCount();
-					Clans.getPaymentHandler().addAmount(Clans.cfg.claimChunkCost, claimOwnerClan.getClanId());
+					Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), claimOwnerClan.getClanId());
 				}
 				if(opSelectedClan.isOpclan()) {
 					ChunkUtils.setChunkOwner(c, opSelectedClan.getClanId());
@@ -67,14 +69,14 @@ public class OpCommandClaim extends OpClanSubCommand {
 					opSelectedClan.addClaimCount();
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.claim.success", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 				} else {
-					if(force || !Clans.cfg.forceConnectedClaims || ChunkUtils.hasConnectedClaim(c, opSelectedClan.getClanId()) || opSelectedClan.getClaimCount() == 0) {
-						if(force || Clans.cfg.maxClanPlayerClaims <= 0 || opSelectedClan.getClaimCount() < opSelectedClan.getMaxClaimCount()) {
-							if (force || Clans.getPaymentHandler().deductAmount(Clans.cfg.claimChunkCost, opSelectedClan.getClanId())) {
+					if(force || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(c, opSelectedClan.getClanId()) || opSelectedClan.getClaimCount() == 0) {
+						if(force || Clans.getConfig().getMaxClanPlayerClaims() <= 0 || opSelectedClan.getClaimCount() < opSelectedClan.getMaxClaimCount()) {
+							if (force || Clans.getPaymentHandler().deductAmount(Clans.getConfig().getClaimChunkCost(), opSelectedClan.getClanId())) {
 								ChunkUtils.setChunkOwner(c, opSelectedClan.getClanId());
 								opSelectedClan.addClaimCount();
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.claim.success", opSelectedClan.getClanName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", opSelectedClan.getClanName(), Clans.cfg.claimChunkCost, Clans.getPaymentHandler().getCurrencyName(Clans.cfg.claimChunkCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.insufficient_funds", opSelectedClan.getClanName(), Clans.getConfig().getClaimChunkCost(), Clans.getPaymentHandler().getCurrencyName(Clans.getConfig().getClaimChunkCost())).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.maxed", opSelectedClan.getClanName(), opSelectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
 					} else

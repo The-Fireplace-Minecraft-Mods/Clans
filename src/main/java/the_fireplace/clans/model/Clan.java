@@ -12,12 +12,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.legacy.PlayerClanCapability;
+import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -37,8 +37,8 @@ public class Clan {
     private long rent = 0;
     private int wins = 0;
     private int losses = 0;
-    private long shield = Clans.cfg.initialShield * 60;
-    private long rentTimestamp = System.currentTimeMillis() + Clans.cfg.chargeRentDays * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.cfg.clanUpkeepDays * 1000L * 60L * 60L * 24L;
+    private long shield = Clans.getConfig().getInitialShield() * 60;
+    private long rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
 
@@ -61,9 +61,9 @@ public class Clan {
         if (Clans.getPaymentHandler().getBalance(clanId) > 0)
             Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
         
-        Clans.getPaymentHandler().addAmount(Clans.cfg.formClanBankAmount, clanId);
+        Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
         ClanCache.addPlayerClan(leader, this);
-        if(!Clans.cfg.allowMultiClanMembership)
+        if(!Clans.getConfig().isAllowMultiClanMembership())
             ClanCache.removeInvite(leader);
     }
 
@@ -76,7 +76,7 @@ public class Clan {
         this.members = Maps.newHashMap();
         this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
         if(!ClanDatabase.addClan(this.clanId, this))
-            Clans.LOGGER.error("Unable to add opclan to the clan database!");
+            Clans.getMinecraftHelper().getLogger().error("Unable to add opclan to the clan database!");
         this.isOpclan = true;
     }
 
@@ -172,7 +172,7 @@ public class Clan {
         if(isOpclan)
             return online;
         for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
-            EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(member.getKey());
+            EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
             //noinspection ConstantConditions
             if(player != null)
                 online.put(player, member.getValue());
@@ -248,7 +248,7 @@ public class Clan {
     }
 
     public int getMaxClaimCount() {
-        return getMemberCount() * Clans.cfg.maxClanPlayerClaims;
+        return getMemberCount() * Clans.getConfig().getMaxClanPlayerClaims();
     }
 
     public void addClaimCount() {
@@ -279,7 +279,7 @@ public class Clan {
             return;
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
-        if(!Clans.cfg.allowMultiClanMembership || equals(ClanCache.getInvite(player)))
+        if(!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
             ClanCache.removeInvite(player);
         ClanDatabase.markChanged();
     }
@@ -321,7 +321,7 @@ public class Clan {
             return false;
         else {
             if(members.get(player) == EnumRank.ADMIN) {
-                if(!Clans.cfg.multipleClanLeaders) {
+                if(!Clans.getConfig().isMultipleClanLeaders()) {
                     UUID leader = null;
                     for(UUID member: members.keySet())
                         if(members.get(member) == EnumRank.LEADER) {
@@ -360,7 +360,7 @@ public class Clan {
     }
 
     public void updateNextRentTimeStamp() {
-        this.rentTimestamp = System.currentTimeMillis() + Clans.cfg.chargeRentDays * 1000L * 60L * 60L * 24L;
+        this.rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L;
     }
 
     public long getNextUpkeepTimestamp() {
@@ -368,7 +368,7 @@ public class Clan {
     }
 
     public void updateNextUpkeepTimeStamp() {
-        this.upkeepTimestamp = System.currentTimeMillis() + Clans.cfg.clanUpkeepDays * 1000L * 60L * 60L * 24L;
+        this.upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     }
 
     /**
@@ -452,8 +452,8 @@ public class Clan {
 
         long distFunds = Clans.getPaymentHandler().getBalance(this.getClanId());
         long rem;
-        distFunds += Clans.cfg.claimChunkCost * this.getClaimCount();
-        if (Clans.cfg.leaderRecieveDisbandFunds) {
+        distFunds += Clans.getConfig().getClaimChunkCost() * this.getClaimCount();
+        if (Clans.getConfig().isLeaderRecieveDisbandFunds()) {
             distFunds = this.payLeaders(distFunds);
             rem = distFunds % this.getMemberCount();
             distFunds /= this.getMemberCount();

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.dynmap.DynmapCommonAPI;
@@ -13,6 +12,7 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
@@ -92,7 +92,7 @@ public class DynmapCompat implements IDynmapCompat {
      */
     @Override
     public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {
-        Clans.LOGGER.debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
+        Clans.getMinecraftHelper().getLogger().debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
 
         claimUpdates.add(clanDimInfo);
     }
@@ -107,7 +107,7 @@ public class DynmapCompat implements IDynmapCompat {
         long totalGroups;
 
         startTimeNS = System.nanoTime();
-        Clans.LOGGER.trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
+        Clans.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
         Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClanChunkData.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
         totalChunks = teamClaimsList.size();
@@ -138,9 +138,9 @@ public class DynmapCompat implements IDynmapCompat {
             group.cleanup();
 
         long deltaNs = System.nanoTime() - startTimeNS;
-        Clans.LOGGER.trace(" --> {} Claim chunks processed.", totalChunks);
-        Clans.LOGGER.trace(" --> {} Claim groups detected.", totalGroups);
-        Clans.LOGGER.trace(" --> Complete claim update in [{}ns]", deltaNs);
+        Clans.getMinecraftHelper().getLogger().trace(" --> {} Claim chunks processed.", totalChunks);
+        Clans.getMinecraftHelper().getLogger().trace(" --> {} Claim groups detected.", totalGroups);
+        Clans.getMinecraftHelper().getLogger().trace(" --> Complete claim update in [{}ns]", deltaNs);
 
     }
 
@@ -170,7 +170,7 @@ public class DynmapCompat implements IDynmapCompat {
     private static final Pattern FORMATTING_COLOR_CODES_PATTERN = Pattern.compile("(?i)\\u00a7[0-9A-FK-OR]");
 
     private static final String MARKER_SET_ID = "clans.claims.markerset";
-    private static final String MARKER_SET_LABEL = "Clans";
+    private static final String MARKER_SET_LABEL = "ClansForge";
 
     /**
      * This is a call back class which Dynmap will call when it is ready to accept API requests. This is
@@ -234,7 +234,7 @@ public class DynmapCompat implements IDynmapCompat {
                 stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
 
                 for (UUID member : teamMembers)
-                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(Objects.requireNonNull(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(member)).getName())).append("</span></div>");
+                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(Objects.requireNonNull(Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member)).getName())).append("</span></div>");
             }
 
             stToolTip.append("</div>");
@@ -244,17 +244,17 @@ public class DynmapCompat implements IDynmapCompat {
 
             // Configure the marker style
             if (marker != null) {
-                int nStrokeWeight = Clans.cfg.dynmapBorderWeight;
-                double dStrokeOpacity = Clans.cfg.dynmapBorderOpacity;
-                double dFillOpacity = Clans.cfg.dynmapFillOpacity;
+                int nStrokeWeight = Clans.getConfig().getDynmapBorderWeight();
+                double dStrokeOpacity = Clans.getConfig().getDynmapBorderOpacity();
+                double dFillOpacity = Clans.getConfig().getDynmapFillOpacity();
                 int nFillColor = clanDimInfo.getTeamColor();
 
                 marker.setLineStyle(nStrokeWeight, dStrokeOpacity, nFillColor);
                 marker.setFillStyle(dFillOpacity, nFillColor);
             } else
-                Clans.LOGGER.error("Failed to create Dynmap area marker for claim.");
+                Clans.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim.");
         } else
-            Clans.LOGGER.error("Failed to create Dynmap area marker for claim, Dynmap Marker Set is not available.");
+            Clans.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim, Dynmap Marker Set is not available.");
     }
 
     /**
@@ -287,17 +287,17 @@ public class DynmapCompat implements IDynmapCompat {
      */
 
     public void buildDynmapWorldNames() {
-        WorldServer[] worldsList = FMLCommonHandler.instance().getMinecraftServerInstance().worlds;
+        WorldServer[] worldsList = Clans.getMinecraftHelper().getServer().worlds;
 
         // This code below follows Dynmap's naming which is required to get mapping between dimensions and worlds
         // to work. As dynmap API takes world strings not dimension numbers.
         for (WorldServer world : worldsList)
             dimensionNames.put(world.provider.getDimension(),  world.getWorldInfo().getWorldName());
 
-        Clans.LOGGER.debug("Building Dynmap compatible world name list");
+        Clans.getMinecraftHelper().getLogger().debug("Building Dynmap compatible world name list");
 
         for (Map.Entry<Integer, String> entry : dimensionNames.entrySet())
-            Clans.LOGGER.debug("  --> Dimension [{}] = {}", entry.getKey(), entry.getValue());
+            Clans.getMinecraftHelper().getLogger().debug("  --> Dimension [{}] = {}", entry.getKey(), entry.getValue());
     }
 
     /**

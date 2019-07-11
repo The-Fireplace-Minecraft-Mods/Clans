@@ -1,4 +1,4 @@
-package the_fireplace.clans.event;
+package the_fireplace.clans.forge.event;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
@@ -7,9 +7,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.cache.PlayerDataCache;
-import the_fireplace.clans.legacy.CapHelper;
-import the_fireplace.clans.legacy.PlayerClanCapability;
+import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanDatabase;
@@ -31,7 +33,7 @@ public class PlayerEvents {
 
     private static void checkUpdateDefaultClan(PlayerEvent event) {
         //noinspection ConstantConditions
-        assert Clans.CLAN_DATA_CAP != null;
+        assert ClansForge.CLAN_DATA_CAP != null;
         if(!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
             PlayerClanCapability c = CapHelper.getPlayerClanCapability(event.player);
             assert c != null;
@@ -87,7 +89,7 @@ public class PlayerEvents {
                 Clan clanChat = ClanCache.getClanChattingPlayers().get(event.getPlayer().getUniqueID());
                 for(EntityPlayerMP member: clanChat.getOnlineMembers().keySet())
                     member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(event.getComponent()));
-            } else if (Clans.cfg.showDefaultClanInChat) {
+            } else if (Clans.getConfig().isShowDefaultClanInChat()) {
                 PlayerClanCapability playerClanCap = CapHelper.getPlayerClanCapability(event.getPlayer());
                 if (playerClanCap != null && playerClanCap.getDefaultClan() != null) {
                     Clan playerDefaultClan = ClanCache.getClanById(playerClanCap.getDefaultClan());
