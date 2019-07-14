@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
 import the_fireplace.clans.model.CoordNodeTree;

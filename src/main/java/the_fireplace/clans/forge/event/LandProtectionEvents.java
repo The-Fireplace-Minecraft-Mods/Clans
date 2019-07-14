@@ -23,14 +23,13 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.forge.legacy.CapHelper;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.util.PermissionManager;
+import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
-import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.forge.FakePlayerUtil;
+import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 

@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat;
+package the_fireplace.clans.forge.compat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -12,15 +12,10 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IDynmapCompat;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
-import the_fireplace.clans.model.ClanDimInfo;
-import the_fireplace.clans.model.GroupedChunks;
-import the_fireplace.clans.model.CoordinatePair;
-import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.model.*;
 
 import java.util.*;
 import java.util.regex.Pattern;

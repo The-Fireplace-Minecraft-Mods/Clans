@@ -1,9 +1,8 @@
-package the_fireplace.clans.util;
+package the_fireplace.clans.forge;
 
 import net.minecraftforge.common.util.FakePlayer;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
 
 public class FakePlayerUtil {
     public static boolean isAllowedFakePlayer(Object entity) {

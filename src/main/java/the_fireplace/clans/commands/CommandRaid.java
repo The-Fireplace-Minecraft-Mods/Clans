@@ -12,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.commands.raiding.*;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;

@@ -4,12 +4,12 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.forge.ClansForge;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 

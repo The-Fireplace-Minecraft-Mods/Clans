@@ -11,10 +11,10 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 

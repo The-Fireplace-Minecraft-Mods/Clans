@@ -1,4 +1,4 @@
-package the_fireplace.clans.client;
+package the_fireplace.clans.forge.client;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;

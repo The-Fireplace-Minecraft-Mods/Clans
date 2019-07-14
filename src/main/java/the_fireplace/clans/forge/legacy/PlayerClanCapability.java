@@ -5,8 +5,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.model.Clan;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

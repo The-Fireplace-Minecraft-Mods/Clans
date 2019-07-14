@@ -3,10 +3,9 @@ package the_fireplace.clans.util;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.abstraction.IPermissionHandler;
 import the_fireplace.clans.compat.SpongePermissionHandler;
+import the_fireplace.clans.forge.ForgePermissionHandler;
 
 public final class PermissionManager {
 

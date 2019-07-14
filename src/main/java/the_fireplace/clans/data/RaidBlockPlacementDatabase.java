@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 
 import java.io.*;

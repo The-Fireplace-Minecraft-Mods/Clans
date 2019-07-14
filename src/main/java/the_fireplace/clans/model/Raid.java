@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;

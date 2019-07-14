@@ -7,16 +7,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerDataCache;
+import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.OrderedPair;
-import the_fireplace.clans.util.*;
+import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)

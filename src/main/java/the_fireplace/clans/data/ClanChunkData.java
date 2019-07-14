@@ -4,13 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.model.ClanDimInfo;
-import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.ClanDimInfo;
 
 import javax.annotation.Nullable;
 import java.io.*;

@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.ChunkPosition;
 

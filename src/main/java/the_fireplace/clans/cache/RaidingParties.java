@@ -9,10 +9,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
+import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
