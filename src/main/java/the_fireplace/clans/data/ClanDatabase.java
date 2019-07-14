@@ -55,6 +55,8 @@ public final class ClanDatabase {
 
     @Nullable
     public static Clan getClan(@Nullable UUID clanId){
+        if(clanId == null)
+            return null;
         return getInstance().clans.get(clanId);
     }
 

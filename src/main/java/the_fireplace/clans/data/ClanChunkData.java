@@ -1,6 +1,5 @@
 package the_fireplace.clans.data;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
@@ -20,6 +19,7 @@ public class ClanChunkData {
     private static boolean isLoaded = false;
     private static boolean isChanged = false;
     private static HashMap<UUID, Set<ChunkPosition>> claimedChunks = Maps.newHashMap();
+    private static HashMap<ChunkPosition, UUID> chunkOwners = Maps.newHashMap();
 
     public static Set<ChunkPosition> getChunks(UUID clan) {
         if(!isLoaded)
@@ -42,54 +42,107 @@ public class ClanChunkData {
         return claimClans;
     }
 
-    @SuppressWarnings("Duplicates")
-    public static void addChunk(Clan clan, int x, int z, int dim) {
+    public static void addChunk(Clan clan, ChunkPosition pos) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
-        claimedChunks.get(clan.getClanId()).add(new ChunkPosition(x, z, dim));
-        ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+        claimedChunks.get(clan.getClanId()).add(pos);
+        chunkOwners.put(pos, clan.getClanId());
+        ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
         isChanged = true;
     }
 
-    public static void delChunk(Clan clan, int x, int z, int dim) {
+    public static void addChunk(Clan clan, int x, int z, int dim) {
+        addChunk(clan, new ChunkPosition(x, z, dim));
+    }
+
+    public static void addChunk(UUID clanId, int x, int z, int dim) {
+        Clan clan = ClanCache.getClanById(clanId);
+        if(clan == null)
+            delClan(clanId);
+        else
+            addChunk(clan, x, z, dim);
+    }
+
+    public static void addChunk(@Nullable UUID clanId, ChunkPosition pos) {
+        Clan clan = ClanCache.getClanById(clanId);
+        if(clan == null)
+            delClan(clanId);
+        else
+            addChunk(clan, pos);
+    }
+
+    public static void delChunk(Clan clan, ChunkPosition pos) {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
-        if(claimedChunks.get(clan.getClanId()).remove(new ChunkPosition(x, z, dim))) {
-            ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+        chunkOwners.remove(pos);
+        if(claimedChunks.get(clan.getClanId()).remove(pos)) {
+            ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
             isChanged = true;
         }
     }
 
-    @Nullable
-    public static Clan getChunkClan(int x, int z, int dim) {
-        if(!isLoaded)
-            load();
-        for(Map.Entry<UUID, Set<ChunkPosition>> entry: Lists.newArrayList(claimedChunks.entrySet()))//New list with the cache to prevent concurrent modification errors
-            for(ChunkPosition pos: entry.getValue())
-                if(pos.posX == x && pos.posZ == z && pos.dim == dim)
-                    return ClanCache.getClanById(entry.getKey());
-        return null;
+    public static void delChunk(Clan clan, int x, int z, int dim) {
+        delChunk(clan, new ChunkPosition(x, z, dim));
     }
 
-    public static boolean delClan(UUID clan) {
+    public static void delChunk(@Nullable UUID clanId, int x, int z, int dim) {
+        Clan clan = ClanCache.getClanById(clanId);
+        if(clan == null)
+            delClan(clanId);
+        else
+            delChunk(clan, x, z, dim);
+    }
+
+    public static void delChunk(@Nullable UUID clanId, ChunkPosition pos) {
+        Clan clan = ClanCache.getClanById(clanId);
+        if(clan == null)
+            delClan(clanId);
+        else
+            delChunk(clan, pos);
+    }
+
+    @Nullable
+    public static Clan getChunkClan(int x, int z, int dim) {
+        return ClanCache.getClanById(getChunkClanId(x, z, dim));
+    }
+
+    @Nullable
+    public static UUID getChunkClanId(int x, int z, int dim) {
+        if(!isLoaded)
+            load();
+        return chunkOwners.get(new ChunkPosition(x, z, dim));
+    }
+
+    public static boolean delClan(@Nullable UUID clan) {
+        if(clan == null)
+            return false;
+        for(Map.Entry<ChunkPosition, UUID> entry : chunkOwners.entrySet())
+            if(entry.getValue().equals(clan))
+                chunkOwners.remove(entry.getKey());
         return claimedChunks.remove(clan) != null;
         //TODO: Make sure the deleted clan is removed from Dynmap
     }
 
     private static void load() {
-        read(getFile());
+        read(getOldFile(), true);
+        read(getFile(), false);
         isLoaded = true;
     }
 
     private static File getFile() {
+        return new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclandata.json");
+    }
+
+    @Deprecated
+    private static File getOldFile() {
         return new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclancache.json");
     }
 
     private static boolean reading;
 
-    private static void read(File file) {
+    private static void read(File file, boolean isLegacy) {
         if(!reading) {
             reading = true;
             JsonParser jsonParser = new JsonParser();
@@ -100,12 +153,17 @@ public class ClanChunkData {
                     JsonArray claimedChunkMap = jsonObject.get("claimedChunks").getAsJsonArray();
                     for (int i = 0; i < claimedChunkMap.size(); i++) {
                         Set<ChunkPosition> positions = Sets.newHashSet();
-                        for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray())
-                            positions.add(new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt()));
-                        claimedChunks.put(UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString()), positions);
+                        UUID clan = UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString());
+                        for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray()) {
+                            ChunkPosition pos = new ChunkPosition(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
+                            chunkOwners.put(pos, clan);
+                            positions.add(pos);
+                        }
+                        claimedChunks.put(clan, positions);
                     }
-                } else
-                    Clans.getMinecraftHelper().getLogger().warn("Claim Cache not found! This is normal when no chunks have been claimed on ClansForge 1.2.0 and above.");
+                }
+                if(isLegacy)
+                    file.delete();
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
             } catch (Exception e) {

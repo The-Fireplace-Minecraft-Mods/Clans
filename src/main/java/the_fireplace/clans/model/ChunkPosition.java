@@ -1,6 +1,7 @@
 package the_fireplace.clans.model;
 
 import com.google.gson.JsonObject;
+import net.minecraft.world.chunk.Chunk;
 
 public class ChunkPosition {
     public final int posX;
@@ -11,6 +12,12 @@ public class ChunkPosition {
         this.posX = x;
         this.posZ = z;
         this.dim = d;
+    }
+
+    public ChunkPosition(Chunk c) {
+        this.posX = c.x;
+        this.posZ = c.z;
+        this.dim = c.getWorld().provider.getDimension();
     }
 
     /**

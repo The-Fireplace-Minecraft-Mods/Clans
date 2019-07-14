@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.forge.ClansForge;
-import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
+import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.CoordNodeTree;
 
 import javax.annotation.Nullable;
@@ -15,10 +15,7 @@ import java.util.UUID;
 public class ChunkUtils {
 	@Nullable
 	public static UUID getChunkOwner(Chunk c){
-		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
-		if(cap == null)
-			return null;
-		return cap.getClan();
+		return ClanChunkData.getChunkClanId(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	/**
@@ -30,20 +27,18 @@ public class ChunkUtils {
 	 * @return
 	 * The old owner, or null if there wasn't one.
 	 */
+	@Nullable
 	public static UUID setChunkOwner(Chunk c, UUID newOwner){
-		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
-		if(cap == null)
-			return null;
-		UUID oldOwner = cap.getClan();
-		cap.setClan(newOwner);
+		UUID oldOwner = getChunkOwner(c);
+		ChunkPosition pos = new ChunkPosition(c);
+		if(oldOwner != null)
+			ClanChunkData.delChunk(oldOwner, pos);
+		ClanChunkData.addChunk(newOwner, pos);
 		return oldOwner;
 	}
 
 	public static void clearChunkOwner(Chunk c){
-		ClaimedLandCapability cap = c.getCapability(ClansForge.CLAIMED_LAND, null);
-		if(cap == null)
-			return;
-		cap.setClan(null);
+		ClanChunkData.delChunk(getChunkOwner(c), new ChunkPosition(c));
 	}
 
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
