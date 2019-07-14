@@ -22,8 +22,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.abstraction.IDynmapCompat;
-import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
@@ -58,11 +56,6 @@ public final class ClansForge {
     public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
     private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
 
-    private IDynmapCompat dynmapCompat;
-    public static IDynmapCompat getDynmapCompat(){
-        return instance.dynmapCompat;
-    }
-
     public static Logger getLogger() {
         return LOGGER;
     }
@@ -76,14 +69,12 @@ public final class ClansForge {
         CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
 
         if(Clans.getMinecraftHelper().isPluginLoaded("dynmap"))
-            dynmapCompat = new DynmapCompat();
-        else
-            dynmapCompat = new DynmapCompatDummy();
+            Clans.setDynmapCompat(new DynmapCompat());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
-        dynmapCompat.init();
+        Clans.getDynmapCompat().init();
     }
 
     @Mod.EventHandler
@@ -101,7 +92,7 @@ public final class ClansForge {
         manager.registerCommand(new CommandClan());
         manager.registerCommand(new CommandOpClan());
         manager.registerCommand(new CommandRaid());
-        dynmapCompat.serverStart();
+        Clans.getDynmapCompat().serverStart();
     }
 
     @Mod.EventHandler

@@ -5,7 +5,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.forge.ClansForge;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.ClanDimInfo;
@@ -48,7 +47,7 @@ public class ClanChunkData {
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
         claimedChunks.get(clan.getClanId()).add(pos);
         chunkOwners.put(pos, clan.getClanId());
-        ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
         isChanged = true;
     }
 
@@ -78,7 +77,7 @@ public class ClanChunkData {
         claimedChunks.putIfAbsent(clan.getClanId(), Sets.newHashSet());
         chunkOwners.remove(pos);
         if(claimedChunks.get(clan.getClanId()).remove(pos)) {
-            ClansForge.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
             isChanged = true;
         }
     }

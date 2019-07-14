@@ -14,7 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketEntityEquipment;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -33,6 +35,7 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -40,58 +43,65 @@ import java.util.UUID;
 public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		event.setCanceled(onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
+	}
+	
+	public static boolean onBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
+		if(!world.isRemote) {
+			Chunk c = world.getChunk(pos);
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
-					EntityPlayer breakingPlayer = event.getPlayer();
-					if (breakingPlayer instanceof EntityPlayerMP) {
-						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
-						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
-						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !FakePlayerUtil.isAllowedFakePlayer(breakingPlayer)) {
-							event.setCanceled(true);
-							breakingPlayer.sendMessage(TranslationUtil.getTranslation(breakingPlayer.getUniqueID(), "clans.protection.break.claimed").setStyle(TextStyles.RED));
+					if (breaker instanceof EntityPlayerMP) {
+						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breaker.getUniqueID());
+						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
+						if (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !FakePlayerUtil.isAllowedFakePlayer(breaker)) {
+							breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed").setStyle(TextStyles.RED));
+							return true;
 						} else if (isRaided) {
-							IBlockState targetState = event.getWorld().getBlockState(event.getPos());
+							IBlockState targetState = world.getBlockState(pos);
 							if (targetState.getBlock().hasTileEntity(targetState)) {
-								event.setCanceled(true);
-								if(ClanCache.isClaimAdmin((EntityPlayerMP) breakingPlayer))
-									breakingPlayer.sendMessage(TranslationUtil.getTranslation(breakingPlayer.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
+								if(ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
+									breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
 								else
-									breakingPlayer.sendMessage(TranslationUtil.getTranslation(breakingPlayer.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
+									breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
+								return true;
 							} else
-								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, event.getPos(), BlockSerializeUtil.blockToString(targetState));
+								RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
 						}
 					}
-					return;
+					return false;
 				} else {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
 			}
-			if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer()) && (!(event.getPlayer() instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
-				event.setCanceled(true);
-				event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
+			if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(breaker) && (!(breaker instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker) && !PermissionManager.hasPermission((EntityPlayerMP)breaker, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
+				breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@SubscribeEvent
 	public static void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		event.setCanceled(onCropTrampled(event.getWorld(), event.getPos(), event.getEntity() instanceof EntityPlayer ? (EntityPlayer)event.getEntity() : null));
+	}
+
+	public static boolean onCropTrampled(World world, BlockPos pos, @Nullable EntityPlayer breakingPlayer) {
+		if(!world.isRemote) {
+			Chunk c = world.getChunk(pos);
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
 			if (chunkOwner != null) {
 				Clan chunkClan = ClanCache.getClanById(chunkOwner);
 				if (chunkClan != null) {
-					EntityPlayer breakingPlayer = event.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.getEntity() : null;
 					if (breakingPlayer != null) {
 						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
 						boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
 						if ((playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided)
-							event.setCanceled(true);
+							return true;
 					}
 				} else {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
@@ -99,48 +109,51 @@ public class LandProtectionEvents {
 				}
 			}
 		}
+		return false;
 	}
 
 	@SubscribeEvent
 	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
-		if(!event.getWorld().isRemote) {
-			Chunk c = event.getWorld().getChunk(event.getPos());
+		event.setCanceled(onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock()));
+	}
+	
+	public static boolean onBlockPlaced(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand, Block placedBlock) {
+		if(!world.isRemote) {
+			Chunk c = world.getChunk(pos);
 			UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-			EntityPlayer placingPlayer = event.getPlayer();
-			if (placingPlayer instanceof EntityPlayerMP) {
+			if (placer instanceof EntityPlayerMP) {
 				if (chunkOwner != null) {
 					Clan chunkClan = ClanCache.getClanById(chunkOwner);
 					if (chunkClan != null) {
-						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placingPlayer.getUniqueID());
-						if ((!ClanCache.isClaimAdmin((EntityPlayerMP) placingPlayer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placingPlayer)))) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
-							event.setCanceled(true);
-							EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
-							if(((EntityPlayerMP) placingPlayer).connection != null)
-								((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
-							placingPlayer.sendMessage(TranslationUtil.getTranslation(placingPlayer.getUniqueID(), "clans.protection.place.territory").setStyle(TextStyles.RED));
+						ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placer.getUniqueID());
+						if ((!ClanCache.isClaimAdmin((EntityPlayerMP) placer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placer)))) && !FakePlayerUtil.isAllowedFakePlayer(placer)) {
+							if(((EntityPlayerMP) placer).connection != null)
+								((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
+							placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), "clans.protection.place.territory").setStyle(TextStyles.RED));
+							return true;
 						} else if (RaidingParties.hasActiveRaid(chunkClan)) {
-							ItemStack out = event.getPlayer().getHeldItem(event.getHand()).copy();
+							ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
 							out.setCount(1);
-							if(!Clans.getConfig().isNoReclaimTNT() || !(event.getBlockSnapshot().getCurrentBlock().getBlock() instanceof BlockTNT))
-								RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placingPlayer.getUniqueID(), out);
-							RaidRestoreDatabase.addRemoveBlock(event.getWorld().provider.getDimension(), c, event.getPos());
+							if(!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
+								RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placer.getUniqueID(), out);
+							RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
 						}
 					}
-					return;
+					return false;
 				} else {
 					//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
 					ChunkUtils.clearChunkOwner(c);
 				}
-				if (!ClanCache.isClaimAdmin((EntityPlayerMP) event.getPlayer()) && !PermissionManager.hasPermission((EntityPlayerMP)event.getPlayer(), PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? event.getPos().getY() >= event.getWorld().getSeaLevel() : event.getPos().getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(event.getPlayer())) {
-					event.setCanceled(true);
-					EntityEquipmentSlot hand = event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
-					if(((EntityPlayerMP) placingPlayer).connection != null)
-						((EntityPlayerMP) placingPlayer).connection.sendPacket(new SPacketEntityEquipment(placingPlayer.getEntityId(), hand, placingPlayer.getItemStackFromSlot(hand)));
-					event.getPlayer().inventory.markDirty();
-					event.getPlayer().sendMessage(TranslationUtil.getTranslation(event.getPlayer().getUniqueID(), "clans.protection.place.wilderness").setStyle(TextStyles.RED));
+				if (!ClanCache.isClaimAdmin((EntityPlayerMP) placer) && !PermissionManager.hasPermission((EntityPlayerMP)placer, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness") && Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && !FakePlayerUtil.isAllowedFakePlayer(placer)) {
+					if(((EntityPlayerMP) placer).connection != null)
+						((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
+					placer.inventory.markDirty();
+					placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), "clans.protection.place.wilderness").setStyle(TextStyles.RED));
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 	@SubscribeEvent
