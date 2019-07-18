@@ -143,8 +143,6 @@ public class Timer {
 						chunkClan = null;
 					}
 
-					LegacyCompatEvents.checkPre120Compat(c);
-
 					if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
 
 						if(ClanCache.getOpAutoAbandonClaims().containsKey(event.player.getUniqueID()))

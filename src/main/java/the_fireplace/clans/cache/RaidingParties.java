@@ -16,6 +16,7 @@ import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class RaidingParties {
@@ -57,7 +58,9 @@ public final class RaidingParties {
 		return Sets.newHashSet(activeraids.values());
 	}
 
-	public static boolean isRaidedBy(Clan c, EntityPlayer player) {
+	public static boolean isRaidedBy(Clan c, @Nullable EntityPlayer player) {
+		if(player == null)
+			return false;
 		return hasActiveRaid(c) && activeraids.get(c).getAttackers().contains(player.getUniqueID());
 	}
 
