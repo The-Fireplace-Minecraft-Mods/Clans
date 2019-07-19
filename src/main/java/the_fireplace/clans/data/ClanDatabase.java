@@ -119,8 +119,7 @@ public final class ClanDatabase {
                 for (int i = 0; i < clanMap.size(); i++)
                     addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
                 setOpclan(new Clan(jsonObject.getAsJsonObject("opclan")));
-            } else
-                Clans.getMinecraftHelper().getLogger().warn("Json Clan Database not found! This is normal on your first run of ClansForge 1.2.0 and above.");
+            }
         } catch (FileNotFoundException e) {
             //do nothing, it just hasn't been created yet
         } catch (Exception e) {

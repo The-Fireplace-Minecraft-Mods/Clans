@@ -38,7 +38,7 @@ public final class RaidingParties {
 		return raids.get(clan);
 	}
 
-	public static Raid getRaid(EntityPlayerMP player){
+	public static Raid getRaid(EntityPlayer player){
 		return raidingPlayers.get(player.getUniqueID());
 	}
 
@@ -74,7 +74,7 @@ public final class RaidingParties {
 		raidedClans.remove(raid.getTarget());
 	}
 
-	public static void addRaider(EntityPlayerMP raider, Raid raid){
+	public static void addRaider(EntityPlayer raider, Raid raid){
 		raidingPlayers.put(raider.getUniqueID(), raid);
 	}
 

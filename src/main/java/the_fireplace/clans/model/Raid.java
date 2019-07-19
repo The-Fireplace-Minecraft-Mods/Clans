@@ -2,6 +2,7 @@ package the_fireplace.clans.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
@@ -77,13 +78,13 @@ public class Raid {
 		return attackers.size();
 	}
 
-	public void addAttacker(EntityPlayerMP player) {
+	public void addAttacker(EntityPlayer player) {
 		this.attackers.put(player.getUniqueID(), 0);
 		this.initAttackers.add(player.getUniqueID());
 		RaidingParties.addRaider(player, this);
 	}
 
-	public boolean removeAttacker(EntityPlayerMP player) {
+	public boolean removeAttacker(EntityPlayer player) {
 		boolean rm = this.attackers.remove(player.getUniqueID()) != null;
 		if(rm) {
 			RaidingParties.removeRaider(player.getUniqueID());
@@ -130,39 +131,39 @@ public class Raid {
 		return remainingSeconds <= 0;
 	}
 
-	public int getAttackerAbandonmentTime(EntityPlayerMP member) {
+	public int getAttackerAbandonmentTime(EntityPlayer member) {
 		return attackers.get(member.getUniqueID());
 	}
 
-	public void incrementAttackerAbandonmentTime(EntityPlayerMP member) {
+	public void incrementAttackerAbandonmentTime(EntityPlayer member) {
 		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
-		if(attackers.get(member.getUniqueID()) > Clans.getConfig().getMaxAttackerAbandonmentTime() * 2) {//Times two because this is called every half second
+		if(attackers.get(member.getUniqueID()) > Clans.getConfig().getMaxAttackerAbandonmentTime()) {
 			removeAttacker(member);
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getClanName()).setStyle(TextStyles.YELLOW));
 		} else if(attackers.get(member.getUniqueID()) == 1)
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getClanName(), Clans.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
 	}
 
-	public void resetAttackerAbandonmentTime(EntityPlayerMP member) {
+	public void resetAttackerAbandonmentTime(EntityPlayer member) {
 		attackers.put(member.getUniqueID(), 0);
 	}
 
-	public int getDefenderAbandonmentTime(EntityPlayerMP member) {
+	public int getDefenderAbandonmentTime(EntityPlayer member) {
 		return defenders.get(member.getUniqueID());
 	}
 
-	public void incrementDefenderAbandonmentTime(EntityPlayerMP defender) {
+	public void incrementDefenderAbandonmentTime(EntityPlayer defender) {
 		if(defender == null)
 			return;
 		defenders.put(defender.getUniqueID(), defenders.get(defender.getUniqueID()) + 1);
-		if(defenders.get(defender.getUniqueID()) > Clans.getConfig().getMaxClanDesertionTime() * 2) {//Times two because this is called every half second
+		if(defenders.get(defender.getUniqueID()) > Clans.getConfig().getMaxClanDesertionTime()) {
 			removeDefender(defender);
 			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 		} else if(defenders.get(defender.getUniqueID()) == 1)
 			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 	}
 
-	public void resetDefenderAbandonmentTime(EntityPlayerMP defender) {
+	public void resetDefenderAbandonmentTime(EntityPlayer defender) {
 		defenders.put(defender.getUniqueID(), 0);
 	}
 
@@ -171,7 +172,7 @@ public class Raid {
 			this.defenders.put(defender.getUniqueID(), 0);
 	}
 
-	public void removeDefender(EntityPlayerMP player) {
+	public void removeDefender(EntityPlayer player) {
 		defenders.remove(player.getUniqueID());
 		if(defenders.size() <= 0)
 			raiderVictory();

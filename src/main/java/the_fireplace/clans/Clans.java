@@ -6,6 +6,7 @@ import the_fireplace.clans.abstraction.IMinecraftHelper;
 import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
+import the_fireplace.clans.util.PermissionManager;
 
 public final class Clans {
     public static final String MODID = "clans";
@@ -47,5 +48,10 @@ public final class Clans {
 
     public static void setDynmapCompat(IDynmapCompat dynmapCompat) {
         Clans.dynmapCompat = dynmapCompat;
+    }
+
+    public static void initialize() {
+        getDynmapCompat().init();
+        PermissionManager.registerPermissionHandlers();
     }
 }

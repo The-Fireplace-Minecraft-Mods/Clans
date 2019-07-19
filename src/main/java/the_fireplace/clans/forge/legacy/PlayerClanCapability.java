@@ -37,7 +37,7 @@ public interface PlayerClanCapability {
 	@Deprecated
 	UUID getDefaultClan();
 	@Deprecated
-	void setDefaultClan(UUID defaultClan);
+	void setDefaultClan(@Nullable UUID defaultClan);
 	@Deprecated
 	boolean getClaimWarning();
 	@Deprecated

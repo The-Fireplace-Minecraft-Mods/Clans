@@ -16,7 +16,7 @@ public final class PermissionManager {
 
     private static IPermissionHandler permissionManager;
 
-    public static void registerPermissionHandlers() {
+    public static void registerPermissionHandlers() {//TODO this still needs abstraction
         if(Clans.getMinecraftHelper().isPluginLoaded("spongeapi") && !Clans.getConfig().isForgePermissionPrecedence())
             permissionManager = new SpongePermissionHandler();
         else

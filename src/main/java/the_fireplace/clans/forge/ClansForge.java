@@ -1,11 +1,8 @@
 package the_fireplace.clans.forge;
 
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.chunk.Chunk;
@@ -22,18 +19,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.commands.CommandClan;
-import the_fireplace.clans.commands.CommandOpClan;
-import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.compat.PaymentHandlerGE;
-import the_fireplace.clans.data.ClanChunkData;
-import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.data.RaidBlockPlacementDatabase;
-import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
 import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
+import the_fireplace.clans.logic.ServerEventLogic;
 import the_fireplace.clans.util.PermissionManager;
 
 import javax.annotation.Nonnull;
@@ -74,33 +65,23 @@ public final class ClansForge {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
-        Clans.getDynmapCompat().init();
+        Clans.initialize();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event){
         if(Clans.getMinecraftHelper().isPluginLoaded("grandeconomy"))
             Clans.setPaymentHandler(new PaymentHandlerGE());
-        PermissionManager.registerPermissionHandlers();
     }
 
     @Mod.EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
-        MinecraftServer server = event.getServer();
-        ICommandManager command = server.getCommandManager();
-        ServerCommandManager manager = (ServerCommandManager) command;
-        manager.registerCommand(new CommandClan());
-        manager.registerCommand(new CommandOpClan());
-        manager.registerCommand(new CommandRaid());
-        Clans.getDynmapCompat().serverStart();
+        ServerEventLogic.onServerStarting(event.getServer());
     }
 
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent event) {
-        ClanChunkData.save();
-        ClanDatabase.save();
-        RaidRestoreDatabase.save();
-        RaidBlockPlacementDatabase.save();
+        ServerEventLogic.onServerStopping();
     }
 
     @SubscribeEvent
