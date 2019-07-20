@@ -12,7 +12,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.ChunkUtils;

@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.abstraction.IMinecraftHelper;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 import the_fireplace.clans.forge.FakePlayerUtil;
 
 import javax.annotation.Nullable;

@@ -8,7 +8,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;

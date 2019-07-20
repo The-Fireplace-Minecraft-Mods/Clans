@@ -128,7 +128,7 @@ commands.clan.claim.proximity_error=你不能占领这块土地，因为它太�
 commands.clan.claim.proximity_warning=建议你不要占领这块土地，因为它位于另一个部落领土中的 %s 范围领土内， 使用 /clan claim 再次占领这片土地。 你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
 commands.clan.claim.maxed=s 已经达到或高于其当前最大领土数量 %s
 commands.clan.claim.disconnected=您不能申请这块土地，因为它不在另一块%s土地的旁边。
-commands.clan.claim.success=Land claimed.
+commands.clan.claim.success=为 %s 占领土地
 commands.clan.claim.insufficient_funds=%s部落中的资金不足，无法占领土地。它需要%s%s
 
 commands.clan.fancymap.usage=/clan fancymap （部落大地图）
@@ -200,7 +200,6 @@ commands.opclan.buildadmin.off=你不再处于管理员自由建造模式
 
 commands.opclan.claim.usage=/opclan claim [强制] （管理员强制占领土地）
 commands.opclan.claim.taken_other=另一个部落 (%1$s) 已经占领这块土地，想要从 %1$s 部落获取此土地，请使用/opclan claim 管理员命令
-commands.opclan.claim.success=为 %s 占领土地
 
 commands.opclan.demote.usage=/opclan demote <部落> <玩家> 管理员降低玩家职位 
 commands.opclan.demote.success=你已将 %s 降低为 %s 在 %s 中

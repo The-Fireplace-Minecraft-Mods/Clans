@@ -86,6 +86,9 @@ public class ClanChunkData {
         delChunk(clan, new ChunkPosition(x, z, dim));
     }
 
+    /**
+     * Delete a claim. If you already have the clan, use the delChunk method that takes it for efficiency.
+     */
     public static void delChunk(@Nullable UUID clanId, int x, int z, int dim) {
         Clan clan = ClanCache.getClanById(clanId);
         if(clan == null)
@@ -94,12 +97,22 @@ public class ClanChunkData {
             delChunk(clan, x, z, dim);
     }
 
+    /**
+     * Delete a claim. If you already have the clan, use the delChunk method that takes it for efficiency.
+     */
     public static void delChunk(@Nullable UUID clanId, ChunkPosition pos) {
         Clan clan = ClanCache.getClanById(clanId);
         if(clan == null)
             delClan(clanId);
         else
             delChunk(clan, pos);
+    }
+
+    /**
+     * Delete a claim. If you already have the clan or the clan Id of the owner, use one of the delChunk methods that takes that for efficiency.
+     */
+    public static void delChunk(ChunkPosition pos) {
+        delChunk(getChunkClanId(pos), pos);
     }
 
     @Nullable
@@ -114,6 +127,13 @@ public class ClanChunkData {
         return chunkOwners.get(new ChunkPosition(x, z, dim));
     }
 
+    @Nullable
+    public static UUID getChunkClanId(ChunkPosition position) {
+        if(!isLoaded)
+            load();
+        return chunkOwners.get(position);
+    }
+
     public static boolean delClan(@Nullable UUID clan) {
         if(clan == null)
             return false;
@@ -124,14 +144,14 @@ public class ClanChunkData {
         //TODO: Make sure the deleted clan is removed from Dynmap
     }
 
-    private static void load() {
-        read(getOldFile(), true);
-        read(getFile(), false);
-        isLoaded = true;
+    public static void swapChunk(ChunkPosition pos, @Nullable UUID oldOwner, UUID newOwner) {
+        delChunk(oldOwner != null ? oldOwner : getChunkClanId(pos), pos);
+        addChunk(newOwner, pos);
     }
 
-    private static File getFile() {
-        return new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclandata.json");
+    private static void load() {
+        read(getOldFile(), true);
+        isLoaded = true;
     }
 
     @Deprecated
@@ -174,7 +194,7 @@ public class ClanChunkData {
     }
 
     public static void save() {
-        write(getFile());
+        write(getOldFile());
     }
 
     private static void write(File location) {

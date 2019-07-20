@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 import the_fireplace.clans.forge.legacy.CapHelper;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;

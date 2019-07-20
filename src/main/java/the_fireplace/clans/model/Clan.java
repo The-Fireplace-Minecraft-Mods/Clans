@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.util.TextStyles;
@@ -31,7 +32,6 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private int claimCount = 0;
     private boolean isOpclan = false;
     private long rent = 0;
     private int wins = 0;
@@ -98,7 +98,6 @@ public class Clan {
         ret.addProperty("homeZ", homeZ);
         ret.addProperty("hasHome", hasHome);
         ret.addProperty("homeDimension", homeDimension);
-        ret.addProperty("claimCount", claimCount);
         ret.addProperty("isOpclan", isOpclan);
         ret.addProperty("rent", rent);
         ret.addProperty("wins", wins);
@@ -127,7 +126,6 @@ public class Clan {
         this.homeZ = obj.get("homeZ").getAsFloat();
         this.hasHome = obj.get("hasHome").getAsBoolean();
         this.homeDimension = obj.get("homeDimension").getAsInt();
-        this.claimCount = obj.get("claimCount").getAsInt();
         this.rent = obj.get("rent").getAsLong();
         this.wins = obj.get("wins").getAsInt();
         this.losses = obj.get("losses").getAsInt();
@@ -243,21 +241,11 @@ public class Clan {
     }
 
     public int getClaimCount() {
-        return claimCount;
+        return ClanChunkData.getChunks(getClanId()).size();
     }
 
     public int getMaxClaimCount() {
         return getMemberCount() * Clans.getConfig().getMaxClanPlayerClaims();
-    }
-
-    public void addClaimCount() {
-        claimCount++;
-        ClanDatabase.markChanged();
-    }
-
-    public void subClaimCount() {
-        claimCount--;
-        ClanDatabase.markChanged();
     }
 
     public String getDescription() {

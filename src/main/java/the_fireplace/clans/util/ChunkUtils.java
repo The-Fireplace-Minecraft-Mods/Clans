@@ -18,25 +18,6 @@ public class ChunkUtils {
 		return ClanChunkData.getChunkClanId(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
-	/**
-	 * Sets the chunk's new owner
-	 * @param c
-	 * The chunk
-	 * @param newOwner
-	 * The new owning faction's ID
-	 * @return
-	 * The old owner, or null if there wasn't one.
-	 */
-	@Nullable
-	public static UUID setChunkOwner(Chunk c, UUID newOwner){
-		UUID oldOwner = getChunkOwner(c);
-		ChunkPosition pos = new ChunkPosition(c);
-		if(oldOwner != null)
-			ClanChunkData.delChunk(oldOwner, pos);
-		ClanChunkData.addChunk(newOwner, pos);
-		return oldOwner;
-	}
-
 	public static void clearChunkOwner(Chunk c){
 		ClanChunkData.delChunk(getChunkOwner(c), new ChunkPosition(c));
 	}
@@ -44,6 +25,14 @@ public class ChunkUtils {
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
 			checkOwner = getChunkOwner(c);
+		if(checkOwner == null)
+			return false;
+		return !getConnectedClaims(c, checkOwner).isEmpty();
+	}
+
+	public static boolean hasConnectedClaim(ChunkPosition c, @Nullable UUID checkOwner) {
+		if(checkOwner == null)
+			checkOwner = ClanChunkData.getChunkClanId(c);
 		if(checkOwner == null)
 			return false;
 		return !getConnectedClaims(c, checkOwner).isEmpty();
@@ -161,13 +150,28 @@ public class ChunkUtils {
             checkOwner = getChunkOwner(c);
         if(checkOwner == null)
             return adjacent;
-        final UUID finalOwner = checkOwner;
+        final UUID checkOwnerFinal = checkOwner;
         ChunkPos cPos = c.getPos();
         adjacent.add(c.getWorld().getChunk(cPos.x + 1, cPos.z));
 		adjacent.add(c.getWorld().getChunk(cPos.x - 1, cPos.z));
 		adjacent.add(c.getWorld().getChunk(cPos.x, cPos.z + 1));
 		adjacent.add(c.getWorld().getChunk(cPos.x, cPos.z - 1));
-		adjacent.removeIf(c2 -> !finalOwner.equals(getChunkOwner(c2)));
+		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(getChunkOwner(c2)));
         return adjacent;
     }
+
+	public static ArrayList<ChunkPosition> getConnectedClaims(ChunkPosition c, @Nullable UUID checkOwner) {
+		ArrayList<ChunkPosition> adjacent = Lists.newArrayList();
+		if(checkOwner == null)
+			checkOwner = ClanChunkData.getChunkClanId(c);
+		if(checkOwner == null)
+			return adjacent;
+		final UUID checkOwnerFinal = checkOwner;
+		adjacent.add(c.offset(1, 0));
+		adjacent.add(c.offset(-1, 0));
+		adjacent.add(c.offset(0, 1));
+		adjacent.add(c.offset(0, -1));
+		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClanChunkData.getChunkClanId(c2)));
+		return adjacent;
+	}
 }

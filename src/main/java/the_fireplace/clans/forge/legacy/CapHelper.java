@@ -2,7 +2,7 @@ package the_fireplace.clans.forge.legacy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 
 @Deprecated
 public class CapHelper {

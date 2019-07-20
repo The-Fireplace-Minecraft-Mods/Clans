@@ -1,4 +1,4 @@
-package the_fireplace.clans.forge;
+package the_fireplace.clans;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.compat.PaymentHandlerGE;
 import the_fireplace.clans.forge.compat.DynmapCompat;
@@ -25,7 +24,6 @@ import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
 import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.logic.ServerEventLogic;
-import the_fireplace.clans.util.PermissionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

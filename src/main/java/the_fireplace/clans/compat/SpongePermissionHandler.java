@@ -7,7 +7,7 @@ import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import the_fireplace.clans.abstraction.IPermissionHandler;
-import the_fireplace.clans.forge.ClansForge;
+import the_fireplace.clans.ClansForge;
 
 import static the_fireplace.clans.util.PermissionManager.*;
 

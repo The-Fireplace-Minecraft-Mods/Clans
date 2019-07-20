@@ -10,7 +10,6 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
-import the_fireplace.clans.commands.land.CommandClaim;
 import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
 import the_fireplace.clans.commands.op.land.OpCommandClaim;
 import the_fireplace.clans.commands.teleportation.CommandHome;
@@ -20,6 +19,7 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -120,7 +120,7 @@ public class TimerLogic {
             if(ClanCache.getOpAutoClaimLands().containsKey(player.getUniqueID()))
                 OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)player, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue1());
             if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
-                CommandClaim.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()));
+                ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()));
 
             handleTerritoryChangedMessage(player, chunkClan, playerClans);
         } else if (Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() != 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
