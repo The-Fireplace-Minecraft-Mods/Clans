@@ -114,4 +114,12 @@ public interface IConfig {
     double getDynmapFillOpacity();
 
     double getRaidBreakSpeedMultiplier();
+
+    boolean allowBreakProtection();
+
+    boolean allowPlaceProtection();
+
+    boolean allowInjuryProtection();
+
+    boolean allowInteractionProtection();
 }

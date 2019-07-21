@@ -215,6 +215,14 @@ public final class ClansForge {
         public static boolean preventMobsOnClaims = true;
         @Config.Comment("Prevents mobs from spawning in borderlands. Requires enableBorderlands and preventMobsOnClaims.")
         public static boolean preventMobsOnBorderlands = true;
+        @Config.Comment("Allow protection against breaking on claimed land.")
+        public static boolean allowBreakProtection = true;
+        @Config.Comment("Allow protection against placing on claimed land.")
+        public static boolean allowPlaceProtection = true;
+        @Config.Comment("Allow protection against interacting on claimed land.")
+        public static boolean allowInteractProtection = true;
+        @Config.Comment("Allow protection against injury on claimed land.")
+        public static boolean allowInjuryProtection = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
@@ -541,6 +549,26 @@ public final class ClansForge {
 
         public double getRaidBreakSpeedMultiplier() {
             return cfg.raidBreakSpeedMultiplier;
+        }
+
+        @Override
+        public boolean allowBreakProtection() {
+            return allowBreakProtection;
+        }
+
+        @Override
+        public boolean allowPlaceProtection() {
+            return allowPlaceProtection;
+        }
+
+        @Override
+        public boolean allowInjuryProtection() {
+            return allowInjuryProtection;
+        }
+
+        @Override
+        public boolean allowInteractionProtection() {
+            return allowInteractProtection;
         }
     }
 }

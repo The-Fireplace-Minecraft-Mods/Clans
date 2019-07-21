@@ -11,6 +11,7 @@ Added Chinese localization (zh_cn) (xiaoxixi)
 Added config option to allow TNT chains in Wilderness. This does not affect protections on other blocks from explosions.
 Added config option to speed up or slow down block breaking by raiders during raids
 Added info about when rent and upkeep are due to clan details
+Added config options to globally disable protections against placing, breaking, interacting, and injuring on claimed territory.
 
 Changes:
 Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to copy data from those versions.
