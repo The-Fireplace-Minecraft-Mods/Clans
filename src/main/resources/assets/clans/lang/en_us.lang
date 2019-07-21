@@ -44,14 +44,19 @@ commands.clan.details.members=Members:
 commands.clan.details.leader=Leader %s
 commands.clan.details.admin=Admin %s
 commands.clan.details.no_members=Error: %s has no members.
-commands.clan.finances.upkeep=Upkeep (expenses) is %s %s every %s days.
-commands.clan.finances.rent=Rent (income) is %s %s every %s days.
+commands.clan.finances.upkeep=Clan Upkeep (expenses) is %s %s every %s days.
+commands.clan.finances.rent=Clan Rent (income) is %s %s every %s days.
+commands.clan.finances.rent_individual=Individual rent is %s %s every %s days.
 commands.clan.finances.trend=Approximate financial trend is %s %s every day.
 commands.clan.finances.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
 commands.clan.finances.reduce_upkeep=You may want to find a way to reduce upkeep.
 commands.clan.finances.breaking_even=%s is not earning or losing money.
 commands.clan.details.rentdue=Rent is due in %s hours.
 commands.clan.details.upkeepdue=Upkeep is due in %s hours.
+comamnds.clan.details.base_amount=%s(base)
+commands.clan.details.times_members=*%s(members)
+commands.clan.details.times_claims=*%s(claims)
+commands.clan.details.equals_total==%s
 
 commands.clan.disband.usage=/clan disband
 

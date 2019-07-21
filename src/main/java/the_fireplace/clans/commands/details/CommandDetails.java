@@ -128,20 +128,26 @@ public class CommandDetails extends ClanSubCommand {
 			long rent = 0;
 			if(Clans.getConfig().getClanUpkeepDays() > 0) {
 				upkeep += Clans.getConfig().getClanUpkeepCost();
-				if(Clans.getConfig().isMultiplyUpkeepClaims())
-					upkeep *= selectedClan.getClaimCount();
-				if(Clans.getConfig().isMultiplyUpkeepMembers())
-					upkeep *= selectedClan.getMemberCount();
+                String upkeepStr = TranslationUtil.getStringTranslation("commands.clan.details.base_amount", upkeep);
+				if(Clans.getConfig().isMultiplyUpkeepClaims()) {
+                    upkeep *= selectedClan.getClaimCount();
+                    upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.times_claims", selectedClan.getClaimCount());
+                }
+				if(Clans.getConfig().isMultiplyUpkeepMembers()) {
+                    upkeep *= selectedClan.getMemberCount();
+                    upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.times_members", selectedClan.getMemberCount());
+                }
+				upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.equals_total", upkeep);
 				if(upkeep > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.upkeep", upkeep, Clans.getPaymentHandler().getCurrencyName(upkeep), Clans.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.upkeep", upkeep != Clans.getConfig().getClanUpkeepCost() ? upkeepStr : upkeep, Clans.getPaymentHandler().getCurrencyName(upkeep), Clans.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(Clans.getConfig().getChargeRentDays() > 0) {
 				rent += selectedClan.getRent();
-				rent *= selectedClan.getMemberCount();
 				if(rent > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.rent", rent, Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.rent", rent*selectedClan.getMemberCount(), Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.rent_individual", rent, Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (selectedClan.getNextRentTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
