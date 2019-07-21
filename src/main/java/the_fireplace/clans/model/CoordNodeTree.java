@@ -1,7 +1,7 @@
 package the_fireplace.clans.model;
 
 import com.google.common.collect.Sets;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 
 import java.util.Set;
 import java.util.UUID;
@@ -10,7 +10,7 @@ public class CoordNodeTree {
     private Set<OrderedPair<Integer, Integer>> coordNodes = Sets.newConcurrentHashSet();
 
     public CoordNodeTree(int x, int z, int dim, UUID checkOwner) {
-        for(ChunkPosition pos: ClanChunkData.getChunks(checkOwner))
+        for(ChunkPosition pos: ClaimDataManager.getChunks(checkOwner))
             if((pos.posX != x || pos.posZ != z) && pos.dim == dim)
                 coordNodes.add(new OrderedPair<>(pos.posX, pos.posZ));
         if(!coordNodes.isEmpty())

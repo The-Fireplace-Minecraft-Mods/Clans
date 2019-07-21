@@ -10,7 +10,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.ClansForge;
 import the_fireplace.clans.forge.legacy.CapHelper;
@@ -95,7 +95,7 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 			targetClan.unsetHome();
 		}
 
-		ClanChunkData.delChunk(targetClan, c.x, c.z, c.getWorld().provider.getDimension());
+		ClaimDataManager.delChunk(targetClan, c.x, c.z, c.getWorld().provider.getDimension());
 		Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
 	}
 

@@ -6,16 +6,14 @@ import com.google.gson.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -297,7 +295,7 @@ public class Clan {
     }
 
     public int getClaimCount() {
-        return ClanChunkData.getChunks(getClanId()).size();
+        return ClaimDataManager.getChunks(getClanId()).size();
     }
 
     public int getMaxClaimCount() {

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -59,7 +59,7 @@ public class CommandMap extends ClanSubCommand {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
 					String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
-					Clan clan = ClanChunkData.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
+					Clan clan = ClaimDataManager.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
 					if (clan == null)
 						row.append(wildernessColor).append('-');
 					else {

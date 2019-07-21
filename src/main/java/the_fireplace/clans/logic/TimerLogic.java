@@ -11,7 +11,6 @@ import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.land.CommandAbandonClaim;
 import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
-import the_fireplace.clans.commands.op.land.OpCommandClaim;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.Clan;
@@ -30,7 +29,7 @@ import java.util.UUID;
 
 public class TimerLogic {
     public static void runFiveMinuteLogic() {
-        ClanChunkData.save();
+        ClaimDataManager.save();
         ClanDatabase.save();
         RaidBlockPlacementDatabase.save();
         RaidRestoreDatabase.save();
@@ -99,7 +98,7 @@ public class TimerLogic {
         int cooldown = PlayerDataManager.getCooldown(player.getUniqueID());
         if(cooldown > 0)
             PlayerDataManager.setCooldown(player.getUniqueID(), cooldown - 1);
-        checkRaidAbandonmentTime(ClanChunkData.getChunkClanId(player.chunkCoordX, player.chunkCoordZ, player.dimension), ClanCache.getPlayerClans(player.getUniqueID()), player);
+        checkRaidAbandonmentTime(ClaimDataManager.getChunkClanId(player.chunkCoordX, player.chunkCoordZ, player.dimension), ClanCache.getPlayerClans(player.getUniqueID()), player);
     }
 
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {

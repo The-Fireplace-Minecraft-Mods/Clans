@@ -85,7 +85,7 @@ public final class ClanDatabase {
         if(getInstance().clans.containsKey(clanId)) {
             Clan removed = getInstance().clans.remove(clanId);
             ClanCache.removeClan(removed);
-            ClanChunkData.delClan(clanId);
+            ClaimDataManager.delClan(clanId);
             removed.getClanDataFile().delete();
             return true;
         }

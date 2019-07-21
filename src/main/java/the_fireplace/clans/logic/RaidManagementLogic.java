@@ -18,7 +18,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
 import the_fireplace.clans.data.ChunkRestoreData;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.ChunkUtils;
@@ -146,7 +146,7 @@ public class RaidManagementLogic {
     }
 
     public static boolean shouldCancelFallingBlockCreation(EntityFallingBlock entity) {
-        Clan owningClan = ClanChunkData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
+        Clan owningClan = ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
         return owningClan != null && RaidingParties.hasActiveRaid(owningClan);//TODO monitor where it goes rather than just preventing it from falling
     }
 

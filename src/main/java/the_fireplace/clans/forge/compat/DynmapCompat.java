@@ -14,7 +14,7 @@ import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.model.*;
 
 import java.util.*;
@@ -104,7 +104,7 @@ public class DynmapCompat implements IDynmapCompat {
         startTimeNS = System.nanoTime();
         Clans.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClanChunkData.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
+        Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClaimDataManager.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
         totalChunks = teamClaimsList.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
@@ -142,9 +142,9 @@ public class DynmapCompat implements IDynmapCompat {
     private boolean initializeMap() {
         Set<ClanDimInfo> teamDimList = Sets.newHashSet();
 
-        for(Clan clan: ClanChunkData.clansWithClaims()) {
+        for(Clan clan: ClaimDataManager.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClanChunkData.getChunks(clan.getClanId()))
+            for(ChunkPosition chunk: ClaimDataManager.getChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.dim)) {
                     teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
                     addedDims.add(chunk.dim);

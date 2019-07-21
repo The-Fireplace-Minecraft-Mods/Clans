@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.CoordNodeTree;
 
@@ -15,11 +15,11 @@ import java.util.UUID;
 public class ChunkUtils {
 	@Nullable
 	public static UUID getChunkOwner(Chunk c){
-		return ClanChunkData.getChunkClanId(c.x, c.z, c.getWorld().provider.getDimension());
+		return ClaimDataManager.getChunkClanId(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	public static void clearChunkOwner(Chunk c){
-		ClanChunkData.delChunk(getChunkOwner(c), new ChunkPositionWithData(c));
+		ClaimDataManager.delChunk(getChunkOwner(c), new ChunkPositionWithData(c));
 	}
 
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
@@ -32,7 +32,7 @@ public class ChunkUtils {
 
 	public static boolean hasConnectedClaim(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
-			checkOwner = ClanChunkData.getChunkClanId(c);
+			checkOwner = ClaimDataManager.getChunkClanId(c);
 		if(checkOwner == null)
 			return false;
 		return !getConnectedClaims(c, checkOwner).isEmpty();
@@ -163,7 +163,7 @@ public class ChunkUtils {
 	public static ArrayList<ChunkPositionWithData> getConnectedClaims(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		ArrayList<ChunkPositionWithData> adjacent = Lists.newArrayList();
 		if(checkOwner == null)
-			checkOwner = ClanChunkData.getChunkClanId(c);
+			checkOwner = ClaimDataManager.getChunkClanId(c);
 		if(checkOwner == null)
 			return adjacent;
 		final UUID checkOwnerFinal = checkOwner;
@@ -171,7 +171,7 @@ public class ChunkUtils {
 		adjacent.add(c.offset(-1, 0));
 		adjacent.add(c.offset(0, 1));
 		adjacent.add(c.offset(0, -1));
-		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClanChunkData.getChunkClanId(c2)));
+		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimDataManager.getChunkClanId(c2)));
 		return adjacent;
 	}
 }

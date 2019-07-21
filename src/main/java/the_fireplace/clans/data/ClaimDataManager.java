@@ -14,17 +14,17 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 
-public final class ClanChunkData {
+public final class ClaimDataManager {
     private static boolean isLoaded = false;
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
 
-    private static HashMap<UUID, ChunkData> claimedChunks = Maps.newHashMap();
+    private static HashMap<UUID, ClanClaimData> claimedChunks = Maps.newHashMap();
     private static HashMap<ChunkPositionWithData, UUID> chunkOwners = Maps.newHashMap();
 
     public static Set<ChunkPositionWithData> getChunks(UUID clan) {
         if(!isLoaded)
             load();
-        ChunkData claimed = claimedChunks.get(clan);
+        ClanClaimData claimed = claimedChunks.get(clan);
         return claimed != null ? claimed.chunks : Collections.emptySet();
     }
 
@@ -32,7 +32,7 @@ public final class ClanChunkData {
         if(!isLoaded)
             load();
         Set<Clan> claimClans = Sets.newHashSet();
-        for(Map.Entry<UUID, ChunkData> clanId: Sets.newHashSet(claimedChunks.entrySet())) {
+        for(Map.Entry<UUID, ClanClaimData> clanId: Sets.newHashSet(claimedChunks.entrySet())) {
             Clan clan = ClanCache.getClanById(clanId.getKey());
             if(clan != null) {
                 if (!clanId.getValue().chunks.isEmpty())
@@ -47,7 +47,7 @@ public final class ClanChunkData {
     public static void addChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan.getClanId(), new ChunkData(clan.getClanId()));
+        claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimedChunks.get(clan.getClanId()).chunks.add(pos);
         chunkOwners.put(pos, clan.getClanId());
         Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
@@ -79,7 +79,7 @@ public final class ClanChunkData {
     public static void delChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan.getClanId(), new ChunkData(clan.getClanId()));
+        claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         chunkOwners.remove(pos);
         if(claimedChunks.get(clan.getClanId()).chunks.remove(pos)) {
             Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
@@ -161,7 +161,7 @@ public final class ClanChunkData {
             chunkDataLocation.mkdirs();
         for(File file: chunkDataLocation.listFiles()) {
             try {
-                ChunkData loadedData = ChunkData.load(file);
+                ClanClaimData loadedData = ClanClaimData.load(file);
                 if(loadedData != null) {
                     claimedChunks.put(loadedData.clan, loadedData);
                     for(ChunkPositionWithData cPos : loadedData.chunks)
@@ -198,7 +198,7 @@ public final class ClanChunkData {
                             chunkOwners.put(pos, clan);
                             positions.add(pos);
                         }
-                        ChunkData newData = new ChunkData(clan);
+                        ClanClaimData newData = new ClanClaimData(clan);
                         newData.chunks.addAll(positions);
                         claimedChunks.put(clan, newData);
                     }
@@ -214,11 +214,11 @@ public final class ClanChunkData {
     }
 
     public static void save() {
-        for(ChunkData data: claimedChunks.values())
+        for(ClanClaimData data: claimedChunks.values())
             data.save();
     }
 
-    private static class ChunkData {
+    private static class ClanClaimData {
         //region Internal variables
         private File chunkDataFile;
         private boolean isChanged, saving;
@@ -230,7 +230,7 @@ public final class ClanChunkData {
         //endregion
 
         //region Constructor
-        private ChunkData(UUID clan) {
+        private ClanClaimData(UUID clan) {
             chunkDataFile = new File(chunkDataLocation, clan.toString()+".json");
             this.clan = clan;
         }
@@ -238,7 +238,7 @@ public final class ClanChunkData {
 
         //region load
         @Nullable
-        private static ChunkData load(File file) {
+        private static ClanClaimData load(File file) {
             JsonParser jsonParser = new JsonParser();
             try {
                 Object obj = jsonParser.parse(new FileReader(file));
@@ -252,8 +252,8 @@ public final class ClanChunkData {
                         chunkOwners.put(pos, clan);
                         positions.add(pos);
                     }
-                    ChunkData loadChunkData = new ChunkData(clan);
-                    loadChunkData.chunks.addAll(positions);
+                    ClanClaimData loadClanClaimData = new ClanClaimData(clan);
+                    loadClanClaimData.chunks.addAll(positions);
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet

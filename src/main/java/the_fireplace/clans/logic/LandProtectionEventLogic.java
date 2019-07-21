@@ -19,7 +19,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
@@ -261,7 +261,7 @@ public class LandProtectionEventLogic {
 
     public static boolean onEntitySpawn(World world, Entity entity) {
         if(Clans.getConfig().isPreventMobsOnClaims() && !world.isRemote && entity instanceof IMob) {
-            if(ClanChunkData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension) != null)
+            if(ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension) != null)
                 return true;
         }
         return false;

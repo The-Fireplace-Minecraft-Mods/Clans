@@ -5,9 +5,8 @@ import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.api.event.PreLandClaimEvent;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.ClanChunkData;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.PlayerDataManager;
-import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -21,7 +20,7 @@ public class ClanManagementUtil {
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, ChunkPositionWithData claimChunk, boolean isOpclanCommand, boolean force) {
-        UUID claimOwner = ClanChunkData.getChunkClanId(claimChunk);
+        UUID claimOwner = ClaimDataManager.getChunkClanId(claimChunk);
         Clan claimClan = ClanCache.getClanById(claimOwner);
         String clanCommandString = isOpclanCommand ? "opclan" : "clan";
         if(claimOwner != null && claimClan != null && (!force || claimOwner.equals(selectedClan.getClanId()))) {
@@ -34,7 +33,7 @@ public class ClanManagementUtil {
                 Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), claimClan.getClanId());
             }
             if(selectedClan.isOpclan()) {
-                ClanChunkData.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
+                ClaimDataManager.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
                 return true;
             } else {
@@ -73,7 +72,7 @@ public class ClanManagementUtil {
         if (force || Clans.getPaymentHandler().deductAmount(Clans.getConfig().getClaimChunkCost(), selectedClan.getClanId())) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.posX, claimChunk.posZ), claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
-                ClanChunkData.swapChunk(claimChunk, null, selectedClan.getClanId());
+                ClaimDataManager.swapChunk(claimChunk, null, selectedClan.getClanId());
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
                 return true;
             } else {

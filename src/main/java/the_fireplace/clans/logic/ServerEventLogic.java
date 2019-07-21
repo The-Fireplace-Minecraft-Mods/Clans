@@ -20,7 +20,7 @@ public class ServerEventLogic {
     }
 
     public static void onServerStopping() {
-        ClanChunkData.save();
+        ClaimDataManager.save();
         ClanDatabase.save();
         RaidRestoreDatabase.save();
         RaidBlockPlacementDatabase.save();
