@@ -5,7 +5,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.data.ClanChunkData;
-import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.CoordNodeTree;
 
 import javax.annotation.Nullable;
@@ -19,7 +19,7 @@ public class ChunkUtils {
 	}
 
 	public static void clearChunkOwner(Chunk c){
-		ClanChunkData.delChunk(getChunkOwner(c), new ChunkPosition(c));
+		ClanChunkData.delChunk(getChunkOwner(c), new ChunkPositionWithData(c));
 	}
 
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
@@ -30,7 +30,7 @@ public class ChunkUtils {
 		return !getConnectedClaims(c, checkOwner).isEmpty();
 	}
 
-	public static boolean hasConnectedClaim(ChunkPosition c, @Nullable UUID checkOwner) {
+	public static boolean hasConnectedClaim(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
 			checkOwner = ClanChunkData.getChunkClanId(c);
 		if(checkOwner == null)
@@ -160,8 +160,8 @@ public class ChunkUtils {
         return adjacent;
     }
 
-	public static ArrayList<ChunkPosition> getConnectedClaims(ChunkPosition c, @Nullable UUID checkOwner) {
-		ArrayList<ChunkPosition> adjacent = Lists.newArrayList();
+	public static ArrayList<ChunkPositionWithData> getConnectedClaims(ChunkPositionWithData c, @Nullable UUID checkOwner) {
+		ArrayList<ChunkPositionWithData> adjacent = Lists.newArrayList();
 		if(checkOwner == null)
 			checkOwner = ClanChunkData.getChunkClanId(c);
 		if(checkOwner == null)

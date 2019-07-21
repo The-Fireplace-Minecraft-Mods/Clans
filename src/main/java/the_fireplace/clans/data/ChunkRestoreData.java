@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChunkRestoreData {
+public final class ChunkRestoreData {
 	private HashMap<SerialBlockPos, String> replaceBlocks = Maps.newHashMap();
 	private ArrayList<SerialBlockPos> removeBlocks = Lists.newArrayList();
 

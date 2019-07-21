@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class PlayerDataManager {
+public final class PlayerDataManager {
 
     private static HashMap<UUID, PlayerData> playerData = Maps.newHashMap();
     private static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
@@ -137,6 +138,8 @@ public abstract class PlayerDataManager {
         @Nullable
         private UUID defaultClan;
         private int cooldown;
+
+        private HashMap<String, Object> addonData = Maps.newHashMap();
         //endregion
 
         //region Constructor
@@ -160,6 +163,7 @@ public abstract class PlayerDataManager {
                     JsonObject jsonObject = (JsonObject) obj;
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
+                    addonData = jsonObject.has("addonData") ? JsonHelper.getAddonData(jsonObject.getAsJsonObject("addonData")) : Maps.newHashMap();
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
@@ -179,6 +183,9 @@ public abstract class PlayerDataManager {
                 if(defaultClan != null)
                     obj.addProperty("defaultClan", defaultClan.toString());
                 obj.addProperty("cooldown", cooldown);
+
+                JsonHelper.attachAddonData(obj, this.addonData);
+
                 try {
                     FileWriter file = new FileWriter(playerDataFile);
                     file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));

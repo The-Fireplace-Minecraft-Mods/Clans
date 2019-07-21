@@ -2,13 +2,11 @@ package the_fireplace.clans.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -17,14 +15,20 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
+import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
+import java.io.*;
 import java.util.*;
 
 public class Clan {
+    private boolean isChanged = false;
+    private File clanDataFile;
+
     private String clanName, clanBanner;
     private String description = TranslationUtil.getStringTranslation("clan.default_description");
     private HashMap<UUID, EnumRank> members;
@@ -40,6 +44,8 @@ public class Clan {
     private long rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+
+    private HashMap<String, Object> addonData = Maps.newHashMap();
 
     public Clan(String clanName, UUID leader){
         this(clanName, leader, null);
@@ -64,6 +70,8 @@ public class Clan {
         ClanCache.addPlayerClan(leader, this);
         if(!Clans.getConfig().isAllowMultiClanMembership())
             ClanCache.removeInvite(leader);
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
+        isChanged = true;
     }
 
     /**
@@ -77,8 +85,11 @@ public class Clan {
         if(!ClanDatabase.addClan(this.clanId, this))
             Clans.getMinecraftHelper().getLogger().error("Unable to add opclan to the clan database!");
         this.isOpclan = true;
+        isChanged = true;
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
 
+    //region JsonObject conversions
     public JsonObject toJsonObject() {
         JsonObject ret = new JsonObject();
         ret.addProperty("clanName", clanName);
@@ -107,10 +118,12 @@ public class Clan {
         ret.addProperty("upkeepTimestamp", upkeepTimestamp);
         ret.addProperty("color", color);
 
+        JsonHelper.attachAddonData(ret, this.addonData);
+
         return ret;
     }
 
-    public Clan(JsonObject obj){
+    public Clan(JsonObject obj) {
         this.clanName = obj.get("clanName").getAsString();
         if(obj.has("clanBanner") && !(obj.get("clanBanner") instanceof JsonNull))
             this.clanBanner = obj.get("clanBanner").getAsString();
@@ -136,7 +149,50 @@ public class Clan {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         }
+        addonData = obj.has("addonData") ? JsonHelper.getAddonData(obj.getAsJsonObject("addonData")) : Maps.newHashMap();
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
+    //endregion
+
+    //region save/load
+    @Nullable
+    public static Clan load(File file) {
+        JsonParser jsonParser = new JsonParser();
+        try {
+            Object obj = jsonParser.parse(new FileReader(file));
+            if(obj instanceof JsonObject) {
+                return new Clan((JsonObject)obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void save() {
+        if(!isChanged)
+            return;
+
+        try {
+            FileWriter file = new FileWriter(clanDataFile);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(toJsonObject());
+            file.write(json);
+            file.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        isChanged = false;
+    }
+
+    public File getClanDataFile() {
+        return clanDataFile;
+    }
+
+    public void markChanged() {
+        isChanged = true;
+    }
+    //endregion
 
     public HashMap<UUID, EnumRank> getMembers() {
         return Maps.newHashMap(members);
@@ -189,7 +245,7 @@ public class Clan {
         ClanCache.removeName(this.clanName);
         this.clanName = clanName;
         ClanCache.addName(this);
-        ClanDatabase.markChanged();
+        markChanged();
     }
 
     public String getClanBanner() {
@@ -202,7 +258,7 @@ public class Clan {
         ClanCache.removeBanner(this.clanBanner);
         ClanCache.addBanner(clanBanner);
         this.clanBanner = clanBanner;
-        ClanDatabase.markChanged();
+        markChanged();
     }
 
     public void setHome(BlockPos pos, int dimension) {
@@ -213,7 +269,7 @@ public class Clan {
         this.homeZ = pos.getZ();
         this.hasHome = true;
         this.homeDimension = dimension;
-        ClanDatabase.markChanged();
+        markChanged();
         ClanCache.setClanHome(this, pos);
     }
 
@@ -226,7 +282,7 @@ public class Clan {
         homeX = homeY = homeZ = 0;
         homeDimension = 0;
         ClanCache.clearClanHome(this);
-        ClanDatabase.markChanged();
+        markChanged();
     }
 
     @Nullable
@@ -254,7 +310,7 @@ public class Clan {
 
     public void setDescription(String description) {
         this.description = description;
-        ClanDatabase.markChanged();
+        markChanged();
     }
 
     public int getMemberCount(){
@@ -268,7 +324,7 @@ public class Clan {
         ClanCache.addPlayerClan(player, this);
         if(!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
             ClanCache.removeInvite(player);
-        ClanDatabase.markChanged();
+        markChanged();
     }
 
     public boolean removeMember(UUID player) {
@@ -279,7 +335,7 @@ public class Clan {
         boolean removed = this.members.remove(player) != null;
         if(removed) {
             ClanCache.removePlayerClan(player, this);
-            ClanDatabase.markChanged();
+            markChanged();
         }
         return removed;
     }
@@ -292,11 +348,11 @@ public class Clan {
                 return false;
             if(members.get(player) == EnumRank.ADMIN){
                 members.put(player, EnumRank.MEMBER);
-                ClanDatabase.markChanged();
+                markChanged();
                 return true;
             } else if(members.get(player) == EnumRank.LEADER){
                 members.put(player, EnumRank.ADMIN);
-                ClanDatabase.markChanged();
+                markChanged();
                 return true;
             } else
                 return false;
@@ -320,11 +376,11 @@ public class Clan {
                     }
                 }
                 members.put(player, EnumRank.LEADER);
-                ClanDatabase.markChanged();
+                markChanged();
                 return true;
             } else if(members.get(player) == EnumRank.MEMBER) {
                 members.put(player, EnumRank.ADMIN);
-                ClanDatabase.markChanged();
+                markChanged();
                 return true;
             } return false;
         }
@@ -340,6 +396,7 @@ public class Clan {
 
     public void setRent(long rent) {
         this.rent = rent;
+        markChanged();
     }
 
     public long getNextRentTimestamp() {
@@ -348,6 +405,7 @@ public class Clan {
 
     public void updateNextRentTimeStamp() {
         this.rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L;
+        markChanged();
     }
 
     public long getNextUpkeepTimestamp() {
@@ -356,8 +414,10 @@ public class Clan {
 
     public void updateNextUpkeepTimeStamp() {
         this.upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
+        markChanged();
     }
 
+    //region shield
     /**
      * Add minutes to the clan's shield
      * @param shield
@@ -365,10 +425,12 @@ public class Clan {
      */
     public void addShield(long shield) {
         this.shield += shield;
+        markChanged();
     }
 
     public void setShield(long shield) {
         this.shield = shield;
+        markChanged();
     }
 
     /**
@@ -377,6 +439,7 @@ public class Clan {
     public void decrementShield() {
         if(shield > 0)
             shield--;
+        markChanged();
     }
 
     public boolean isShielded() {
@@ -389,6 +452,7 @@ public class Clan {
     public long getShield() {
         return shield;
     }
+    //endregion
 
     public int getWins() {
         return wins;
@@ -400,10 +464,12 @@ public class Clan {
 
     public void addWin() {
         wins++;
+        markChanged();
     }
 
     public void addLoss() {
         losses++;
+        markChanged();
     }
 
     public int getColor() {
@@ -413,12 +479,14 @@ public class Clan {
     public void setColor(int color) {
         this.color = color;
         this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+        markChanged();
     }
 
     public TextFormatting getTextColor() {
         return TextFormatting.fromColorIndex(textColor);
     }
 
+    //region disband
     /**
      * Disbands a clan and unregisters cache for it where needed.
      * @param server
@@ -462,7 +530,9 @@ public class Clan {
         }
         Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getClanId()), this.getClanId());
     }
+    //endregion
 
+    //region messageAllOnline
     public void messageAllOnline(Style textStyle, String translationKey, Object... args) {
         messageAllOnline(EnumRank.ANY, textStyle, translationKey, args);
     }
@@ -481,7 +551,9 @@ public class Clan {
             if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
                 member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle));
     }
+    //endregion
 
+    //region Equality
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == null)
@@ -502,4 +574,5 @@ public class Clan {
     public int hashCode() {
         return Objects.hash(clanId);
     }
+    //endregion
 }

@@ -20,10 +20,6 @@ public class ChunkPosition {
         this.dim = c.getWorld().provider.getDimension();
     }
 
-    public ChunkPosition offset(int x, int z) {
-        return new ChunkPosition(posX+x, posZ+z, dim);
-    }
-
     /**
      * @return Return the real X position of the chunk in blocks
      */

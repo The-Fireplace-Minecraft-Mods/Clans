@@ -118,9 +118,9 @@ public class TimerLogic {
             if(ClanCache.getAutoAbandonClaims().containsKey(player.getUniqueID()))
                 CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)player, ClanCache.getAutoAbandonClaims().get(player.getUniqueID()));
             if(ClanCache.getOpAutoClaimLands().containsKey(player.getUniqueID()))
-                OpCommandClaim.checkAndAttemptOpClaim((EntityPlayerMP)player, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue2() ? new String[]{"force"} : new String[]{}, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue1());
+                ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP)player, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue1(), true, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue2());
             if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
-                ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()));
+                ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()), false, false);
 
             handleTerritoryChangedMessage(player, chunkClan, playerClans);
         } else if (Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() != 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0) {

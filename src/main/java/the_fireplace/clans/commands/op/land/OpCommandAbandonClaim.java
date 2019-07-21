@@ -96,7 +96,6 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 		}
 
 		ClanChunkData.delChunk(targetClan, c.x, c.z, c.getWorld().provider.getDimension());
-		targetClan.subClaimCount();
 		Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
 	}
 

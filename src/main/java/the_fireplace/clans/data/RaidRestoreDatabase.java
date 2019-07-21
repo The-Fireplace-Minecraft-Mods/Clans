@@ -7,13 +7,14 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.ChunkPosition;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class RaidRestoreDatabase {
-	static RaidRestoreDatabase instance = null;
-	static boolean isChanged = false;
+	private static RaidRestoreDatabase instance = null;
+	private static boolean isChanged = false;
 
 	public static RaidRestoreDatabase getInstance() {
 		if(instance == null)
@@ -21,7 +22,7 @@ public final class RaidRestoreDatabase {
 		return instance;
 	}
 
-	HashMap<ChunkPosition, ChunkRestoreData> raidedChunks = Maps.newHashMap();
+	private HashMap<ChunkPosition, ChunkRestoreData> raidedChunks = Maps.newHashMap();
 
 	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
@@ -33,6 +34,7 @@ public final class RaidRestoreDatabase {
 		isChanged = true;
 	}
 
+	@Nullable
 	public static String popRestoreBlock(int dim, Chunk c, BlockPos pos) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
@@ -78,8 +80,7 @@ public final class RaidRestoreDatabase {
 				JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
 				for (int i = 0; i < clanMap.size(); i++)
 					instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
-			} else
-				Clans.getMinecraftHelper().getLogger().warn("Json Raid Restore Database not found! This is normal on your first run of ClansForge 1.2.0 and above, and when there is nothing to restore.");
+			}
 		} catch (FileNotFoundException e) {
 			//do nothing, it just hasn't been created yet
 		} catch (Exception e) {

@@ -19,11 +19,12 @@ import java.util.UUID;
 
 public final class ClanDatabase {
     private static ClanDatabase instance = null;
-    private static boolean isChanged = false;
+    public static final File clanDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/clan");
 
     public static ClanDatabase getInstance() {
         if(instance == null) {
             load();
+            loadLegacy();
             if(instance.opclan == null)
                 if(instance.clans.containsKey(UUID.fromString("00000000-0000-0000-0000-000000000000")))
                     instance.opclan = instance.clans.get(UUID.fromString("00000000-0000-0000-0000-000000000000"));
@@ -34,12 +35,17 @@ public final class ClanDatabase {
     }
 
     private HashMap<UUID, Clan> clans;
+    @Deprecated
     private Clan opclan = null;
 
     private ClanDatabase(){
         clans = Maps.newHashMap();
     }
 
+    /**
+     * Get the server's opclan. Will be removed in 1.4 as multiple opclans will be allowed.
+     */
+    @Deprecated
     public static Clan getOpClan() {
         Clan out = getInstance().opclan;
         if(out == null) {
@@ -47,10 +53,6 @@ public final class ClanDatabase {
             out = instance.opclan;
         }
         return out;
-    }
-
-    public static void markChanged() {
-        isChanged = true;
     }
 
     @Nullable
@@ -70,7 +72,7 @@ public final class ClanDatabase {
             ClanCache.addName(clan);
             if(clan.getClanBanner() != null)
                 ClanCache.addBanner(clan.getClanBanner());
-            markChanged();
+            clan.markChanged();
             return true;
         }
         return false;
@@ -81,14 +83,16 @@ public final class ClanDatabase {
      */
     public static boolean removeClan(UUID clanId){
         if(getInstance().clans.containsKey(clanId)) {
-            ClanCache.removeClan(getInstance().clans.remove(clanId));
+            Clan removed = getInstance().clans.remove(clanId);
+            ClanCache.removeClan(removed);
             ClanChunkData.delClan(clanId);
-            markChanged();
+            removed.getClanDataFile().delete();
             return true;
         }
         return false;
     }
 
+    @Deprecated
     private static void setOpclan(Clan opclan) {
         instance.opclan = opclan;
     }
@@ -108,48 +112,50 @@ public final class ClanDatabase {
         return clans;
     }
 
-    private static void load() {
-        instance = new ClanDatabase();
+    private static void loadLegacy() {
+        File oldFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json");
+        if(!oldFile.exists())
+            return;
         JsonParser jsonParser = new JsonParser();
         try {
-            Object obj = jsonParser.parse(new FileReader(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json")));
+            Object obj = jsonParser.parse(new FileReader(oldFile));
             if(obj instanceof JsonObject) {
                 JsonObject jsonObject = (JsonObject) obj;
                 JsonArray clanMap = jsonObject.get("clans").getAsJsonArray();
-                for (int i = 0; i < clanMap.size(); i++)
-                    addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
-                setOpclan(new Clan(jsonObject.getAsJsonObject("opclan")));
+                for (int i = 0; i < clanMap.size(); i++) {
+                    Clan loadedClan = new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject());
+                    loadedClan.markChanged();
+                    addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), loadedClan);
+                }
+                Clan opclan = new Clan(jsonObject.getAsJsonObject("opclan"));
+                opclan.markChanged();
+                setOpclan(opclan);
             }
         } catch (FileNotFoundException e) {
-            //do nothing, it just hasn't been created yet
+            //do nothing
         } catch (Exception e) {
             e.printStackTrace();
         }
-        isChanged = false;
+        oldFile.delete();
+    }
+
+    private static void load() {
+        instance = new ClanDatabase();
+        if(!clanDataLocation.exists())
+            clanDataLocation.mkdirs();
+        for(File file: clanDataLocation.listFiles()) {
+            try {
+                Clan loadedClan = Clan.load(file);
+                if(loadedClan != null)
+                    instance.clans.put(loadedClan.getClanId(), loadedClan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void save() {
-        if(!isChanged)
-            return;
-        JsonObject obj = new JsonObject();
-        JsonArray clanMap = new JsonArray();
-        for(Clan clan: getClans()) {
-            JsonObject entry = new JsonObject();
-            entry.addProperty("key", clan.getClanId().toString());
-            entry.add("value", clan.toJsonObject());
-            clanMap.add(entry);
-        }
-        obj.add("clans", clanMap);
-        obj.add("opclan", getOpClan().toJsonObject());
-        try {
-            FileWriter file = new FileWriter(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json"));
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(obj);
-            file.write(json);
-            file.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        isChanged = false;
+        for(Clan clan: getClans())
+            clan.save();
     }
 }

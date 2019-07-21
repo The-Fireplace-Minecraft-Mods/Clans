@@ -8,6 +8,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanChunkData;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -16,10 +17,10 @@ import java.util.UUID;
 
 public class ClanManagementUtil {
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, boolean isOpclanCommand, boolean force) {
-        return checkAndAttemptClaim(sender, selectedClan, new ChunkPosition(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()), isOpclanCommand, force);
+        return checkAndAttemptClaim(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()), isOpclanCommand, force);
     }
 
-    public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, ChunkPosition claimChunk, boolean isOpclanCommand, boolean force) {
+    public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, ChunkPositionWithData claimChunk, boolean isOpclanCommand, boolean force) {
         UUID claimOwner = ClanChunkData.getChunkClanId(claimChunk);
         Clan claimClan = ClanCache.getClanById(claimOwner);
         String clanCommandString = isOpclanCommand ? "opclan" : "clan";
@@ -68,7 +69,7 @@ public class ClanManagementUtil {
         return false;
     }
 
-    public static boolean claimChunk(EntityPlayerMP sender, ChunkPosition claimChunk, Clan selectedClan, boolean force) {
+    public static boolean claimChunk(EntityPlayerMP sender, ChunkPositionWithData claimChunk, Clan selectedClan, boolean force) {
         if (force || Clans.getPaymentHandler().deductAmount(Clans.getConfig().getClaimChunkCost(), selectedClan.getClanId())) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.posX, claimChunk.posZ), claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
