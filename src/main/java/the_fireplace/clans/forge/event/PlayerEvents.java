@@ -56,4 +56,9 @@ public class PlayerEvents {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+        event.setNewSpeed(PlayerEventLogic.breakSpeed(event.getEntityPlayer(), event.getOriginalSpeed()));
+    }
 }

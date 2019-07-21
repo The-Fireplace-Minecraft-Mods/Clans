@@ -112,4 +112,6 @@ public interface IConfig {
     double getDynmapBorderOpacity();
 
     double getDynmapFillOpacity();
+
+    double getRaidBreakSpeedMultiplier();
 }

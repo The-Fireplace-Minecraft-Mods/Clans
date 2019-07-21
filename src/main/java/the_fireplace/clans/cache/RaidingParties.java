@@ -58,8 +58,8 @@ public final class RaidingParties {
 		return Sets.newHashSet(activeraids.values());
 	}
 
-	public static boolean isRaidedBy(Clan c, @Nullable EntityPlayer player) {
-		if(player == null)
+	public static boolean isRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
+		if(player == null || c == null)
 			return false;
 		return hasActiveRaid(c) && activeraids.get(c).getAttackers().contains(player.getUniqueID());
 	}

@@ -4,8 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
+import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
@@ -80,5 +83,12 @@ public class PlayerEventLogic {
         Clan clanChat = ClanCache.getClanChattingPlayers().get(player.getUniqueID());
         for(EntityPlayerMP member: clanChat.getOnlineMembers().keySet())
             member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
+    }
+
+    public static float breakSpeed(EntityPlayer player, float oldSpeed) {
+        if(RaidingParties.isRaidedBy(ClaimDataManager.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
+            return oldSpeed * (float)Clans.getConfig().getRaidBreakSpeedMultiplier();
+        }
+        return oldSpeed;
     }
 }

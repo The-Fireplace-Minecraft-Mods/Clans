@@ -250,6 +250,9 @@ public final class ClansForge {
         public static int initialShield = 24*3;
         @Config.Comment("Prevents reclaiming TNT that was placed while raiding.")
         public static boolean noReclaimTNT = true;
+        @Config.Comment("Raid break speed multiplier")
+        @Config.RangeDouble(min=0.0, max=10.0)
+        public static double raidBreakSpeedMultiplier = 1.0;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -534,6 +537,10 @@ public final class ClansForge {
 
         public double getDynmapFillOpacity() {
             return ClansForge.cfg.dynmapFillOpacity;
+        }
+
+        public double getRaidBreakSpeedMultiplier() {
+            return cfg.raidBreakSpeedMultiplier;
         }
     }
 }
