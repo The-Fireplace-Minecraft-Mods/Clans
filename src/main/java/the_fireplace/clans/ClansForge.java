@@ -18,7 +18,9 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.compat.PaymentHandlerGE;
+import the_fireplace.clans.forge.compat.PaymentHandlerGE;
+import the_fireplace.clans.sponge.SpongePermissionHandler;
+import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
 import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
@@ -74,6 +76,10 @@ public final class ClansForge {
     public void postInit(FMLPostInitializationEvent event){
         if(Clans.getMinecraftHelper().isPluginLoaded("grandeconomy"))
             Clans.setPaymentHandler(new PaymentHandlerGE());
+        if(Clans.getMinecraftHelper().isPluginLoaded("spongeapi") && !Clans.getConfig().isForgePermissionPrecedence())
+            Clans.setPermissionManager(new SpongePermissionHandler());
+        else
+            Clans.setPermissionManager(new ForgePermissionHandler());
     }
 
     @Mod.EventHandler

@@ -76,4 +76,9 @@ public class ForgePermissionHandler implements IPermissionHandler {
     public void registerPermission(String permissionName, Object permissionLevel, String permissionDescription) {
         PermissionAPI.registerNode(permissionName, (DefaultPermissionLevel)permissionLevel, permissionDescription);
     }
+
+    @Override
+    public boolean permissionManagementExists() {
+        return true;
+    }
 }

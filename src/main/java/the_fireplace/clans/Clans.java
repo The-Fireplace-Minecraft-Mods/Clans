@@ -1,12 +1,8 @@
 package the_fireplace.clans;
 
-import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.abstraction.IDynmapCompat;
-import the_fireplace.clans.abstraction.IMinecraftHelper;
-import the_fireplace.clans.abstraction.IPaymentHandler;
+import the_fireplace.clans.abstraction.*;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
-import the_fireplace.clans.util.PermissionManager;
 
 public final class Clans {
     public static final String MODID = "clans";
@@ -17,6 +13,7 @@ public final class Clans {
     private static IPaymentHandler paymentHandler = new PaymentHandlerDummy();
     private static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
     private static IConfig config;
+    private static IPermissionHandler permissionManager;
 
     public static IMinecraftHelper getMinecraftHelper() {
         return minecraftHelper;
@@ -52,6 +49,13 @@ public final class Clans {
 
     static void initialize() {
         getDynmapCompat().init();
-        PermissionManager.registerPermissionHandlers();
+    }
+
+    public static IPermissionHandler getPermissionManager() {
+        return permissionManager;
+    }
+
+    static void setPermissionManager(IPermissionHandler permissionManager) {
+        Clans.permissionManager = permissionManager;
     }
 }

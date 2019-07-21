@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat;
+package the_fireplace.clans.sponge;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.spongepowered.api.Sponge;
@@ -13,14 +13,12 @@ import static the_fireplace.clans.util.PermissionManager.*;
 
 public class SpongePermissionHandler implements IPermissionHandler {
 
-    private boolean hasPermissionPlugin;
     private PermissionService permissionService;
 
     public SpongePermissionHandler() {
         if(!Sponge.getServiceManager().provide(PermissionService.class).isPresent())
             return;
         permissionService = Sponge.getServiceManager().provide(PermissionService.class).get();
-        hasPermissionPlugin = true;
 
         registerPermission(CLAN_COMMAND_PREFIX+"help", PermissionDescription.ROLE_USER, "");
         registerPermission(CLAN_COMMAND_PREFIX+"banner", PermissionDescription.ROLE_USER, "");
@@ -81,7 +79,7 @@ public class SpongePermissionHandler implements IPermissionHandler {
 
     @Override
     public boolean hasPermission(EntityPlayerMP player, String permissionName) {
-        if(hasPermissionPlugin && player instanceof Subject)
+        if(permissionManagementExists() && player instanceof Subject)
             return ((Subject) player).hasPermission(permissionName);
         return true;
     }
@@ -94,5 +92,10 @@ public class SpongePermissionHandler implements IPermissionHandler {
                 .description(Text.of(permissionDescription))
                 .assign(((String)permissionLevel).isEmpty() ? PermissionDescription.ROLE_USER : (String)permissionLevel, !((String) permissionLevel).isEmpty())
                 .register();
+    }
+
+    @Override
+    public boolean permissionManagementExists() {
+        return Sponge.getServiceManager().isRegistered(PermissionService.class);
     }
 }

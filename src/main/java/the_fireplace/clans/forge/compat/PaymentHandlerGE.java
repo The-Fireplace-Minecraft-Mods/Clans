@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat;
+package the_fireplace.clans.forge.compat;
 
 import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.cache.ClanCache;
