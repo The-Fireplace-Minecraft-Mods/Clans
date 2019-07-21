@@ -1,6 +1,7 @@
 package the_fireplace.clans.logic;
 
 import com.google.common.collect.Sets;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
@@ -90,6 +91,11 @@ public class TimerLogic {
                         clan.updateNextUpkeepTimeStamp();
                 }
             }
+    }
+
+    public static void runMobFiveSecondLogic(EntityLivingBase mob) {
+        if(Clans.getConfig().isPreventMobsOnClaims() && ClanCache.getClanById(ClaimDataManager.getChunkClanId(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)) != null)
+            mob.setDead();
     }
 
     public static void runPlayerSecondLogic(EntityPlayer player) {

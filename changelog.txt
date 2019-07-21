@@ -28,6 +28,8 @@ Now uses Grand Economy 1.2+ for economy functions.
 Commands, Clan names, Player Names, and Banner Strings are no longer case sensitive when typed in commands.
 Split the maxClanPlayerClaims config option into maxClaims and multiplyMaxClaimsByPlayers
 Players will now spawn at their default clan's home if they have no bed
+Hostile mobs will now disappear if they wander onto clan land while they are not allowed
+Players can now attack and kill hostile mobs on opclan land
 
 Fixes/Internal Changes:
 Clans now has an API and event system for easier development of add-ons.

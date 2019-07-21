@@ -1,5 +1,7 @@
 package the_fireplace.clans.forge.event;
 
+import net.minecraft.entity.monster.IMob;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -48,4 +50,10 @@ public class Timer {
 			}
 		}
 	}
+
+	@SubscribeEvent
+    public static void livingUpdate(LivingEvent.LivingUpdateEvent event) {
+	    if(event.getEntityLiving() instanceof IMob && event.getEntityLiving().getEntityWorld().getTotalWorldTime() % 100 == 0)
+	        TimerLogic.runMobFiveSecondLogic(event.getEntityLiving());
+    }
 }
