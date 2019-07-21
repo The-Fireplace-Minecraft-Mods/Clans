@@ -27,6 +27,7 @@ Removed /clan finances, its functionality has been merged into /clan details
 Now uses Grand Economy 1.2+ for economy functions.
 Commands, Clan names, Player Names, and Banner Strings are no longer case sensitive when typed in commands.
 Split the maxClanPlayerClaims config option into maxClaims and multiplyMaxClaimsByPlayers
+Players will now spawn at their default clan's home if they have no bed
 
 Fixes/Internal Changes:
 Clans now has an API and event system for easier development of add-ons.

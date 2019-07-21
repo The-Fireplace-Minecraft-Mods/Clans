@@ -45,7 +45,7 @@ public class TimerLogic {
             if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
                 Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
                 if(c != null && c.getHome() != null)
-                    CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension);
+                    CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
             }
         for(EntityPlayerMP player: Sets.newHashSet(PlayerDataCache.clanHomeWarmups.keySet()))
             if(PlayerDataCache.clanHomeWarmups.get(player).getValue1() > 0)

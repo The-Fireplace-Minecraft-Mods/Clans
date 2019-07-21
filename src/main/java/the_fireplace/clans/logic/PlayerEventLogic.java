@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
@@ -67,6 +68,12 @@ public class PlayerEventLogic {
                 PlayerDataManager.updateDefaultClan(player.getUniqueID(), null);
         }
         return initialMessage;
+    }
+
+    public static void onPlayerRespawn(EntityPlayer player) {
+        Clan defClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(player.getUniqueID()));
+        if(defClan != null && defClan.hasHome() && defClan.getHome() != null)
+            CommandHome.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
     }
 
     public static void sendClanChat(EntityPlayer player, ITextComponent message) {

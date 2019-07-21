@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.teleportation;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -61,32 +62,32 @@ public class CommandHome extends ClanSubCommand {
 				if(Clans.getConfig().getClanHomeWarmupTime() > 0)
 					PlayerDataCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
 				else
-					teleportHome(sender, selectedClan, home, playerDim);
+					teleportHome(sender, selectedClan, home, playerDim, false);
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.cooldown", cooldown).setStyle(TextStyles.RED));
 	}
 
-	public static void teleportHome(EntityPlayerMP player, Clan playerClan, BlockPos home, int playerDim) {
+	public static void teleportHome(EntityPlayer player, Clan playerClan, BlockPos home, int playerDim, boolean noCooldown) {
 		home = getSafeExitLocation(Objects.requireNonNull(player.getServer()).getWorld(playerClan.getHomeDim()), home, 5);
 		if (playerDim == playerClan.getHomeDim()) {
-			completeTeleportHome(player, home, playerDim);
+			completeTeleportHome(player, home, playerDim, noCooldown);
 		} else {
 			player.setPortal(player.getPosition());
 			if (player.changeDimension(playerClan.getHomeDim()) != null) {
-				completeTeleportHome(player, home, playerDim);
+				completeTeleportHome(player, home, playerDim, noCooldown);
 			} else {
 				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.dim_error").setStyle(TextStyles.RED));
 			}
 		}
 	}
 
-	private static void completeTeleportHome(EntityPlayerMP player, BlockPos home, int playerDim) {
+	private static void completeTeleportHome(EntityPlayer player, BlockPos home, int playerDim, boolean noCooldown) {
 		if (!player.attemptTeleport(home.getX(), home.getY(), home.getZ())) {
 			player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.blocked").setStyle(TextStyles.RED));
 			if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
 				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
-		} else
+		} else if(!noCooldown)
 			PlayerDataManager.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
 	}
 
