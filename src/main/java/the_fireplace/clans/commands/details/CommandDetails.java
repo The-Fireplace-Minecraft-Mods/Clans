@@ -121,7 +121,7 @@ public class CommandDetails extends ClanSubCommand {
 			Clans.getMinecraftHelper().getLogger().error("Clan {} has no members.", clan.getClanName());
 		}
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
-		if(senderId != null && leaders.contains(senderId) || sender instanceof MinecraftServer) {
+		if(senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) {
 			if(Clans.getConfig().getChargeRentDays() <= 0 && Clans.getConfig().getClanUpkeepDays() <= 0)
 				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.finances.disabled"));
 			long upkeep = 0;
@@ -132,16 +132,20 @@ public class CommandDetails extends ClanSubCommand {
 					upkeep *= selectedClan.getClaimCount();
 				if(Clans.getConfig().isMultiplyUpkeepMembers())
 					upkeep *= selectedClan.getMemberCount();
-				if(upkeep > 0)
+				if(upkeep > 0) {
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.upkeep", upkeep, Clans.getPaymentHandler().getCurrencyName(upkeep), Clans.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
+				}
 			}
 			if(Clans.getConfig().getChargeRentDays() > 0) {
 				rent += selectedClan.getRent();
 				rent *= selectedClan.getMemberCount();
-				if(rent > 0)
+				if(rent > 0) {
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.rent", rent, Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (selectedClan.getNextRentTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
+				}
 			}
-			if(upkeep > 0 && rent > 0) {
+			if(upkeep > 0 && rent > 0 && leaders.contains(senderId)) {
 				upkeep /= Clans.getConfig().getClanUpkeepDays();
 				rent /= Clans.getConfig().getChargeRentDays();
 				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.trend", (rent-upkeep) <= 0 ? (rent-upkeep) : '+'+(rent-upkeep), Clans.getPaymentHandler().getCurrencyName(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
@@ -155,7 +159,7 @@ public class CommandDetails extends ClanSubCommand {
 						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.reduce_upkeep").setStyle(TextStyles.YELLOW));
 				}
 			}
-			if(rent <= 0 && upkeep <= 0)
+			if(rent <= 0 && upkeep <= 0 && leaders.contains(senderId))
 				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.finances.breaking_even", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
