@@ -53,10 +53,13 @@ public class CommandOpClan extends CommandBase {
         aliases.put("c", "claim");
         aliases.put("ac", "autoclaim");
         aliases.put("abc", "abandonclaim");
+        aliases.put("unclaim", "abandonclaim");
+        aliases.put("uc", "abandonclaim");
         aliases.put("aa", "autoabandon");
         aliases.put("shield", "setshield");
         aliases.put("setdesc", "setdescription");
         aliases.put("ba", "buildadmin");
+        aliases.put("admin", "buildadmin");
         aliases.put("setcolour", "setcolor");
         aliases.put("deposit", "addfunds");
         aliases.put("af", "addfunds");
