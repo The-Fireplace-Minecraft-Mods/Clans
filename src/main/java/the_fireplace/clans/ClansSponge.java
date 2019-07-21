@@ -13,7 +13,7 @@ import the_fireplace.clans.sponge.compat.SpongeMinecraftHelper;
 import the_fireplace.clans.sponge.event.LandProtectionEvents;
 
 //@Plugin(id = Clans.MODID+"sponge", name = Clans.MODNAME, version = Clans.VERSION, description = "A server-side land protection and PVP system.", url = "https://www.curseforge.com/minecraft/mc-mods/clans", authors = {"The_Fireplace"})
-public class ClansSponge {
+public final class ClansSponge {
 
     @Inject
     public static Logger logger;

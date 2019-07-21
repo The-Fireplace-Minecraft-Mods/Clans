@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -48,16 +49,20 @@ public class CommandInviteRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				assert server != null;
-				EntityPlayerMP targetPlayer = getPlayer(server, sender, args[0]);
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-				if(clanPlayers.size() > raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
-					if(!clanPlayers.containsKey(targetPlayer)) {
-						targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", targetPlayer.getName()).setStyle(TextStyles.GREEN));
+				GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
+				if(target != null) {
+					HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
+					if (clanPlayers.size() > raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
+						if (!clanPlayers.containsKey(target)) {
+							target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
+						} else
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
 					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+					throw new PlayerNotFoundException("commands.generic.player.unspecified");
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				Clans.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");

@@ -126,7 +126,7 @@ public class CommandClan extends CommandBase {
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0)
             throw new WrongUsageException(getUsage(sender));
-        String tag = args[0];
+        String tag = args[0].toLowerCase();
         if(ClanCache.clanNameTaken(tag) && !ClanCache.forbiddenClanNames.contains(tag) && args.length >= 2) {
             tag = args[1];
             if (args.length > 2) {
@@ -139,7 +139,7 @@ public class CommandClan extends CommandBase {
                 args = Arrays.copyOfRange(args, 1, args.length);
             else
                 args = new String[]{};
-        if(PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
+        if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
             if ("help".equals(tag)) {
                 StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.clan.help") + "\nhelp");
                 buildHelpCommand(sender, commandsHelp, commands);

@@ -46,8 +46,8 @@ public final class ClanCache {
 	public static Clan getClanByName(String clanName){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName(), clan);
-		return clanNames.get(clanName);
+				clanNames.put(clan.getClanName().toLowerCase(), clan);
+		return clanNames.get(clanName.toLowerCase());
 	}
 
 	public static ArrayList<Clan> getPlayerClans(@Nullable UUID player) {
@@ -64,9 +64,10 @@ public final class ClanCache {
 	}
 
 	public static boolean clanNameTaken(String clanName) {
+		clanName = clanName.toLowerCase();
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName(), clan);
+				clanNames.put(clan.getClanName().toLowerCase(), clan);
 		return forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
 	}
 
@@ -74,20 +75,20 @@ public final class ClanCache {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.getClanBanner() != null)
-					clanBanners.add(clan.getClanBanner());
-		return clanBanners.contains(clanBanner);
+					clanBanners.add(clan.getClanBanner().toLowerCase());
+		return clanBanners.contains(clanBanner.toLowerCase());
 	}
 
 	public static void addBanner(String banner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.getClanBanner() != null)
-					clanBanners.add(clan.getClanBanner());
-		clanBanners.add(banner);
+					clanBanners.add(clan.getClanBanner().toLowerCase());
+		clanBanners.add(banner.toLowerCase());
 	}
 
 	public static void removeBanner(String banner){
-		clanBanners.remove(banner);
+		clanBanners.remove(banner.toLowerCase());
 	}
 
 	public static HashMap<String, Clan> getClanNames() {
@@ -97,12 +98,12 @@ public final class ClanCache {
 	public static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName(), clan);
-		clanNames.put(nameClan.getClanName(), nameClan);
+				clanNames.put(clan.getClanName().toLowerCase(), clan);
+		clanNames.put(nameClan.getClanName().toLowerCase(), nameClan);
 	}
 
 	public static void removeName(String name){
-		clanNames.remove(name);
+		clanNames.remove(name.toLowerCase());
 	}
 
 	public static boolean inviteToClan(UUID player, Clan clan) {

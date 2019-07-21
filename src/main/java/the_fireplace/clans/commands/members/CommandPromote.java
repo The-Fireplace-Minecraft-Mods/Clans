@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.commands.op.management.OpCommandPromote;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -47,7 +47,7 @@ public class CommandPromote extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
-			OpCommandPromote.promoteClanMember(server, sender, args[0], selectedClan);
+			ClanManagementUtil.promoteClanMember(server, sender, args[0], selectedClan);
 		else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}

@@ -7,7 +7,7 @@ import the_fireplace.clans.api.event.IClansEventHandler;
 import java.util.HashMap;
 import java.util.List;
 
-public class ClansEventManager {
+public final class ClansEventManager {
     private static final HashMap<Class, List<IClansEventHandler>> events = Maps.newHashMap();
 
     public static <V> void registerEvent(Class<V> eventType, IClansEventHandler<V> handler) {

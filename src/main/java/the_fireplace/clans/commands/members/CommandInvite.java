@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -48,20 +49,24 @@ public class CommandInvite extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		assert server != null;
-		EntityPlayerMP target = getPlayer(server, sender, args[0]);
-		if(Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
-			if(!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
-				if(ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-					target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-				} else {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
-					target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getClanName()).setStyle(TextStyles.YELLOW));
-				}
+		GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+		EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
+		if(target != null) {
+			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
+				if (!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
+					if (ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					} else {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
+						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getClanName()).setStyle(TextStyles.YELLOW));
+					}
+				} else
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
+			throw new PlayerNotFoundException("commands.generic.player.unspecified");
 	}
 
 	@Override
