@@ -307,7 +307,7 @@ public class Clan {
     }
 
     public int getMaxClaimCount() {
-        return getMemberCount() * Clans.getConfig().getMaxClanPlayerClaims();
+        return Clans.getConfig().isMultiplyMaxClaimsByPlayers() ? getMemberCount() * Clans.getConfig().getMaxClaims() : Clans.getConfig().getMaxClaims();
     }
 
     public String getDescription() {

@@ -49,7 +49,7 @@ public class ClanManagementUtil {
                 return true;
             } else {
                 if (force || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, selectedClan.getClanId()) || selectedClan.getClaimCount() == 0) {
-                    if (force || Clans.getConfig().getMaxClanPlayerClaims() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
+                    if (force || Clans.getConfig().getMaxClaims() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
                         if (selectedClan.getClaimCount() > 0)
                             claimChunk(sender, claimChunk, selectedClan, force);
                         else if (Clans.getConfig().getMinClanHomeDist() > 0 && Clans.getConfig().getInitialClaimSeparationMultiplier() > 0) {

@@ -181,9 +181,11 @@ public final class ClansForge {
         @Config.Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
         @Config.RangeInt(min=0)
         public static int clanHomeCooldownTime = 0;
-        @Config.Comment("Max claims per player per clan. Set to 0 for infinite.")
+        @Config.Comment("Max claims per clan. Set to 0 for infinite.")
         @Config.RangeInt(min=0)
-        public static int maxClanPlayerClaims = 0;
+        public static int maxClaims = 0;
+        @Config.Comment("If enabled, multiplies the max claim count by the number of players in the clan.")
+        public static boolean multiplyMaxClaimsByPlayers = true;
         @Config.Comment("Show player's default clan in chat.")
         public static boolean showDefaultClanInChat = true;
         @Config.Comment("Server locale - the client's locale takes precedence if ClansForge is installed there.")
@@ -213,11 +215,6 @@ public final class ClansForge {
         public static boolean preventMobsOnClaims = true;
         @Config.Comment("Prevents mobs from spawning in borderlands. Requires enableBorderlands and preventMobsOnClaims.")
         public static boolean preventMobsOnBorderlands = true;
-        @Config.Comment("Maximum number of claims per clan. Set to 0 for unlimited.")
-        @Config.RangeInt(min=0)
-        public static int maxClaims = 0;
-        @Config.Comment("If enabled, multiplies the max claim count by the number of players in the clan.")
-        public static boolean multiplyMaxClaimsByPlayers = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
@@ -333,10 +330,6 @@ public final class ClansForge {
 
         public int getClanHomeCooldownTime() {
             return ClansForge.cfg.clanHomeCooldownTime;
-        }
-
-        public int getMaxClanPlayerClaims() {
-            return ClansForge.cfg.maxClanPlayerClaims;
         }
 
         public boolean isShowDefaultClanInChat() {

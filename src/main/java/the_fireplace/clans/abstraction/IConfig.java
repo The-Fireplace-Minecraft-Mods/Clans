@@ -11,7 +11,9 @@ public interface IConfig {
 
     int getClanHomeCooldownTime();
 
-    int getMaxClanPlayerClaims();
+    int getMaxClaims();
+
+    boolean isMultiplyMaxClaimsByPlayers();
 
     boolean isShowDefaultClanInChat();
 
@@ -38,10 +40,6 @@ public interface IConfig {
     boolean isPreventMobsOnClaims();
 
     boolean isPreventMobsOnBorderlands();
-
-    int getMaxClaims();
-
-    boolean isMultiplyMaxClaimsByPlayers();
 
     boolean isProtectWilderness();
 
