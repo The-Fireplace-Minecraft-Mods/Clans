@@ -9,10 +9,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.world.Location;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
-import the_fireplace.clans.logic.ServerEventLogic;
-import the_fireplace.clans.sponge.compat.SpongeMinecraftHelper;
 
 public class LandProtectionEvents {
 

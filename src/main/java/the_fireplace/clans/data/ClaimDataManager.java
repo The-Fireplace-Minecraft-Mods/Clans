@@ -18,8 +18,10 @@ public final class ClaimDataManager {
     private static boolean isLoaded = false;
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
 
+    //Main storage
     private static HashMap<UUID, ClanClaimData> claimedChunks = Maps.newHashMap();
-    private static HashMap<ChunkPositionWithData, UUID> chunkOwners = Maps.newHashMap();
+    //Cache for easy access to data based on chunk position
+    private static HashMap<ChunkPositionWithData, ClanClaimData> claimDataMap = Maps.newHashMap();
 
     public static Set<ChunkPositionWithData> getChunks(UUID clan) {
         if(!isLoaded)
@@ -49,8 +51,8 @@ public final class ClaimDataManager {
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimedChunks.get(clan.getClanId()).chunks.add(pos);
-        chunkOwners.put(pos, clan.getClanId());
-        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+        claimDataMap.put(pos, claimedChunks.get(clan.getClanId()));
+        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
         claimedChunks.get(clan.getClanId()).isChanged = true;
     }
 
@@ -80,9 +82,9 @@ public final class ClaimDataManager {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
-        chunkOwners.remove(pos);
+        claimDataMap.remove(pos);
         if(claimedChunks.get(clan.getClanId()).chunks.remove(pos)) {
-            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
+            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
             claimedChunks.get(clan.getClanId()).isChanged = true;
         }
     }
@@ -130,22 +132,36 @@ public final class ClaimDataManager {
     public static UUID getChunkClanId(int x, int z, int dim) {
         if(!isLoaded)
             load();
-        return chunkOwners.get(new ChunkPositionWithData(x, z, dim));
+        return claimDataMap.get(new ChunkPositionWithData(x, z, dim)).clan;
     }
 
     @Nullable
     public static UUID getChunkClanId(ChunkPositionWithData position) {
         if(!isLoaded)
             load();
-        return chunkOwners.get(position);
+        return claimDataMap.get(position).clan;
+    }
+
+    @Nullable
+    public static ClanClaimData getChunkClaimData(int x, int z, int dim) {
+        if(!isLoaded)
+            load();
+        return claimDataMap.get(new ChunkPositionWithData(x, z, dim));
+    }
+
+    @Nullable
+    public static ClanClaimData getChunkClaimData(ChunkPositionWithData position) {
+        if(!isLoaded)
+            load();
+        return claimDataMap.get(position);
     }
 
     public static boolean delClan(@Nullable UUID clan) {
         if(clan == null)
             return false;
-        for(Map.Entry<ChunkPositionWithData, UUID> entry : chunkOwners.entrySet())
-            if(entry.getValue().equals(clan))
-                chunkOwners.remove(entry.getKey());
+        for(Map.Entry<ChunkPositionWithData, ClanClaimData> entry : claimDataMap.entrySet())
+            if(entry.getValue().clan.equals(clan))
+                claimDataMap.remove(entry.getKey());
         claimedChunks.get(clan).chunkDataFile.delete();
         return claimedChunks.remove(clan) != null;
         //TODO: Make sure the deleted clan is removed from Dynmap
@@ -165,7 +181,7 @@ public final class ClaimDataManager {
                 if(loadedData != null) {
                     claimedChunks.put(loadedData.clan, loadedData);
                     for(ChunkPositionWithData cPos : loadedData.chunks)
-                        chunkOwners.put(cPos, loadedData.clan);
+                        claimDataMap.put(cPos, loadedData);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -193,12 +209,12 @@ public final class ClaimDataManager {
                     for (int i = 0; i < claimedChunkMap.size(); i++) {
                         Set<ChunkPositionWithData> positions = Sets.newHashSet();
                         UUID clan = UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString());
+                        ClanClaimData newData = new ClanClaimData(clan);
                         for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray()) {
                             ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
-                            chunkOwners.put(pos, clan);
+                            claimDataMap.put(pos, newData);
                             positions.add(pos);
                         }
-                        ClanClaimData newData = new ClanClaimData(clan);
                         newData.chunks.addAll(positions);
                         claimedChunks.put(clan, newData);
                     }
@@ -218,7 +234,7 @@ public final class ClaimDataManager {
             data.save();
     }
 
-    private static class ClanClaimData {
+    public static class ClanClaimData {
         //region Internal variables
         private File chunkDataFile;
         private boolean isChanged, saving;
@@ -236,6 +252,10 @@ public final class ClaimDataManager {
         }
         //endregion
 
+        public void markChanged() {
+            isChanged = true;
+        }
+
         //region load
         @Nullable
         private static ClanClaimData load(File file) {
@@ -246,13 +266,13 @@ public final class ClaimDataManager {
                     JsonObject jsonObject = (JsonObject) obj;
                     UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
                     Set<ChunkPositionWithData> positions = Sets.newHashSet();
+                    ClanClaimData loadClanClaimData = new ClanClaimData(clan);
                     for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
                         ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                         pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
-                        chunkOwners.put(pos, clan);
+                        claimDataMap.put(pos, loadClanClaimData);
                         positions.add(pos);
                     }
-                    ClanClaimData loadClanClaimData = new ClanClaimData(clan);
                     loadClanClaimData.chunks.addAll(positions);
                 }
             } catch (FileNotFoundException e) {
@@ -275,9 +295,9 @@ public final class ClaimDataManager {
                 JsonArray positionArray = new JsonArray();
                 for(ChunkPositionWithData pos: chunks) {
                     JsonObject chunkPositionObject = new JsonObject();
-                    chunkPositionObject.addProperty("x", pos.posX);
-                    chunkPositionObject.addProperty("z", pos.posZ);
-                    chunkPositionObject.addProperty("d", pos.dim);
+                    chunkPositionObject.addProperty("x", pos.getPosX());
+                    chunkPositionObject.addProperty("z", pos.getPosZ());
+                    chunkPositionObject.addProperty("d", pos.getDim());
                     JsonHelper.attachAddonData(chunkPositionObject, pos.getAddonData());
                     positionArray.add(chunkPositionObject);
                 }

@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -45,7 +45,7 @@ public class CommandAccept extends ClanSubCommand {
 		if(acceptClan != null){
 			acceptClan.addMember(sender.getUniqueID());
 			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-				CapHelper.getPlayerClanCapability(sender).setDefaultClan(acceptClan.getClanId());
+				PlayerDataManager.setDefaultClan(sender.getUniqueID(), acceptClan.getClanId());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
 			acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanName());
 		} else

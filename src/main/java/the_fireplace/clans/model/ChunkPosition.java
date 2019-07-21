@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkPosition {
-    public final int posX;
-    public final int posZ;
-    public final int dim;
+    private final int posX;
+    private final int posZ;
+    private final int dim;
 
     public ChunkPosition(int x, int z, int d) {
         this.posX = x;
@@ -82,5 +82,17 @@ public class ChunkPosition {
         this.dim = obj.get("dim").getAsInt();
         this.posX = obj.get("posX").getAsInt();
         this.posZ = obj.get("posZ").getAsInt();
+    }
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getPosZ() {
+        return posZ;
+    }
+
+    public int getDim() {
+        return dim;
     }
 }

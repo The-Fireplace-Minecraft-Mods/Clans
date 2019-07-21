@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -81,7 +81,7 @@ public abstract class ClanSubCommand extends CommandBase {
 					playerClan = ClanCache.getClanByName(args[0]);
 					opSelectedClan = playerClan;
 				} else if(sender instanceof EntityPlayerMP)
-					playerClan = ClanCache.getClanById(CapHelper.getPlayerClanCapability((EntityPlayerMP) sender).getDefaultClan());
+					playerClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(((EntityPlayerMP) sender).getUniqueID()));
 				if(sender instanceof EntityPlayerMP) {
 					ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {

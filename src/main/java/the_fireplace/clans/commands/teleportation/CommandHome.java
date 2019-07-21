@@ -12,7 +12,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.model.OrderedPair;
@@ -53,7 +53,7 @@ public class CommandHome extends ClanSubCommand {
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
 
-		int cooldown = CapHelper.getPlayerClanCapability(sender).getCooldown();
+		int cooldown = PlayerDataManager.getCooldown(sender.getUniqueID());
 		if(cooldown <= 0) {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
@@ -87,7 +87,7 @@ public class CommandHome extends ClanSubCommand {
 			if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
 				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
 		} else
-			CapHelper.getPlayerClanCapability(player).setCooldown(Clans.getConfig().getClanHomeCooldownTime());
+			PlayerDataManager.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
 	}
 
 	private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {

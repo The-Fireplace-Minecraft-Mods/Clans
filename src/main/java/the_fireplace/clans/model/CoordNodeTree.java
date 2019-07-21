@@ -11,8 +11,8 @@ public class CoordNodeTree {
 
     public CoordNodeTree(int x, int z, int dim, UUID checkOwner) {
         for(ChunkPosition pos: ClaimDataManager.getChunks(checkOwner))
-            if((pos.posX != x || pos.posZ != z) && pos.dim == dim)
-                coordNodes.add(new OrderedPair<>(pos.posX, pos.posZ));
+            if((pos.getPosX() != x || pos.getPosZ() != z) && pos.getDim() == dim)
+                coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         if(!coordNodes.isEmpty())
             //noinspection unchecked
             activateNodeTree((OrderedPair<Integer, Integer>) coordNodes.toArray()[0]);

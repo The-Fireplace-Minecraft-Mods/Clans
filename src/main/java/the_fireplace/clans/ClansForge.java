@@ -38,11 +38,15 @@ public final class ClansForge {
 
     private static Logger LOGGER = FMLLog.log;
 
+    @Deprecated
     @CapabilityInject(ClaimedLandCapability.class)
     public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
+    @Deprecated
     private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
+    @Deprecated
     @CapabilityInject(PlayerClanCapability.class)
     public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
+    @Deprecated
     private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
 
     public static Logger getLogger() {
@@ -82,11 +86,13 @@ public final class ClansForge {
         ServerEventLogic.onServerStopping();
     }
 
+    @Deprecated
     @SubscribeEvent
     public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){
         attachClanTagCap(e);
     }
 
+    @Deprecated
     @SubscribeEvent
     public static void attachPlayerCaps(AttachCapabilitiesEvent<Entity> e){
         if(e.getObject() instanceof EntityPlayer) {
@@ -121,6 +127,7 @@ public final class ClansForge {
         }
     }
 
+    @Deprecated
     private static void attachClanTagCap(AttachCapabilitiesEvent e) {
         //noinspection ConstantConditions
         assert CLAIMED_LAND != null;

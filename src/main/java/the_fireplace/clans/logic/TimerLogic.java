@@ -9,8 +9,6 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.commands.land.CommandAbandonClaim;
-import the_fireplace.clans.commands.op.land.OpCommandAbandonClaim;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.Clan;
@@ -103,25 +101,26 @@ public class TimerLogic {
 
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
         Chunk c = player.getEntityWorld().getChunk(player.getPosition());
-        UUID chunkClan = ChunkUtils.getChunkOwner(c);
+        UUID chunkClanId = ChunkUtils.getChunkOwner(c);
         ArrayList<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
         UUID playerStoredClaimId = PlayerDataManager.getPreviousChunkOwner(player.getUniqueID());
-        if (chunkClan != null && ClanCache.getClanById(chunkClan) == null) {
+        Clan chunkClan = ClanCache.getClanById(chunkClanId);
+        if (chunkClanId != null && chunkClan == null) {
             ChunkUtils.clearChunkOwner(c);
-            chunkClan = null;
+            chunkClanId = null;
         }
 
-        if ((chunkClan != null && !chunkClan.equals(playerStoredClaimId)) || (chunkClan == null && playerStoredClaimId != null)) {
+        if ((chunkClanId != null && !chunkClanId.equals(playerStoredClaimId)) || (chunkClanId == null && playerStoredClaimId != null)) {
             if(ClanCache.getOpAutoAbandonClaims().containsKey(player.getUniqueID()))
-                OpCommandAbandonClaim.checkAndAttemptOpAbandon((EntityPlayerMP)player, ClanCache.getOpAutoAbandonClaims().get(player.getUniqueID()) ? new String[]{"force"} : new String[]{});
+                ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP)player, ClanDatabase.getOpClan(), true, ClanCache.getOpAutoAbandonClaims().get(player.getUniqueID()));
             if(ClanCache.getAutoAbandonClaims().containsKey(player.getUniqueID()))
-                CommandAbandonClaim.checkAndAttemptAbandon((EntityPlayerMP)player, ClanCache.getAutoAbandonClaims().get(player.getUniqueID()));
+                ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP)player, ClanCache.getAutoAbandonClaims().get(player.getUniqueID()), false, false);
             if(ClanCache.getOpAutoClaimLands().containsKey(player.getUniqueID()))
                 ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP)player, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue1(), true, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()).getValue2());
             if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
                 ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()), false, false);
 
-            handleTerritoryChangedMessage(player, chunkClan, playerClans);
+            handleTerritoryChangedMessage(player, chunkClanId, playerClans);
         } else if (Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() != 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
             handleDepthChangedMessage(player);
         }

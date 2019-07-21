@@ -10,17 +10,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.api.event.ClanFormedEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.forge.legacy.PlayerClanCapability;
+import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.util.ClansEventManager;
 import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Clan {
@@ -58,6 +64,7 @@ public class Clan {
         do{
             this.clanId = UUID.randomUUID();
         } while(!ClanDatabase.addClan(this.clanId, this));
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
         Clans.getPaymentHandler().ensureAccountExists(clanId);
     
         // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
@@ -68,7 +75,7 @@ public class Clan {
         ClanCache.addPlayerClan(leader, this);
         if(!Clans.getConfig().isAllowMultiClanMembership())
             ClanCache.removeInvite(leader);
-        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
+        ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         isChanged = true;
     }
 
@@ -80,11 +87,12 @@ public class Clan {
         this.description = TranslationUtil.getStringTranslation("clan.default_opclan_description");
         this.members = Maps.newHashMap();
         this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
         if(!ClanDatabase.addClan(this.clanId, this))
             Clans.getMinecraftHelper().getLogger().error("Unable to add opclan to the clan database!");
         this.isOpclan = true;
+        ClansEventManager.fireEvent(new ClanFormedEvent(null, this));
         isChanged = true;
-        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
 
     //region JsonObject conversions
@@ -484,6 +492,25 @@ public class Clan {
         return TextFormatting.fromColorIndex(textColor);
     }
 
+    /**
+     * Sets addon data for this clan
+     * @param key
+     * The key you are giving this data. It should be unique
+     * @param value
+     * The data itself. This should be a primitive, string, a list or map containg only lists/maps/primitives/strings, or a JsonElement. If not, your data may not save/load properly. All lists will be loaded as ArrayLists. All maps will be loaded as HashMaps.
+     */
+    public void setCustomData(String key, Object value) {
+        if(!value.getClass().isPrimitive() && !value.getClass().isAssignableFrom(BigDecimal.class) && !value.getClass().isAssignableFrom(List.class) && !value.getClass().isAssignableFrom(Map.class) && !value.getClass().isAssignableFrom(JsonElement.class))
+            Clans.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
+        addonData.put(key, value);
+        markChanged();
+    }
+
+    @Nullable
+    public Object getCustomData(String key) {
+        return addonData.get(key);
+    }
+
     //region disband
     /**
      * Disbands a clan and unregisters cache for it where needed.
@@ -518,10 +545,10 @@ public class Clan {
             Clans.getPaymentHandler().ensureAccountExists(member);
             if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
                 rem += this.payLeaders(distFunds);
+            PlayerDataManager.updateDefaultClan(member, getClanId());
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
             if (player != null) {
-                PlayerClanCapability.updateDefaultClan(player, this);
                 if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), disbandMessageTranslationKey, translationArgs).setStyle(TextStyles.YELLOW));
             }

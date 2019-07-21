@@ -145,9 +145,9 @@ public class DynmapCompat implements IDynmapCompat {
         for(Clan clan: ClaimDataManager.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
             for(ChunkPosition chunk: ClaimDataManager.getChunks(clan.getClanId()))
-                if(!addedDims.contains(chunk.dim)) {
-                    teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.dim, clan.getClanName(), clan.getDescription(), clan.getColor()));
-                    addedDims.add(chunk.dim);
+                if(!addedDims.contains(chunk.getDim())) {
+                    teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
+                    addedDims.add(chunk.getDim());
                 }
         }
 

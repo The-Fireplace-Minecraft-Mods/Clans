@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.forge.legacy.CapHelper;
+import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -72,7 +72,7 @@ public class CommandForm extends ClanSubCommand {
 				if (Clans.getPaymentHandler().deductAmount(Clans.getConfig().getFormClanCost(), sender.getUniqueID())) {
 					Clan c = new Clan(newClanName, sender.getUniqueID(), banner);
 					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-						CapHelper.getPlayerClanCapability(sender).setDefaultClan(c.getClanId());
+						PlayerDataManager.setDefaultClan(sender.getUniqueID(), c.getClanId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", Clans.getConfig().getFormClanCost(), Clans.getPaymentHandler().getCurrencyName(Clans.getConfig().getFormClanCost())).setStyle(TextStyles.RED));

@@ -2,17 +2,18 @@ package the_fireplace.clans.data;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
 
 public final class PlayerDataManager {
 
@@ -211,6 +212,27 @@ public final class PlayerDataManager {
                 this.cooldown = cooldown;
                 isChanged = true;
             }
+        }
+        //endregion
+
+        //region Addon Data
+        /**
+         * Sets addon data for this chunk
+         * @param key
+         * The key you are giving this data. It should be unique
+         * @param value
+         * The data itself. This should be a primitive, string, a list or map containg only lists/maps/primitives/strings, or a JsonElement. If not, your data may not save/load properly. All lists will be loaded as ArrayLists. All maps will be loaded as HashMaps.
+         */
+        public void setCustomData(String key, Object value) {
+            if(!value.getClass().isPrimitive() && !value.getClass().isAssignableFrom(BigDecimal.class) && !value.getClass().isAssignableFrom(List.class) && !value.getClass().isAssignableFrom(Map.class) && !value.getClass().isAssignableFrom(JsonElement.class))
+                Clans.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
+            addonData.put(key, value);
+            isChanged = true;
+        }
+
+        @Nullable
+        public Object getCustomData(String key) {
+            return addonData.get(key);
         }
         //endregion
     }

@@ -6,8 +6,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Sponge;
-import the_fireplace.clans.abstraction.IMinecraftHelper;
 import the_fireplace.clans.ClansSponge;
+import the_fireplace.clans.abstraction.IMinecraftHelper;
 
 import javax.annotation.Nullable;
 

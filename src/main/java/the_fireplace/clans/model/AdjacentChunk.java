@@ -59,10 +59,10 @@ class AdjacentChunk {
      * @param processedChunks A list of chunks that have been found and processed already.
      */
     void processAdjacentChunks(Set<ChunkPosition> availableChunks, Map<ChunkPosition, AdjacentChunk> processedChunks) {
-        ChunkPosition[] adjacentPos = { new ChunkPosition(loc.posX, loc.posZ - 1, loc.dim),
-                new ChunkPosition(loc.posX, loc.posZ + 1, loc.dim),
-                new ChunkPosition(loc.posX - 1, loc.posZ, loc.dim),
-                new ChunkPosition(loc.posX + 1, loc.posZ, loc.dim)
+        ChunkPosition[] adjacentPos = { new ChunkPosition(loc.getPosX(), loc.getPosZ() - 1, loc.getDim()),
+                new ChunkPosition(loc.getPosX(), loc.getPosZ() + 1, loc.getDim()),
+                new ChunkPosition(loc.getPosX() - 1, loc.getPosZ(), loc.getDim()),
+                new ChunkPosition(loc.getPosX() + 1, loc.getPosZ(), loc.getDim())
         };
 
         AdjacentChunk[] adjacentChunks = { null, null, null, null };

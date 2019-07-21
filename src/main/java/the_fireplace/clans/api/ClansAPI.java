@@ -7,6 +7,13 @@ import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.api.event.IClansEventHandler;
 import the_fireplace.clans.util.ClansEventManager;
 
+
+/**
+ * Several useful files for accessing data are:
+ * {@link the_fireplace.clans.cache.ClanCache}
+ * {@link the_fireplace.clans.data.PlayerDataManager}
+ * {@link the_fireplace.clans.data.ClaimDataManager}
+ */
 public final class ClansAPI {
     public static IMinecraftHelper getMinecraftHelper() {
         return Clans.getMinecraftHelper();

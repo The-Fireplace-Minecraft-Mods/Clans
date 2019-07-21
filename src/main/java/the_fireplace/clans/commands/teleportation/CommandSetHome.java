@@ -9,7 +9,8 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.ClansForge;
+import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -18,7 +19,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
-import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -46,7 +46,7 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(c.hasCapability(ClansForge.CLAIMED_LAND, null) && selectedClan.getClanId().equals(Objects.requireNonNull(c.getCapability(ClansForge.CLAIMED_LAND, null)).getClan())) {
+		if(selectedClan.getClanId().equals(ClaimDataManager.getChunkClanId(new ChunkPositionWithData(c)))) {
 			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
 				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.getConfig().getMinClanHomeDist()) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", Clans.getConfig().getMinClanHomeDist()).setStyle(TextStyles.RED));

@@ -6,7 +6,10 @@ import com.google.gson.*;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class JsonHelper {
     public static void attachAddonData(JsonObject obj, HashMap<String, Object> addonDataMap) {
