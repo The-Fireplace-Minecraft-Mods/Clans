@@ -50,7 +50,7 @@ public final class ClaimDataManager {
         if(!isLoaded)
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
-        claimedChunks.get(clan.getClanId()).chunks.add(pos);
+        claimedChunks.get(clan.getClanId()).addChunk(pos);
         claimDataMap.put(pos, claimedChunks.get(clan.getClanId()));
         Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
         claimedChunks.get(clan.getClanId()).isChanged = true;
@@ -83,7 +83,7 @@ public final class ClaimDataManager {
             load();
         claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimDataMap.remove(pos);
-        if(claimedChunks.get(clan.getClanId()).chunks.remove(pos)) {
+        if(claimedChunks.get(clan.getClanId()).delChunk(pos)) {
             Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
             claimedChunks.get(clan.getClanId()).isChanged = true;
         }
@@ -132,14 +132,16 @@ public final class ClaimDataManager {
     public static UUID getChunkClanId(int x, int z, int dim) {
         if(!isLoaded)
             load();
-        return claimDataMap.get(new ChunkPositionWithData(x, z, dim)).clan;
+        ClanClaimData data = claimDataMap.get(new ChunkPositionWithData(x, z, dim));
+        return data != null ? data.clan : null;
     }
 
     @Nullable
     public static UUID getChunkClanId(ChunkPositionWithData position) {
         if(!isLoaded)
             load();
-        return claimDataMap.get(position).clan;
+        ClanClaimData data = claimDataMap.get(position);
+        return data != null ? data.clan : null;
     }
 
     @Nullable
@@ -210,6 +212,7 @@ public final class ClaimDataManager {
                         Set<ChunkPositionWithData> positions = Sets.newHashSet();
                         UUID clan = UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString());
                         ClanClaimData newData = new ClanClaimData(clan);
+                        newData.isChanged = false;
                         for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray()) {
                             ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                             claimDataMap.put(pos, newData);
@@ -249,6 +252,7 @@ public final class ClaimDataManager {
         private ClanClaimData(UUID clan) {
             chunkDataFile = new File(chunkDataLocation, clan.toString()+".json");
             this.clan = clan;
+            isChanged = true;
         }
         //endregion
 
@@ -267,6 +271,7 @@ public final class ClaimDataManager {
                     UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
                     Set<ChunkPositionWithData> positions = Sets.newHashSet();
                     ClanClaimData loadClanClaimData = new ClanClaimData(clan);
+                    loadClanClaimData.isChanged = false;
                     for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
                         ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                         pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
@@ -312,6 +317,20 @@ public final class ClaimDataManager {
                 }
                 saving = isChanged = false;
             }).run();
+        }
+
+        public boolean addChunk(ChunkPositionWithData pos) {
+            isChanged = true;
+            return chunks.add(pos);
+        }
+
+        public boolean delChunk(ChunkPositionWithData pos) {
+            isChanged = true;
+            return chunks.remove(pos);
+        }
+
+        public Set<ChunkPositionWithData> getChunks() {
+            return chunks;
         }
         //endregion
     }

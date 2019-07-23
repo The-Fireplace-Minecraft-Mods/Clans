@@ -22,9 +22,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'net.cazzar.gradle.modsio'
 
-version = "1.3.0a7"
+version = "1.3.0a9"
 group = "the_fireplace.clans"
-archivesBaseName = "ClansForge-1.12.2"
+archivesBaseName = "Clans-1.12.2"
 
 allprojects {
     sourceCompatibility = 1.8
