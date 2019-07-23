@@ -212,7 +212,6 @@ public final class ClaimDataManager {
                         Set<ChunkPositionWithData> positions = Sets.newHashSet();
                         UUID clan = UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString());
                         ClanClaimData newData = new ClanClaimData(clan);
-                        newData.isChanged = false;
                         for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray()) {
                             ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                             claimDataMap.put(pos, newData);
