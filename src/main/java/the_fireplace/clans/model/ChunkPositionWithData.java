@@ -14,7 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A ChunkPosition with data attached. Note that because of the way these are stored and loaded, the attached data is wiped when a chunk is abandoned or changes owners. This is intentional.
+ * Two ChunkPositions may have different data but the same x,z,d coordinates, and they will still be considered equal. This is also intentional.
+ */
 public class ChunkPositionWithData extends ChunkPosition {
+    private boolean isBorderland;
     private HashMap<String, Object> addonData = Maps.newHashMap();
 
     public HashMap<String, Object> getAddonData() {
@@ -100,5 +105,21 @@ public class ChunkPositionWithData extends ChunkPosition {
     public ChunkPositionWithData(JsonObject obj){
         super(obj);
         addonData = JsonHelper.getAddonData(obj);
+    }
+
+    public boolean isBorderland() {
+        return isBorderland;
+    }
+
+    public void setBorderland(boolean borderland) {
+        isBorderland = borderland;
+    }
+
+    /**
+     * Marks the chunk as borderland. Designed for easy daisy chaining.
+     */
+    public ChunkPositionWithData setIsBorderland() {
+        isBorderland = true;
+        return this;
     }
 }

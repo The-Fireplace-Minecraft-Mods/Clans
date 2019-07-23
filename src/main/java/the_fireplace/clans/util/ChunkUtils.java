@@ -140,7 +140,7 @@ public class ChunkUtils {
 				
 			case "smart":
 			default:
-				return !new CoordNodeTree(c.x, c.z, c.getWorld().provider.getDimension(), checkOwner).hasDetachedNodes();
+				return !new CoordNodeTree(c.x, c.z, c.getWorld().provider.getDimension(), checkOwner).forDisconnectionCheck().hasDetachedNodes();
 		}
 	}
 

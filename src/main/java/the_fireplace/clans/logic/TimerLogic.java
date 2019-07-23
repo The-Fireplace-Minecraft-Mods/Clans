@@ -91,6 +91,7 @@ public class TimerLogic {
                         clan.updateNextUpkeepTimeStamp();
                 }
             }
+        ClaimDataManager.decrementBorderlandsRegenTimers();
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
