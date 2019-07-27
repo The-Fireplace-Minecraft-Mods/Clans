@@ -41,33 +41,27 @@ public class LandProtectionEventLogic {
     public static boolean onBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
         if(!world.isRemote) {
             Chunk c = world.getChunk(pos);
-            UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-            if (chunkOwner != null) {
-                Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                if (chunkClan != null) {
-                    if (breaker instanceof EntityPlayerMP) {
-                        ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breaker.getUniqueID());
-                        boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
-                        if (Clans.getConfig().allowBreakProtection() && !ClanCache.isClaimAdmin((EntityPlayerMP) breaker) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(breaker)) {
-                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed").setStyle(TextStyles.RED));
+            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            if (chunkClan != null) {
+                if (breaker instanceof EntityPlayerMP) {
+                    ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breaker.getUniqueID());
+                    boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
+                    if (Clans.getConfig().allowBreakProtection() && !ClanCache.isClaimAdmin((EntityPlayerMP) breaker) && (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !RaidingParties.preparingRaidOnBorderland(breaker, chunkClan, c) && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(breaker)) {
+                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.break.borderland" : "clans.protection.break.claimed").setStyle(TextStyles.RED));
+                        return true;
+                    } else if (isRaided && !ChunkUtils.isBorderland(c)) {
+                        IBlockState targetState = world.getBlockState(pos);
+                        if (targetState.getBlock().hasTileEntity(targetState)) {
+                            if(ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
+                                breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
+                            else
+                                breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
                             return true;
-                        } else if (isRaided) {
-                            IBlockState targetState = world.getBlockState(pos);
-                            if (targetState.getBlock().hasTileEntity(targetState)) {
-                                if(ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
-                                    breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
-                                else
-                                    breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
-                                return true;
-                            } else
-                                RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-                        }
+                        } else
+                            RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     }
-                    return false;
-                } else {
-                    //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-                    ChunkUtils.clearChunkOwner(c);
                 }
+                return false;
             }
             if (Clans.getConfig().allowBreakProtection() && Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(breaker) && (!(breaker instanceof EntityPlayerMP) || (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker) && !PermissionManager.hasPermission((EntityPlayerMP)breaker, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
                 breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
@@ -80,18 +74,12 @@ public class LandProtectionEventLogic {
     public static boolean onCropTrampled(World world, BlockPos pos, @Nullable EntityPlayer breakingPlayer) {
         if(!world.isRemote && Clans.getConfig().allowBreakProtection()) {
             Chunk c = world.getChunk(pos);
-            UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-            if (chunkOwner != null) {
-                Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                if (chunkClan != null) {
-                    if (breakingPlayer != null) {
-                        ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
-                        boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
-                        return (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided;
-                    }
-                } else {
-                    //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-                    ChunkUtils.clearChunkOwner(c);
+            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            if (chunkClan != null) {
+                if (breakingPlayer != null) {
+                    ArrayList<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
+                    boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breakingPlayer);
+                    return (playerClans.isEmpty() || !playerClans.contains(chunkClan)) && !isRaided && !RaidingParties.preparingRaidOnBorderland(breakingPlayer, chunkClan, c);
                 }
             }
         }
@@ -101,29 +89,23 @@ public class LandProtectionEventLogic {
     public static boolean onBlockPlaced(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand, Block placedBlock) {
         if(!world.isRemote) {
             Chunk c = world.getChunk(pos);
-            UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (placer instanceof EntityPlayerMP) {
-                if (chunkOwner != null) {
-                    Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                    if (chunkClan != null) {
-                        ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placer.getUniqueID());
-                        if (Clans.getConfig().allowPlaceProtection() && (!ClanCache.isClaimAdmin((EntityPlayerMP) placer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placer)))) && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer)) {
-                            if(((EntityPlayerMP) placer).connection != null)
-                                ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
-                            placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), "clans.protection.place.territory").setStyle(TextStyles.RED));
-                            return true;
-                        } else if (RaidingParties.hasActiveRaid(chunkClan)) {
-                            ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
-                            out.setCount(1);
-                            if(!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
-                                RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placer.getUniqueID(), out);
-                            RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
-                        }
+                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+                if (chunkClan != null) {
+                    ArrayList<Clan> playerClans = ClanCache.getPlayerClans(placer.getUniqueID());
+                    if (Clans.getConfig().allowPlaceProtection() && (!ClanCache.isClaimAdmin((EntityPlayerMP) placer) && (playerClans.isEmpty() || (!playerClans.contains(chunkClan) && !RaidingParties.isRaidedBy(chunkClan, placer) && !RaidingParties.preparingRaidOnBorderland(placer, chunkClan, c)))) && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer)) {
+                        if(((EntityPlayerMP) placer).connection != null)
+                            ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
+                        placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.place.borderland" : "clans.protection.place.territory").setStyle(TextStyles.RED));
+                        return true;
+                    } else if (RaidingParties.hasActiveRaid(chunkClan)) {
+                        ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
+                        out.setCount(1);
+                        if(!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
+                            RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placer.getUniqueID(), out);
+                        RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
                     }
                     return false;
-                } else {
-                    //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-                    ChunkUtils.clearChunkOwner(c);
                 }
                 if (Clans.getConfig().allowPlaceProtection() && !ClanCache.isClaimAdmin((EntityPlayerMP) placer) && (!PermissionManager.permissionManagementExists() || !PermissionManager.hasPermission((EntityPlayerMP)placer, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness")) && Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer)) {
                     if(((EntityPlayerMP) placer).connection != null)
@@ -153,26 +135,20 @@ public class LandProtectionEventLogic {
     public static boolean rightClickBlock(World world, BlockPos pos, EntityPlayer player, ItemStack heldItem) {
         if(!world.isRemote && Clans.getConfig().allowInteractionProtection()) {
             Chunk c = world.getChunk(pos);
-            UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-            if (chunkOwner != null) {
-                Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                if (chunkClan != null) {
-                    if (player instanceof EntityPlayerMP) {
-                        ArrayList<Clan> playerClan = ClanCache.getPlayerClans(player.getUniqueID());
-                        IBlockState targetState = world.getBlockState(pos);
-                        if (!ClanCache.isClaimAdmin((EntityPlayerMP) player) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && (!RaidingParties.isRaidedBy(chunkClan, player) || targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)) {
-                            if (!(heldItem.getItem() instanceof ItemBlock)) {
-                                cancelBlockInteraction(world, pos, player, targetState);
-                                return true;
-                            } else if (targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg) {
-                                cancelBlockInteraction(world, pos, player, targetState);
-                                return true;
-                            }
+            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            if (chunkClan != null) {
+                if (player instanceof EntityPlayerMP) {
+                    ArrayList<Clan> playerClan = ClanCache.getPlayerClans(player.getUniqueID());
+                    IBlockState targetState = world.getBlockState(pos);
+                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) player) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c) && (!RaidingParties.isRaidedBy(chunkClan, player) || targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)) {
+                        if (!(heldItem.getItem() instanceof ItemBlock)) {
+                            cancelBlockInteraction(world, pos, player, targetState);
+                            return true;
+                        } else if (targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg) {
+                            cancelBlockInteraction(world, pos, player, targetState);
+                            return true;
                         }
                     }
-                } else {
-                    //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-                    ChunkUtils.clearChunkOwner(c);
                 }
             }
         }
@@ -200,7 +176,7 @@ public class LandProtectionEventLogic {
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
                 IBlockState targetState = world.getBlockState(pos);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
                         RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     else if (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
                         removeBlocks.add(pos);
@@ -208,8 +184,7 @@ public class LandProtectionEventLogic {
                     removeBlocks.add(pos);
             }
             if(Clans.getConfig().allowBreakProtection())
-                for (BlockPos pos : removeBlocks)
-                    affectedBlocks.remove(pos);
+                affectedBlocks.removeAll(removeBlocks);
             if(Clans.getConfig().allowInjuryProtection()) {
                 ArrayList<Entity> removeEntities = Lists.newArrayList();
                 for (Entity entity : affectedEntities) {
@@ -218,12 +193,11 @@ public class LandProtectionEventLogic {
                         UUID chunkOwner = ChunkUtils.getChunkOwner(c);
                         Clan chunkClan = ClanCache.getClanById(chunkOwner);
                         ArrayList<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
-                        if (chunkClan != null && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
+                        if (chunkClan != null && !ChunkUtils.isBorderland(c) && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
                             removeEntities.add(entity);
                     }
                 }
-                for (Entity entity : removeEntities)
-                    affectedEntities.remove(entity);
+                affectedEntities.removeAll(removeEntities);
             }
         }
         return false;
@@ -233,7 +207,7 @@ public class LandProtectionEventLogic {
         if(!target.getEntityWorld().isRemote && Clans.getConfig().allowInjuryProtection()) {
             Chunk c = target.getEntityWorld().getChunk(target.getPosition());
             Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
-            if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null)
+            if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(c))
                 return false;
             if(target instanceof EntityPlayer || (target instanceof EntityTameable && ((EntityTameable) target).getOwnerId() != null)) {
                 ArrayList<Clan> entityClans = target instanceof EntityPlayer ? ClanCache.getPlayerClans(target.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) target).getOwnerId());
@@ -261,10 +235,6 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean onEntitySpawn(World world, Entity entity) {
-        if(Clans.getConfig().isPreventMobsOnClaims() && !world.isRemote && entity instanceof IMob) {
-            if(ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension) != null)
-                return true;
-        }
-        return false;
+        return Clans.getConfig().isPreventMobsOnClaims() && !world.isRemote && entity instanceof IMob && ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension) != null && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimDataManager.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland());
     }
 }

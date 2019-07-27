@@ -85,7 +85,7 @@ public class PlayerEventLogic {
             member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
     }
 
-    public static float breakSpeed(EntityPlayer player, float oldSpeed) {
+    public static float breakSpeed(EntityPlayer player, float oldSpeed) {//TODO should borderlands be impacted by this?
         if(RaidingParties.isRaidedBy(ClaimDataManager.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
             return oldSpeed * (float)Clans.getConfig().getRaidBreakSpeedMultiplier();
         }

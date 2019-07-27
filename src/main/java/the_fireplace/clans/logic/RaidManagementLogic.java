@@ -31,6 +31,8 @@ public class RaidManagementLogic {
             Chunk c = world.getChunk(pos);
             UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (chunkOwner != null) {
+                if(ChunkUtils.isBorderland(c))
+                    return false;
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
                 if (chunkClan != null && RaidingParties.hasActiveRaid(chunkClan)) {
                     return true;
@@ -147,7 +149,7 @@ public class RaidManagementLogic {
 
     public static boolean shouldCancelFallingBlockCreation(EntityFallingBlock entity) {
         Clan owningClan = ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
-        return owningClan != null && RaidingParties.hasActiveRaid(owningClan);//TODO monitor where it goes rather than just preventing it from falling
+        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimDataManager.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland();//TODO monitor where it goes rather than just preventing it from falling
     }
 
     private static void doSlimePush(World world, EnumFacing facing, BlockPos newPos, EnumFacing shiftDir) {

@@ -278,14 +278,17 @@ commands.raid.start.raiding=The raid has already been started.
 commands.raid.start.error=Internal Error: Another raiding party is raiding this clan right now. Try again in %s hours. Server owners, please report this.
 
 clans.protection.break.claimed=You cannot break blocks in another clan's territory.
+clans.protection.break.borderland=You cannot break blocks this close to another clan's territory.
 clans.protection.break.raid=You cannot break this block during a raid. Please wait until the raid is completed and try again.
 clans.protection.break.claimed_raid=You cannot break this block while in another clan's territory.
 clans.protection.break.wilderness=You cannot break blocks in Wilderness.
 
 clans.protection.place.territory=You cannot place blocks in another clan's territory.
+clans.protection.place.borderland=You cannot place blocks this close to another clan's territory.
 clans.protection.place.wilderness=You cannot place blocks in Wilderness.
 
 clans.protection.interact.territory=You cannot interact with blocks in another clan's territory.
+clans.protection.interact.borderland=You cannot interact with blocks this close to another clan's territory.
 
 clans.rent.kicked=You have been kicked out of %s due to inability to pay rent.
 
@@ -299,6 +302,7 @@ clans.territory.entrydesc=~%s
 clans.territory.unclaimed=This land is not claimed.
 clans.territory.protected=This land is not claimed, and is protected.
 clans.territory.clanterritory=%s's territory
+clans.territory.borderland=%s's borderlands
 
 clans.raid.glowing.defender=The raid against %s has %s minutes remaining. You will glow until the raid ends. There are %s raiders still alive.
 clans.raid.glowing.attacker=The raid against %s has %s minutes remaining. The %s remaining defending players will glow until the raid ends.

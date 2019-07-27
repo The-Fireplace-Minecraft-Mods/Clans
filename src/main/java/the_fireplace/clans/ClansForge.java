@@ -226,8 +226,6 @@ public final class ClansForge {
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
-        @Config.Comment("Protect borderland from the members of the clan it borders. Requires protectWilderness and enableBorderlands.")
-        public static boolean protectEdgeTerritory = false;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
         @Config.Comment("Always allow TNT to ignite other TNT, regardless of whether other blocks are protected.")
@@ -405,10 +403,6 @@ public final class ClansForge {
 
         public boolean isProtectWilderness() {
             return ClansForge.cfg.protectWilderness;
-        }
-
-        public boolean isProtectEdgeTerritory() {
-            return ClansForge.cfg.protectEdgeTerritory;
         }
 
         public int getMinWildernessY() {

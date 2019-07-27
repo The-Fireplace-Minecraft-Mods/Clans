@@ -13,6 +13,7 @@ import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
+import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -58,6 +59,12 @@ public final class RaidingParties {
 		return Sets.newHashSet(activeraids.values());
 	}
 
+	public static boolean aboutToBeRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
+		if(player == null || c == null)
+			return false;
+		return isPreparingRaid(c) && raids.get(c).getAttackers().contains(player.getUniqueID());
+	}
+
 	public static boolean isRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
 		if(player == null || c == null)
 			return false;
@@ -90,6 +97,14 @@ public final class RaidingParties {
 			} else
 				bufferTimes.put(entry.getKey(), entry.getValue() - 1);
 		}
+	}
+
+	/**
+	 * @return
+	 * true if the given player is about to raid the given clan, and the given chunk is borderland. This does NOT check if the given chunk belongs to the given clan.
+	 */
+	public static boolean preparingRaidOnBorderland(EntityPlayer player, Clan clan, Chunk land) {
+		return RaidingParties.aboutToBeRaidedBy(clan, player) && ChunkUtils.isBorderland(land);
 	}
 
 	public static boolean isPreparingRaid(Clan targetClan) {

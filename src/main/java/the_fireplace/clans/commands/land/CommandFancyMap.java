@@ -65,6 +65,8 @@ public class CommandFancyMap extends ClanSubCommand {
 					Clan clan = ClaimDataManager.getChunkClan(x, z, sender.getServerWorld().provider.getDimension());
 					if(clan == null)
 						row.append(wildernessColor).append('-');
+					else if(ClaimDataManager.getChunkPositionData(x, z, sender.getServerWorld().provider.getDimension()).isBorderland())
+						row.append('§').append(Integer.toHexString(clan.getTextColor().getColorIndex())).append('-');
 					else {
 						if (!symbolMap.containsKey(clan.getClanId()))
 							symbolMap.put(clan.getClanId(), mapchars[symbolMap.size() % mapchars.length]);

@@ -5,10 +5,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.model.ChunkPositionWithData;
-import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.ClanDimInfo;
-import the_fireplace.clans.model.CoordNodeTree;
+import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -135,6 +132,19 @@ public final class ClaimDataManager {
         delChunk(getChunkClanId(pos), pos);
     }
     //endregion
+
+    @Nullable
+    public static ChunkPositionWithData getChunkPositionData(int x, int z, int d) {
+        return getChunkPositionData(new ChunkPosition(x, z, d));
+    }
+
+    @Nullable
+    public static ChunkPositionWithData getChunkPositionData(ChunkPosition pos) {
+        for(ChunkPositionWithData pos2 : claimDataMap.keySet())
+            if(pos2.equals(pos))
+                return pos2;
+        return null;
+    }
 
     @Nullable
     public static Clan getChunkClan(int x, int z, int dim) {

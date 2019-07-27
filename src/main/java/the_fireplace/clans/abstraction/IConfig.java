@@ -43,8 +43,6 @@ public interface IConfig {
 
     boolean isProtectWilderness();
 
-    boolean isProtectEdgeTerritory();
-
     int getMinWildernessY();
 
     boolean isChainTNT();

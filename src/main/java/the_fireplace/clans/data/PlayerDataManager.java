@@ -35,6 +35,10 @@ public final class PlayerDataManager {
         return getPlayerData(player).prevChunkOwner;
     }
 
+    public static boolean getStoredIsInBorderland(UUID player) {
+        return getPlayerData(player).isInBorderland;
+    }
+
     public static boolean getClaimWarning(UUID player) {
         return getPlayerData(player).claimWarning;
     }
@@ -79,8 +83,10 @@ public final class PlayerDataManager {
     //endregion
 
     //region cached data setters
-    public static void setPreviousChunkOwner(UUID player, @Nullable UUID prevChunkOwner) {
-        getPlayerData(player).prevChunkOwner = prevChunkOwner;
+    public static void setPreviousChunkOwner(UUID player, @Nullable UUID prevChunkOwner, boolean isBorderland) {
+        PlayerData data = getPlayerData(player);
+        data.prevChunkOwner = prevChunkOwner;
+        data.isInBorderland = isBorderland;
     }
 
     public static void setClaimWarning(UUID player, boolean claimWarning) {
@@ -131,7 +137,7 @@ public final class PlayerDataManager {
         //region Cache variables
         @Nullable
         private UUID prevChunkOwner;
-        private boolean claimWarning;
+        private boolean claimWarning, isInBorderland;
         private int prevY, prevChunkX, prevChunkZ;
         //endregion
 

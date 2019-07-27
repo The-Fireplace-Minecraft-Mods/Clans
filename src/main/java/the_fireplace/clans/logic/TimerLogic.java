@@ -12,10 +12,7 @@ import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
-import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.model.OrderedPair;
-import the_fireplace.clans.model.Raid;
+import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
@@ -95,7 +92,7 @@ public class TimerLogic {
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
-        if(Clans.getConfig().isPreventMobsOnClaims() && ClanCache.getClanById(ClaimDataManager.getChunkClanId(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)) != null)
+        if(Clans.getConfig().isPreventMobsOnClaims() && ClaimDataManager.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension) != null && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimDataManager.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland()))
             mob.setDead();
     }
 
@@ -112,12 +109,15 @@ public class TimerLogic {
         ArrayList<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
         UUID playerStoredClaimId = PlayerDataManager.getPreviousChunkOwner(player.getUniqueID());
         Clan chunkClan = ClanCache.getClanById(chunkClanId);
+        ChunkPositionWithData data = ClaimDataManager.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
+        boolean isInBorderland = data != null && data.isBorderland();
+        boolean playerStoredIsInBorderland = PlayerDataManager.getStoredIsInBorderland(player.getUniqueID());
         if (chunkClanId != null && chunkClan == null) {
             ChunkUtils.clearChunkOwner(c);
             chunkClanId = null;
         }
 
-        if ((chunkClanId != null && !chunkClanId.equals(playerStoredClaimId)) || (chunkClanId == null && playerStoredClaimId != null)) {
+        if ((chunkClanId != null && !chunkClanId.equals(playerStoredClaimId)) || (chunkClanId == null && playerStoredClaimId != null) || (isInBorderland != playerStoredIsInBorderland)) {
             if(ClanCache.getOpAutoAbandonClaims().containsKey(player.getUniqueID()))
                 ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP)player, ClanDatabase.getOpClan(), true, ClanCache.getOpAutoAbandonClaims().get(player.getUniqueID()));
             if(ClanCache.getAutoAbandonClaims().containsKey(player.getUniqueID()))
@@ -127,7 +127,7 @@ public class TimerLogic {
             if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
                 ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()), false, false);
 
-            handleTerritoryChangedMessage(player, chunkClanId, playerClans);
+            handleTerritoryChangedMessage(player, chunkClan, playerClans, isInBorderland);
         } else if (Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() != 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
             handleDepthChangedMessage(player);
         }
@@ -154,17 +154,16 @@ public class TimerLogic {
         PlayerDataManager.setPreviousY(player.getUniqueID(), curY);
     }
 
-    private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable UUID chunkClanId, ArrayList<Clan> playerClans) {
-        PlayerDataManager.setPreviousChunkOwner(player.getUniqueID(), chunkClanId);
+    private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, ArrayList<Clan> playerClans, boolean isBorderland) {
+        PlayerDataManager.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanId() : null, isBorderland);
         Style color = TextStyles.GREEN;
-        Clan chunkClan = ClanCache.getClanById(chunkClanId);
-        if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClanId != null))
+        if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
             color = TextStyles.YELLOW;
-        if (chunkClanId == null)
+        if (chunkClan == null)
             color = TextStyles.DARK_GREEN;
         String territoryName;
         String territoryDesc;
-        if (chunkClanId == null) {
+        if (chunkClan == null) {
             if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < Clans.getConfig().getMinWildernessY())) {
                 territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
                 territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
@@ -176,14 +175,17 @@ public class TimerLogic {
                 } else
                     territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
             }
+        } else if(isBorderland) {
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", chunkClan.getClanName());
+            territoryDesc = "";
         } else {
-            assert chunkClan != null;
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", chunkClan.getClanName());
             territoryDesc = chunkClan.getDescription();
         }
 
         player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color));
-        player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
+        if(!territoryDesc.isEmpty())
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
     }
 
     private static void handleClaimWarning(EntityPlayerMP player) {

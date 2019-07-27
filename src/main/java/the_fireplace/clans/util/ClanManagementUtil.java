@@ -142,8 +142,8 @@ public class ClanManagementUtil {
 
     public static boolean abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, Clan targetClan) {
         boolean allowed = true;
-        for (Chunk checkChunk : ChunkUtils.getConnectedClaims(c, targetClan.getClanId())) {
-            if (ChunkUtils.getConnectedClaims(checkChunk, targetClan.getClanId()).equals(Lists.newArrayList(c))) {
+        for (Chunk checkChunk : ChunkUtils.getConnectedClaimChunks(c, targetClan.getClanId())) {
+            if (ChunkUtils.getConnectedClaimChunks(checkChunk, targetClan.getClanId()).equals(Lists.newArrayList(c))) {
                 allowed = false;
                 break;
             }
