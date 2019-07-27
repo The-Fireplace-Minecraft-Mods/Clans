@@ -165,7 +165,7 @@ public class DynmapCompat implements IDynmapCompat {
     private static final Pattern FORMATTING_COLOR_CODES_PATTERN = Pattern.compile("(?i)\\u00a7[0-9A-FK-OR]");
 
     private static final String MARKER_SET_ID = "clans.claims.markerset";
-    private static final String MARKER_SET_LABEL = "ClansForge";
+    private static final String MARKER_SET_LABEL = "Clans";
 
     /**
      * This is a call back class which Dynmap will call when it is ready to accept API requests. This is
