@@ -71,6 +71,10 @@ public interface IConfig {
 
     int getClaimChunkCost();
 
+    int getReducedChunkClaimCost();
+
+    int getReducedCostClaimCount();
+
     int getStartRaidCost();
 
     boolean isStartRaidMultiplier();

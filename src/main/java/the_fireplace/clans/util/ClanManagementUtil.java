@@ -41,7 +41,7 @@ public class ClanManagementUtil {
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands."+clanCommandString+".claim.taken_other", claimClan.getClanName()).setStyle(TextStyles.RED));
         } else {
             if(claimClan != null) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
-                Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), claimClan.getClanId());
+                claimClan.refundClaim();
             }
             if(selectedClan.isOpclan()) {
                 ClaimDataManager.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
@@ -80,7 +80,7 @@ public class ClanManagementUtil {
     }
 
     public static boolean claimChunk(EntityPlayerMP sender, ChunkPositionWithData claimChunk, Clan selectedClan, boolean force) {
-        if (force || Clans.getPaymentHandler().deductAmount(Clans.getConfig().getClaimChunkCost(), selectedClan.getClanId())) {
+        if (force || selectedClan.payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.getPosX(), claimChunk.getPosZ()), claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
                 ClaimDataManager.swapChunk(claimChunk, null, selectedClan.getClanId());

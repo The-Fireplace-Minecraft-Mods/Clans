@@ -492,6 +492,14 @@ public class Clan {
         return TextFormatting.fromColorIndex(textColor);
     }
 
+    public void refundClaim() {
+        Clans.getPaymentHandler().addAmount(getClaimCount() <= Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getClanId());
+    }
+
+    public boolean payForClaim() {
+        return Clans.getPaymentHandler().deductAmount(getClaimCount() < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getClanId());
+    }
+
     /**
      * Sets addon data for this clan
      * @param key

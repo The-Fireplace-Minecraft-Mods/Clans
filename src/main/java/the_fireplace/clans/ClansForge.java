@@ -269,6 +269,12 @@ public final class ClansForge {
         @Config.Comment("Cost of claiming a chunk. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int claimChunkCost = 0;
+        @Config.Comment("Reduced cost of claiming a chunk for the first x claims. This requires a compatible economy to be installed.")
+        @Config.RangeInt(min=0)
+        public static int reducedClaimChunkCost = 0;
+        @Config.Comment("Use the reduced cost for this many claims. This requires a compatible economy to be installed.")
+        @Config.RangeInt(min=0)
+        public static int reducedCostClaimCount = 0;
         @Config.Comment("Cost of forming a new raiding party. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int startRaidCost = 0;
@@ -459,6 +465,16 @@ public final class ClansForge {
 
         public int getClaimChunkCost() {
             return ClansForge.cfg.claimChunkCost;
+        }
+
+        @Override
+        public int getReducedChunkClaimCost() {
+            return reducedClaimChunkCost;
+        }
+
+        @Override
+        public int getReducedCostClaimCount() {
+            return reducedCostClaimCount;
         }
 
         public int getStartRaidCost() {
