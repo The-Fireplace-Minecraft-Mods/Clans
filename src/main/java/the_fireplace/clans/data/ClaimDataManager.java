@@ -14,6 +14,7 @@ import the_fireplace.clans.util.JsonHelper;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ClaimDataManager {
     private static boolean isLoaded = false;
@@ -26,11 +27,18 @@ public final class ClaimDataManager {
 
     public static HashMap<UUID, Integer> regenBorderlandsTimers = Maps.newHashMap();
 
-    public static Set<ChunkPositionWithData> getChunks(UUID clan) {
+    public static Set<ChunkPositionWithData> getClaimedChunks(UUID clan) {
         if(!isLoaded)
             load();
         ClanClaimData claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed.chunks : Collections.emptySet();
+        return claimed != null ? claimed.chunks.stream().filter(d -> !d.isBorderland()).collect(Collectors.toSet()) : Collections.emptySet();
+    }
+
+    public static Set<ChunkPositionWithData> getBorderlandChunks(UUID clan) {
+        if(!isLoaded)
+            load();
+        ClanClaimData claimed = claimedChunks.get(clan);
+        return claimed != null ? claimed.chunks.stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     public static Set<Clan> clansWithClaims() {

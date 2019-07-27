@@ -13,7 +13,7 @@ public class CoordNodeTree {
     private int dim;
 
     public CoordNodeTree(int excludeCoordX, int excludeCoordZ, int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimDataManager.getChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimDataManager.getClaimedChunks(checkOwner))
             if((pos.getPosX() != excludeCoordX || pos.getPosZ() != excludeCoordZ) && pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = coordNodes;
@@ -21,7 +21,7 @@ public class CoordNodeTree {
     }
 
     public CoordNodeTree(int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimDataManager.getChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimDataManager.getClaimedChunks(checkOwner))
             if(pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = Sets.newHashSet(coordNodes);

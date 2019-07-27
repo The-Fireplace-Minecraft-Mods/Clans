@@ -104,7 +104,7 @@ public class DynmapCompat implements IDynmapCompat {
         startTimeNS = System.nanoTime();
         Clans.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClaimDataManager.getChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
+        Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClaimDataManager.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
         totalChunks = teamClaimsList.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
@@ -144,7 +144,7 @@ public class DynmapCompat implements IDynmapCompat {
 
         for(Clan clan: ClaimDataManager.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClaimDataManager.getChunks(clan.getClanId()))
+            for(ChunkPosition chunk: ClaimDataManager.getClaimedChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.getDim())) {
                     teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
                     addedDims.add(chunk.getDim());

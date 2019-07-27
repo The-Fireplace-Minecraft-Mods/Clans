@@ -303,7 +303,7 @@ public class Clan {
     }
 
     public int getClaimCount() {
-        return ClaimDataManager.getChunks(getClanId()).size();
+        return ClaimDataManager.getClaimedChunks(getClanId()).size();
     }
 
     public int getMaxClaimCount() {
