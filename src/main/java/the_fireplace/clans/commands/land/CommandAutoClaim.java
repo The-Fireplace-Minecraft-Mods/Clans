@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -41,6 +42,7 @@ public class CommandAutoClaim extends ClanSubCommand {
 		if(ClanCache.getAutoClaimLands().remove(sender.getUniqueID()) == null) {
 			ClanCache.getAutoClaimLands().put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false, false);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}

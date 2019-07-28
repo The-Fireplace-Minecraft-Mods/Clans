@@ -7,7 +7,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
+import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.OrderedPair;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -37,8 +39,10 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(ClanCache.getOpAutoClaimLands().remove(sender.getUniqueID()) == null) {
-			ClanCache.getOpAutoClaimLands().put(sender.getUniqueID(), new OrderedPair<>(opSelectedClan, args.length == 1 && args[0].equals("force")));
+			boolean force = args.length == 1 && args[0].equals("force");
+			ClanCache.getOpAutoClaimLands().put(sender.getUniqueID(), new OrderedPair<>(opSelectedClan, force));
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			ClanManagementUtil.checkAndAttemptClaim(sender, opSelectedClan, true, force);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}

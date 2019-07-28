@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -43,6 +44,7 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", ClanDatabase.getOpClan()).setStyle(TextStyles.GREEN));
+			ClanManagementUtil.checkAndAttemptAbandon(sender, ClanDatabase.getOpClan(), true, force);
 		} else {
 			if (force)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
