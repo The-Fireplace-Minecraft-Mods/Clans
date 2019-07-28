@@ -60,16 +60,18 @@ public final class ClaimDataManager {
         claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimedChunks.get(clan.getClanId()).addChunk(pos);
         claimDataMap.put(pos, claimedChunks.get(clan.getClanId()));
-        Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
+        if(!pos.isBorderland()) {
+            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
+            regenBorderlandsTimers.put(clan.getClanId(), 5);
+        }
         claimedChunks.get(clan.getClanId()).isChanged = true;
-        regenBorderlandsTimers.put(clan.getClanId(), 5);
     }
 
     public static void addChunk(Clan clan, int x, int z, int dim) {
         addChunk(clan, new ChunkPositionWithData(x, z, dim));
     }
 
-    public static void addChunk(UUID clanId, int x, int z, int dim) {
+    public static void addChunk(@Nullable UUID clanId, int x, int z, int dim) {
         Clan clan = ClanCache.getClanById(clanId);
         if(clan == null)
             delClan(clanId);
@@ -389,7 +391,8 @@ public final class ClaimDataManager {
 
         public void genBorderlands() {
             for(int d : Clans.getMinecraftHelper().getDimensionIds())
-                chunks.addAll(new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks());
+                for(ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !chunks.contains(pos)).collect(Collectors.toSet()))
+                    ClaimDataManager.addChunk(clan, pos);
             hasBorderlands = true;
             markChanged();
         }

@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Clan {
     private boolean isChanged = false;
@@ -237,6 +238,10 @@ public class Clan {
                 online.put(player, member.getValue());
         }
         return online;
+    }
+
+    public Set<Map.Entry<EntityPlayerMP, EnumRank>> getOnlineSurvivalMembers() {
+        return getOnlineMembers().entrySet().stream().filter(e -> !e.getKey().isCreative() && !e.getKey().isSpectator()).collect(Collectors.toSet());
     }
 
     public UUID getClanId() {

@@ -47,7 +47,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 				if(!target.getMembers().containsKey(sender.getUniqueID())) {
 					if (!RaidingParties.getRaidedClans().contains(target)) {
 						if(!target.isShielded()) {
-							if (!target.getOnlineMembers().isEmpty() && target.getOnlineMembers().size() + Clans.getConfig().getMaxRaidersOffset() > 0) {
+							if (!target.getOnlineSurvivalMembers().isEmpty() && target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > 0) {
 								new Raid(sender, target);
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.created", target.getClanName()).setStyle(TextStyles.GREEN));
 							} else
@@ -56,7 +56,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getClanName(), Math.round(100f*target.getShield()/60)/100f).setStyle(TextStyles.RED));
 					} else { //Join an existing raid
 						Raid raid = RaidingParties.getRaid(target);
-						if(target.getOnlineMembers().size() + Clans.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
+						if(target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
 							raid.addAttacker(sender);
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getClanName()).setStyle(TextStyles.GREEN));
 						} else

@@ -15,6 +15,8 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -40,7 +42,7 @@ public class CommandStartRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				assert server != null;
-				HashMap<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
+				Set<Map.Entry<EntityPlayerMP, EnumRank>> clanPlayers = raid.getTarget().getOnlineSurvivalMembers();
 				if(clanPlayers.size() >= raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
