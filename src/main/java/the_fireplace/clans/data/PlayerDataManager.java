@@ -170,7 +170,7 @@ public final class PlayerDataManager {
                     JsonObject jsonObject = (JsonObject) obj;
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
-                    addonData = jsonObject.has("addonData") ? JsonHelper.getAddonData(jsonObject.getAsJsonObject("addonData")) : Maps.newHashMap();
+                    addonData = JsonHelper.getAddonData(jsonObject);
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
