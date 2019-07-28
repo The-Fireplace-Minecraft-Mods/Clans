@@ -214,20 +214,28 @@ public final class ClaimDataManager {
     private static void load() {
         if(!chunkDataLocation.exists())
             chunkDataLocation.mkdirs();
-        for(File file: chunkDataLocation.listFiles()) {
-            try {
-                ClanClaimData loadedData = ClanClaimData.load(file);
-                if(loadedData != null) {
-                    claimedChunks.put(loadedData.clan, loadedData);
-                    for(ChunkPositionWithData cPos : loadedData.chunks)
-                        claimDataMap.put(cPos, loadedData);
+        File[] files = chunkDataLocation.listFiles();
+        if(files != null)
+            for(File file: files) {
+                try {
+                    ClanClaimData loadedData = ClanClaimData.load(file);
+                    if(loadedData != null) {
+                        claimedChunks.put(loadedData.clan, loadedData);
+                        for(ChunkPositionWithData cPos : loadedData.chunks)
+                            claimDataMap.put(cPos, loadedData);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
         readLegacy();
         isLoaded = true;
+        for(Map.Entry<UUID, ClanClaimData> entry : claimedChunks.entrySet()) {
+            if(Clans.getConfig().isEnableBorderlands() && !entry.getValue().hasBorderlands)
+                entry.getValue().genBorderlands();
+            else if(!Clans.getConfig().isEnableBorderlands() && entry.getValue().hasBorderlands)
+                entry.getValue().clearBorderlands();
+        }
     }
 
     private static boolean reading;
@@ -317,10 +325,6 @@ public final class ClaimDataManager {
                         positions.add(pos);
                     }
                     loadClanClaimData.chunks.addAll(positions);
-                    if(Clans.getConfig().isEnableBorderlands() && !loadClanClaimData.hasBorderlands)
-                        loadClanClaimData.genBorderlands();
-                    else if(!Clans.getConfig().isEnableBorderlands() && loadClanClaimData.hasBorderlands)
-                        loadClanClaimData.clearBorderlands();
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
