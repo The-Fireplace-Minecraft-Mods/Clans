@@ -25,7 +25,7 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandOpClan extends CommandBase {
-    private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
+    public static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //land claiming
         put("claim", new OpCommandClaim());
         put("abandonclaim", new OpCommandAbandonClaim());

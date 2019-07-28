@@ -24,7 +24,7 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandRaid extends CommandBase {
-    private static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
+    public static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
         //raiding parties
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
