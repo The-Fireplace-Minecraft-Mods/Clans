@@ -33,7 +33,7 @@ public class CommandRaid extends CommandBase {
         put("collect", new CommandCollect());
 	}};
 
-    private static final Map<String, String> aliases = Maps.newHashMap();
+    public static final Map<String, String> aliases = Maps.newHashMap();
 
     static {
         aliases.put("j", "join");

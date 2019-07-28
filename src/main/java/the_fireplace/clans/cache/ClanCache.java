@@ -5,6 +5,9 @@ import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.commands.CommandClan;
+import the_fireplace.clans.commands.CommandOpClan;
+import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
@@ -35,7 +38,15 @@ public final class ClanCache {
 	private static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
 	private static HashMap<UUID, OrderedPair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
 
-	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "banner", "b", "details", "d", "disband", "form", "create", "claim", "c", "abandonclaim", "ac", "map", "m", "invite", "i", "kick", "accept", "decline", "leave", "promote", "demote", "sethome", "setbanner", "setname", "info", "setdescription", "setdesc", "setdefault", "home", "h", "trapped", "t", "help", "balance", "af", "addfunds", "deposit", "takefunds", "withdraw", "setrent", "finances", "setshield", "buildadmin", "ba", "playerinfo", "pi", "list", "fancymap", "fm");
+	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid");
+	static {
+		forbiddenClanNames.addAll(CommandClan.commands.keySet());
+		forbiddenClanNames.addAll(CommandClan.aliases.keySet());
+		forbiddenClanNames.addAll(CommandOpClan.commands.keySet());
+		forbiddenClanNames.addAll(CommandOpClan.aliases.keySet());
+		forbiddenClanNames.addAll(CommandRaid.commands.keySet());
+		forbiddenClanNames.addAll(CommandRaid.aliases.keySet());
+	}
 
 	@Nullable
 	public static Clan getClanById(@Nullable UUID clanID){

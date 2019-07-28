@@ -47,7 +47,7 @@ public class CommandOpClan extends CommandBase {
         put("buildadmin", new OpCommandBuildAdmin());
 	}};
 
-    private static final Map<String, String> aliases = Maps.newHashMap();
+    public static final Map<String, String> aliases = Maps.newHashMap();
 
     static {
         aliases.put("c", "claim");

@@ -80,7 +80,7 @@ public class CommandClan extends CommandBase {
         }
 	}};
 
-    private static final Map<String, String> aliases = Maps.newHashMap();
+    public static final Map<String, String> aliases = Maps.newHashMap();
     private static final List<String> financeCommands = Lists.newArrayList("balance", "addfunds", "takefunds", "setrent", "finances");
 
     static {
