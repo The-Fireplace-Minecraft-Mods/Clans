@@ -42,7 +42,7 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onDetonate(ExplosionEvent.Detonate event) {
-		event.setCanceled(LandProtectionEventLogic.onDetonate(event.getWorld(), event.getAffectedBlocks(), event.getAffectedEntities()));
+		LandProtectionEventLogic.onDetonate(event.getWorld(), event.getAffectedBlocks(), event.getAffectedEntities());
 	}
 
 	@SubscribeEvent

@@ -167,7 +167,7 @@ public class LandProtectionEventLogic {
         world.notifyBlockUpdate(pos.south(), targetState, targetState, 2);
     }
 
-    public static boolean onDetonate(World world, List<BlockPos> affectedBlocks, List<Entity> affectedEntities) {
+    public static void onDetonate(World world, List<BlockPos> affectedBlocks, List<Entity> affectedEntities) {
         if(!world.isRemote) {
             ArrayList<BlockPos> removeBlocks = Lists.newArrayList();
             for (BlockPos pos : affectedBlocks) {
@@ -200,7 +200,6 @@ public class LandProtectionEventLogic {
                 affectedEntities.removeAll(removeEntities);
             }
         }
-        return false;
     }
 
     public static boolean onLivingDamage(Entity target, @Nullable Entity attacker) {
