@@ -155,7 +155,7 @@ public class Clan {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         }
-        addonData = obj.has("addonData") ? JsonHelper.getAddonData(obj.getAsJsonObject("addonData")) : Maps.newHashMap();
+        addonData = JsonHelper.getAddonData(obj);
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
     //endregion

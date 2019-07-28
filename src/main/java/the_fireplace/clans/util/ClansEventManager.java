@@ -22,8 +22,10 @@ public final class ClansEventManager {
 
     @SuppressWarnings("unchecked")
     public static <V> V fireEvent(V event) {
-        for(IClansEventHandler<V> eventHandler: events.get(event.getClass()))
-            event = eventHandler.run(event);
+        List<IClansEventHandler> handlers = events.get(event.getClass());
+        if(handlers != null)
+            for(IClansEventHandler<V> eventHandler: handlers)
+                event = eventHandler.run(event);
         return event;
     }
 }
