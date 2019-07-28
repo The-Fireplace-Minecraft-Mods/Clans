@@ -147,6 +147,11 @@ public final class ClaimDataManager {
     }
 
     @Nullable
+    public static Clan getChunkClan(@Nullable ChunkPositionWithData pos) {
+        return ClanCache.getClanById(getChunkClanId(pos));
+    }
+
+    @Nullable
     public static Clan getChunkClan(int x, int z, int dim) {
         return ClanCache.getClanById(getChunkClanId(x, z, dim));
     }
@@ -160,7 +165,7 @@ public final class ClaimDataManager {
     }
 
     @Nullable
-    public static UUID getChunkClanId(ChunkPositionWithData position) {
+    public static UUID getChunkClanId(@Nullable ChunkPositionWithData position) {
         if(!isLoaded)
             load();
         ClanClaimData data = claimDataMap.get(position);
