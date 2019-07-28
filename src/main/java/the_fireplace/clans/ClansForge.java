@@ -188,7 +188,7 @@ public final class ClansForge {
         public static boolean multiplyMaxClaimsByPlayers = true;
         @Config.Comment("Show player's default clan in chat.")
         public static boolean showDefaultClanInChat = true;
-        @Config.Comment("Server locale - the client's locale takes precedence if ClansForge is installed there.")
+        @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public static String locale = "en_us";
         @Config.Comment("A list of Fake Players that are allowed to build, destroy, interact, and injure things on claimed land. These are typically machines added by mods. If it contains a *, this list is a blacklist, so everything is allowed by default. Otherwise, it is a whitelist.")
         public static String[] tolerableFakePlayers = {"*"};

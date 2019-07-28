@@ -158,7 +158,7 @@ public class CommandClan extends CommandBase {
                     throw new WrongUsageException(getUsage(sender));
                 return;
             }
-        } else
+        } else if(commands.containsKey(tag) || aliases.containsKey(tag))
             throw new CommandException("commands.generic.permission");
         throw new WrongUsageException(getUsage(sender));
     }

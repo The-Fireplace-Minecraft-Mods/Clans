@@ -76,7 +76,7 @@ public class CommandRaid extends CommandBase {
                 commands.get(processAlias(tag)).execute(server, sender, args);
             else
                 throw new WrongUsageException(getUsage(sender));
-        } else
+        } else if(commands.containsKey(tag) || aliases.containsKey(tag))
             throw new CommandException("commands.generic.permission");
     }
 

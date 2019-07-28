@@ -10,7 +10,7 @@ public class CapHelper {
     public static PlayerClanCapability getPlayerClanCapability(EntityPlayer player) {
         //noinspection ConstantConditions
         if(!player.hasCapability(ClansForge.CLAN_DATA_CAP, null))
-            throw new IllegalStateException("ClansForge Data Capability is not present for a player!");
+            throw new IllegalStateException("Clans Data Capability is not present for a player!");
         //noinspection ConstantConditions
         return player.getCapability(ClansForge.CLAN_DATA_CAP, null);
     }

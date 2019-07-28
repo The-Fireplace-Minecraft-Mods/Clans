@@ -345,7 +345,7 @@ public final class ClaimDataManager {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("clan", clan.toString());
                 JsonArray positionArray = new JsonArray();
-                for(ChunkPositionWithData pos: chunks) {
+                for (ChunkPositionWithData pos : chunks) {
                     JsonObject chunkPositionObject = new JsonObject();
                     chunkPositionObject.addProperty("x", pos.getPosX());
                     chunkPositionObject.addProperty("z", pos.getPosZ());
@@ -364,7 +364,7 @@ public final class ClaimDataManager {
                     e.printStackTrace();
                 }
                 saving = isChanged = false;
-            }).run();
+            }).start();
         }
         //endregion
 
