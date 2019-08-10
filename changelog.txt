@@ -14,6 +14,7 @@ Added info about when rent and upkeep are due to clan details
 Added config options to globally disable protections against placing, breaking, interacting, and injuring on claimed territory.
 Added border lands: edges around claimed land with different protection handling
 Added config options so the first x claims can be cheaper or free
+Added native support for Sponge economy plugins
 
 Changes:
 Removed compatibility for databases from 1.1.4 and 1.1.5. Run a 1.2.X version of Clans before running anything higher if you wish to copy data from those versions.

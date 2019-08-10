@@ -18,14 +18,15 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.forge.compat.PaymentHandlerGE;
-import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
+import the_fireplace.clans.forge.compat.PaymentHandlerGE;
 import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
 import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.logic.ServerEventLogic;
+import the_fireplace.clans.sponge.SpongePermissionHandler;
+import the_fireplace.clans.sponge.compat.PaymentHandlerSponge;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 import static the_fireplace.clans.Clans.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy@[1.2.0);after:dynmap;after:spongeapi")
 public final class ClansForge {
     @Mod.Instance(MODID)
     public static ClansForge instance;
@@ -76,6 +77,8 @@ public final class ClansForge {
     public void postInit(FMLPostInitializationEvent event){
         if(Clans.getMinecraftHelper().isPluginLoaded("grandeconomy"))
             Clans.setPaymentHandler(new PaymentHandlerGE());
+        else if(Clans.getMinecraftHelper().isPluginLoaded("spongeapi"))
+            Clans.setPaymentHandler(new PaymentHandlerSponge());
         if(Clans.getMinecraftHelper().isPluginLoaded("spongeapi") && !Clans.getConfig().isForgePermissionPrecedence())
             Clans.setPermissionManager(new SpongePermissionHandler());
         else

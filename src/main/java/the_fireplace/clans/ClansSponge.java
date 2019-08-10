@@ -7,8 +7,8 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.logic.ServerEventLogic;
+import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.sponge.compat.SpongeMinecraftHelper;
 import the_fireplace.clans.sponge.event.LandProtectionEvents;
 

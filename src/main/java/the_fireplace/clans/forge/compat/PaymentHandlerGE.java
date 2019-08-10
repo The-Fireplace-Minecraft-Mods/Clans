@@ -20,7 +20,7 @@ public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public long deductPartialAmount(long amount, UUID account) {
-		long balance = GrandEconomyApi.getBalance(account);
+		long balance = getBalance(account);
 		if(balance > amount) {
 			deductAmount(amount, account);
 			return 0;
