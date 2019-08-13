@@ -2,13 +2,16 @@ package the_fireplace.clans.commands.details;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ChatPageUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -31,7 +34,7 @@ public class CommandList extends ClanSubCommand {
 
 	@Override
 	public int getMaxArgs() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class CommandList extends ClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.clans").setStyle(TextStyles.GREEN));
 		if(!ClanDatabase.getClans().isEmpty()) {
 			ArrayList<Clan> clans = Lists.newArrayList(ClanDatabase.getClans());
@@ -58,8 +61,15 @@ public class CommandList extends ClanSubCommand {
 				}
 			else
 				clans.sort(Comparator.comparing(Clan::getClanName));
+			ArrayList<ITextComponent> listItems = Lists.newArrayList();
 			for (Clan clan : clans)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClanName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+				listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClanName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+			int page;
+			if(args.length > 1)
+				page = parseInt(args[1]);
+			else
+				page = 1;
+			ChatPageUtil.showPaginatedChat(sender, String.format("/clan list %s", args[0]) + " %s", listItems, page);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.noclans").setStyle(TextStyles.YELLOW));
 	}
