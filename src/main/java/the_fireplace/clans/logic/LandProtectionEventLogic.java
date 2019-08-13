@@ -98,7 +98,7 @@ public class LandProtectionEventLogic {
                             ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
                         placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.place.borderland" : "clans.protection.place.territory").setStyle(TextStyles.RED));
                         return true;
-                    } else if (RaidingParties.hasActiveRaid(chunkClan)) {
+                    } else if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().disableRaidRollback()) {
                         ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
                         out.setCount(1);
                         if(!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
@@ -176,7 +176,7 @@ public class LandProtectionEventLogic {
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
                 IBlockState targetState = world.getBlockState(pos);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().disableRaidRollback() && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
                         RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     else if (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
                         removeBlocks.add(pos);

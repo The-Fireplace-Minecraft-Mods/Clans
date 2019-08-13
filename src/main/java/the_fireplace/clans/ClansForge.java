@@ -262,6 +262,8 @@ public final class ClansForge {
         @Config.Comment("Raid break speed multiplier")
         @Config.RangeDouble(min=0.0, max=10.0)
         public static double raidBreakSpeedMultiplier = 1.0;
+        @Config.Comment("This option disables rollback of raids.")
+        public static boolean disableRaidRollback = false;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -331,143 +333,143 @@ public final class ClansForge {
         public static double dynmapFillOpacity = 0.75;
 
         public boolean isMultipleClanLeaders() {
-            return ClansForge.cfg.multipleClanLeaders;
+            return multipleClanLeaders;
         }
 
         public int getMaxNameLength() {
-            return ClansForge.cfg.maxNameLength;
+            return maxNameLength;
         }
 
         public boolean isAllowMultiClanMembership() {
-            return ClansForge.cfg.allowMultiClanMembership;
+            return allowMultiClanMembership;
         }
 
         public int getClanHomeWarmupTime() {
-            return ClansForge.cfg.clanHomeWarmupTime;
+            return clanHomeWarmupTime;
         }
 
         public int getClanHomeCooldownTime() {
-            return ClansForge.cfg.clanHomeCooldownTime;
+            return clanHomeCooldownTime;
         }
 
         public boolean isShowDefaultClanInChat() {
-            return ClansForge.cfg.showDefaultClanInChat;
+            return showDefaultClanInChat;
         }
 
         public String getLocale() {
-            return ClansForge.cfg.locale;
+            return locale;
         }
 
         public String[] getTolerableFakePlayers() {
-            return ClansForge.cfg.tolerableFakePlayers;
+            return tolerableFakePlayers;
         }
 
         public boolean isFakePlayerDump() {
-            return ClansForge.cfg.fakePlayerDump;
+            return fakePlayerDump;
         }
 
         public boolean isForgePermissionPrecedence() {
-            return ClansForge.cfg.forgePermissionPrecedence;
+            return forgePermissionPrecedence;
         }
 
         public int getMinClanHomeDist() {
-            return ClansForge.cfg.minClanHomeDist;
+            return minClanHomeDist;
         }
 
         public double getInitialClaimSeparationMultiplier() {
-            return ClansForge.cfg.initialClaimSeparationMultiplier;
+            return initialClaimSeparationMultiplier;
         }
 
         public boolean isEnforceInitialClaimSeparation() {
-            return ClansForge.cfg.enforceInitialClaimSeparation;
+            return enforceInitialClaimSeparation;
         }
 
         public boolean isForceConnectedClaims() {
-            return ClansForge.cfg.forceConnectedClaims;
+            return forceConnectedClaims;
         }
 
         public String getConnectedClaimCheck() {
-            return ClansForge.cfg.connectedClaimCheck;
+            return connectedClaimCheck;
         }
 
         public boolean isEnableBorderlands() {
-            return ClansForge.cfg.enableBorderlands;
+            return enableBorderlands;
         }
 
         public boolean isPreventMobsOnClaims() {
-            return ClansForge.cfg.preventMobsOnClaims;
+            return preventMobsOnClaims;
         }
 
         public boolean isPreventMobsOnBorderlands() {
-            return ClansForge.cfg.preventMobsOnBorderlands;
+            return preventMobsOnBorderlands;
         }
 
         public int getMaxClaims() {
-            return ClansForge.cfg.maxClaims;
+            return maxClaims;
         }
 
         public boolean isMultiplyMaxClaimsByPlayers() {
-            return ClansForge.cfg.multiplyMaxClaimsByPlayers;
+            return multiplyMaxClaimsByPlayers;
         }
 
         public boolean isProtectWilderness() {
-            return ClansForge.cfg.protectWilderness;
+            return protectWilderness;
         }
 
         public int getMinWildernessY() {
-            return ClansForge.cfg.minWildernessY;
+            return minWildernessY;
         }
 
         public boolean isChainTNT() {
-            return ClansForge.cfg.chainTNT;
+            return chainTNT;
         }
 
         public int getMaxRaidersOffset() {
-            return ClansForge.cfg.maxRaidersOffset;
+            return maxRaidersOffset;
         }
 
         public int getMaxRaidDuration() {
-            return ClansForge.cfg.maxRaidDuration;
+            return maxRaidDuration;
         }
 
         public int getRaidBufferTime() {
-            return ClansForge.cfg.raidBufferTime;
+            return raidBufferTime;
         }
 
         public int getRemainingTimeToGlow() {
-            return ClansForge.cfg.remainingTimeToGlow;
+            return remainingTimeToGlow;
         }
 
         public int getMaxAttackerAbandonmentTime() {
-            return ClansForge.cfg.maxAttackerAbandonmentTime;
+            return maxAttackerAbandonmentTime;
         }
 
         public int getMaxClanDesertionTime() {
-            return ClansForge.cfg.maxClanDesertionTime;
+            return maxClanDesertionTime;
         }
 
         public int getDefenseShield() {
-            return ClansForge.cfg.defenseShield;
+            return defenseShield;
         }
 
         public int getInitialShield() {
-            return ClansForge.cfg.initialShield;
+            return initialShield;
         }
 
         public boolean isNoReclaimTNT() {
-            return ClansForge.cfg.noReclaimTNT;
+            return noReclaimTNT;
         }
 
         public int getFormClanCost() {
-            return ClansForge.cfg.formClanCost;
+            return formClanCost;
         }
 
         public int getFormClanBankAmount() {
-            return ClansForge.cfg.formClanBankAmount;
+            return formClanBankAmount;
         }
 
         public int getClaimChunkCost() {
-            return ClansForge.cfg.claimChunkCost;
+            return claimChunkCost;
         }
 
         @Override
@@ -481,87 +483,92 @@ public final class ClansForge {
         }
 
         public int getStartRaidCost() {
-            return ClansForge.cfg.startRaidCost;
+            return startRaidCost;
         }
 
         public boolean isStartRaidMultiplier() {
-            return ClansForge.cfg.startRaidMultiplier;
+            return startRaidMultiplier;
         }
 
         public int getWinRaidAmount() {
-            return ClansForge.cfg.winRaidAmount;
+            return winRaidAmount;
         }
 
         public boolean isWinRaidMultiplierClaims() {
-            return ClansForge.cfg.winRaidMultiplierClaims;
+            return winRaidMultiplierClaims;
         }
 
         public boolean isWinRaidMultiplierPlayers() {
-            return ClansForge.cfg.winRaidMultiplierPlayers;
+            return winRaidMultiplierPlayers;
+        }
+
+        @Override
+        public boolean disableRaidRollback() {
+            return disableRaidRollback;
         }
 
         public int getClanUpkeepDays() {
-            return ClansForge.cfg.clanUpkeepDays;
+            return clanUpkeepDays;
         }
 
         public int getClanUpkeepCost() {
-            return ClansForge.cfg.clanUpkeepCost;
+            return clanUpkeepCost;
         }
 
         public boolean isMultiplyUpkeepClaims() {
-            return ClansForge.cfg.multiplyUpkeepClaims;
+            return multiplyUpkeepClaims;
         }
 
         public boolean isMultiplyUpkeepMembers() {
-            return ClansForge.cfg.multiplyUpkeepMembers;
+            return multiplyUpkeepMembers;
         }
 
         public boolean isDisbandNoUpkeep() {
-            return ClansForge.cfg.disbandNoUpkeep;
+            return disbandNoUpkeep;
         }
 
         public boolean isLeaderWithdrawFunds() {
-            return ClansForge.cfg.leaderWithdrawFunds;
+            return leaderWithdrawFunds;
         }
 
         public boolean isLeaderRecieveDisbandFunds() {
-            return ClansForge.cfg.leaderRecieveDisbandFunds;
+            return leaderRecieveDisbandFunds;
         }
 
         public int getChargeRentDays() {
-            return ClansForge.cfg.chargeRentDays;
+            return chargeRentDays;
         }
 
         public boolean isEvictNonpayers() {
-            return ClansForge.cfg.evictNonpayers;
+            return evictNonpayers;
         }
 
         public boolean isEvictNonpayerAdmins() {
-            return ClansForge.cfg.evictNonpayerAdmins;
+            return evictNonpayerAdmins;
         }
 
         public int getMaxRent() {
-            return ClansForge.cfg.maxRent;
+            return maxRent;
         }
 
         public boolean isMultiplyMaxRentClaims() {
-            return ClansForge.cfg.multiplyMaxRentClaims;
+            return multiplyMaxRentClaims;
         }
 
         public int getDynmapBorderWeight() {
-            return ClansForge.cfg.dynmapBorderWeight;
+            return dynmapBorderWeight;
         }
 
         public double getDynmapBorderOpacity() {
-            return ClansForge.cfg.dynmapBorderOpacity;
+            return dynmapBorderOpacity;
         }
 
         public double getDynmapFillOpacity() {
-            return ClansForge.cfg.dynmapFillOpacity;
+            return dynmapFillOpacity;
         }
 
         public double getRaidBreakSpeedMultiplier() {
-            return cfg.raidBreakSpeedMultiplier;
+            return raidBreakSpeedMultiplier;
         }
 
         @Override

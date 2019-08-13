@@ -85,6 +85,8 @@ public interface IConfig {
 
     boolean isWinRaidMultiplierPlayers();
 
+    boolean disableRaidRollback();
+
     int getClanUpkeepDays();
 
     int getClanUpkeepCost();

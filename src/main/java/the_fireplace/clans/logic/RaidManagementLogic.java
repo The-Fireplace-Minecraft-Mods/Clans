@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
@@ -27,7 +28,7 @@ import java.util.UUID;
 
 public class RaidManagementLogic {
     public static boolean shouldCancelBlockDrops(World world, BlockPos pos) {
-        if(!world.isRemote) {
+        if(!world.isRemote && !Clans.getConfig().disableRaidRollback()) {
             Chunk c = world.getChunk(pos);
             UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (chunkOwner != null) {
@@ -69,7 +70,7 @@ public class RaidManagementLogic {
     }
 
     public static void onNeighborBlockNotified(World world, IBlockState state, BlockPos pos) {
-        if(!world.isRemote) {
+        if(!world.isRemote && !Clans.getConfig().disableRaidRollback()) {
             if (state.getBlock() instanceof BlockPistonBase) {
                 if (state.getProperties().containsKey(BlockPistonBase.FACING) && state.getProperties().containsKey(BlockPistonBase.EXTENDED)) {
                     Comparable facing = state.getProperties().get(BlockPistonBase.FACING);
@@ -149,7 +150,7 @@ public class RaidManagementLogic {
 
     public static boolean shouldCancelFallingBlockCreation(EntityFallingBlock entity) {
         Clan owningClan = ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
-        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimDataManager.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland();//TODO monitor where it goes rather than just preventing it from falling
+        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimDataManager.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().disableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
     }
 
     private static void doSlimePush(World world, EnumFacing facing, BlockPos newPos, EnumFacing shiftDir) {

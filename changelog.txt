@@ -1,4 +1,5 @@
 Additions:
+New config option to disable rollback after raids
 
 Changes:
 /clan list now divides into pages
