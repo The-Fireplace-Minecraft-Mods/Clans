@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import static the_fireplace.clans.Clans.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy@[1.2.0);after:dynmap;after:spongeapi")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi")
 public final class ClansForge {
     @Mod.Instance(MODID)
     public static ClansForge instance;
