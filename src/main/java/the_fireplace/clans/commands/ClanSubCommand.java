@@ -17,6 +17,7 @@ import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -39,9 +40,11 @@ public abstract class ClanSubCommand extends CommandBase {
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1]))
+			return false;
+		if(getRequiredClanRank() == EnumRank.ANY || getRequiredClanRank() == EnumRank.NOCLAN && allowConsoleUsage() && !(sender instanceof Entity))
+			return true;
 		if(sender instanceof Entity) {
-			if(getRequiredClanRank() == EnumRank.ANY)
-				return true;
 			if(selectedClan != null) {
 				EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
 				switch (playerRank) {
