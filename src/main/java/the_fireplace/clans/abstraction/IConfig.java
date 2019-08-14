@@ -87,6 +87,8 @@ public interface IConfig {
 
     boolean disableRaidRollback();
 
+    boolean enableStealing();
+
     int getClanUpkeepDays();
 
     int getClanUpkeepCost();

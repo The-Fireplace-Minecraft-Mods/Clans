@@ -264,6 +264,8 @@ public final class ClansForge {
         public static double raidBreakSpeedMultiplier = 1.0;
         @Config.Comment("This option disables rollback of raids.")
         public static boolean disableRaidRollback = false;
+        @Config.Comment("Controls if stealing from containers is allowed during raids. This theft does not get rolled back at the end of the raid.")
+        public static boolean enableStealing = false;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -505,6 +507,11 @@ public final class ClansForge {
         @Override
         public boolean disableRaidRollback() {
             return disableRaidRollback;
+        }
+
+        @Override
+        public boolean enableStealing() {
+            return enableStealing;
         }
 
         public int getClanUpkeepDays() {

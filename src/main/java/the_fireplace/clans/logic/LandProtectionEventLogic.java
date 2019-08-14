@@ -140,11 +140,12 @@ public class LandProtectionEventLogic {
                 if (player instanceof EntityPlayerMP) {
                     ArrayList<Clan> playerClan = ClanCache.getPlayerClans(player.getUniqueID());
                     IBlockState targetState = world.getBlockState(pos);
-                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) player) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c) && (!RaidingParties.isRaidedBy(chunkClan, player) || targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)) {
+                    boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
+                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) player) && (playerClan.isEmpty() || !playerClan.contains(chunkClan)) && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c) && (!isRaidedBy || !Clans.getConfig().enableStealing() && targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg)) {
                         if (!(heldItem.getItem() instanceof ItemBlock)) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
-                        } else if (targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg) {
+                        } else if ((!isRaidedBy || !Clans.getConfig().enableStealing()) && targetState.getBlock() instanceof BlockContainer || targetState.getBlock() instanceof BlockDragonEgg) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
                         }
