@@ -98,8 +98,9 @@ public final class ClanCache {
 		clanBanners.add(banner.toLowerCase());
 	}
 
-	public static void removeBanner(String banner){
-		clanBanners.remove(banner.toLowerCase());
+	public static void removeBanner(@Nullable String banner){
+		if(banner != null)
+			clanBanners.remove(banner.toLowerCase());
 	}
 
 	public static HashMap<String, Clan> getClanNames() {
