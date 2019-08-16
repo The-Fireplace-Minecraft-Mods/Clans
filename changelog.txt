@@ -1,7 +1,6 @@
 Additions:
-Added a config option to allow stealing from containers during raids. This theft does not get rolled back.
 
 Changes:
 
 Fixes/Internal Changes:
-Fix NullPointerException when disbanding clans
+Fix message saying player is in wilderness going to players who log in on claimed land
