@@ -35,8 +35,8 @@ public class RaidManagementLogic {
                 if(ChunkUtils.isBorderland(c))
                     return false;
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                if (chunkClan != null && RaidingParties.hasActiveRaid(chunkClan)) {
-                    return true;
+                if (chunkClan != null) {
+                    return RaidingParties.hasActiveRaid(chunkClan);
                 } else {
                     //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
                     ChunkUtils.clearChunkOwner(c);
