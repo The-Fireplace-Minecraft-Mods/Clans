@@ -1,5 +1,6 @@
 package the_fireplace.clans;
 
+import com.google.common.collect.Lists;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
@@ -13,6 +14,8 @@ import the_fireplace.clans.forge.compat.PaymentHandlerGE;
 import the_fireplace.clans.logic.ServerEventLogic;
 import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.sponge.compat.PaymentHandlerSponge;
+
+import java.util.List;
 
 import static the_fireplace.clans.Clans.MODID;
 
@@ -233,142 +236,177 @@ public final class ClansForge {
         @Config.RangeDouble(min=0, max=1)
         public static double dynmapFillOpacity = 0.75;
 
+        @Override
         public boolean isMultipleClanLeaders() {
             return multipleClanLeaders;
         }
 
+        @Override
         public int getMaxNameLength() {
             return maxNameLength;
         }
 
+        @Override
         public boolean isAllowMultiClanMembership() {
             return allowMultiClanMembership;
         }
 
+        @Override
         public int getClanHomeWarmupTime() {
             return clanHomeWarmupTime;
         }
 
+        @Override
         public int getClanHomeCooldownTime() {
             return clanHomeCooldownTime;
         }
 
+        @Override
         public boolean isShowDefaultClanInChat() {
             return showDefaultClanInChat;
         }
 
+        @Override
         public String getLocale() {
             return locale;
         }
 
-        public String[] getTolerableFakePlayers() {
-            return tolerableFakePlayers;
+        @Override
+        public List<String> getTolerableFakePlayers() {
+            return Lists.newArrayList(tolerableFakePlayers);
         }
 
+        @Override
         public boolean isFakePlayerDump() {
             return fakePlayerDump;
         }
 
+        @Override
         public boolean isForgePermissionPrecedence() {
             return forgePermissionPrecedence;
         }
 
+        @Override
         public int getMinClanHomeDist() {
             return minClanHomeDist;
         }
 
+        @Override
         public double getInitialClaimSeparationMultiplier() {
             return initialClaimSeparationMultiplier;
         }
 
+        @Override
         public boolean isEnforceInitialClaimSeparation() {
             return enforceInitialClaimSeparation;
         }
 
+        @Override
         public boolean isForceConnectedClaims() {
             return forceConnectedClaims;
         }
 
+        @Override
         public String getConnectedClaimCheck() {
             return connectedClaimCheck;
         }
 
+        @Override
         public boolean isEnableBorderlands() {
             return enableBorderlands;
         }
 
+        @Override
         public boolean isPreventMobsOnClaims() {
             return preventMobsOnClaims;
         }
 
+        @Override
         public boolean isPreventMobsOnBorderlands() {
             return preventMobsOnBorderlands;
         }
 
+        @Override
         public int getMaxClaims() {
             return maxClaims;
         }
 
+        @Override
         public boolean isMultiplyMaxClaimsByPlayers() {
             return multiplyMaxClaimsByPlayers;
         }
 
+        @Override
         public boolean isProtectWilderness() {
             return protectWilderness;
         }
 
+        @Override
         public int getMinWildernessY() {
             return minWildernessY;
         }
 
+        @Override
         public boolean isChainTNT() {
             return chainTNT;
         }
 
+        @Override
         public int getMaxRaidersOffset() {
             return maxRaidersOffset;
         }
 
+        @Override
         public int getMaxRaidDuration() {
             return maxRaidDuration;
         }
 
+        @Override
         public int getRaidBufferTime() {
             return raidBufferTime;
         }
 
+        @Override
         public int getRemainingTimeToGlow() {
             return remainingTimeToGlow;
         }
 
+        @Override
         public int getMaxAttackerAbandonmentTime() {
             return maxAttackerAbandonmentTime;
         }
 
+        @Override
         public int getMaxClanDesertionTime() {
             return maxClanDesertionTime;
         }
 
+        @Override
         public int getDefenseShield() {
             return defenseShield;
         }
 
+        @Override
         public int getInitialShield() {
             return initialShield;
         }
 
+        @Override
         public boolean isNoReclaimTNT() {
             return noReclaimTNT;
         }
 
+        @Override
         public int getFormClanCost() {
             return formClanCost;
         }
 
+        @Override
         public int getFormClanBankAmount() {
             return formClanBankAmount;
         }
 
+        @Override
         public int getClaimChunkCost() {
             return claimChunkCost;
         }
@@ -383,22 +421,27 @@ public final class ClansForge {
             return reducedCostClaimCount;
         }
 
+        @Override
         public int getStartRaidCost() {
             return startRaidCost;
         }
 
+        @Override
         public boolean isStartRaidMultiplier() {
             return startRaidMultiplier;
         }
 
+        @Override
         public int getWinRaidAmount() {
             return winRaidAmount;
         }
 
+        @Override
         public boolean isWinRaidMultiplierClaims() {
             return winRaidMultiplierClaims;
         }
 
+        @Override
         public boolean isWinRaidMultiplierPlayers() {
             return winRaidMultiplierPlayers;
         }
@@ -413,66 +456,82 @@ public final class ClansForge {
             return enableStealing;
         }
 
+        @Override
         public int getClanUpkeepDays() {
             return clanUpkeepDays;
         }
 
+        @Override
         public int getClanUpkeepCost() {
             return clanUpkeepCost;
         }
 
+        @Override
         public boolean isMultiplyUpkeepClaims() {
             return multiplyUpkeepClaims;
         }
 
+        @Override
         public boolean isMultiplyUpkeepMembers() {
             return multiplyUpkeepMembers;
         }
 
+        @Override
         public boolean isDisbandNoUpkeep() {
             return disbandNoUpkeep;
         }
 
+        @Override
         public boolean isLeaderWithdrawFunds() {
             return leaderWithdrawFunds;
         }
 
+        @Override
         public boolean isLeaderRecieveDisbandFunds() {
             return leaderRecieveDisbandFunds;
         }
 
+        @Override
         public int getChargeRentDays() {
             return chargeRentDays;
         }
 
+        @Override
         public boolean isEvictNonpayers() {
             return evictNonpayers;
         }
 
+        @Override
         public boolean isEvictNonpayerAdmins() {
             return evictNonpayerAdmins;
         }
 
+        @Override
         public int getMaxRent() {
             return maxRent;
         }
 
+        @Override
         public boolean isMultiplyMaxRentClaims() {
             return multiplyMaxRentClaims;
         }
 
+        @Override
         public int getDynmapBorderWeight() {
             return dynmapBorderWeight;
         }
 
+        @Override
         public double getDynmapBorderOpacity() {
             return dynmapBorderOpacity;
         }
 
+        @Override
         public double getDynmapFillOpacity() {
             return dynmapFillOpacity;
         }
 
+        @Override
         public double getRaidBreakSpeedMultiplier() {
             return raidBreakSpeedMultiplier;
         }

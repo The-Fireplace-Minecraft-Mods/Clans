@@ -225,9 +225,10 @@ public class LandProtectionEventLogic {
                         return false;//Raiders can harm things
                     UUID sourceId = attacker instanceof EntityPlayer ? attacker.getUniqueID() : ((EntityTameable) attacker).getOwnerId();
                     ArrayList<Clan> sourceClans = ClanCache.getPlayerClans(sourceId);
-                    if(sourceClans.contains(chunkClan) || RaidingParties.hasActiveRaid(chunkClan) || Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker) || chunkClan.isOpclan() && target instanceof IMob)
-                        return false;//Players can harm things
-                    return true;
+                    return !sourceClans.contains(chunkClan)
+                            && !RaidingParties.hasActiveRaid(chunkClan)
+                            && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker)
+                            && (!chunkClan.isOpclan() || !(target instanceof IMob));//Players can harm things
                 }
             }
         }

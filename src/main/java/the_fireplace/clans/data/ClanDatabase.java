@@ -111,7 +111,7 @@ public final class ClanDatabase {
     public static ArrayList<Clan> lookupPlayerClans(UUID player){
         ArrayList<Clan> clans = Lists.newArrayList();
         for(Clan clan : getInstance().clans.values())
-            if(clan.getMembers().keySet().contains(player))
+            if(clan.getMembers().containsKey(player))
                 clans.add(clan);
         return clans;
     }

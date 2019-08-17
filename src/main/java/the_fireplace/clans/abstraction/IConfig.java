@@ -1,5 +1,7 @@
 package the_fireplace.clans.abstraction;
 
+import java.util.List;
+
 public interface IConfig {
     //General clan config
     boolean isMultipleClanLeaders();
@@ -13,7 +15,7 @@ public interface IConfig {
 
     //General mod configuration
     String getLocale();
-    String[] getTolerableFakePlayers();
+    List<String> getTolerableFakePlayers();
     boolean isFakePlayerDump();
     boolean isForgePermissionPrecedence();
 
