@@ -89,6 +89,7 @@ public final class ClansForge {
         public static boolean multiplyMaxClaimsByPlayers = true;
         @Config.Comment("Show player's default clan in chat.")
         public static boolean showDefaultClanInChat = true;
+        //General mod configuration
         @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public static String locale = "en_us";
         @Config.Comment("A list of Fake Players that are allowed to build, destroy, interact, and injure things on claimed land. These are typically machines added by mods. If it contains a *, this list is a blacklist, so everything is allowed by default. Otherwise, it is a whitelist.")
@@ -124,13 +125,13 @@ public final class ClansForge {
         public static boolean allowInteractProtection = true;
         @Config.Comment("Allow protection against injury on claimed land.")
         public static boolean allowInjuryProtection = true;
+        @Config.Comment("Always allow TNT to ignite other TNT, regardless of whether other blocks are protected.")
+        public static boolean chainTNT = true;
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
-        @Config.Comment("Always allow TNT to ignite other TNT, regardless of whether other blocks are protected.")
-        public static boolean chainTNT = true;
         //Raid configuration
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;
