@@ -11,6 +11,7 @@ import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
+import the_fireplace.clans.logic.RaidManagementLogic;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.ChunkUtils;
@@ -122,6 +123,7 @@ public final class RaidingParties {
 		Raid startingRaid = raids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
+		RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), startingRaid);
 		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.activate", raidTarget.getClanName());
 		for(UUID attacker: getActiveRaid(raidTarget).getAttackers())
 			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));

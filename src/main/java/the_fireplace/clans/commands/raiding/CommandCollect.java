@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.util.TextStyles;
@@ -37,24 +38,27 @@ public class CommandCollect extends RaidSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID())){
-			List<String> removeItems = Lists.newArrayList();
-			for(String string: RaidBlockPlacementDatabase.getPlacedBlocks(sender.getUniqueID())) {
-				ItemStack stack;
-				try {
-					stack = new ItemStack(JsonToNBT.getTagFromJson(string));
-				} catch (NBTException e) {
-					stack = null;
+		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
+			if (RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID())) {
+				List<String> removeItems = Lists.newArrayList();
+				for (String string : RaidBlockPlacementDatabase.getPlacedBlocks(sender.getUniqueID())) {
+					ItemStack stack;
+					try {
+						stack = new ItemStack(JsonToNBT.getTagFromJson(string));
+					} catch (NBTException e) {
+						stack = null;
+					}
+					if (stack == null || sender.addItemStackToInventory(stack))
+						removeItems.add(string);
 				}
-				if (stack == null || sender.addItemStackToInventory(stack))
-					removeItems.add(string);
-			}
-			RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(sender.getUniqueID(), removeItems);
-			if(RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID()))
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
-			else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));
+				RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(sender.getUniqueID(), removeItems);
+				if (RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID()))
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
+				else
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));
+			} else
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.empty").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.empty").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.raiding").setStyle(TextStyles.RED));
 	}
 }

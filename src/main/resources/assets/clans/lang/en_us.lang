@@ -308,6 +308,7 @@ commands.raid.collect.description=Collect your blocks placed/forbidden items fro
 commands.raid.collect.makespace=You have run out of room for collection. Make room in your inventory and try again.
 commands.raid.collect.success=Collection successful.
 commands.raid.collect.empty=You don't have anything to collect.
+commands.raid.collect.raiding=You cannot collect items while raiding.
 
 commands.raid.invite.usage=/raid invite <player>
 commands.raid.invite.description=Invite a player to join the raiding party you are in.
@@ -371,6 +372,8 @@ clans.raid.rmtimer.rm_attacker=You have been removed from your raid because you 
 clans.raid.rmtimer.rm_defender=You are now considered killed for the purposes of determining raid victory because you spent too long outside the %s's territory.
 clans.raid.rmtimer.warn_attacker=You are not in %s's territory. If you stay outside it for longer than %s seconds, you will be removed from the raid.
 clans.raid.rmtimer.warn_defender=You are not in %s's territory. If you stay outside it for longer than %s seconds, you will be considered killed when determining raid victory.
+
+clans.raid.confiscated=The following item is not allowed during raids and has been confiscated: %s. You can reclaim it when the raid ends with /raid collect.
 
 clans.raid.init.defender=A raiding party with %s members is preparing to raid %s. The raid will begin in %s seconds.
 clans.raid.init.attacker=Your raiding party, with %s members, is preparing to raid %s. The raid will begin in %s seconds.

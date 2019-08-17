@@ -6,8 +6,11 @@ import net.minecraft.block.BlockSlime;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityPiston;
 import net.minecraft.util.EnumFacing;
@@ -20,10 +23,15 @@ import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.data.RaidBlockPlacementDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class RaidManagementLogic {
@@ -191,5 +199,30 @@ public class RaidManagementLogic {
             RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), newChunk, newPos, oldBlock);
         if(RaidRestoreDatabase.delRemoveBlock(world.provider.getDimension(), oldChunk, oldPos))
             RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), newChunk, newPos);
+    }
+
+    public static void checkAndRemoveForbiddenItems(MinecraftServer server, Raid raid) {
+        List<String> itemList = Clans.getConfig().getRaidItemList();
+        boolean isBlacklist = itemList.contains("*");
+        //If everything is allowed, no need to go through this process
+        if(itemList.size() == 1 && isBlacklist)
+            return;
+        List<UUID> raidingPlayers = Lists.newArrayList(raid.getAttackers());
+        raidingPlayers.addAll(raid.getDefenders());
+        for(UUID playerId: raidingPlayers) {
+            EntityPlayer player = server.getPlayerList().getPlayerByUUID(playerId);
+            List<String> confiscated = Lists.newArrayList();
+            for(int i=0;i<player.inventory.getSizeInventory();i++) {
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if(!stack.isEmpty() && isBlacklist == itemList.contains(Objects.requireNonNull(stack.getItem().getRegistryName()).toString())) {
+                    ItemStack rm = player.inventory.removeStackFromSlot(i);
+                    confiscated.add(rm.getDisplayName());
+                    RaidBlockPlacementDatabase.getInstance().addPlacedBlock(player.getUniqueID(), rm);
+                }
+            }
+            if(!confiscated.isEmpty())
+                for(String item: confiscated)
+                    player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.raid.confiscated", item));
+        }
     }
 }

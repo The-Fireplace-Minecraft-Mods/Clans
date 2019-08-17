@@ -61,8 +61,7 @@ public final class RaidBlockPlacementDatabase {
 						values.add(v.getAsString());
 					instance.placedBlocks.put(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), values);
 				}
-			} else
-				Clans.getMinecraftHelper().getLogger().warn("Json Raid Placed Block Database not found! This is normal on your first run of Clans 1.2.0 and above, and when there is nothing to restore.");
+			}
 		} catch (FileNotFoundException e) {
 			//do nothing, it just hasn't been created yet
 		} catch (Exception e) {

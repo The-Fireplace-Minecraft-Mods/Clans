@@ -168,6 +168,8 @@ public final class ClansForge {
         public static boolean disableRaidRollback = false;
         @Config.Comment("Controls if stealing from containers is allowed during raids. This theft does not get rolled back at the end of the raid.")
         public static boolean enableStealing = false;
+        @Config.Comment("A list of items allowed in a raid. If it contains a *, this list is a blacklist, so everything except bedrock is allowed by default. Otherwise, it is a whitelist.")
+        public static String[] raidItemList = {"*", "minecraft:bedrock"};
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -534,6 +536,11 @@ public final class ClansForge {
         @Override
         public double getRaidBreakSpeedMultiplier() {
             return raidBreakSpeedMultiplier;
+        }
+
+        @Override
+        public List<String> getRaidItemList() {
+            return Lists.newArrayList(raidItemList);
         }
 
         @Override

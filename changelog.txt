@@ -1,7 +1,10 @@
 Additions:
+Added a config option to set items that are forbidden during raids.
 
 Changes:
 /[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
+Players can no longer use /raid collect while in the middle of a raid
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.
+Major performance improvement to rent/upkeep checking logic

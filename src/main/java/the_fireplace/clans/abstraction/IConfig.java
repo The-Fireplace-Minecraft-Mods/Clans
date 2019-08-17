@@ -51,6 +51,7 @@ public interface IConfig {
     boolean disableRaidRollback();
     boolean enableStealing();
     double getRaidBreakSpeedMultiplier();
+    List<String> getRaidItemList();
 
     //Costs, rewards, and multipliers
     int getFormClanCost();

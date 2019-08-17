@@ -36,25 +36,6 @@ public class TimerLogic {
     public static void runOneMinuteLogic() {
         for (Clan clan : ClanDatabase.getClans())
             clan.decrementShield();
-    }
-
-    public static void runOneSecondLogic() {
-        RaidingParties.decrementBuffers();
-        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, Integer>> entry : Sets.newHashSet(PlayerDataCache.clanHomeWarmups.entrySet()))
-            if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-                Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
-                if(c != null && c.getHome() != null)
-                    CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
-            }
-        for(EntityPlayerMP player: Sets.newHashSet(PlayerDataCache.clanHomeWarmups.keySet()))
-            if(PlayerDataCache.clanHomeWarmups.get(player).getValue1() > 0)
-                PlayerDataCache.clanHomeWarmups.put(player, new OrderedPair<>(PlayerDataCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerDataCache.clanHomeWarmups.get(player).getValue2()));
-            else
-                PlayerDataCache.clanHomeWarmups.remove(player);
-
-        for (Raid raid : RaidingParties.getActiveRaids())
-            if (raid.checkRaidEndTimer())
-                raid.defenderVictory();
 
         if (Clans.getConfig().getClanUpkeepDays() > 0 || Clans.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
@@ -89,7 +70,32 @@ public class TimerLogic {
                         clan.updateNextUpkeepTimeStamp();
                 }
             }
+    }
+
+    public static void runOneSecondLogic() {
+        RaidingParties.decrementBuffers();
+        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, Integer>> entry : Sets.newHashSet(PlayerDataCache.clanHomeWarmups.entrySet()))
+            if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
+                Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
+                if(c != null && c.getHome() != null)
+                    CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
+            }
+        for(EntityPlayerMP player: Sets.newHashSet(PlayerDataCache.clanHomeWarmups.keySet()))
+            if(PlayerDataCache.clanHomeWarmups.get(player).getValue1() > 0)
+                PlayerDataCache.clanHomeWarmups.put(player, new OrderedPair<>(PlayerDataCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerDataCache.clanHomeWarmups.get(player).getValue2()));
+            else
+                PlayerDataCache.clanHomeWarmups.remove(player);
+
+        for (Raid raid : RaidingParties.getActiveRaids())
+            if (raid.checkRaidEndTimer())
+                raid.defenderVictory();
+
         ClaimDataManager.decrementBorderlandsRegenTimers();
+    }
+
+    public static void runTwoSecondLogic() {
+        for(Raid raid: RaidingParties.getActiveRaids())
+            RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), raid);
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {

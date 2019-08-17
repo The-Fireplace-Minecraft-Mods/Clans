@@ -10,7 +10,8 @@ import the_fireplace.clans.logic.TimerLogic;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
 public class Timer {
-	private static byte ticks = 0;
+	private static byte secondCounter = 0;
+    private static byte twoSecondCounter = 0;
 	private static int minuteCounter = 0;
 	private static int fiveMinuteCounter = 0;
 	private static boolean executing = false;
@@ -30,10 +31,16 @@ public class Timer {
                 TimerLogic.runOneMinuteLogic();
                 executing = false;
             }
-            if(++ticks >= 20) {
+            if(++secondCounter >= 20) {
                 executing = true;
-                ticks -= 20;
+                secondCounter -= 20;
                 TimerLogic.runOneSecondLogic();
+                executing = false;
+            }
+            if(++twoSecondCounter >= 20*2) {
+                executing = true;
+                twoSecondCounter -= 20*2;
+                TimerLogic.runTwoSecondLogic();
                 executing = false;
             }
         }
