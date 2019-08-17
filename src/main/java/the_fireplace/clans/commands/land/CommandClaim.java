@@ -37,6 +37,6 @@ public class CommandClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false, false);
+		ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
 	}
 }

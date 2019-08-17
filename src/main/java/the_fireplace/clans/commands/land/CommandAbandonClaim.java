@@ -37,6 +37,6 @@ public class CommandAbandonClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan, false, false);
+		ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan);
 	}
 }

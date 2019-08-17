@@ -30,18 +30,17 @@ public class CommandOpClan extends CommandBase {
         put("abandonclaim", new OpCommandAbandonClaim());
         put("autoclaim", new OpCommandAutoClaim());
         put("autoabandon", new OpCommandAutoAbandon());
-        //clan constants
+        //Adjust other clans
         put("setname", new OpCommandSetName());
         put("setdescription", new OpCommandSetDescription());
         put("setcolor", new OpCommandSetColor());
-        //Adjust other clans
         put("setshield", new OpCommandSetShield());
         if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy))
             put("addfunds", new OpCommandAddFunds());
-        put("promote", new OpCommandPromote());
-        put("demote", new OpCommandDemote());
+        put("setrank", new OpCommandSetRank());
         put("kick", new OpCommandKick());
         put("disband", new OpCommandDisband());
+        put("setlimitless", new OpCommandSetLimitless());
         //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
         //help

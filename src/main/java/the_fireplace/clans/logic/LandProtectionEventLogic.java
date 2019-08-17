@@ -228,7 +228,7 @@ public class LandProtectionEventLogic {
                     return !sourceClans.contains(chunkClan)
                             && !RaidingParties.hasActiveRaid(chunkClan)
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker)
-                            && (!chunkClan.isOpclan() || !(target instanceof IMob));//Players can harm things
+                            && (!chunkClan.isLimitless() || !(target instanceof IMob));//Players can harm things
                 }
             }
         }

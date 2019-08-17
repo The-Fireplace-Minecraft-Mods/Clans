@@ -41,7 +41,7 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private boolean isOpclan = false;
+    private boolean isLimitless = false;
     private long rent = 0;
     private int wins = 0;
     private int losses = 0;
@@ -80,22 +80,6 @@ public class Clan {
         isChanged = true;
     }
 
-    /**
-     * For internal use only. Generates OpClan.
-     */
-    public Clan(){
-        this.clanName = TranslationUtil.getStringTranslation("clan.default_opclan_name");
-        this.description = TranslationUtil.getStringTranslation("clan.default_opclan_description");
-        this.members = Maps.newHashMap();
-        this.clanId = UUID.fromString("00000000-0000-0000-0000-000000000000");
-        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
-        if(!ClanDatabase.addClan(this.clanId, this))
-            Clans.getMinecraftHelper().getLogger().error("Unable to add opclan to the clan database!");
-        this.isOpclan = true;
-        ClansEventManager.fireEvent(new ClanFormedEvent(null, this));
-        isChanged = true;
-    }
-
     //region JsonObject conversions
     public JsonObject toJsonObject() {
         JsonObject ret = new JsonObject();
@@ -116,7 +100,7 @@ public class Clan {
         ret.addProperty("homeZ", homeZ);
         ret.addProperty("hasHome", hasHome);
         ret.addProperty("homeDimension", homeDimension);
-        ret.addProperty("isOpclan", isOpclan);
+        ret.addProperty("isLimitless", isLimitless);
         ret.addProperty("rent", rent);
         ret.addProperty("wins", wins);
         ret.addProperty("losses", losses);
@@ -140,7 +124,7 @@ public class Clan {
             newMembers.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
         this.members = newMembers;
         this.clanId = UUID.fromString(obj.get("clanId").getAsString());
-        this.isOpclan = obj.get("isOpclan").getAsBoolean();
+        this.isLimitless = obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.get("isLimitless").getAsBoolean();
         this.homeX = obj.get("homeX").getAsFloat();
         this.homeY = obj.get("homeY").getAsFloat();
         this.homeZ = obj.get("homeZ").getAsFloat();
@@ -229,7 +213,7 @@ public class Clan {
 
     public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {
         HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
-        if(isOpclan)
+        if(isLimitless)
             return online;
         for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
             EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
@@ -264,7 +248,7 @@ public class Clan {
     }
 
     public void setClanBanner(String clanBanner) {
-        if(isOpclan)
+        if(isLimitless)
             return;
         ClanCache.removeBanner(this.clanBanner);
         ClanCache.addBanner(clanBanner);
@@ -273,7 +257,7 @@ public class Clan {
     }
 
     public void setHome(BlockPos pos, int dimension) {
-        if(isOpclan)
+        if(isLimitless)
             return;
         this.homeX = pos.getX();
         this.homeY = pos.getY();
@@ -329,7 +313,7 @@ public class Clan {
     }
 
     public void addMember(UUID player) {
-        if(isOpclan)
+        if(isLimitless)
             return;
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
@@ -339,7 +323,7 @@ public class Clan {
     }
 
     public boolean removeMember(UUID player) {
-        if(isOpclan)
+        if(isLimitless)
             return false;
         if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
             return false;
@@ -352,7 +336,7 @@ public class Clan {
     }
 
     public boolean demoteMember(UUID player) {
-        if(isOpclan || !members.containsKey(player))
+        if(isLimitless || !members.containsKey(player))
             return false;
         else {
             if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
@@ -371,7 +355,7 @@ public class Clan {
     }
 
     public boolean promoteMember(UUID player) {
-        if(isOpclan || !members.containsKey(player))
+        if(isLimitless || !members.containsKey(player))
             return false;
         else {
             if(members.get(player) == EnumRank.ADMIN) {
@@ -397,8 +381,13 @@ public class Clan {
         }
     }
 
-    public boolean isOpclan(){
-        return isOpclan;
+    public boolean isLimitless(){
+        return isLimitless;
+    }
+
+    public void setLimitless(boolean limitless){
+        this.isLimitless = limitless;
+        markChanged();
     }
 
     public long getRent() {
@@ -542,6 +531,8 @@ public class Clan {
         if(RaidingParties.isPreparingRaid(this))
             RaidingParties.removeRaid(RaidingParties.getRaid(this));
         ClanDatabase.removeClan(getClanId());
+        if(isLimitless())
+            return;
 
         long distFunds = Clans.getPaymentHandler().getBalance(this.getClanId());
         long rem;

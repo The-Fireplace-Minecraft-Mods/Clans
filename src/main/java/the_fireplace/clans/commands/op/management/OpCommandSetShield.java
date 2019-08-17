@@ -41,7 +41,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 		if(c != null) {
 			long duration;
 			try {
-				duration = Long.valueOf(args[1]);
+				duration = Long.parseLong(args[1]);
 				if(duration < 0)
 					duration = 0;
 			} catch(NumberFormatException e) {

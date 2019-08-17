@@ -9,10 +9,8 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.ClaimDataManager;
-import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -43,20 +41,16 @@ public class PlayerEventLogic {
 
     public static void onPlayerChangedDimension(EntityPlayer player) {
         PlayerDataManager.setClaimWarning(player.getUniqueID(), false);
-        OrderedPair<Clan, Boolean> ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(player.getUniqueID());
-        Boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(player.getUniqueID());
+        Clan ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(player.getUniqueID());
+        boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(player.getUniqueID());
         Clan cAutoAbandon = ClanCache.getAutoAbandonClaims().remove(player.getUniqueID());
         Clan cAutoClaim = ClanCache.getAutoClaimLands().remove(player.getUniqueID());
-        if(ocAutoAbandon != null) {
-            if (ocAutoAbandon)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
-            else
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", ClanDatabase.getOpClan()).setStyle(TextStyles.GREEN));
-        }
+        if(ocAutoAbandon)
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
         if(cAutoAbandon != null)
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getClanName()).setStyle(TextStyles.GREEN));
         if(ocAutoClaim != null)
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getValue1().getClanName()).setStyle(TextStyles.GREEN));
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
         if(cAutoClaim != null)
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
     }

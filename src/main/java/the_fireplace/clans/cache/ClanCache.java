@@ -11,14 +11,10 @@ import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.model.OrderedPair;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -35,8 +31,8 @@ public final class ClanCache {
 	//Maps of (Player Unique ID) -> (Clan)
 	private static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
 	private static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
-	private static HashMap<UUID, Boolean> opAutoAbandonClaims = Maps.newHashMap();
-	private static HashMap<UUID, OrderedPair<Clan, Boolean>> opAutoClaimLands = Maps.newHashMap();
+	private static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
+	private static HashMap<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
 
 	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid");
 	static {
@@ -209,11 +205,11 @@ public final class ClanCache {
 		return autoClaimLands;
 	}
 
-	public static HashMap<UUID, Boolean> getOpAutoAbandonClaims() {
+	public static List<UUID> getOpAutoAbandonClaims() {
 		return opAutoAbandonClaims;
 	}
 
-	public static HashMap<UUID, OrderedPair<Clan, Boolean>> getOpAutoClaimLands() {
+	public static HashMap<UUID, Clan> getOpAutoClaimLands() {
 		return opAutoClaimLands;
 	}
 }

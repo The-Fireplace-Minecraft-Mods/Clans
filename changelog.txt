@@ -1,9 +1,16 @@
 Additions:
 Added a config option to set items that are forbidden during raids.
+Added a new system to replace the opclan: limitless clans. These behave similarly to opclan, except they have members, and can be disbanded. Existing opclans will be converted into limitless clans.
+New command: /opclan setlimitless <clan> <true|1|false|0>
+New command: /opclan setrank <member|admin|leader> <clan> <player>
 
 Changes:
 /[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
 Players can no longer use /raid collect while in the middle of a raid
+Removed /opclan promote and /opclan demote (use /opclan setrank)
+Syntax/behavior change: /opclan claim/autoclaim now have a <clan> argument, and always force claim for the target clan.
+Syntax/behavior change: /opclan abandonclaim/autoabandon now take no arguments, and always force claim abandonment.
+Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan> argument to select which clan to set that data for.
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.

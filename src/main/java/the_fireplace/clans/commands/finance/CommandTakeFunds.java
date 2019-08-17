@@ -41,16 +41,19 @@ public class CommandTakeFunds extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(!Clans.getConfig().isLeaderWithdrawFunds())
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.takefunds.disabled"));
-		long amount = Long.valueOf(args[0]);
-		if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
-			if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID())) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-				selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.takefunds.taken", sender.getDisplayNameString(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName());
-			} else {
-				Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_player_econ_acct").setStyle(TextStyles.RED));
-			}
+		if(!selectedClan.isLimitless()) {
+			long amount = Long.parseLong(args[0]);
+			if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
+				if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID())) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.takefunds.taken", sender.getDisplayNameString(), amount, Clans.getPaymentHandler().getCurrencyName(amount), selectedClan.getClanName());
+				} else {
+					Clans.getPaymentHandler().addAmount(amount, selectedClan.getClanId());
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_player_econ_acct").setStyle(TextStyles.RED));
+				}
+			} else
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_clan_funds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_clan_funds", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "takefunds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

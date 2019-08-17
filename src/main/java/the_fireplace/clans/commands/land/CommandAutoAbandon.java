@@ -42,7 +42,7 @@ public class CommandAutoAbandon extends ClanSubCommand {
 		if(ClanCache.getAutoAbandonClaims().remove(sender.getUniqueID()) == null) {
 			ClanCache.getAutoAbandonClaims().put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-			ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan, false, false);
+			ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.stop", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 	}

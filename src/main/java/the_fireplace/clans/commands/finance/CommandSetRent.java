@@ -41,17 +41,20 @@ public class CommandSetRent extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(Clans.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
-		int newRent = Integer.valueOf(args[0]);
-		if(newRent >= 0) {
-			long maxRent = Clans.getConfig().getMaxRent();
-			if(Clans.getConfig().isMultiplyMaxRentClaims())
-				maxRent *= selectedClan.getClaimCount();
-			if(maxRent <= 0 || newRent <= maxRent) {
-				selectedClan.setRent(newRent);
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getClanName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
+		if(!selectedClan.isLimitless()) {
+			int newRent = Integer.parseInt(args[0]);
+			if (newRent >= 0) {
+				long maxRent = Clans.getConfig().getMaxRent();
+				if (Clans.getConfig().isMultiplyMaxRentClaims())
+					maxRent *= selectedClan.getClaimCount();
+				if (maxRent <= 0 || newRent <= maxRent) {
+					selectedClan.setRent(newRent);
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getClanName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
+				} else
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getClanName(), maxRent, Clans.getPaymentHandler().getCurrencyName(maxRent)).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getClanName(), maxRent, Clans.getPaymentHandler().getCurrencyName(maxRent)).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "setrent", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

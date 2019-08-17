@@ -3,9 +3,6 @@ package the_fireplace.clans.data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -14,8 +11,6 @@ import the_fireplace.clans.model.Clan;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,37 +21,15 @@ public final class ClanDatabase {
     public static final File clanDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/clan");
 
     public static ClanDatabase getInstance() {
-        if(instance == null) {
+        if(instance == null)
             load();
-            loadLegacy();
-            if(instance.opclan == null)
-                if(instance.clans.containsKey(UUID.fromString("00000000-0000-0000-0000-000000000000")))
-                    instance.opclan = instance.clans.get(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-                else
-                    instance.opclan = new Clan();
-        }
         return instance;
     }
 
     private HashMap<UUID, Clan> clans;
-    @Deprecated
-    private Clan opclan = null;
 
     private ClanDatabase(){
         clans = Maps.newHashMap();
-    }
-
-    /**
-     * Get the server's opclan. Will be removed in 1.4 as multiple opclans will be allowed.
-     */
-    @Deprecated
-    public static Clan getOpClan() {
-        Clan out = getInstance().opclan;
-        if(out == null) {
-            instance.opclan = new Clan();
-            out = instance.opclan;
-        }
-        return out;
     }
 
     @Nullable
@@ -96,11 +69,6 @@ public final class ClanDatabase {
         return false;
     }
 
-    @Deprecated
-    private static void setOpclan(Clan opclan) {
-        instance.opclan = opclan;
-    }
-
     /**
      * For internal use only. Anyone wishing to do this, use {@link ClanCache#getPlayerClans(UUID)}
      * @param player
@@ -114,33 +82,6 @@ public final class ClanDatabase {
             if(clan.getMembers().containsKey(player))
                 clans.add(clan);
         return clans;
-    }
-
-    private static void loadLegacy() {
-        File oldFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans.json");
-        if(!oldFile.exists())
-            return;
-        JsonParser jsonParser = new JsonParser();
-        try {
-            Object obj = jsonParser.parse(new FileReader(oldFile));
-            if(obj instanceof JsonObject) {
-                JsonObject jsonObject = (JsonObject) obj;
-                JsonArray clanMap = jsonObject.get("clans").getAsJsonArray();
-                for (int i = 0; i < clanMap.size(); i++) {
-                    Clan loadedClan = new Clan(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject());
-                    loadedClan.markChanged();
-                    addClan(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), loadedClan);
-                }
-                Clan opclan = new Clan(jsonObject.getAsJsonObject("opclan"));
-                opclan.markChanged();
-                setOpclan(opclan);
-            }
-        } catch (FileNotFoundException e) {
-            //do nothing
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        oldFile.delete();
     }
 
     private static void load() {

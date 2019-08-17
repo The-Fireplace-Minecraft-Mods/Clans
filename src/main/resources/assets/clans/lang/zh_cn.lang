@@ -1,21 +1,14 @@
 clan.default_description=这是一个新的部落
-clan.default_opclan_name=服务器
-clan.default_opclan_description=服务器保护的部落土地
 
-clans.error.noplayercap=Internal Error: 内部错误：玩家缺少部落能力。请报告此事给服务器管理员。
-clans.error.nochunkcap=Internal Error: 内部错误：块丢失了部落块能力。请报告此事给服务器管理员。
 clans.error.no_clan_econ_acct=Internal Error: 内部错误：未找到部落经济帐户。请报告此事给服务器管理员。
 clans.error.no_player_econ_acct=Internal Error: 内部错误：未找到玩家经济帐户。请报告此事给服务器管理员。
 clans.error.nullserver=Internal Error: 内部错误：服务器为空！请报告此事给服务器管理员。
 
 commands.clan.usage=/clan [部落名] <指令> [参数]
-commands.clan.help=/clan 指令:
 
 commands.opclan.usage=/opclan <指令> [参数]
-commands.opclan.help=/opclan 指令:
 
 commands.raid.usage=/raid <指令> [参数]
-commands.raid.help=/raid 指令:
 commands.raid.disabled=此服务器上禁用了袭击模式。
 
 commands.clan.common.player=你必须是一名玩家才能做到这一点
@@ -44,8 +37,16 @@ commands.clan.details.members=成员:
 commands.clan.details.leader=族长 %s
 commands.clan.details.admin=长老 %s
 commands.clan.details.no_members=错误： %s 没有成员
+commands.clan.details.upkeep=维护（费用）为 %s %s 每 %s 一天
+commands.clan.details.rent=赋税 (收入) 是 %s %s 每 %s 一天
+commands.clan.details.trend=预估收入 %s %s 每天
+commands.clan.details.increase_rent=您可能需要将赋税增加到 %s 或者找到减少维护费的方法
+commands.clan.details.reduce_upkeep=你可能需要找到一种减少维护费的方法
+commands.clan.details.breaking_even=%s 是没有盈利或负债的。
 
 commands.clan.disband.usage=/clan disband（解散部落）
+commands.clan.disband.success=你解散了 %s 部落
+commands.clan.disband.disbanded=%s 已被 %s 解散
 
 commands.clan.form.usage=/clan form <名称> [图腾] （创建一个部落）
 commands.clan.form.success=部落创建成功。
@@ -96,15 +97,6 @@ commands.clan.addfunds.added=%s 将 %s %s 添加到 %s部落的账户中
 commands.clan.balance.usage=/clan balance 查看部落余额
 commands.clan.balance.balance=%s 的部落资金: %s %s
 
-commands.clan.finances.usage=/clan finances （交付部落维护费用）
-commands.clan.finances.upkeep=维护（费用）为 %s %s 每 %s 一天
-commands.clan.finances.rent=赋税 (收入) 是 %s %s 每 %s 一天
-commands.clan.finances.trend=预估收入 %s %s 每天
-commands.clan.finances.increase_rent=您可能需要将赋税增加到 %s 或者找到减少维护费的方法
-commands.clan.finances.reduce_upkeep=你可能需要找到一种减少维护费的方法
-commands.clan.finances.breaking_even=%s 是没有盈利或负债的。
-commands.clan.finances.disabled=/clan finances 此服务器上禁用部落维护指令
-
 commands.clan.setrent.usage=/clan setrent <赋税金额> （设置部落赋税，默认真实一天的赋税标准）
 commands.clan.setrent.success=%s 将部落的赋税标准设置为 %s
 commands.clan.setrent.overmax=无法将赋税设置为高于 %s的当前最大值(%s %s)
@@ -145,6 +137,9 @@ commands.clan.decline.success=你拒绝了加入 %s 部落
 commands.clan.decline.declined=%s 拒绝加入 %s 的邀请
 
 commands.clan.demote.usage=/clan demote <玩家名称> （降低玩家的职位）
+commands.clan.demote.success=你已将 %s 降低为 %s 在 %s 中
+commands.clan.demote.demoted=你已被 %s 降低为 %s 在 %s 中
+commands.clan.demote.error=玩家 %s 不能被降级
 
 commands.clan.invite.usage=/clan invite <玩家名称> （邀请玩家加入部落）
 commands.clan.invite.success=你已邀请 %s 加入 %s 部落
@@ -170,6 +165,10 @@ commands.clan.leave.left=%s 退出了 %s 部落
 commands.clan.leave.error=内部错误：您无法从 %s 中退出，请将此情况报告给服务器管理员
 
 commands.clan.promote.usage=/clan promote <玩家> （提升玩家职位）
+commands.clan.promote.success=你已在 %s 中将 %s 提升为 %s
+commands.clan.promote.notify=%s 已被 %s 提升为 %s 中的 %s
+commands.clan.promote.promoted=你已被 %s 从 %s 提升为 %s
+commands.clan.promote.error=玩家 %s 不能被提升
 
 commands.clan.home.usage=/clan home （传送到部落之家）
 commands.clan.home.nohome=%s 部落没有设置部落之家，部落族长应该使用/clan sethome 来创建一个
@@ -201,24 +200,9 @@ commands.opclan.buildadmin.off=你不再处于管理员自由建造模式
 commands.opclan.claim.usage=/opclan claim [强制] （管理员强制占领土地）
 commands.opclan.claim.taken_other=另一个部落 (%1$s) 已经占领这块土地，想要从 %1$s 部落获取此土地，请使用/opclan claim 管理员命令
 
-commands.opclan.demote.usage=/opclan demote <部落> <玩家> 管理员降低玩家职位 
-commands.opclan.demote.success=你已将 %s 降低为 %s 在 %s 中
-commands.opclan.demote.demoted=你已被 %s 降低为 %s 在 %s 中
-commands.opclan.demote.error=玩家 %s 不能被降级
-
 commands.opclan.disband.usage=/opclan disband <部落>  （管理员解散部落）
-commands.opclan.disband.success=你解散了 %s 部落
-commands.opclan.disband.disbanded=%s 已被 %s 解散
-commands.opclan.disband.error=内部错误: 无法解散 %s 请将此事件报告给服务器管理员
-commands.opclan.disband.opclan=你不能解散 %s 部落，因为它是OP创建的
 
 commands.opclan.kick.usage=/opclan kick <部落> <玩家> OP踢出玩家指令
-
-commands.opclan.promote.usage=/opclan promote <部落> <玩家> （管理员提示玩家职位）
-commands.opclan.promote.success=你已在 %s 中将 %s 提升为 %s
-commands.opclan.promote.notify=%s 已被 %s 提升为 %s 中的 %s
-commands.opclan.promote.promoted=你已被 %s 从 %s 提升为 %s
-commands.opclan.promote.error=玩家 %s 不能被提升
 
 commands.opclan.setcolor.usage=/opclan [目标部落] setcolor <颜色代码> （管理员设置部落颜色）
 

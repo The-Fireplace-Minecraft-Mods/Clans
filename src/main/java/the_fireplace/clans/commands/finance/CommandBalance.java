@@ -38,7 +38,10 @@ public class CommandBalance extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
-		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getClanName(), balance, Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
+		if(!selectedClan.isLimitless()) {
+			long balance = Clans.getPaymentHandler().getBalance(selectedClan.getClanId());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getClanName(), balance, Clans.getPaymentHandler().getCurrencyName(balance)).setStyle(TextStyles.GREEN));
+		} else
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "balance", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

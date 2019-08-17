@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -15,12 +16,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OpCommandSetName extends OpClanSubCommand {
 	@Override
 	public int getMinArgs() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public int getMaxArgs() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -30,12 +31,17 @@ public class OpCommandSetName extends OpClanSubCommand {
 
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-		String newName = args[0];
-		if(!ClanCache.clanNameTaken(newName)) {
-			String oldName = opSelectedClan.getClanName();
-			opSelectedClan.setClanName(newName);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName + (opSelectedClan.isOpclan() ? " (Opclan)" : ""), newName).setStyle(TextStyles.GREEN));
+		String clan = args[0];
+		Clan c = ClanCache.getClanByName(clan);
+		if(c != null) {
+			String newName = args[0];
+			if (!ClanCache.clanNameTaken(newName)) {
+				String oldName = c.getClanName();
+				c.setClanName(newName);
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
+			} else
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 }

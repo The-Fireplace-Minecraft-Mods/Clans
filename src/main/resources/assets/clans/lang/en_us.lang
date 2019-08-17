@@ -1,6 +1,4 @@
 clan.default_description=This is a new clan.
-clan.default_opclan_name=Server
-clan.default_opclan_description=Server Land Protection Clan
 
 clans.error.no_clan_econ_acct=Internal Error: Clan economy account not found. Server owners, please report this.
 clans.error.no_player_econ_acct=Internal Error: Player economy account not found. Server owners, please report this.
@@ -31,6 +29,7 @@ commands.clan.common.insufficient_clan_funds=%s does not have enough funds to do
 commands.clan.common.not_leader=You are not a leader of %s.
 commands.clan.common.not_admin=You are not an admin of %s.
 commands.clan.common.not_in_clan=The player %s is not in %s.
+commands.clan.common.not_on_limitless=You cannot use %s on %s because it is a limitless clan.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
@@ -55,23 +54,27 @@ commands.clan.details.membercount=Number of members: %s
 commands.clan.details.members=Members:
 commands.clan.details.leader=Leader %s
 commands.clan.details.admin=Admin %s
-commands.clan.details.no_members=Error: %s has no members.
-commands.clan.finances.upkeep=Clan Upkeep (expenses) is %s %s every %s days.
-commands.clan.finances.rent=Clan Rent (income) is %s %s every %s days.
-commands.clan.finances.rent_individual=Individual rent is %s %s every %s days.
-commands.clan.finances.trend=Approximate financial trend is %s %s every day.
-commands.clan.finances.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
-commands.clan.finances.reduce_upkeep=You may want to find a way to reduce upkeep.
-commands.clan.finances.breaking_even=%s is not earning or losing money.
+commands.clan.details.no_members=%s has no members.
+commands.clan.details.upkeep=Clan Upkeep (expenses) is %s %s every %s days.
+commands.clan.details.rent=Clan Rent (income) is %s %s every %s days.
+commands.clan.details.rent_individual=Individual rent is %s %s every %s days.
+commands.clan.details.trend=Approximate financial trend is %s %s every day.
+commands.clan.details.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
+commands.clan.details.reduce_upkeep=You may want to find a way to reduce upkeep.
+commands.clan.details.breaking_even=%s is not earning or losing money.
 commands.clan.details.rentdue=Rent is due in %s hours.
 commands.clan.details.upkeepdue=Upkeep is due in %s hours.
 comamnds.clan.details.base_amount=%s(base)
 commands.clan.details.times_members=*%s(members)
 commands.clan.details.times_claims=*%s(claims)
 commands.clan.details.equals_total==%s
+commands.clan.details.limitless=This clan is limitless, and most likely belongs to the server.
 
 commands.clan.disband.usage=/clan disband
 commands.clan.disband.description=Disband your clan.
+commands.clan.disband.success=You have disbanded %s.
+commands.clan.disband.disbanded=%s has been disbanded by %s.
+commands.clan.disband.limitless=You cannot disband %1$s using /clan disband because it is limitless. Use /opclan disband %1$s to disband it.
 
 commands.clan.form.usage=/clan form <name> [banner]
 commands.clan.form.description=Form a new clan.
@@ -191,6 +194,9 @@ commands.clan.decline.declined=%s declined an invitation to join %s.
 
 commands.clan.demote.usage=/clan demote <player>
 commands.clan.demote.description=Demote a player in your clan, Leader to Admin or Admin to Member.
+commands.clan.demote.success=You have demoted %s to %s in %s.
+commands.clan.demote.demoted=You have been demoted in %s to %s by %s.
+commands.clan.demote.error=The player %s could not be demoted.
 
 commands.clan.invite.usage=/clan invite <player>
 commands.clan.invite.description=Invite a player to your clan.
@@ -220,6 +226,10 @@ commands.clan.leave.error=Internal Error: You were unable to be removed from %s.
 
 commands.clan.promote.usage=/clan promote <player>
 commands.clan.promote.description=Promote a player in your clan. Member to Admin or Admin to Leader.
+commands.clan.promote.success=You have promoted %s to %s in %s.
+commands.clan.promote.notify=%s has been promoted to %s in %s by %s.
+commands.clan.promote.promoted=You have been promoted in %s to %s by %s.
+commands.clan.promote.error=The player %s could not be promoted.
 
 commands.clan.home.usage=/clan home
 commands.clan.home.description=Teleport to your clan's home.
@@ -240,66 +250,59 @@ commands.clan.trapped.usage=/clan trapped
 commands.clan.trapped.description=Teleport out of another clan's territory if you are stuck.
 commands.clan.trapped.fail=No, you're not trapped in someone else's claim.
 
-commands.opclan.abandonclaim.usage=/opclan [target clan] abandonclaim [force]
-commands.opclan.abandonclaim.description=Abandon a claim.
-commands.opclan.abandonclaim.wrongclan=This land does not belong to %s. To force %s to abandon it, use /opclan abandonclaim force
-commands.opclan.abandonclaim.disconnected=You cannot abandon this chunk of land because doing so would create at least one disconnected claim.
+commands.opclan.abandonclaim.usage=/opclan abandonclaim
+commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 
 commands.opclan.addfunds.usage=/opclan addfunds <clan> <amount>
 commands.opclan.addfunds.description=Add funds to any clan's balance.
 
-commands.opclan.autoabandon.usage=/opclan autoabandon [force]
-commands.opclan.autoabandon.description=Automatically abandon claims as you walk around.
+commands.opclan.autoabandon.usage=/opclan autoabandon
+commands.opclan.autoabandon.description=Automatically abandon claims as you walk around, regardless of who owns them.
 commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
 commands.opclan.autoabandon.stop=You are no longer autoabandoning land for everyone.
 
-commands.opclan.autoclaim.usage=/opclan autoclaim [force]
-commands.opclan.autoclaim.description=Automatically claim land as you walk around.
+commands.opclan.autoclaim.usage=/opclan autoclaim <clan>
+commands.opclan.autoclaim.description=Automatically claim land for a clan as you walk around, regardless of who currently owns it.
 
 commands.opclan.buildadmin.usage=/opclan buildadmin
-commands.opclan.buildadmin.description=Enter admin mode, allowing you to build/destroy/interact/attack on opclan and other clans' territory.
+commands.opclan.buildadmin.description=Enter admin mode, allowing you to build/destroy/interact/attack on any clan's territory.
 commands.opclan.buildadmin.on=You are now in Build Admin mode.
 commands.opclan.buildadmin.off=You are no longer in Build Admin mode.
 
-commands.opclan.claim.usage=/opclan [target clan] claim [force]
-commands.opclan.claim.description=Claim a 16x16 chunk of land for opclan.
-commands.opclan.claim.taken_other=Another clan (%1$s) has already claimed this land. To take this land from %1$s, use /opclan claim [clan] force.
+commands.opclan.claim.usage=/opclan claim <clan>
+commands.opclan.claim.description=Claim a 16x16 chunk of land for the target clan, regardless of who currently owns it.
 
-commands.opclan.demote.usage=/opclan demote <clan> <member>
-commands.opclan.demote.description=Demote a member of any clan.
-commands.opclan.demote.success=You have demoted %s to %s in %s.
-commands.opclan.demote.demoted=You have been demoted in %s to %s by %s.
-commands.opclan.demote.error=The player %s could not be demoted.
+commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <player>
+commands.opclan.setrank.description=Make a player a rank in a clan.
+commands.opclan.setrank.success=You have made %s a %s in %s.
+commands.opclan.setrank.set=You have been made a %s in %s by %s.
+commands.opclan.setrank.error=The player %s could not be made a %s in %s.
 
 commands.opclan.disband.usage=/opclan disband <clan>
 commands.opclan.disband.description=Disband any clan.
-commands.opclan.disband.success=You have disbanded %s.
-commands.opclan.disband.disbanded=%s has been disbanded by %s.
-commands.opclan.disband.opclan=You cannot disband %s because it is the opclan.
 
 commands.opclan.kick.usage=/opclan kick <clan> <member>
 commands.opclan.kick.description=Kick a member from any clan.
 
-commands.opclan.promote.usage=/opclan promote <clan> <member>
-commands.opclan.promote.description=Promote a member of any clan.
-commands.opclan.promote.success=You have promoted %s to %s in %s.
-commands.opclan.promote.notify=%s has been promoted to %s in %s by %s.
-commands.opclan.promote.promoted=You have been promoted in %s to %s by %s.
-commands.opclan.promote.error=The player %s could not be promoted.
-
-commands.opclan.setcolor.usage=/opclan [target clan] setcolor <color>
+commands.opclan.setcolor.usage=/opclan setcolor <clan> <color>
 commands.opclan.setcolor.description=Change any clan's color.
 
-commands.opclan.setdescription.usage=/opclan [target clan] setdescription <new description>
+commands.opclan.setdescription.usage=/opclan setdescription <clan> <new description>
 commands.opclan.setdescription.description=Set any clan's description.
 
-commands.opclan.setname.usage=/opclan [target clan] setname <newname>
+commands.opclan.setname.usage=/opclan setname <clan> <newname>
 commands.opclan.setname.description=Set any clan's name.
 
 commands.opclan.setshield.usage=/opclan setshield <clan> <duration>
 commands.opclan.setshield.description=Set the amount of shield for any clan, in minutes.
 commands.opclan.setshield.format=Improperly formatted shield duration.
 commands.opclan.setshield.success=Clan shield for %s set to %s minutes.
+
+commands.opclan.setlimitless.usage=/opclan setlimitless <clan> <true|1|false|0>
+commands.opclan.setlimitless.description=Set if a clan is limitless. Limitless clans cannot be raided and do not use economy features.
+commands.opclan.setlimitless.format=%s could not be identified as a boolean.
+commands.opclan.setlimitless.success_t=You have made %s a limitless clan.
+commands.opclan.setlimitless.success_f=You have removed the limitless status from %s.
 
 commands.raid.common.notinparty=You are not in a raiding party!
 

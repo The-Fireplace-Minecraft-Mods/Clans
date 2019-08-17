@@ -13,7 +13,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
@@ -36,7 +35,6 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	protected Clan selectedClan;
-	protected Clan opSelectedClan;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
@@ -82,7 +80,6 @@ public abstract class ClanSubCommand extends CommandBase {
 				Clan playerClan = null;
 				if(greedyArgs ? args.length > 1 && CommandClan.greedyCommands.contains(args[1]) : args.length == getMaxArgs()+1) {
 					playerClan = ClanCache.getClanByName(args[0]);
-					opSelectedClan = playerClan;
 				} else if(sender instanceof EntityPlayerMP)
 					playerClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(((EntityPlayerMP) sender).getUniqueID()));
 				if(sender instanceof EntityPlayerMP) {
@@ -93,8 +90,6 @@ public abstract class ClanSubCommand extends CommandBase {
 					}
 				}
 				this.selectedClan = playerClan;
-				if(this.opSelectedClan == null)
-					this.opSelectedClan = ClanDatabase.getOpClan();
 				String[] args2 = args;
 				if(args.length == getMaxArgs()+1) {
 					if (args.length > 1)

@@ -24,20 +24,20 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandDemote extends OpClanSubCommand {
+public class OpCommandSetRank extends OpClanSubCommand {
 	@Override
 	public int getMinArgs() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public int getMaxArgs() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.demote.usage");
+		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setrank.usage");
 	}
 
 	@Override
@@ -45,7 +45,14 @@ public class OpCommandDemote extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			ClanManagementUtil.demoteClanMember(server, sender, args[1], c);
+			try {
+				if(args[1].equalsIgnoreCase("any") || args[1].equalsIgnoreCase("none"))
+					throwWrongUsage(sender);
+				EnumRank rank = EnumRank.valueOf(args[1].toUpperCase());
+				ClanManagementUtil.setRank(server, sender, args[2], c, rank);
+			} catch(IllegalArgumentException e) {
+				throwWrongUsage(sender);
+			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

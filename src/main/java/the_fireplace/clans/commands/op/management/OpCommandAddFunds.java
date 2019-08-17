@@ -40,19 +40,22 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			long amount;
-			try {
-				amount = Long.valueOf(args[1]);
-				if(amount < 0)
-					amount = 0;
-			} catch(NumberFormatException e) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
-				return;
-			}
-			if(Clans.getPaymentHandler().addAmount(amount, c.getClanId()))
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
-			else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
+			if(!c.isLimitless()) {
+				long amount;
+				try {
+					amount = Long.parseLong(args[1]);
+					if (amount < 0)
+						amount = 0;
+				} catch (NumberFormatException e) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
+					return;
+				}
+				if (Clans.getPaymentHandler().addAmount(amount, c.getClanId()))
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getClanName()).setStyle(TextStyles.GREEN));
+				else
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
+			} else
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "addfunds", clan).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

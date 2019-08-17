@@ -42,6 +42,8 @@ public class CommandJoinRaid extends RaidSubCommand {
 		Clan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
+		else if(target.isLimitless())
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_on_limitless", "raid", args[0]).setStyle(TextStyles.RED));
 		else {
 			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 				if(!target.getMembers().containsKey(sender.getUniqueID())) {
