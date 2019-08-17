@@ -3,4 +3,6 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fix message saying player is in wilderness going to players who log in on claimed land
+Fix opclan autoclaim start/stop messages showing the wrong clan name
+Fix autoclaim territory changed messages
+Fix message colors chaning mid-message
