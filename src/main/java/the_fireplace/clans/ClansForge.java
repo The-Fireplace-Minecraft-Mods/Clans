@@ -1,35 +1,18 @@
 package the_fireplace.clans;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
 import the_fireplace.clans.forge.compat.PaymentHandlerGE;
-import the_fireplace.clans.forge.legacy.ClaimedLandCapability;
-import the_fireplace.clans.forge.legacy.PlayerClanCapability;
 import the_fireplace.clans.logic.ServerEventLogic;
 import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.sponge.compat.PaymentHandlerSponge;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static the_fireplace.clans.Clans.MODID;
 
@@ -41,17 +24,6 @@ public final class ClansForge {
 
     private static Logger LOGGER = FMLLog.log;
 
-    @Deprecated
-    @CapabilityInject(ClaimedLandCapability.class)
-    public static final Capability<ClaimedLandCapability> CLAIMED_LAND = null;
-    @Deprecated
-    private static final ResourceLocation claimed_land_res = new ResourceLocation(MODID, "claimData");
-    @Deprecated
-    @CapabilityInject(PlayerClanCapability.class)
-    public static final Capability<PlayerClanCapability> CLAN_DATA_CAP = null;
-    @Deprecated
-    private static final ResourceLocation clan_home_res = new ResourceLocation(MODID, "homeCooldownData");
-
     public static Logger getLogger() {
         return LOGGER;
     }
@@ -61,8 +33,6 @@ public final class ClansForge {
         Clans.setMinecraftHelper(new ForgeMinecraftHelper());
         Clans.setConfig(new cfg());
         LOGGER = event.getModLog();
-        CapabilityManager.INSTANCE.register(ClaimedLandCapability.class, new ClaimedLandCapability.Storage(), ClaimedLandCapability.Default::new);
-        CapabilityManager.INSTANCE.register(PlayerClanCapability.class, new PlayerClanCapability.Storage(), PlayerClanCapability.Default::new);
 
         if(Clans.getMinecraftHelper().isPluginLoaded("dynmap"))
             Clans.setDynmapCompat(new DynmapCompat());
@@ -93,78 +63,6 @@ public final class ClansForge {
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent event) {
         ServerEventLogic.onServerStopping();
-    }
-
-    @Deprecated
-    @SubscribeEvent
-    public static void attachChunkCaps(AttachCapabilitiesEvent<Chunk> e){
-        attachClanTagCap(e);
-    }
-
-    @Deprecated
-    @SubscribeEvent
-    public static void attachPlayerCaps(AttachCapabilitiesEvent<Entity> e){
-        if(e.getObject() instanceof EntityPlayer) {
-            attachClanTagCap(e);
-            //noinspection ConstantConditions
-            assert CLAN_DATA_CAP != null;
-            e.addCapability(clan_home_res, new ICapabilitySerializable() {
-                PlayerClanCapability inst = CLAN_DATA_CAP.getDefaultInstance();
-
-                @Override
-                public NBTBase serializeNBT() {
-                    return CLAN_DATA_CAP.getStorage().writeNBT(CLAN_DATA_CAP, inst, null);
-                }
-
-                @Override
-                public void deserializeNBT(NBTBase nbt) {
-                    CLAN_DATA_CAP.getStorage().readNBT(CLAN_DATA_CAP, inst, null, nbt);
-                }
-
-                @Override
-                public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                    return capability == CLAN_DATA_CAP;
-                }
-
-                @Nullable
-                @Override
-                public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                    //noinspection unchecked
-                    return capability == CLAN_DATA_CAP ? (T) inst : null;
-                }
-            });
-        }
-    }
-
-    @Deprecated
-    private static void attachClanTagCap(AttachCapabilitiesEvent e) {
-        //noinspection ConstantConditions
-        assert CLAIMED_LAND != null;
-        e.addCapability(claimed_land_res, new ICapabilitySerializable() {
-            ClaimedLandCapability inst = CLAIMED_LAND.getDefaultInstance();
-
-            @Override
-            public NBTBase serializeNBT() {
-                return CLAIMED_LAND.getStorage().writeNBT(CLAIMED_LAND, inst, null);
-            }
-
-            @Override
-            public void deserializeNBT(NBTBase nbt) {
-                CLAIMED_LAND.getStorage().readNBT(CLAIMED_LAND, inst, null, nbt);
-            }
-
-            @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-                return capability == CLAIMED_LAND;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-                //noinspection unchecked
-                return capability == CLAIMED_LAND ? (T) inst : null;
-            }
-        });
     }
 
     @SuppressWarnings("WeakerAccess")

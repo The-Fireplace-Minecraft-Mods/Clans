@@ -3,7 +3,3 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fix claims getting abandoned when breaking most blocks in survival mode
-Fix opclan autoclaim start/stop messages showing the wrong clan name
-Fix autoclaim territory changed messages
-Fix message colors chaning mid-message
