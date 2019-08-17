@@ -7,10 +7,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
@@ -25,10 +23,7 @@ import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
-import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.PermissionManager;
-import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -78,6 +73,8 @@ public class CommandClan extends CommandBase {
             put("takefunds", new CommandTakeFunds());
             put("setrent", new CommandSetRent());
         }
+        //help
+        put("help", new CommandClanHelp());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -112,7 +109,7 @@ public class CommandClan extends CommandBase {
         aliases.put("withdraw", "takefunds");
     }
 
-    private static String processAlias(String subCommand) {
+    public static String processAlias(String subCommand) {
         return aliases.getOrDefault(subCommand, subCommand);
     }
 
@@ -146,12 +143,7 @@ public class CommandClan extends CommandBase {
             else
                 args = new String[]{};
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
-            if ("help".equals(tag)) {
-                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.clan.help") + "\nhelp");
-                buildHelpCommand(sender, commandsHelp, commands);
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
-                return;
-            } else if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
+            if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))
                     commands.get(processAlias(tag)).execute(server, sender, args);
                 else
@@ -175,7 +167,7 @@ public class CommandClan extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return sender instanceof EntityPlayer;
+        return true;
     }
 
     @Override
@@ -186,25 +178,5 @@ public class CommandClan extends CommandBase {
         else
             args2 = new String[]{};
         return args.length >= 1 ? args.length == 1 ? Lists.newArrayList(commands.keySet()) : commands.get(args[0]) != null ? commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList() : Collections.emptyList();
-    }
-
-    static void buildHelpCommand(ICommandSender sender, StringBuilder commandsHelp, HashMap<String, ClanSubCommand> commands) {
-        if(sender instanceof EntityPlayer) {
-            ArrayList<EnumRank> playerRanks = Lists.newArrayList();
-            for(Clan c: ClanCache.getPlayerClans(((EntityPlayer) sender).getUniqueID()))
-                playerRanks.add(ClanCache.getPlayerRank(((EntityPlayer) sender).getUniqueID(), c));
-            //Only append commands the player can use.
-            for (String command : commands.keySet()) {
-                if(commands.get(command) == null)
-                    continue;
-                EnumRank commandRank = commands.get(command).getRequiredClanRank();
-                if((commandRank == EnumRank.NOCLAN && !playerRanks.isEmpty())
-                        || (commandRank != EnumRank.NOCLAN && commandRank != EnumRank.ANY && playerRanks.isEmpty())
-                        || (commandRank == EnumRank.ADMIN && !playerRanks.contains(EnumRank.ADMIN) && !playerRanks.contains(EnumRank.LEADER))
-                        || (commandRank == EnumRank.LEADER && !playerRanks.contains(EnumRank.LEADER)))
-                    continue;
-                commandsHelp.append("\n").append(command);
-            }
-        }
     }
 }

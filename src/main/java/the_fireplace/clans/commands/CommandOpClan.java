@@ -9,13 +9,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
+import the_fireplace.clans.commands.op.OpCommandHelp;
 import the_fireplace.clans.commands.op.land.*;
 import the_fireplace.clans.commands.op.management.*;
 import the_fireplace.clans.util.PermissionManager;
-import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -45,6 +44,8 @@ public class CommandOpClan extends CommandBase {
         put("disband", new OpCommandDisband());
         //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
+        //help
+        put("help", new OpCommandHelp());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -65,7 +66,7 @@ public class CommandOpClan extends CommandBase {
         aliases.put("af", "addfunds");
     }
 
-    private static String processAlias(String subCommand) {
+    public static String processAlias(String subCommand) {
         return aliases.getOrDefault(subCommand, subCommand);
     }
 
@@ -89,16 +90,7 @@ public class CommandOpClan extends CommandBase {
         else
             args = new String[]{};
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX+processAlias(tag))) {
-            if ("help".equals(tag)) {
-                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.opclan.help") + "\nhelp");
-                for (String command : commands.keySet()) {
-                    if (commands.get(command) == null)
-                        continue;
-                    commandsHelp.append("\n").append(command);
-                }
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
-                return;
-            } else if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !"addfunds".equals(processAlias(tag))) {
+            if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !"addfunds".equals(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))
                     commands.get(processAlias(tag)).execute(server, sender, args);
                 else

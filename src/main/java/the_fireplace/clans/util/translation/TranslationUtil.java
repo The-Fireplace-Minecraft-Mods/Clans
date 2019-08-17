@@ -39,7 +39,7 @@ public class TranslationUtil {
     /**
      * Returns the translation key if the sender is able to translate it, or the translated string otherwise.
      */
-    public static String getRawTranslationString(ICommandSender sender, String translationKey) {
+    public static String getRawTranslationString(@Nullable ICommandSender sender, String translationKey) {
         return getRawTranslationString(sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null, translationKey);
     }
 

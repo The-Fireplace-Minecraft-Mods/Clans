@@ -1,5 +1,7 @@
 Additions:
 
 Changes:
+/[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
 
 Fixes/Internal Changes:
+Fixed /clan and /raid commands being unusable in console.

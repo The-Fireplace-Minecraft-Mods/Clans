@@ -7,14 +7,20 @@ clans.error.no_player_econ_acct=Internal Error: Player economy account not found
 clans.error.nullserver=Internal Error: The server was null! Server owners, please report this.
 
 commands.clan.usage=/clan [clan] <command> [parameters]
-commands.clan.help=/clan commands:
 
 commands.opclan.usage=/opclan <command> [parameters]
-commands.opclan.help=/opclan commands:
 
 commands.raid.usage=/raid <command> [parameters]
-commands.raid.help=/raid commands:
 commands.raid.disabled=Raiding is disabled on this server.
+
+commands.clan.help.usage=/clan help [page|subcommand]
+commands.clan.help.description=The clan help command.
+
+commands.opclan.help.usage=/opclan help [page|subcommand]
+commands.opclan.help.description=The opclan help command.
+
+commands.raid.help.usage=/raid help [page|subcommand]
+commands.raid.help.description=The raid help command.
 
 commands.clan.common.player=You must be a player to do this.
 commands.clan.common.not_in_clan=You are not in %s.
@@ -26,13 +32,19 @@ commands.clan.common.not_leader=You are not a leader of %s.
 commands.clan.common.not_admin=You are not an admin of %s.
 commands.clan.common.not_in_clan=The player %s is not in %s.
 
+commands.clan.common.help_format=%s: %s
+commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
+
 commands.clan.banner.usage=/clan banner
+commands.clan.banner.description=Turn the banner you are holding into the clan banner.
 commands.clan.banner.clan_nobanner=%s does not have a banner.
 commands.clan.banner.player_nobanner=You are not holding a banner.
 
 commands.clan.clanchat.usage=/clan clanchat
+commands.clan.clanchat.description=Toggle if you are talking in clan chat.
 
 commands.clan.details.usage=/clan details [clan]
+commands.clan.details.description=View details about a clan.
 commands.clan.details.noclan=You are not in a clan. Use %s to get the details of another clan.
 commands.clan.details.console=You must specify a clan when viewing details from console. Use %s to get the details of a clan.
 commands.clan.details.notfound=Target clan %s was not found.
@@ -59,18 +71,22 @@ commands.clan.details.times_claims=*%s(claims)
 commands.clan.details.equals_total==%s
 
 commands.clan.disband.usage=/clan disband
+commands.clan.disband.description=Disband your clan.
 
 commands.clan.form.usage=/clan form <name> [banner]
+commands.clan.form.description=Form a new clan.
 commands.clan.form.success=Clan formed.
 commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s %s.
 commands.clan.form.already_in_clan=You are already in a clan.
 
 commands.clan.list.usage=/clan list [sort] [page]
+commands.clan.list.description=View a list of clans. Sort by [money|land|members], anything else is alphabetical.
 commands.clan.list.clans=Clans on this server:
 commands.clan.list.listitem=%s - %s
 commands.clan.list.noclans=There are no clans on this server.
 
 commands.clan.playerinfo.usage=/clan playerinfo [player]
+commands.clan.playerinfo.description=View what clans a player is in.
 commands.clan.playerinfo.console=You must specify a player when viewing details from the console. Use %s to get the details of a player.
 commands.clan.playerinfo.notfound=Target player %s was not found.
 commands.clan.playerinfo.name=Player name: %s
@@ -81,51 +97,62 @@ commands.clan.playerinfo.member=Member of %s
 commands.clan.playerinfo.noclans=%s is not in any clans.
 
 commands.clan.setbanner.usage=/clan setbanner [banner]
+commands.clan.setbanner.description=Set your clan's banner to one you are holding, or type the banner's NBT form.
 commands.clan.setbanner.invalid=The clan banner you have specified is invalid.
 commands.clan.setbanner.taken=The clan banner you have specified is already taken.
 commands.clan.setbanner.success=Clan banner for %s set.
 commands.clan.setbanner.notheld=You are not holding a banner.
 
 commands.clan.setcolor.usage=/clan setcolor <color>
+commands.clan.setcolor.description=Set the clan's color for clan chat, fancymap, Dynmap, etc. Basic color names, Hex colors(0x######), and RGB Ints are supported.
 commands.clan.setcolor.success=%s color set.
 commands.clan.setcolor.invalid=The color integer %s is invalid.
 
 commands.clan.setdefault.usage=/clan setdefault <clan>
+commands.clan.setdefault.description=Sets the clan to use when you don't type /clan [clanname] <subcommand> [args...].
 commands.clan.setdefault.success=Your default clan has been set to %s.
 
 commands.clan.setdescription.usage=/clan setdescription <new description>
+commands.clan.setdescription.description=Sets your clan's description.
 commands.clan.setdescription.success=Clan description for %s set.
 
 commands.clan.setname.usage=/clan setname <newname>
+commands.clan.setname.description=Sets your clan's name.
 commands.clan.setname.toolong=The clan name %s is too long. This server's maximum name length is %s characters.
 commands.clan.setname.taken=The clan name %s is already taken.
 commands.clan.setname.success=You have renamed %s to %s.
 
 commands.clan.addfunds.usage=/clan addfunds <amount>
+commands.clan.addfunds.description=Adds funds from your economy account to the clan's economy account.
 commands.clan.addfunds.format=Improperly formatted amount.
 commands.clan.addfunds.success=You added %s %s to %s's balance.
 commands.clan.addfunds.added=%s added %s %s to %s's balance.
 
 commands.clan.balance.usage=/clan balance
+commands.clan.balance.description=View the clan's account balance.
 commands.clan.balance.balance=%s's clan balance: %s %s.
 
 commands.clan.setrent.usage=/clan setrent <amount>
+commands.clan.setrent.description=Set how much rent your clan members get charged.
 commands.clan.setrent.success=Clan rent for %s set to %s.
 commands.clan.setrent.overmax=Cannot set rent above %s's current maximum(%s %s).
 commands.clan.setrent.negative=Cannot set negative rent.
 commands.clan.setrent.disabled=/clan setrent is disabled on this server.
 
 commands.clan.takefunds.usage=/clan takefunds <amount>
+commands.clan.takefunds.description=Take funds out of the clan's economy account.
 commands.clan.takefunds.disabled=/clan takefunds is disabled on this server.
 commands.clan.takefunds.success=You took %s %s from %s's balance.
 commands.clan.takefunds.taken=%s took %s %s from %s's balance.
 
 commands.clan.abandonclaim.usage=/clan abandonclaim
+commands.clan.abandonclaim.description=Abandon the 16x16 chunk of land you are currently standing in.
 commands.clan.abandonclaim.success=Claim abandoned from %s.
 commands.clan.abandonclaim.wrongclan=This land does not belong to %s.
 commands.clan.abandonclaim.notclaimed=This land is not claimed.
 
 commands.clan.claim.usage=/clan claim
+commands.clan.claim.description=Claim the 16x16 chunk of land you are currently standing in.
 commands.clan.claim.taken=%s has already claimed this land.
 commands.clan.claim.taken_other=Another clan (%s) has already claimed this land.
 commands.clan.claim.proximity_error=You cannot claim this chunk of land because it is too close to another clan's home. Make sure you are at least %s blocks away from other clans' homes before trying again. Try using /clan fancymap to help determine where other clans are.
@@ -136,29 +163,37 @@ commands.clan.claim.success=Land claimed for %s.
 commands.clan.claim.insufficient_funds=Insufficient funds in %s's account to claim chunk. It costs %s %s.
 
 commands.clan.autoabandon.usage=/clan autoabandon
+commands.clan.autoabandon.description=Automatically abandon claims as you enter them.
 commands.clan.autoabandon.start=You are now autoabandoning land for %s.
 commands.clan.autoabandon.stop=You are no longer autoabandoning land for %s.
 
 commands.clan.autoclaim.usage=/clan autoclaim
+commands.clan.autoclaim.description=Automatically claim land as you enter it.
 commands.clan.autoclaim.start=You are now autoclaiming land for %s.
 commands.clan.autoclaim.stop=You are no longer autoclaiming land for %s.
 
 commands.clan.fancymap.usage=/clan fancymap
+commands.clan.fancymap.description=View a large claim map color coded using clan colors.
 
 commands.clan.map.usage=/clan map
+commands.clan.map.description=View a small claim map color coded by what clans you are in.
 
 commands.clan.accept.usage=/clan accept
+commands.clan.accept.description=Accept an invitation to join a clan.
 commands.clan.accept.success=You joined %s.
 commands.clan.accept.accepted=%s joined %s.
 commands.clan.accept.no_invites=You don't have any pending invites.
 
 commands.clan.decline.usage=/clan decline
+commands.clan.decline.description=Decline an invitation to join a clan.
 commands.clan.decline.success=You declined the invitation to join %s.
 commands.clan.decline.declined=%s declined an invitation to join %s.
 
 commands.clan.demote.usage=/clan demote <player>
+commands.clan.demote.description=Demote a player in your clan, Leader to Admin or Admin to Member.
 
 commands.clan.invite.usage=/clan invite <player>
+commands.clan.invite.description=Invite a player to your clan.
 commands.clan.invite.success=You have invited %s to join %s.
 commands.clan.invite.invited=You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.
 commands.clan.invite.pending=The player %s has already been invited to join a clan. They must accept or decline that invitation first.
@@ -167,6 +202,7 @@ commands.clan.invite.already_in_this=The player %s is already in %s.
 commands.clan.invite.already_in_any=The player %s is already in a clan.
 
 commands.clan.kick.usage=/clan kick <player>
+commands.clan.kick.description=Kick a player out of your clan.
 commands.clan.kick.leave=To leave a clan, use /clan leave.
 commands.clan.kick.authority=You do not have the authority to kick out %s.
 commands.clan.kick.success=You have kicked %s out of %s.
@@ -175,6 +211,7 @@ commands.clan.kick.kicked_other=%s has been kicked out of %s by %s.
 commands.clan.kick.fail=The player %s could not be kicked from %s. If %1$s is the only leader of %2$s, another leader should be promoted to leader before attempting to kick %1$s.
 
 commands.clan.leave.usage=/clan leave
+commands.clan.leave.description=Leave your clan.
 commands.clan.leave.disband=You are the last member of %s. To disband it, use /clan disband.
 commands.clan.leave.promote=You cannot leave %s without a leader. Promote someone else to be a leader before leaving.
 commands.clan.leave.success=You have left %s.
@@ -182,8 +219,10 @@ commands.clan.leave.left=%s has left %s.
 commands.clan.leave.error=Internal Error: You were unable to be removed from %s. Server owners, please report this.
 
 commands.clan.promote.usage=/clan promote <player>
+commands.clan.promote.description=Promote a player in your clan. Member to Admin or Admin to Leader.
 
 commands.clan.home.usage=/clan home
+commands.clan.home.description=Teleport to your clan's home.
 commands.clan.home.nohome=%s does not have a home. A clan leader should use /clan sethome to set one.
 commands.clan.home.cooldown=You cannot use this command until your cooldown runs out in %s seconds.
 commands.clan.home.blocked=Error teleporting to clan home. Ensure that it is not blocked.
@@ -192,74 +231,93 @@ commands.clan.home.dim_error=Error teleporting to clan home dimension.
 commands.clan.home.disabled=/clan home is disabled on this server.
 
 commands.clan.sethome.usage=/clan sethome
+commands.clan.sethome.description=Set your clan's home.
 commands.clan.sethome.proximity=You are too close to another clan's home. You must be at least %s blocks away from other clans' homes to set your clan home. Use /clan fancymap to see where nearby clans are.
 commands.clan.sethome.success=Clan home set.
 commands.clan.sethome.territory=Clan home can only be set in clan territory.
 
 commands.clan.trapped.usage=/clan trapped
+commands.clan.trapped.description=Teleport out of another clan's territory if you are stuck.
 commands.clan.trapped.fail=No, you're not trapped in someone else's claim.
 
-commands.opclan.abandonclaim.usage=/opclan abandonclaim [force]
+commands.opclan.abandonclaim.usage=/opclan [target clan] abandonclaim [force]
+commands.opclan.abandonclaim.description=Abandon a claim.
 commands.opclan.abandonclaim.wrongclan=This land does not belong to %s. To force %s to abandon it, use /opclan abandonclaim force
 commands.opclan.abandonclaim.disconnected=You cannot abandon this chunk of land because doing so would create at least one disconnected claim.
 
 commands.opclan.addfunds.usage=/opclan addfunds <clan> <amount>
+commands.opclan.addfunds.description=Add funds to any clan's balance.
 
 commands.opclan.autoabandon.usage=/opclan autoabandon [force]
+commands.opclan.autoabandon.description=Automatically abandon claims as you walk around.
 commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
 commands.opclan.autoabandon.stop=You are no longer autoabandoning land for everyone.
 
 commands.opclan.autoclaim.usage=/opclan autoclaim [force]
+commands.opclan.autoclaim.description=Automatically claim land as you walk around.
 
 commands.opclan.buildadmin.usage=/opclan buildadmin
+commands.opclan.buildadmin.description=Enter admin mode, allowing you to build/destroy/interact/attack on opclan and other clans' territory.
 commands.opclan.buildadmin.on=You are now in Build Admin mode.
 commands.opclan.buildadmin.off=You are no longer in Build Admin mode.
 
-commands.opclan.claim.usage=/opclan claim [force]
+commands.opclan.claim.usage=/opclan [target clan] claim [force]
+commands.opclan.claim.description=Claim a 16x16 chunk of land for opclan.
 commands.opclan.claim.taken_other=Another clan (%1$s) has already claimed this land. To take this land from %1$s, use /opclan claim [clan] force.
 
 commands.opclan.demote.usage=/opclan demote <clan> <member>
+commands.opclan.demote.description=Demote a member of any clan.
 commands.opclan.demote.success=You have demoted %s to %s in %s.
 commands.opclan.demote.demoted=You have been demoted in %s to %s by %s.
 commands.opclan.demote.error=The player %s could not be demoted.
 
 commands.opclan.disband.usage=/opclan disband <clan>
+commands.opclan.disband.description=Disband any clan.
 commands.opclan.disband.success=You have disbanded %s.
 commands.opclan.disband.disbanded=%s has been disbanded by %s.
 commands.opclan.disband.opclan=You cannot disband %s because it is the opclan.
 
 commands.opclan.kick.usage=/opclan kick <clan> <member>
+commands.opclan.kick.description=Kick a member from any clan.
 
 commands.opclan.promote.usage=/opclan promote <clan> <member>
+commands.opclan.promote.description=Promote a member of any clan.
 commands.opclan.promote.success=You have promoted %s to %s in %s.
 commands.opclan.promote.notify=%s has been promoted to %s in %s by %s.
 commands.opclan.promote.promoted=You have been promoted in %s to %s by %s.
 commands.opclan.promote.error=The player %s could not be promoted.
 
 commands.opclan.setcolor.usage=/opclan [target clan] setcolor <color>
+commands.opclan.setcolor.description=Change any clan's color.
 
 commands.opclan.setdescription.usage=/opclan [target clan] setdescription <new description>
+commands.opclan.setdescription.description=Set any clan's description.
 
 commands.opclan.setname.usage=/opclan [target clan] setname <newname>
+commands.opclan.setname.description=Set any clan's name.
 
 commands.opclan.setshield.usage=/opclan setshield <clan> <duration>
+commands.opclan.setshield.description=Set the amount of shield for any clan, in minutes.
 commands.opclan.setshield.format=Improperly formatted shield duration.
 commands.opclan.setshield.success=Clan shield for %s set to %s minutes.
 
 commands.raid.common.notinparty=You are not in a raiding party!
 
 commands.raid.collect.usage=/raid collect
+commands.raid.collect.description=Collect your blocks placed/forbidden items from during a raid.
 commands.raid.collect.makespace=You have run out of room for collection. Make room in your inventory and try again.
 commands.raid.collect.success=Collection successful.
 commands.raid.collect.empty=You don't have anything to collect.
 
 commands.raid.invite.usage=/raid invite <player>
+commands.raid.invite.description=Invite a player to join the raiding party you are in.
 commands.raid.invite.invited=You have been invited to a raiding party against %1$s. To join, type /raid join %1$s.
 commands.raid.invite.success=You successfully invited %s to the raiding party.
 commands.raid.invite.inclan=You cannot invite someone to raid a clan they are a part of.
 commands.raid.invite.limit=Your raiding party cannot hold any more people. It has %s raiders and the limit is currently %s.
 
 commands.raid.join.usage=/raid join <clan name>
+commands.raid.join.description=Join a raiding party against the target clan. One will be formed if it does not exist.
 commands.raid.join.created=You successfully created a raiding party against %s.
 commands.raid.join.create_fail=%s does not have enough online members to get raided.
 commands.raid.join.shield=%s is currently shielded. Try again in %s hours.
@@ -269,9 +327,11 @@ commands.raid.join.inclan=You cannot raid a clan you are in.
 commands.raid.join.inparty=You are already in a raiding party, and cannot join another unless you leave the one you are currently in.
 
 commands.raid.leave.usage=/raid leave
+commands.raid.leave.description=Leave the raiding party you are in.
 commands.raid.leave.success=You successfully left the raiding party against %s.
 
 commands.raid.start.usage=/raid start
+commands.raid.start.description=Start the raid. You will be charged the fee to do so, if there is one.
 commands.raid.start.success=You successfully started the raid against %s.
 commands.raid.start.insufficient_funds=You have insufficient funds to start the raid against %s. It costs %s %s.
 commands.raid.start.raiding=The raid has already been started.

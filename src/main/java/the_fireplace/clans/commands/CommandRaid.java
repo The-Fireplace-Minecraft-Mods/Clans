@@ -7,14 +7,11 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.raiding.*;
 import the_fireplace.clans.util.PermissionManager;
-import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -31,6 +28,8 @@ public class CommandRaid extends CommandBase {
         put("invite", new CommandInviteRaid());
 	    put("start", new CommandStartRaid());
         put("collect", new CommandCollect());
+        //help
+        put("help", new CommandRaidHelp());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -42,7 +41,7 @@ public class CommandRaid extends CommandBase {
         aliases.put("c", "collect");
     }
 
-    private static String processAlias(String subCommand) {
+    public static String processAlias(String subCommand) {
         return aliases.getOrDefault(subCommand, subCommand);
     }
 
@@ -68,11 +67,7 @@ public class CommandRaid extends CommandBase {
         if(Clans.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {
-            if ("help".equals(tag)) {
-                StringBuilder commandsHelp = new StringBuilder(TranslationUtil.getStringTranslation(sender, "commands.raid.help") + "\nhelp");
-                CommandClan.buildHelpCommand(sender, commandsHelp, commands);
-                sender.sendMessage(new TextComponentString(commandsHelp.toString()).setStyle(TextStyles.YELLOW));
-            } else if(commands.containsKey(processAlias(tag)))
+            if(commands.containsKey(processAlias(tag)))
                 commands.get(processAlias(tag)).execute(server, sender, args);
             else
                 throw new WrongUsageException(getUsage(sender));
@@ -88,7 +83,7 @@ public class CommandRaid extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return sender instanceof EntityPlayer;
+        return true;
     }
 
     @SuppressWarnings("Duplicates")
