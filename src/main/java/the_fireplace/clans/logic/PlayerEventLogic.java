@@ -22,6 +22,12 @@ public class PlayerEventLogic {
         PlayerDataManager.setShouldDisposeReferences(player.getUniqueID(), false);
     }
 
+    public static void onFirstLogin(UUID playerId) {
+        Clan serverDefault = ClanCache.getClanByName(Clans.getConfig().getServerDefaultClan());
+        if(serverDefault != null)
+            serverDefault.addMember(playerId);
+    }
+
     public static void checkUpdateDefaultClan(EntityPlayer player) {
         if(!player.world.isRemote) {
             UUID defaultClan = PlayerDataManager.getDefaultClan(player.getUniqueID());

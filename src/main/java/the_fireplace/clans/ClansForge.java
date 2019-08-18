@@ -92,6 +92,8 @@ public final class ClansForge {
         public static boolean multiplyMaxClaimsByPlayers = true;
         @Config.Comment("Show player's default clan in chat.")
         public static boolean showDefaultClanInChat = true;
+        @Config.Comment("Default clan to put players in when they first join the server. Leave empty for no clan.")
+        public static String serverDefaultClan = "";
         //General mod configuration
         @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public static String locale = "en_us";
@@ -266,6 +268,11 @@ public final class ClansForge {
         @Override
         public boolean isShowDefaultClanInChat() {
             return showDefaultClanInChat;
+        }
+
+        @Override
+        public String getServerDefaultClan() {
+            return serverDefaultClan;
         }
 
         @Override

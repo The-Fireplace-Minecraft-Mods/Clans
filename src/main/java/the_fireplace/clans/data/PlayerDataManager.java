@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -150,14 +151,14 @@ public final class PlayerDataManager {
         //endregion
 
         //region Constructor
-        private PlayerData(UUID player) {
-            playerDataFile = new File(playerDataLocation, player.toString()+".json");
-            load();
+        private PlayerData(UUID playerId) {
+            playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
+            load(playerId);
         }
         //endregion
 
         //region load
-        private void load() {
+        private void load(UUID playerId) {
             if(!playerDataLocation.exists()) {
                 playerDataLocation.mkdirs();
                 return;
@@ -173,7 +174,13 @@ public final class PlayerDataManager {
                     addonData = JsonHelper.getAddonData(jsonObject);
                 }
             } catch (FileNotFoundException e) {
-                //do nothing, it just hasn't been created yet
+                new Thread(() -> {
+                    try {
+                        //Make sure we give the load condition a few ms to finish running so we don't end up in a loop
+                        wait(100);
+                    } catch(InterruptedException ignored){}
+                    PlayerEventLogic.onFirstLogin(playerId);
+                }).start();
             } catch (Exception e) {
                 e.printStackTrace();
             }

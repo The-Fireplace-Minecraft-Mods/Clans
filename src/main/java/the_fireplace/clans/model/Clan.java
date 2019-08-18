@@ -213,8 +213,6 @@ public class Clan {
 
     public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {
         HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
-        if(isLimitless)
-            return online;
         for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
             EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
             //noinspection ConstantConditions
@@ -248,8 +246,6 @@ public class Clan {
     }
 
     public void setClanBanner(String clanBanner) {
-        if(isLimitless)
-            return;
         ClanCache.removeBanner(this.clanBanner);
         ClanCache.addBanner(clanBanner);
         this.clanBanner = clanBanner;
@@ -257,8 +253,6 @@ public class Clan {
     }
 
     public void setHome(BlockPos pos, int dimension) {
-        if(isLimitless)
-            return;
         this.homeX = pos.getX();
         this.homeY = pos.getY();
         this.homeZ = pos.getZ();
@@ -313,8 +307,6 @@ public class Clan {
     }
 
     public void addMember(UUID player) {
-        if(isLimitless)
-            return;
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
         if(!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
@@ -323,8 +315,6 @@ public class Clan {
     }
 
     public boolean removeMember(UUID player) {
-        if(isLimitless)
-            return false;
         if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
             return false;
         boolean removed = this.members.remove(player) != null;
@@ -336,7 +326,7 @@ public class Clan {
     }
 
     public boolean demoteMember(UUID player) {
-        if(isLimitless || !members.containsKey(player))
+        if(!members.containsKey(player))
             return false;
         else {
             if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
@@ -355,7 +345,7 @@ public class Clan {
     }
 
     public boolean promoteMember(UUID player) {
-        if(isLimitless || !members.containsKey(player))
+        if(!members.containsKey(player))
             return false;
         else {
             if(members.get(player) == EnumRank.ADMIN) {

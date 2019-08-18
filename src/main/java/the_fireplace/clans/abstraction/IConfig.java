@@ -12,6 +12,7 @@ public interface IConfig {
     int getMaxClaims();
     boolean isMultiplyMaxClaimsByPlayers();
     boolean isShowDefaultClanInChat();
+    String getServerDefaultClan();
 
     //General mod configuration
     String getLocale();
