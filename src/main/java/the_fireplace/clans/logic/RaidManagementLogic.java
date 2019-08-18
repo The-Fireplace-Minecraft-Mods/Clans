@@ -23,7 +23,7 @@ import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.ClaimDataManager;
-import the_fireplace.clans.data.RaidBlockPlacementDatabase;
+import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
@@ -217,7 +217,7 @@ public class RaidManagementLogic {
                 if(!stack.isEmpty() && isBlacklist == itemList.contains(Objects.requireNonNull(stack.getItem().getRegistryName()).toString())) {
                     ItemStack rm = player.inventory.removeStackFromSlot(i);
                     confiscated.add(rm.getDisplayName());
-                    RaidBlockPlacementDatabase.getInstance().addPlacedBlock(player.getUniqueID(), rm);
+                    RaidCollectionDatabase.getInstance().addCollectItem(player.getUniqueID(), rm);
                 }
             }
             if(!confiscated.isEmpty())

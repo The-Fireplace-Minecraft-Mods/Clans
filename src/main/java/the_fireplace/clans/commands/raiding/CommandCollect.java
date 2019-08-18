@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
-import the_fireplace.clans.data.RaidBlockPlacementDatabase;
+import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -39,9 +39,9 @@ public class CommandCollect extends RaidSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
-			if (RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID())) {
+			if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID())) {
 				List<String> removeItems = Lists.newArrayList();
-				for (String string : RaidBlockPlacementDatabase.getPlacedBlocks(sender.getUniqueID())) {
+				for (String string : RaidCollectionDatabase.getCollectItems(sender.getUniqueID())) {
 					ItemStack stack;
 					try {
 						stack = new ItemStack(JsonToNBT.getTagFromJson(string));
@@ -51,8 +51,8 @@ public class CommandCollect extends RaidSubCommand {
 					if (stack == null || sender.addItemStackToInventory(stack))
 						removeItems.add(string);
 				}
-				RaidBlockPlacementDatabase.getInstance().removePlacedBlocks(sender.getUniqueID(), removeItems);
-				if (RaidBlockPlacementDatabase.hasPlacedBlocks(sender.getUniqueID()))
+				RaidCollectionDatabase.getInstance().removeCollectItems(sender.getUniqueID(), removeItems);
+				if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID()))
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));

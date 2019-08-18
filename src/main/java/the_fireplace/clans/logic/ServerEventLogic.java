@@ -23,7 +23,7 @@ public class ServerEventLogic {
         ClaimDataManager.save();
         ClanDatabase.save();
         RaidRestoreDatabase.save();
-        RaidBlockPlacementDatabase.save();
+        RaidCollectionDatabase.save();
         PlayerDataManager.save();
     }
 }

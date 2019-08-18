@@ -27,7 +27,7 @@ public class TimerLogic {
     public static void runFiveMinuteLogic() {
         ClaimDataManager.save();
         ClanDatabase.save();
-        RaidBlockPlacementDatabase.save();
+        RaidCollectionDatabase.save();
         RaidRestoreDatabase.save();
         PlayerDataManager.save();
     }

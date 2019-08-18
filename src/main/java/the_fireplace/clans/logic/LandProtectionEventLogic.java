@@ -20,7 +20,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimDataManager;
-import the_fireplace.clans.data.RaidBlockPlacementDatabase;
+import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.BlockSerializeUtil;
@@ -102,7 +102,7 @@ public class LandProtectionEventLogic {
                         ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
                         out.setCount(1);
                         if(!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
-                            RaidBlockPlacementDatabase.getInstance().addPlacedBlock(placer.getUniqueID(), out);
+                            RaidCollectionDatabase.getInstance().addCollectItem(placer.getUniqueID(), out);
                         RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
                     }
                     return false;
