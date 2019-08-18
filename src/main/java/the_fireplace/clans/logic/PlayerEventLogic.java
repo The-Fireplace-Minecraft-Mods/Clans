@@ -91,4 +91,10 @@ public class PlayerEventLogic {
         }
         return oldSpeed;
     }
+    
+    public static void onPlayerDamage(EntityPlayer player) {
+        //noinspection SuspiciousMethodCalls
+        if(PlayerDataManager.clanHomeWarmups.remove(player) != null)
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
+    }
 }

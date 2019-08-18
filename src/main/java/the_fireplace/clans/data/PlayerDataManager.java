@@ -6,9 +6,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
+import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -17,9 +19,10 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public final class PlayerDataManager {
-
     private static HashMap<UUID, PlayerData> playerData = Maps.newHashMap();
     private static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
+    //Clan home warmup cache
+    public static HashMap<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
 
     //region getters
     @Nullable
@@ -44,8 +47,16 @@ public final class PlayerDataManager {
         return getPlayerData(player).claimWarning;
     }
 
+    public static float getClanHomeCheckX(UUID player) {
+        return getPlayerData(player).clanHomeCheckX;
+    }
+
     public static int getPreviousY(UUID player) {
         return getPlayerData(player).prevY;
+    }
+
+    public static float getClanHomeCheckZ(UUID player) {
+        return getPlayerData(player).clanHomeCheckZ;
     }
 
     public static int getPreviousChunkX(UUID player) {
@@ -94,8 +105,16 @@ public final class PlayerDataManager {
         getPlayerData(player).claimWarning = claimWarning;
     }
 
+    public static void setClanHomeCheckX(UUID player, float prevX) {
+        getPlayerData(player).clanHomeCheckX = prevX;
+    }
+
     public static void setPreviousY(UUID player, int prevY) {
         getPlayerData(player).prevY = prevY;
+    }
+
+    public static void setClanHomeCheckZ(UUID player, float prevZ) {
+        getPlayerData(player).clanHomeCheckZ = prevZ;
     }
 
     public static void setPreviousChunkX(UUID player, int prevChunkX) {
@@ -140,6 +159,8 @@ public final class PlayerDataManager {
         private UUID prevChunkOwner;
         private boolean claimWarning, isInBorderland;
         private int prevY, prevChunkX, prevChunkZ;
+        //The prevX and prevZ are set every time a player begins a clan home teleport.
+        private float clanHomeCheckX, clanHomeCheckZ;
         //endregion
 
         //region Saved variables

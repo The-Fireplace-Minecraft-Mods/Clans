@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
+import the_fireplace.clans.logic.PlayerEventLogic;
 
 @Mod.EventBusSubscriber(modid= Clans.MODID)
 public class LandProtectionEvents {
@@ -48,6 +49,8 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event) {
 		event.setCanceled(LandProtectionEventLogic.onLivingDamage(event.getEntity(), event.getSource().getTrueSource()));
+		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
+			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
 
 	@SubscribeEvent

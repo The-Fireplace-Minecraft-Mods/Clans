@@ -10,8 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
@@ -59,9 +57,12 @@ public class CommandHome extends ClanSubCommand {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
-				if(Clans.getConfig().getClanHomeWarmupTime() > 0)
-					PlayerDataCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), ClanCache.getPlayerClans(sender.getUniqueID()).indexOf(selectedClan)));
-				else
+				if(Clans.getConfig().getClanHomeWarmupTime() > 0) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getClanName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
+					PlayerDataManager.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
+					PlayerDataManager.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
+					PlayerDataManager.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getClanId()));
+				} else
 					teleportHome(sender, selectedClan, home, playerDim, false);
 			}
 		} else

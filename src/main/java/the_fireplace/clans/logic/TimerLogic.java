@@ -8,7 +8,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.cache.PlayerDataCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
@@ -74,17 +73,26 @@ public class TimerLogic {
 
     public static void runOneSecondLogic() {
         RaidingParties.decrementBuffers();
-        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, Integer>> entry : Sets.newHashSet(PlayerDataCache.clanHomeWarmups.entrySet()))
-            if (entry.getValue().getValue1() == 1 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-                Clan c = ClanCache.getPlayerClans(entry.getKey().getUniqueID()).get(entry.getValue().getValue2());
-                if(c != null && c.getHome() != null)
+        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : Sets.newHashSet(PlayerDataManager.clanHomeWarmups.entrySet())) {
+            if (entry.getValue().getValue1() > 0) {
+                if(Math.abs(entry.getKey().posX - PlayerDataManager.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerDataManager.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(Math.round(entry.getKey().posY)-PlayerDataManager.getPreviousY(entry.getKey().getUniqueID())) < 0.1f)
+                    PlayerDataManager.clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
+                else {
+                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
+                    PlayerDataManager.clanHomeWarmups.remove(entry.getKey());
+                }
+            } else
+                PlayerDataManager.clanHomeWarmups.remove(entry.getKey());
+
+            if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
+                Clan c = ClanCache.getClanById(entry.getValue().getValue2());
+                //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
+                if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
                     CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
+                else
+                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
             }
-        for(EntityPlayerMP player: Sets.newHashSet(PlayerDataCache.clanHomeWarmups.keySet()))
-            if(PlayerDataCache.clanHomeWarmups.get(player).getValue1() > 0)
-                PlayerDataCache.clanHomeWarmups.put(player, new OrderedPair<>(PlayerDataCache.clanHomeWarmups.get(player).getValue1() - 1, PlayerDataCache.clanHomeWarmups.get(player).getValue2()));
-            else
-                PlayerDataCache.clanHomeWarmups.remove(player);
+        }
 
         for (Raid raid : RaidingParties.getActiveRaids())
             if (raid.checkRaidEndTimer())
