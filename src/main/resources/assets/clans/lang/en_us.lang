@@ -30,6 +30,7 @@ commands.clan.common.not_leader=You are not a leader of %s.
 commands.clan.common.not_admin=You are not an admin of %s.
 commands.clan.common.not_in_clan=The player %s is not in %s.
 commands.clan.common.not_on_limitless=You cannot use %s on %s because it is a limitless clan.
+commands.clan.common.not_boolean=%s could not be identified as a boolean.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
@@ -305,7 +306,6 @@ commands.opclan.setshield.success=Clan shield for %s set to %s minutes.
 
 commands.opclan.setlimitless.usage=/opclan setlimitless <clan> <true|1|false|0>
 commands.opclan.setlimitless.description=Set if a clan is limitless. Limitless clans cannot be raided and do not use economy features.
-commands.opclan.setlimitless.format=%s could not be identified as a boolean.
 commands.opclan.setlimitless.success_t=You have made %s a limitless clan.
 commands.opclan.setlimitless.success_f=You have removed the limitless status from %s.
 

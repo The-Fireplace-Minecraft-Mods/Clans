@@ -41,14 +41,7 @@ public class OpCommandSetLimitless extends OpClanSubCommand {
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			boolean limitless;
-			if(args[1].matches("\\d+") && parseInt(args[1]) == 1 || args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("t"))
-				limitless = true;
-			else if(args[1].matches("\\d+") && parseInt(args[1]) == 0 || args[1].equalsIgnoreCase("false") || args[1].equalsIgnoreCase("f"))
-				limitless = false;
-			else {
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setlimitless.format", args[1]).setStyle(TextStyles.RED));
-				return;
-			}
+			limitless = parseBool(args[1]);
 			c.setLimitless(limitless);
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setlimitless.success_"+(limitless ? 't' : 'f'), c.getClanName()).setStyle(TextStyles.GREEN));
 		} else

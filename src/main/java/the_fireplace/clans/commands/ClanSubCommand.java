@@ -1,5 +1,6 @@
 package the_fireplace.clans.commands;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
@@ -121,5 +123,24 @@ public abstract class ClanSubCommand extends CommandBase {
 
 	protected boolean allowConsoleUsage() {
 		return false;
+	}
+
+	private static final List<String> onStrings = Lists.newArrayList("on", "true", "t");
+	private static final List<String> offStrings = Lists.newArrayList("off", "false", "f");
+
+	public static boolean parseBool(String arg) throws CommandException {
+		return Objects.requireNonNull(parseBool(arg, false));
+	}
+
+	@Nullable
+	public static Boolean parseBool(String arg, boolean nullOnFail) throws CommandException {
+		if(arg.matches("\\d+") && parseInt(arg) == 1 || onStrings.contains(arg.toLowerCase()))
+			return true;
+		else if(arg.matches("\\d+") && parseInt(arg) == 0 || offStrings.contains(arg.toLowerCase()))
+			return false;
+		if(nullOnFail)
+			return null;
+		else
+			throw new CommandException("commands.clan.common.not_boolean", arg);
 	}
 }

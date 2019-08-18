@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.land;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -42,12 +43,16 @@ public class CommandSeeChunk extends ClanSubCommand {
 
 	@SuppressWarnings("Duplicates")
     @Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		assert server != null;
 		World w = sender.getEntityWorld();
 		Chunk c = w.getChunk(sender.getPosition());
 		if(args.length == 1) {
-			//TODO turn on/off
+            if(parseBool(args[0])) {
+
+            } else {
+
+            }
 		}
 		showBounds(c, sender);
 	}
@@ -89,6 +94,7 @@ public class CommandSeeChunk extends ClanSubCommand {
 	}
 	
 	private static void sendGlowStoneToPositions(NetHandlerPlayServer conn, World w, BlockPos... positions) {
+	    //TODO track positions so we can clear this when the player changes chunks?
 		for(BlockPos pos: positions)
 			conn.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, Blocks.GLOWSTONE.getDefaultState()));
 	}
