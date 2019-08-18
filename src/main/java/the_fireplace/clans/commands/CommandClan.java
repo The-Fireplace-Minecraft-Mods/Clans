@@ -41,6 +41,7 @@ public class CommandClan extends CommandBase {
         put("autoabandon", new CommandAutoAbandon());
 	    put("map", new CommandMap());
         put("fancymap", new CommandFancyMap());
+        put("seechunk", new CommandSeeChunk());
         //managing members
         put("invite", new CommandInvite());
         put("kick", new CommandKick());
@@ -90,6 +91,7 @@ public class CommandClan extends CommandBase {
         aliases.put("aa", "autoabandon");
         aliases.put("m", "map");
         aliases.put("fm", "fancymap");
+        aliases.put("sc", "seechunk");
         aliases.put("i", "invite");
         aliases.put("inv", "invite");
         aliases.put("create", "form");

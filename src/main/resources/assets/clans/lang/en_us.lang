@@ -181,6 +181,9 @@ commands.clan.fancymap.description=View a large claim map color coded using clan
 commands.clan.map.usage=/clan map
 commands.clan.map.description=View a small claim map color coded by what clans you are in.
 
+commands.clan.seechunk.usage=/clan seechunk [on|off]
+commands.clan.seechunk.description=See the edges of the chunk you are currently standing in. On and off are for toggling if this happens as you walk around.
+
 commands.clan.accept.usage=/clan accept
 commands.clan.accept.description=Accept an invitation to join a clan.
 commands.clan.accept.success=You joined %s.
