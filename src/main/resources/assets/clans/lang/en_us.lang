@@ -282,7 +282,6 @@ commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <play
 commands.opclan.setrank.description=Make a player a rank in a clan.
 commands.opclan.setrank.success=You have made %s a %s in %s.
 commands.opclan.setrank.set=You have been made a %s in %s by %s.
-commands.opclan.setrank.error=The player %s could not be made a %s in %s.
 
 commands.opclan.disband.usage=/opclan disband <clan>
 commands.opclan.disband.description=Disband any clan.
