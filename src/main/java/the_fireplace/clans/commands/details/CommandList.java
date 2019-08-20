@@ -69,7 +69,7 @@ public class CommandList extends ClanSubCommand {
 				page = parseInt(args[1]);
 			else
 				page = 1;
-			ChatPageUtil.showPaginatedChat(sender, String.format("/clan list %s", args[0]) + " %s", listItems, page);
+			ChatPageUtil.showPaginatedChat(sender, String.format("/clan list %s", args.length > 0 ? args[0] : "abc") + " %s", listItems, page);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.noclans").setStyle(TextStyles.YELLOW));
 	}
