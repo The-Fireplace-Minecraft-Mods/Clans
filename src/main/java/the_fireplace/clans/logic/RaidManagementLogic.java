@@ -211,6 +211,9 @@ public class RaidManagementLogic {
         raidingPlayers.addAll(raid.getDefenders());
         for(UUID playerId: raidingPlayers) {
             EntityPlayer player = server.getPlayerList().getPlayerByUUID(playerId);
+            //noinspection ConstantConditions
+            if(player == null || player.inventory == null)
+                continue;
             List<String> confiscated = Lists.newArrayList();
             for(int i=0;i<player.inventory.getSizeInventory();i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
