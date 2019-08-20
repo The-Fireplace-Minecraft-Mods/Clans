@@ -3,6 +3,7 @@ package the_fireplace.clans;
 import com.google.common.collect.Lists;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
@@ -16,16 +17,18 @@ import the_fireplace.clans.sponge.SpongePermissionHandler;
 import the_fireplace.clans.sponge.compat.PaymentHandlerSponge;
 
 import java.util.List;
+import java.util.Objects;
 
 import static the_fireplace.clans.Clans.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi", certificateFingerprint = "51ac068a87f356c56dc733d0c049a9a68bc7245c")
 public final class ClansForge {
     @Mod.Instance(MODID)
     public static ClansForge instance;
 
     private static Logger LOGGER = FMLLog.log;
+    private boolean validJar = true;
 
     public static Logger getLogger() {
         return LOGGER;
@@ -39,6 +42,8 @@ public final class ClansForge {
 
         if(Clans.getMinecraftHelper().isPluginLoaded("dynmap"))
             Clans.setDynmapCompat(new DynmapCompat());
+        if(!validJar)
+            Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
     }
 
     @Mod.EventHandler
@@ -66,6 +71,13 @@ public final class ClansForge {
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent event) {
         ServerEventLogic.onServerStopping();
+    }
+
+    @Mod.EventHandler
+    public void invalidFingerprint(FMLFingerprintViolationEvent e) {
+        if(!e.isDirectory()) {
+            validJar = false;
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
