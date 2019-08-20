@@ -75,7 +75,7 @@ public class TimerLogic {
         RaidingParties.decrementBuffers();
         for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : Sets.newHashSet(PlayerDataManager.clanHomeWarmups.entrySet())) {
             if (entry.getValue().getValue1() > 0) {
-                if(Math.abs(entry.getKey().posX - PlayerDataManager.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerDataManager.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(Math.round(entry.getKey().posY)-PlayerDataManager.getPreviousY(entry.getKey().getUniqueID())) < 0.1f)
+                if(Math.abs(entry.getKey().posX - PlayerDataManager.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerDataManager.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(Math.round(entry.getKey().posY)-PlayerDataManager.getClanHomeCheckY(entry.getKey().getUniqueID())) < 0.1f)
                     PlayerDataManager.clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
                 else {
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));

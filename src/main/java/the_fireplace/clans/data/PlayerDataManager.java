@@ -51,6 +51,10 @@ public final class PlayerDataManager {
         return getPlayerData(player).clanHomeCheckX;
     }
 
+    public static float getClanHomeCheckY(UUID player) {
+        return getPlayerData(player).clanHomeCheckY;
+    }
+
     public static int getPreviousY(UUID player) {
         return getPlayerData(player).prevY;
     }
@@ -109,6 +113,10 @@ public final class PlayerDataManager {
         getPlayerData(player).clanHomeCheckX = prevX;
     }
 
+    public static void setClanHomeCheckY(UUID player, float prevY) {
+        getPlayerData(player).clanHomeCheckY = prevY;
+    }
+
     public static void setPreviousY(UUID player, int prevY) {
         getPlayerData(player).prevY = prevY;
     }
@@ -159,8 +167,7 @@ public final class PlayerDataManager {
         private UUID prevChunkOwner;
         private boolean claimWarning, isInBorderland;
         private int prevY, prevChunkX, prevChunkZ;
-        //The prevX and prevZ are set every time a player begins a clan home teleport.
-        private float clanHomeCheckX, clanHomeCheckZ;
+        private float clanHomeCheckX, clanHomeCheckY, clanHomeCheckZ;
         //endregion
 
         //region Saved variables

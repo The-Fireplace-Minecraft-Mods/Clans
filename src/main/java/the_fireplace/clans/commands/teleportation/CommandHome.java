@@ -60,6 +60,7 @@ public class CommandHome extends ClanSubCommand {
 				if(Clans.getConfig().getClanHomeWarmupTime() > 0) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getClanName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
 					PlayerDataManager.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
+					PlayerDataManager.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
 					PlayerDataManager.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
 					PlayerDataManager.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getClanId()));
 				} else
