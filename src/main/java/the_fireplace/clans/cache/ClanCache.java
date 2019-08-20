@@ -11,6 +11,7 @@ import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -106,12 +107,12 @@ public final class ClanCache {
 	public static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName().toLowerCase(), clan);
-		clanNames.put(nameClan.getClanName().toLowerCase(), nameClan);
+				clanNames.put(TextStyles.stripFormatting(clan.getClanName().toLowerCase()), clan);
+		clanNames.put(TextStyles.stripFormatting(nameClan.getClanName().toLowerCase()), nameClan);
 	}
 
 	public static void removeName(String name){
-		clanNames.remove(name.toLowerCase());
+		clanNames.remove(TextStyles.stripFormatting(name.toLowerCase()));
 	}
 
 	public static boolean inviteToClan(UUID player, Clan clan) {

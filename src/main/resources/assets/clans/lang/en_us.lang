@@ -77,7 +77,7 @@ commands.clan.disband.success=You have disbanded %s.
 commands.clan.disband.disbanded=%s has been disbanded by %s.
 commands.clan.disband.limitless=You cannot disband %1$s using /clan disband because it is limitless. Use /opclan disband %1$s to disband it.
 
-commands.clan.form.usage=/clan form <name> [banner]
+commands.clan.form.usage=/clan form <name>
 commands.clan.form.description=Form a new clan.
 commands.clan.form.success=Clan formed.
 commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s %s.

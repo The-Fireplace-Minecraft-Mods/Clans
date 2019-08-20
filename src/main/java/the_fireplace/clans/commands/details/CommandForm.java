@@ -3,11 +3,7 @@ package the_fireplace.clans.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
@@ -36,7 +32,7 @@ public class CommandForm extends ClanSubCommand {
 
 	@Override
 	public int getMaxArgs() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -47,30 +43,14 @@ public class CommandForm extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(selectedClan == null || Clans.getConfig().isAllowMultiClanMembership()) {
-			String newClanName = args[0];
+			String newClanName = TextStyles.stripFormatting(args[0]);
 			if (Clans.getConfig().getMaxNameLength() > 0 && newClanName.length() > Clans.getConfig().getMaxNameLength())
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", newClanName, Clans.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
 			else if (ClanCache.clanNameTaken(newClanName))
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newClanName).setStyle(TextStyles.RED));
 			else {
-				String banner = null;
-				if (args.length == 2) {
-					try {
-						banner = args[1];
-						if(new ItemStack(JsonToNBT.getTagFromJson(banner)).isEmpty()) {
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.invalid").setStyle(TextStyles.RED));
-							return;
-						}
-						if (ClanCache.clanBannerTaken(banner)) {
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
-							return;
-						}
-					} catch (NBTException e) {
-						throw new SyntaxErrorException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.setbanner.invalid"));
-					}
-				}
 				if (Clans.getPaymentHandler().deductAmount(Clans.getConfig().getFormClanCost(), sender.getUniqueID())) {
-					Clan c = new Clan(newClanName, sender.getUniqueID(), banner);
+					Clan c = new Clan(newClanName, sender.getUniqueID());
 					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
 						PlayerDataManager.setDefaultClan(sender.getUniqueID(), c.getClanId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));

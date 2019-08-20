@@ -53,15 +53,9 @@ public class Clan {
     private HashMap<String, Object> addonData = Maps.newHashMap();
 
     public Clan(String clanName, UUID leader){
-        this(clanName, leader, null);
-    }
-
-    public Clan(String clanName, UUID leader, @Nullable String banner){
-        this.clanName = clanName;
+        this.clanName = TextStyles.stripFormatting(clanName);
         this.members = Maps.newHashMap();
         this.members.put(leader, EnumRank.LEADER);
-        if(banner != null)
-            this.clanBanner = banner;
         do{
             this.clanId = UUID.randomUUID();
         } while(!ClanDatabase.addClan(this.clanId, this));
@@ -83,9 +77,9 @@ public class Clan {
     //region JsonObject conversions
     public JsonObject toJsonObject() {
         JsonObject ret = new JsonObject();
-        ret.addProperty("clanName", clanName);
+        ret.addProperty("clanName", TextStyles.stripFormatting(clanName));
         ret.addProperty("clanBanner", clanBanner);
-        ret.addProperty("clanDescription", description);
+        ret.addProperty("clanDescription", TextStyles.stripFormatting(description));
         JsonArray members = new JsonArray();
         for(Map.Entry<UUID, EnumRank> entry : this.members.entrySet()) {
             JsonObject newEntry = new JsonObject();
@@ -115,10 +109,10 @@ public class Clan {
     }
 
     public Clan(JsonObject obj) {
-        this.clanName = obj.get("clanName").getAsString();
+        this.clanName = TextStyles.stripFormatting(obj.get("clanName").getAsString());
         if(obj.has("clanBanner") && !(obj.get("clanBanner") instanceof JsonNull))
             this.clanBanner = obj.get("clanBanner").getAsString();
-        this.description = obj.get("clanDescription").getAsString();
+        this.description = TextStyles.stripFormatting(obj.get("clanDescription").getAsString());
         HashMap<UUID, EnumRank> newMembers = Maps.newHashMap();
         for(JsonElement entry: obj.get("members").getAsJsonArray())
             newMembers.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
