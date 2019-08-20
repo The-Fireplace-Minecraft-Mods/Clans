@@ -18,24 +18,24 @@ public final class ClaimDataManager {
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
 
     //Main storage
-    private static HashMap<UUID, ClanClaimData> claimedChunks = Maps.newHashMap();
+    private static HashMap<UUID, ClanClaimData> claimedChunks;
     //Cache for easy access to data based on chunk position
-    private static HashMap<ChunkPositionWithData, ClanClaimData> claimDataMap = Maps.newHashMap();
+    private static HashMap<ChunkPositionWithData, ClanClaimData> claimDataMap;
 
-    public static HashMap<UUID, Integer> regenBorderlandsTimers = Maps.newHashMap();
+    public static HashMap<UUID, Integer> regenBorderlandsTimers;
 
     public static Set<ChunkPositionWithData> getClaimedChunks(UUID clan) {
         if(!isLoaded)
             load();
         ClanClaimData claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed.chunks.stream().filter(d -> !d.isBorderland()).collect(Collectors.toSet()) : Collections.emptySet();
+        return claimed != null ? claimed.getChunks().stream().filter(d -> !d.isBorderland()).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     public static Set<ChunkPositionWithData> getBorderlandChunks(UUID clan) {
         if(!isLoaded)
             load();
         ClanClaimData claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed.chunks.stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet();
+        return claimed != null ? claimed.getChunks().stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     public static Set<Clan> clansWithClaims() {
@@ -45,7 +45,7 @@ public final class ClaimDataManager {
         for(Map.Entry<UUID, ClanClaimData> clanId: Sets.newHashSet(claimedChunks.entrySet())) {
             Clan clan = ClanCache.getClanById(clanId.getKey());
             if(clan != null) {
-                if (!clanId.getValue().chunks.isEmpty())
+                if (!clanId.getValue().getChunks().isEmpty())
                     claimClans.add(clan);
             } else
                 delClan(clanId.getKey());
@@ -57,7 +57,8 @@ public final class ClaimDataManager {
     public static void addChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
+        if(!claimedChunks.containsKey(clan.getClanId()))
+            claimedChunks.put(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimedChunks.get(clan.getClanId()).addChunk(pos);
         claimDataMap.put(pos, claimedChunks.get(clan.getClanId()));
         if(!pos.isBorderland()) {
@@ -92,12 +93,13 @@ public final class ClaimDataManager {
     public static void delChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        claimedChunks.putIfAbsent(clan.getClanId(), new ClanClaimData(clan.getClanId()));
+        if(!claimedChunks.containsKey(clan.getClanId()))
+            claimedChunks.put(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimDataMap.remove(pos);
         if(claimedChunks.get(clan.getClanId()).delChunk(pos)) {
             Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
-            claimedChunks.get(clan.getClanId()).isChanged = true;
-            regenBorderlandsTimers.put(clan.getClanId(), 5);
+            if(Clans.getConfig().isEnableBorderlands())
+                regenBorderlandsTimers.put(clan.getClanId(), 5);
         }
     }
 
@@ -142,6 +144,8 @@ public final class ClaimDataManager {
 
     @Nullable
     public static ChunkPositionWithData getChunkPositionData(ChunkPosition pos) {
+        if(!isLoaded)
+            load();
         for(ChunkPositionWithData pos2 : claimDataMap.keySet())
             if(pos2.equals(pos))
                 return pos2;
@@ -208,19 +212,23 @@ public final class ClaimDataManager {
      * Use a timer so in the future, when mass claiming and abandoning chunks is possible, it isn't regenerating every single time a claim or abandon is done.
      */
     public static void decrementBorderlandsRegenTimers() {
-        for(Map.Entry<UUID, Integer> entry: Sets.newHashSet(regenBorderlandsTimers.entrySet())) {
-            if(entry.getValue() <= 0) {
-                regenBorderlandsTimers.remove(entry.getKey());
-                claimedChunks.get(entry.getKey()).regenBorderlands();
-            } else {
-                regenBorderlandsTimers.put(entry.getKey(), entry.getValue() - 1);
+        if(Clans.getConfig().isEnableBorderlands())
+            for(Map.Entry<UUID, Integer> entry: Sets.newHashSet(regenBorderlandsTimers.entrySet())) {
+                if(entry.getValue() <= 0) {
+                    regenBorderlandsTimers.remove(entry.getKey());
+                    claimedChunks.get(entry.getKey()).regenBorderlands();
+                } else {
+                    regenBorderlandsTimers.put(entry.getKey(), entry.getValue() - 1);
+                }
             }
-        }
     }
 
     private static void load() {
         if(!chunkDataLocation.exists())
             chunkDataLocation.mkdirs();
+        claimedChunks = Maps.newHashMap();
+        claimDataMap = Maps.newHashMap();
+        regenBorderlandsTimers = Maps.newHashMap();
         File[] files = chunkDataLocation.listFiles();
         if(files != null)
             for(File file: files) {
@@ -228,7 +236,7 @@ public final class ClaimDataManager {
                     ClanClaimData loadedData = ClanClaimData.load(file);
                     if(loadedData != null) {
                         claimedChunks.put(loadedData.clan, loadedData);
-                        for(ChunkPositionWithData cPos : loadedData.chunks)
+                        for(ChunkPositionWithData cPos : loadedData.getChunks())
                             claimDataMap.put(cPos, loadedData);
                     }
                 } catch (Exception e) {
@@ -269,7 +277,7 @@ public final class ClaimDataManager {
                             claimDataMap.put(pos, newData);
                             positions.add(pos);
                         }
-                        newData.chunks.addAll(positions);
+                        newData.addAllChunks(positions);
                         claimedChunks.put(clan, newData);
                     }
                 }
@@ -296,7 +304,7 @@ public final class ClaimDataManager {
 
         //region Saved variables
         private UUID clan;
-        private Set<ChunkPositionWithData> chunks = Sets.newHashSet();
+        private Set<ChunkPositionWithData> chunks;
         private boolean hasBorderlands;
         //endregion
 
@@ -304,7 +312,8 @@ public final class ClaimDataManager {
         private ClanClaimData(UUID clan) {
             chunkDataFile = new File(chunkDataLocation, clan.toString()+".json");
             this.clan = clan;
-            isChanged = true;
+            this.chunks = Sets.newHashSet();
+            markChanged();
         }
         //endregion
 
@@ -331,7 +340,8 @@ public final class ClaimDataManager {
                         claimDataMap.put(pos, loadClanClaimData);
                         positions.add(pos);
                     }
-                    loadClanClaimData.chunks.addAll(positions);
+                    loadClanClaimData.chunks = Sets.newHashSet(positions);
+                    return loadClanClaimData;
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
@@ -352,7 +362,7 @@ public final class ClaimDataManager {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("clan", clan.toString());
                 JsonArray positionArray = new JsonArray();
-                for (ChunkPositionWithData pos : chunks) {
+                for (ChunkPositionWithData pos : getChunks()) {
                     JsonObject chunkPositionObject = new JsonObject();
                     chunkPositionObject.addProperty("x", pos.getPosX());
                     chunkPositionObject.addProperty("z", pos.getPosZ());
@@ -380,18 +390,23 @@ public final class ClaimDataManager {
             return chunks.add(pos);
         }
 
+        public boolean addAllChunks(Collection<? extends ChunkPositionWithData> positions) {
+            markChanged();
+            return chunks.addAll(positions);
+        }
+
         public boolean delChunk(ChunkPositionWithData pos) {
             markChanged();
             return chunks.remove(pos);
         }
 
         public Set<ChunkPositionWithData> getChunks() {
-            return chunks;
+            return Collections.unmodifiableSet(Sets.newHashSet(chunks));
         }
 
         public void genBorderlands() {
             for(int d : Clans.getMinecraftHelper().getDimensionIds())
-                for(ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !chunks.contains(pos)).collect(Collectors.toSet()))
+                for(ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos)).collect(Collectors.toSet()))
                     ClaimDataManager.addChunk(clan, pos);
             hasBorderlands = true;
             markChanged();
@@ -400,7 +415,6 @@ public final class ClaimDataManager {
         public void regenBorderlands() {
             clearBorderlands();
             genBorderlands();
-            markChanged();
         }
 
         public void clearBorderlands() {
