@@ -174,15 +174,20 @@ public final class PlayerDataManager {
         //region Constructor
         private PlayerData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
-            load(playerId);
+            if(!load(playerId))
+                PlayerEventLogic.onFirstLogin(playerId);
         }
         //endregion
 
         //region load
-        private void load(UUID playerId) {
+
+        /**
+         * @return true if it loaded from a file successfully, false otherwise.
+         */
+        private boolean load(UUID playerId) {
             if(!playerDataLocation.exists()) {
                 playerDataLocation.mkdirs();
-                return;
+                return false;
             }
 
             JsonParser jsonParser = new JsonParser();
@@ -193,18 +198,13 @@ public final class PlayerDataManager {
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
                     addonData = JsonHelper.getAddonData(jsonObject);
+                    return true;
                 }
-            } catch (FileNotFoundException e) {
-                new Thread(() -> {
-                    try {
-                        //Make sure we give the load condition a few ms to finish running so we don't end up in a loop
-                        wait(100);
-                    } catch(InterruptedException ignored){}
-                    PlayerEventLogic.onFirstLogin(playerId);
-                }).start();
+            } catch (FileNotFoundException ignored) {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return false;
         }
         //endregion
 
