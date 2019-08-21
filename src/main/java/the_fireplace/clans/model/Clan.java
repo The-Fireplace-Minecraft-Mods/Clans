@@ -179,8 +179,8 @@ public class Clan {
     }
     //endregion
 
-    public HashMap<UUID, EnumRank> getMembers() {
-        return Maps.newHashMap(members);
+    public Map<UUID, EnumRank> getMembers() {
+        return Collections.unmodifiableMap(members);
     }
 
     public ArrayList<UUID> getLeaders() {
@@ -305,6 +305,7 @@ public class Clan {
         ClanCache.addPlayerClan(player, this);
         if(!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
             ClanCache.removeInvite(player);
+        Clans.getDynmapCompat().refreshTooltip(this);
         markChanged();
     }
 
@@ -314,6 +315,7 @@ public class Clan {
         boolean removed = this.members.remove(player) != null;
         if(removed) {
             ClanCache.removePlayerClan(player, this);
+            Clans.getDynmapCompat().refreshTooltip(this);
             markChanged();
         }
         return removed;
@@ -467,7 +469,7 @@ public class Clan {
     }
 
     public TextFormatting getTextColor() {
-        return TextFormatting.fromColorIndex(textColor);
+        return Objects.requireNonNull(TextFormatting.fromColorIndex(textColor));
     }
 
     public void refundClaim() {

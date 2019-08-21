@@ -17,6 +17,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClaimDataManager;
 import the_fireplace.clans.model.*;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -74,7 +75,6 @@ public class DynmapCompat implements IDynmapCompat {
 
                     m_NextTriggerTickCount = tickCounter + 40;
                 }
-
             }
         }
     }
@@ -146,7 +146,7 @@ public class DynmapCompat implements IDynmapCompat {
             List<Integer> addedDims = Lists.newArrayList();
             for(ChunkPosition chunk: ClaimDataManager.getClaimedChunks(clan.getClanId()))
                 if(!addedDims.contains(chunk.getDim())) {
-                    teamDimList.add(new ClanDimInfo(clan.getClanId().toString(), chunk.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
+                    teamDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
                 }
         }
@@ -215,24 +215,7 @@ public class DynmapCompat implements IDynmapCompat {
             }
 
             // Build the cache going in to the Dynmap tooltip
-            StringBuilder stToolTip = new StringBuilder("<div class=\"infowindow\">");
-
-            stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(clanDimInfo.getClanName()).append("</span></div>");
-
-            if (!clanDimInfo.getClanDescription().isEmpty()) {
-                stToolTip.append("<div style=\"text-align: center;\"><span>").append(clanDimInfo.getClanDescription()).append("</span></div>");
-            }
-
-            Set<UUID> teamMembers = Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
-
-            if (!teamMembers.isEmpty()) {
-                stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
-
-                for (UUID member : teamMembers)
-                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(Objects.requireNonNull(Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member)).getName())).append("</span></div>");
-            }
-
-            stToolTip.append("</div>");
+            StringBuilder stToolTip = getTooltipString(clanDimInfo);
 
             // Create the area marker for the claim
             AreaMarker marker = dynmapMarkerSet.createAreaMarker(markerID, stToolTip.toString(), true, worldName, xList, zList, false);
@@ -250,6 +233,48 @@ public class DynmapCompat implements IDynmapCompat {
                 Clans.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim.");
         } else
             Clans.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim, Dynmap Marker Set is not available.");
+    }
+
+    @Override
+    public void refreshTooltip(Clan clan) {
+        List<Integer> addedDims = Lists.newArrayList();
+        for(ChunkPosition chunk: ClaimDataManager.getClaimedChunks(clan.getClanId()))
+            if(!addedDims.contains(chunk.getDim())) {
+                refreshTooltip(new ClanDimInfo(clan, chunk.getDim()));
+                addedDims.add(chunk.getDim());
+            }
+    }
+
+    public void refreshTooltip(ClanDimInfo info) {
+        if(dynmapMarkerSet != null) {
+            String newTooltip = getTooltipString(info).toString();
+            for(AreaMarker marker: dynmapMarkerSet.getAreaMarkers())
+                if(marker.getMarkerID().startsWith(getWorldName(info.getDim())+"_"+info.getClanIdString()+"_"))
+                    marker.setLabel(newTooltip, true);
+        }
+    }
+
+    @Nonnull
+    public static StringBuilder getTooltipString(ClanDimInfo clanDimInfo) {
+        StringBuilder stToolTip = new StringBuilder("<div class=\"infowindow\">");
+
+        stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(clanDimInfo.getClanName()).append("</span></div>");
+
+        if (!clanDimInfo.getClanDescription().isEmpty()) {
+            stToolTip.append("<div style=\"text-align: center;\"><span>").append(clanDimInfo.getClanDescription()).append("</span></div>");
+        }
+
+        Set<UUID> teamMembers = Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
+
+        if (!teamMembers.isEmpty()) {
+            stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
+
+            for (UUID member : teamMembers)
+                stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(Objects.requireNonNull(Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member)).getName())).append("</span></div>");
+        }
+
+        stToolTip.append("</div>");
+        return stToolTip;
     }
 
     /**

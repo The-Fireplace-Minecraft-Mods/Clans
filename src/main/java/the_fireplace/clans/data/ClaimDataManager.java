@@ -97,7 +97,7 @@ public final class ClaimDataManager {
             claimedChunks.put(clan.getClanId(), new ClanClaimData(clan.getClanId()));
         claimDataMap.remove(pos);
         if(claimedChunks.get(clan.getClanId()).delChunk(pos)) {
-            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan.getClanId().toString(), pos.getDim(), clan.getClanName(), clan.getDescription(), clan.getColor()));
+            Clans.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(clan, pos.getDim()));
             if(Clans.getConfig().isEnableBorderlands())
                 regenBorderlandsTimers.put(clan.getClanId(), 5);
         }

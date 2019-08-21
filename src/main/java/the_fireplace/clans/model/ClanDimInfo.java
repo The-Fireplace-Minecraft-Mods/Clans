@@ -16,6 +16,10 @@ public class ClanDimInfo {
         this.clanColor = rgbColor;
     }
 
+    public ClanDimInfo(Clan clan, int dim) {
+        this(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor());
+    }
+
     public String getClanIdString() {
         return clanUniqueID;
     }
