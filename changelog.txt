@@ -23,3 +23,4 @@ Fixed /clan and /raid commands being unusable in console.
 Major performance improvement to rent/upkeep checking logic
 Dynmap Clan tooltip is now refreshed when a clan member is added or removed
 Dynmap claims are now removed when a clan gets disbanded
+Fixed "You are now entering Wilderness" message showing up twice the first time you enter it after logging in on claimed land on a server with Wilderness Protection and Min Wilderness Protection Y enabled
