@@ -224,7 +224,8 @@ public class ClanManagementUtil {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setrank.success", target.getName(), rank.toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
             if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
                 EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
-                targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.opclan.setrank.set", rank.toString().toLowerCase(), clan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+                if(targetPlayer != sender)
+                    targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.opclan.setrank.set", rank.toString().toLowerCase(), clan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
             }
         } else
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
