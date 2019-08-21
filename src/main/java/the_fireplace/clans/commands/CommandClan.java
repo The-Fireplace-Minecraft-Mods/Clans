@@ -84,6 +84,7 @@ public class CommandClan extends CommandBase {
     static {
         aliases.put("c", "claim");
         aliases.put("cc", "clanchat");
+        aliases.put("chat", "clanchat");
         aliases.put("abc", "abandonclaim");
         aliases.put("unclaim", "abandonclaim");
         aliases.put("uc", "abandonclaim");

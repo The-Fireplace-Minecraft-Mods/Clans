@@ -14,6 +14,7 @@ Syntax/behavior change: /opclan abandonclaim/autoabandon now take no arguments, 
 Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan> argument to select which clan to set that data for.
 /clan home now tells you how long the warmup is and cancels it if you move or are hurt during the warmup period
 /clan form no longer takes a [banner] parameter
+New alias for /clan clanchat: /clan chat
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.
