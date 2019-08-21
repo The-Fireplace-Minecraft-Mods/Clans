@@ -14,6 +14,7 @@ import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.ClanManagementUtil;
+import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -151,7 +152,7 @@ public class TimerLogic {
 
             if(!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland))
                 handleTerritoryChangedMessage(player, chunkClan, playerClans, isInBorderland);
-        } else if (chunkClanId == null && Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() != 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0)
+        } else if (chunkClanId == null && Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() > 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0 && !(PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness")))
             handleDepthChangedMessage(player);
         EntityPlayerMP playerMP = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
         if (playerMP != null) {
@@ -186,12 +187,13 @@ public class TimerLogic {
         String territoryName;
         String territoryDesc;
         if (chunkClan == null) {
-            if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < Clans.getConfig().getMinWildernessY())) {
+            boolean canBuildInWilderness = PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness");
+            if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < Clans.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
                 territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
                 territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
             } else {
                 territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness");
-                if(Clans.getConfig().isProtectWilderness()) {
+                if(Clans.getConfig().isProtectWilderness() && !canBuildInWilderness) {
                     color = TextStyles.YELLOW;
                     territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected");
                 } else

@@ -15,6 +15,8 @@ Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan
 /clan home now tells you how long the warmup is and cancels it if you move or are hurt during the warmup period
 /clan form no longer takes a [banner] parameter
 New alias for /clan clanchat: /clan chat
+Changes between Wilderness and Underground are no longer shown to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
+Underground is shown as Wilderness to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.
