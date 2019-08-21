@@ -14,7 +14,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.PlayerDataManager;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.PermissionManager;
@@ -23,7 +22,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -79,26 +77,27 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
-				Clan playerClan = null;
-				if(greedyArgs ? args.length > 1 && CommandClan.greedyCommands.contains(args[1]) : args.length == getMaxArgs()+1) {
-					playerClan = ClanCache.getClanByName(args[0]);
-				} else if(sender instanceof EntityPlayerMP)
-					playerClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(((EntityPlayerMP) sender).getUniqueID()));
+				Clan playerClan = ClanCache.getClanByName(args[0]);
 				if(sender instanceof EntityPlayerMP) {
-					ArrayList<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
-					if (playerClan != null && !playerClans.contains(playerClan) && !(this instanceof OpClanSubCommand)) {
+					List<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+					if (playerClan != null && !playerClans.contains(playerClan)) {
 						sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
 						return;
 					}
 				}
+				//noinspection ConstantConditions
 				this.selectedClan = playerClan;
-				String[] args2 = args;
-				if(args.length == getMaxArgs()+1) {
-					if (args.length > 1)
-						args2 = Arrays.copyOfRange(args, 1, args.length);
+				String[] args2;
+				//Remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
+				if(greedyArgs) {
+					if(args.length > 2)
+						args2 = Arrays.copyOfRange(args, 2, args.length);
 					else
 						args2 = new String[]{};
-				}
+				} else if (args.length > 1)
+					args2 = Arrays.copyOfRange(args, 1, args.length);
+				else
+					args2 = new String[]{};
 				if(checkPermission(server, sender)) {
 					if (sender instanceof EntityPlayerMP)
 						run(server, (EntityPlayerMP) sender, args2);

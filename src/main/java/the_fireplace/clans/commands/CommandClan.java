@@ -7,6 +7,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,6 +24,8 @@ import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
+import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -133,18 +136,26 @@ public class CommandClan extends CommandBase {
         if(args.length <= 0)
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
+        //Remove the subcommand from the args
         if(ClanCache.clanNameTaken(tag) && !ClanCache.forbiddenClanNames.contains(tag) && args.length >= 2) {
+            //Skip to the next arg because the first is a clan name
             tag = args[1];
             if (args.length > 2) {
                 String[] commArgs = Arrays.copyOfRange(args, 2, args.length);
+                //If the command is greedy, we leave the subcommand in the args so it can be identified as greedy when the subcommand handler executes.
                 args = ArrayUtils.addAll(new String[]{args[0]}, greedyCommands.contains(tag) ? ArrayUtils.addAll(new String[]{tag}, commArgs) : commArgs);
             } else
                 args = new String[]{args[0]};
-        } else
-            if(args.length > 1)
+        } else {
+            if (args.length > 1)
                 args = Arrays.copyOfRange(args, 1, args.length);
             else
                 args = new String[]{};
+            //Make the first arg the default clan name because a clan name was not specified
+            Clan defaultClan = sender instanceof EntityPlayerMP ? ClanCache.getClanById(PlayerDataManager.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
+            args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getClanName() : "null"}, args);
+        }
+        //Check permissions and run command
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
             if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))

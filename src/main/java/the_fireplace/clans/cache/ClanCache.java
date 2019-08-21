@@ -35,7 +35,7 @@ public final class ClanCache {
 	private static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
 	private static HashMap<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
 
-	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid");
+	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid", "null");
 	static {
 		forbiddenClanNames.addAll(CommandClan.commands.keySet());
 		forbiddenClanNames.addAll(CommandClan.aliases.keySet());
