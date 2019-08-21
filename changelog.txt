@@ -18,6 +18,3 @@ Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.
 Major performance improvement to rent/upkeep checking logic
-Fixed crash when player disconnects during a raid
-Fixed exception when you don't include the sort for /clan list
-Fixed the clan name displayed when you stop autoclaiming or autoabandoning
