@@ -309,6 +309,18 @@ public class Clan {
         markChanged();
     }
 
+    public void addMember(UUID player, EnumRank rank) {
+        boolean prevHadMember = members.containsKey(player);
+        this.members.put(player, rank);
+        if(!prevHadMember) {
+            ClanCache.addPlayerClan(player, this);
+            if (!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
+                ClanCache.removeInvite(player);
+            Clans.getDynmapCompat().refreshTooltip(this);
+        }
+        markChanged();
+    }
+
     public boolean removeMember(UUID player) {
         if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
             return false;

@@ -220,7 +220,7 @@ public class ClanManagementUtil {
         GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
         if(target != null) {
-            clan.getMembers().put(target.getId(), rank);
+            clan.addMember(target.getId(), rank);
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setrank.success", target.getName(), rank.toString().toLowerCase(), clan.getClanName()).setStyle(TextStyles.GREEN));
             if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
                 EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
