@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class ClanManagementUtil {
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, boolean force) {
-        return checkAndAttemptClaim(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()), force);
+        return checkAndAttemptClaim(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()).retrieveCentralData(), force);
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, ChunkPositionWithData claimChunk, boolean force) {
@@ -38,12 +38,12 @@ public class ClanManagementUtil {
             if(!claimOwner.equals(selectedClan.getClanId())) {
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.taken_other", claimClan.getClanName()).setStyle(TextStyles.RED));
                 return false;
-            } else if(!ClaimDataManager.getChunkPositionData(claimChunk).isBorderland()) {
+            } else if(!claimChunk.isBorderland()) {
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.taken", selectedClan.getClanName()).setStyle(TextStyles.YELLOW));
                 return false;
             }
         }
-        if(claimClan != null && !ClaimDataManager.getChunkPositionData(claimChunk).isBorderland() && !claimClan.isLimitless()) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
+        if(claimClan != null && !claimChunk.isBorderland() && !claimClan.isLimitless()) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
             claimClan.refundClaim();
         }
         if(selectedClan.isLimitless()) {
@@ -98,13 +98,13 @@ public class ClanManagementUtil {
     }
 
     public static boolean checkAndAttemptAbandon(EntityPlayerMP sender, @Nullable Clan selectedClan) {
-        return checkAndAttemptAbandon(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()));
+        return checkAndAttemptAbandon(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()).retrieveCentralData());
     }
 
     public static boolean checkAndAttemptAbandon(EntityPlayerMP sender, @Nullable Clan selectedClan, ChunkPositionWithData claimChunk) {
         Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
         UUID claimOwnerClanId = ChunkUtils.getChunkOwner(c);
-        if(claimOwnerClanId != null && !ClaimDataManager.getChunkPositionData(claimChunk).isBorderland()) {
+        if(claimOwnerClanId != null && !claimChunk.isBorderland()) {
             Clan claimOwnerClan = ClanCache.getClanById(claimOwnerClanId);
             if(claimOwnerClan == null) {
                 ChunkUtils.clearChunkOwner(c);
@@ -137,7 +137,7 @@ public class ClanManagementUtil {
             targetClan.unsetHome();
         }
 
-        ClaimDataManager.delChunk(targetClan, c.x, c.z, c.getWorld().provider.getDimension());
+        ClaimDataManager.delChunk(targetClan, new ChunkPositionWithData(c));
         if(!targetClan.isLimitless())
             Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
     }
@@ -160,9 +160,7 @@ public class ClanManagementUtil {
     public static boolean finishClaimAbandonment(EntityPlayerMP sender, Chunk c, Clan targetClan) {
         PreLandAbandonEvent event = ClansEventManager.fireEvent(new PreLandAbandonEvent(sender.world, c, new ChunkPosition(c), sender.getUniqueID(), targetClan));
         if(!event.isCancelled) {
-            //Unset clan home if it is in the chunk
             abandonClaim(sender, c, targetClan);
-            ChunkUtils.clearChunkOwner(c);
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.abandonclaim.success", targetClan.getClanName()).setStyle(TextStyles.GREEN));
             return true;
         } else

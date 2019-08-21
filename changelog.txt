@@ -18,3 +18,5 @@ Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.
 Major performance improvement to rent/upkeep checking logic
+Dynmap Clan tooltip is now refreshed when a clan member is added or removed
+Dynmap claims are now removed when a clan gets disbanded

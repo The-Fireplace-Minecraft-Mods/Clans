@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
 public class DynmapCompat implements IDynmapCompat {
     @Override
     public void serverStart() {
@@ -39,7 +38,7 @@ public class DynmapCompat implements IDynmapCompat {
     private long m_NextTriggerTickCount = 0;
     private int mapInitAttemptCount = 0;
     private boolean mapInitialized = false;
-    private Set<ClanDimInfo> claimUpdates = new HashSet<>();
+    private Set<ClanDimInfo> claimUpdates = Sets.newHashSet();
 
 
     @SubscribeEvent
@@ -277,11 +276,20 @@ public class DynmapCompat implements IDynmapCompat {
         return stToolTip;
     }
 
+    @Override
+    public void clearAllTeamMarkers(Clan clan) {
+        List<Integer> addedDims = Lists.newArrayList();
+        for(ChunkPosition chunk: ClaimDataManager.getClaimedChunks(clan.getClanId()))
+            if(!addedDims.contains(chunk.getDim())) {
+                clearAllTeamMarkers(new ClanDimInfo(clan, chunk.getDim()));
+                addedDims.add(chunk.getDim());
+            }
+    }
+
     /**
      * Find all the markers for the specified team and clear them.
      * @param clanDimInfo Name of team and dimension you want to clear the markers for.
      */
-
     public void clearAllTeamMarkers(ClanDimInfo clanDimInfo) {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
@@ -305,7 +313,6 @@ public class DynmapCompat implements IDynmapCompat {
      *
      * Note: This method needs to be called prior to any worlds being unloaded.
      */
-
     public void buildDynmapWorldNames() {
         WorldServer[] worldsList = Clans.getMinecraftHelper().getServer().worlds;
 

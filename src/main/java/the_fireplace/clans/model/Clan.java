@@ -516,6 +516,7 @@ public class Clan {
             RaidingParties.getActiveRaid(this).raiderVictory();
         if(RaidingParties.isPreparingRaid(this))
             RaidingParties.removeRaid(RaidingParties.getRaid(this));
+        Clans.getDynmapCompat().clearAllTeamMarkers(this);
         ClanDatabase.removeClan(getClanId());
         if(isLimitless())
             return;

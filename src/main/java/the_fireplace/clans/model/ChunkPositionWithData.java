@@ -35,7 +35,7 @@ public class ChunkPositionWithData extends ChunkPosition {
     }
 
     public ChunkPositionWithData offset(int x, int z) {
-        return new ChunkPositionWithData(getPosX() +x, getPosZ() +z, getDim());
+        return new ChunkPositionWithData(getPosX() + x, getPosZ() + z, getDim());
     }
 
     /**
@@ -120,6 +120,19 @@ public class ChunkPositionWithData extends ChunkPosition {
      */
     public ChunkPositionWithData setIsBorderland() {
         isBorderland = true;
+        return this;
+    }
+
+    /**
+     * Check if data is in the ClaimDataManager for this position, and copy it over if it is
+     * @return this, for easy chaining
+     */
+    public ChunkPositionWithData retrieveCentralData() {
+        ChunkPositionWithData data = ClaimDataManager.getChunkPositionData(this);
+        if(data != null) {
+            this.isBorderland = data.isBorderland;
+            this.addonData = data.addonData;
+        }
         return this;
     }
 }
