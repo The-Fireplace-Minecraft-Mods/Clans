@@ -92,13 +92,13 @@ public final class PlayerData {
         private UUID defaultClan;
         private int cooldown;
 
-        private HashMap<String, Object> addonData = Maps.newHashMap();
+        private Map<String, Object> addonData = Maps.newHashMap();
         //endregion
 
         //region Constructor
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
-            if(!load(playerId))
+            if(!load())
                 PlayerEventLogic.onFirstLogin(playerId);
         }
         //endregion
@@ -108,7 +108,7 @@ public final class PlayerData {
         /**
          * @return true if it loaded from a file successfully, false otherwise.
          */
-        private boolean load(UUID playerId) {
+        private boolean load() {
             if(!playerDataLocation.exists()) {
                 playerDataLocation.mkdirs();
                 return false;
