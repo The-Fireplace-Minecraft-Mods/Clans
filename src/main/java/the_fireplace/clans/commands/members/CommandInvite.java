@@ -71,12 +71,14 @@ public class CommandInvite extends ClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		if(args.length != 1)
+			return Collections.emptyList();
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 		if(!Clans.getConfig().isAllowMultiClanMembership())
 			players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)
 			playerNames.add(profile.getName());
-		return args.length == 1 ? playerNames :Collections.emptyList();
+		return playerNames;
 	}
 }

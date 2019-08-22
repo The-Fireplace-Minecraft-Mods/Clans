@@ -49,7 +49,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		if(args.length == 0) {
 			if(sender instanceof EntityPlayerMP)
-				showDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
+				showPlayerClanDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.console", TranslationUtil.getStringTranslation(getUsage(sender))).setStyle(TextStyles.RED));
 		} else {
@@ -57,7 +57,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 			if(targetPlayer == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.notfound", args[0]).setStyle(TextStyles.RED));
 			else
-				showDetails(server, sender, targetPlayer);
+				showPlayerClanDetails(server, sender, targetPlayer);
 		}
 	}
 
@@ -68,10 +68,10 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(ClanCache.getClanNames().keySet()) : Collections.emptyList();
+		return args.length == 1 ? Lists.newArrayList(server.getPlayerProfileCache().getUsernames()) : Collections.emptyList();
 	}
 
-	private void showDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
+	private void showPlayerClanDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.name", target.getName()).setStyle(TextStyles.GREEN));
 		List<Clan> leaders = Lists.newArrayList();
 		List<Clan> admins = Lists.newArrayList();

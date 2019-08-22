@@ -1,9 +1,11 @@
 package the_fireplace.clans.commands.details;
 
 import com.google.common.collect.Lists;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.CommandClan;
@@ -17,10 +19,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@MethodsReturnNonnullByDefault
 public class CommandClanHelp extends ClanSubCommand {
 
     @Override
-    @Nonnull
     public String getUsage(@Nullable ICommandSender sender) {
         return TranslationUtil.getRawTranslationString(sender, "commands.clan.help.usage");
     }
@@ -51,7 +53,6 @@ public class CommandClanHelp extends ClanSubCommand {
         return true;
     }
 
-    @Nonnull
     @Override
     public EnumRank getRequiredClanRank() {
         return EnumRank.ANY;
@@ -70,5 +71,17 @@ public class CommandClanHelp extends ClanSubCommand {
     @Override
     protected boolean allowConsoleUsage() {
         return true;
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        List<String> comp = Lists.newArrayList();
+        if(args.length != 1)
+            return comp;
+        for(int i=1;i<CommandClan.commands.size()/ChatPageUtil.RESULTS_PER_PAGE;i++)
+            comp.add(String.valueOf(i));
+        comp.addAll(CommandClan.aliases.keySet());
+        comp.addAll(CommandClan.commands.keySet());
+        return comp;
     }
 }

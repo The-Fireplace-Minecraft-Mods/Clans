@@ -1,10 +1,12 @@
 package the_fireplace.clans.commands.land;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.cache.PlayerCache;
@@ -15,6 +17,8 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -47,5 +51,12 @@ public class CommandSeeChunk extends ClanSubCommand {
 		if(args.length == 1)
 			PlayerCache.setIsShowingChunkBorders(sender.getUniqueID(), parseBool(args[0]));
 		ChunkUtils.showChunkBounds(c, sender);
+	}
+
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		if(args.length == 1)
+			return Lists.newArrayList("on", "off");
+		return Collections.emptyList();
 	}
 }

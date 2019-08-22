@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.CommandOpClan;
@@ -59,5 +60,17 @@ public class OpCommandHelp extends OpClanSubCommand {
     @Override
     protected boolean allowConsoleUsage() {
         return true;
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        List<String> comp = Lists.newArrayList();
+        if(args.length != 1)
+            return comp;
+        for(int i = 1; i < CommandOpClan.commands.size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
+            comp.add(String.valueOf(i));
+        comp.addAll(CommandOpClan.aliases.keySet());
+        comp.addAll(CommandOpClan.commands.keySet());
+        return comp;
     }
 }

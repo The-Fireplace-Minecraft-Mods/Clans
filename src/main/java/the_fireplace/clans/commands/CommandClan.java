@@ -191,6 +191,22 @@ public class CommandClan extends CommandBase {
             args2 = Arrays.copyOfRange(args, 1, args.length);
         else
             args2 = new String[]{};
-        return args.length >= 1 ? args.length == 1 ? Lists.newArrayList(commands.keySet()) : commands.get(args[0]) != null ? commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList() : Collections.emptyList();
+        if(args.length >= 1) {
+            if(args.length == 1) {
+                List<String> arg1List = Lists.newArrayList(commands.keySet());
+                if (sender instanceof EntityPlayerMP)
+                    for (Clan c : ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID()))
+                        arg1List.add(c.getClanName());
+                return arg1List;
+            } else if(commands.get(args[0]) != null) {
+                return commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos);
+            } else if(ClanCache.getClanNames().containsKey(args[0])) {
+                if(args.length == 2)
+                    return Lists.newArrayList(commands.keySet());
+                else if(commands.get(args[1]) != null)
+                    return commands.get(args[1]).getTabCompletions(server, sender, args2, targetPos);
+            }
+        }
+        return Collections.emptyList();
     }
 }

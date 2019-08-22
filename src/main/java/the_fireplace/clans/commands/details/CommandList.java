@@ -5,6 +5,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -15,9 +16,11 @@ import the_fireplace.clans.util.ChatPageUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -77,5 +80,16 @@ public class CommandList extends ClanSubCommand {
 	@Override
 	protected boolean allowConsoleUsage() {
 		return true;
+	}
+
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		List<String> ret = Lists.newArrayList();
+		if(args.length == 1)
+			ret.addAll(Lists.newArrayList("money", "land", "members", "abc"));
+		else if(args.length == 2)
+			for(int i = 1; i < ClanDatabase.getClans().size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
+				ret.add(String.valueOf(i));
+		return ret;
 	}
 }
