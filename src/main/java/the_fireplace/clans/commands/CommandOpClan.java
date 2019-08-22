@@ -9,6 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.commands.op.OpCommandHelp;
@@ -84,10 +85,9 @@ public class CommandOpClan extends CommandBase {
         if(args.length <= 0)
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
-        if(args.length > 1)
-            args = Arrays.copyOfRange(args, 1, args.length);
-        else
-            args = new String[]{};
+        //Attach an extra arg to greedy commands because ClanSubCommand takes two args off of those.
+        if(args.length > 1 && CommandClan.greedyCommands.contains(tag))
+            args = ArrayUtils.addAll(new String[]{"opclan"}, args);
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX+processAlias(tag))) {
             if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !"addfunds".equals(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))

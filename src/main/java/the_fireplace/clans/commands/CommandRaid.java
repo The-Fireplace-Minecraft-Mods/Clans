@@ -60,10 +60,6 @@ public class CommandRaid extends CommandBase {
         if(args.length <= 0)
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
-        if(args.length > 1)
-            args = Arrays.copyOfRange(args, 1, args.length);
-        else
-            args = new String[]{};
         if(Clans.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {

@@ -90,20 +90,17 @@ public abstract class ClanSubCommand extends CommandBase {
 					this.selectedClan = playerClan;
 				}
 				String[] args2;
-				//Check if the first arg is a clan name. If so, this is a clan command. Otherwise, an opclan or raid command.
-				if(args.length > 0 && ClanCache.clanNameTaken(args[0]) && !ClanCache.forbiddenClanNames.contains(args[0])) {
-					//Remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
-					if (greedyArgs) {
-						if (args.length > 2)
-							args2 = Arrays.copyOfRange(args, 2, args.length);
-						else
-							args2 = new String[]{};
-					} else if (args.length > 1)
-						args2 = Arrays.copyOfRange(args, 1, args.length);
+				//If this is a clan command, remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
+				//Otherwise, this removes the subcommand name
+				if (greedyArgs) {
+					if (args.length > 2)
+						args2 = Arrays.copyOfRange(args, 2, args.length);
 					else
 						args2 = new String[]{};
-				} else
-					args2 = args;
+				} else if (args.length > 1)
+					args2 = Arrays.copyOfRange(args, 1, args.length);
+				else
+					args2 = new String[]{};
 				if(checkPermission(server, sender)) {
 					if (sender instanceof EntityPlayerMP)
 						run(server, (EntityPlayerMP) sender, args2);
