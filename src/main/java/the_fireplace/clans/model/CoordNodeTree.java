@@ -1,7 +1,7 @@
 package the_fireplace.clans.model;
 
 import com.google.common.collect.Sets;
-import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.data.ClaimData;
 
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public class CoordNodeTree {
     private int dim;
 
     public CoordNodeTree(int excludeCoordX, int excludeCoordZ, int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimDataManager.getClaimedChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
             if((pos.getPosX() != excludeCoordX || pos.getPosZ() != excludeCoordZ) && pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = coordNodes;
@@ -21,7 +21,7 @@ public class CoordNodeTree {
     }
 
     public CoordNodeTree(int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimDataManager.getClaimedChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
             if(pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = Sets.newHashSet(coordNodes);

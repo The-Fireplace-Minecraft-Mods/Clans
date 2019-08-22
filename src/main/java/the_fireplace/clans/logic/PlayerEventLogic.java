@@ -6,10 +6,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
-import the_fireplace.clans.data.ClaimDataManager;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.ClaimData;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -19,7 +20,8 @@ import java.util.UUID;
 public class PlayerEventLogic {
     public static void onPlayerLoggedIn(EntityPlayer player) {
         checkUpdateDefaultClan(player);
-        PlayerDataManager.setShouldDisposeReferences(player.getUniqueID(), false);
+        PlayerData.setShouldDisposeReferences(player.getUniqueID(), false);
+        PlayerCache.setNeedsCleanup(player.getUniqueID(), false);
     }
 
     public static void onFirstLogin(UUID playerId) {
@@ -30,9 +32,9 @@ public class PlayerEventLogic {
 
     public static void checkUpdateDefaultClan(EntityPlayer player) {
         if(!player.world.isRemote) {
-            UUID defaultClan = PlayerDataManager.getDefaultClan(player.getUniqueID());
+            UUID defaultClan = PlayerData.getDefaultClan(player.getUniqueID());
             if ((defaultClan != null && ClanCache.getClanById(defaultClan) == null) || (defaultClan == null && !ClanCache.getPlayerClans(player.getUniqueID()).isEmpty()) || (defaultClan != null && !ClanCache.getPlayerClans(player.getUniqueID()).contains(ClanCache.getClanById(defaultClan))))
-                PlayerDataManager.updateDefaultClan(player.getUniqueID(), null);
+                PlayerData.updateDefaultClan(player.getUniqueID(), null);
         }
     }
 
@@ -42,11 +44,12 @@ public class PlayerEventLogic {
         ClanCache.getAutoAbandonClaims().remove(playerId);
         ClanCache.getAutoClaimLands().remove(playerId);
         ClanCache.getClanChattingPlayers().remove(playerId);
-        PlayerDataManager.setShouldDisposeReferences(playerId, true);
+        PlayerData.setShouldDisposeReferences(playerId, true);
+        PlayerCache.setNeedsCleanup(playerId, true);
     }
 
     public static void onPlayerChangedDimension(EntityPlayer player) {
-        PlayerDataManager.setClaimWarning(player.getUniqueID(), false);
+        PlayerCache.setClaimWarning(player.getUniqueID(), false);
         Clan ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(player.getUniqueID());
         boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(player.getUniqueID());
         Clan cAutoAbandon = ClanCache.getAutoAbandonClaims().remove(player.getUniqueID());
@@ -62,19 +65,19 @@ public class PlayerEventLogic {
     }
 
     public static ITextComponent getPlayerChatMessage(EntityPlayer player, ITextComponent initialMessage) {
-        UUID defaultClanId = PlayerDataManager.getDefaultClan(player.getUniqueID());
+        UUID defaultClanId = PlayerData.getDefaultClan(player.getUniqueID());
         if (defaultClanId != null) {
             Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
             if (playerDefaultClan != null)
                 return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getClanName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
             else
-                PlayerDataManager.updateDefaultClan(player.getUniqueID(), null);
+                PlayerData.updateDefaultClan(player.getUniqueID(), null);
         }
         return initialMessage;
     }
 
     public static void onPlayerRespawn(EntityPlayer player) {
-        Clan defClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(player.getUniqueID()));
+        Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
         if(defClan != null && defClan.hasHome() && defClan.getHome() != null)
             CommandHome.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
     }
@@ -86,7 +89,7 @@ public class PlayerEventLogic {
     }
 
     public static float breakSpeed(EntityPlayer player, float oldSpeed) {//TODO should borderlands be impacted by this?
-        if(RaidingParties.isRaidedBy(ClaimDataManager.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
+        if(RaidingParties.isRaidedBy(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
             return oldSpeed * (float)Clans.getConfig().getRaidBreakSpeedMultiplier();
         }
         return oldSpeed;
@@ -94,7 +97,7 @@ public class PlayerEventLogic {
     
     public static void onPlayerDamage(EntityPlayer player) {
         //noinspection SuspiciousMethodCalls
-        if(PlayerDataManager.clanHomeWarmups.remove(player) != null)
+        if(PlayerCache.clanHomeWarmups.remove(player) != null)
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
     }
 }

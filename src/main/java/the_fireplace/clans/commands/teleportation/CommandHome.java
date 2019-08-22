@@ -10,8 +10,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.model.OrderedPair;
@@ -52,17 +53,17 @@ public class CommandHome extends ClanSubCommand {
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
 
-		int cooldown = PlayerDataManager.getCooldown(sender.getUniqueID());
+		int cooldown = PlayerData.getCooldown(sender.getUniqueID());
 		if(cooldown <= 0) {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.getConfig().getClanHomeWarmupTime() > 0) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getClanName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
-					PlayerDataManager.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
-					PlayerDataManager.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
-					PlayerDataManager.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
-					PlayerDataManager.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getClanId()));
+					PlayerCache.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
+					PlayerCache.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
+					PlayerCache.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
+					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getClanId()));
 				} else
 					teleportHome(sender, selectedClan, home, playerDim, false);
 			}
@@ -90,7 +91,7 @@ public class CommandHome extends ClanSubCommand {
 			if (playerDim != player.dimension && player.changeDimension(playerDim) == null)
 				player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
 		} else if(!noCooldown)
-			PlayerDataManager.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
+			PlayerData.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
 	}
 
 	private static BlockPos getSafeExitLocation(World worldIn, BlockPos pos, int tries) {

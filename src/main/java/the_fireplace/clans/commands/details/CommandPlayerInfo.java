@@ -11,7 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -93,7 +93,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 		if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
 			Clan defaultClan = null;
 			if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target))
-				defaultClan = ClanCache.getClanById(PlayerDataManager.getDefaultClan(target.getId()));
+				defaultClan = ClanCache.getClanById(PlayerData.getDefaultClan(target.getId()));
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.clans").setStyle(TextStyles.GREEN));
 			for(Clan leader: leaders)
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", leader.getClanName()).setStyle(defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));

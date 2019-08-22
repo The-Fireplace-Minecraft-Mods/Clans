@@ -6,11 +6,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
-import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -18,11 +16,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-public final class PlayerDataManager {
-    private static HashMap<UUID, PlayerData> playerData = Maps.newHashMap();
+public final class PlayerData {
+    private static HashMap<UUID, PlayerStoredData> playerData = Maps.newHashMap();
     private static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
-    //Clan home warmup cache
-    public static HashMap<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
 
     //region getters
     @Nullable
@@ -34,42 +30,6 @@ public final class PlayerDataManager {
         return getPlayerData(player).cooldown;
     }
 
-    @Nullable
-    public static UUID getPreviousChunkOwner(UUID player) {
-        return getPlayerData(player).prevChunkOwner;
-    }
-
-    public static boolean getStoredIsInBorderland(UUID player) {
-        return getPlayerData(player).isInBorderland;
-    }
-
-    public static boolean getClaimWarning(UUID player) {
-        return getPlayerData(player).claimWarning;
-    }
-
-    public static float getClanHomeCheckX(UUID player) {
-        return getPlayerData(player).clanHomeCheckX;
-    }
-
-    public static float getClanHomeCheckY(UUID player) {
-        return getPlayerData(player).clanHomeCheckY;
-    }
-
-    public static int getPreviousY(UUID player) {
-        return getPlayerData(player).prevY;
-    }
-
-    public static float getClanHomeCheckZ(UUID player) {
-        return getPlayerData(player).clanHomeCheckZ;
-    }
-
-    public static int getPreviousChunkX(UUID player) {
-        return getPlayerData(player).prevChunkX;
-    }
-
-    public static int getPreviousChunkZ(UUID player) {
-        return getPlayerData(player).prevChunkZ;
-    }
     //endregion
 
     //region saved data setters
@@ -98,57 +58,22 @@ public final class PlayerDataManager {
     }
     //endregion
 
-    //region cached data setters
-    public static void setPreviousChunkOwner(UUID player, @Nullable UUID prevChunkOwner, boolean isBorderland) {
-        PlayerData data = getPlayerData(player);
-        data.prevChunkOwner = prevChunkOwner;
-        data.isInBorderland = isBorderland;
-    }
-
-    public static void setClaimWarning(UUID player, boolean claimWarning) {
-        getPlayerData(player).claimWarning = claimWarning;
-    }
-
-    public static void setClanHomeCheckX(UUID player, float prevX) {
-        getPlayerData(player).clanHomeCheckX = prevX;
-    }
-
-    public static void setClanHomeCheckY(UUID player, float prevY) {
-        getPlayerData(player).clanHomeCheckY = prevY;
-    }
-
-    public static void setPreviousY(UUID player, int prevY) {
-        getPlayerData(player).prevY = prevY;
-    }
-
-    public static void setClanHomeCheckZ(UUID player, float prevZ) {
-        getPlayerData(player).clanHomeCheckZ = prevZ;
-    }
-
-    public static void setPreviousChunkX(UUID player, int prevChunkX) {
-        getPlayerData(player).prevChunkX = prevChunkX;
-    }
-
-    public static void setPreviousChunkZ(UUID player, int prevChunkZ) {
-        getPlayerData(player).prevChunkZ = prevChunkZ;
-    }
-
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
         getPlayerData(player).shouldDisposeReferences = shouldDisposeReferences;
     }
     //endregion
 
     //region getPlayerData
-    private static PlayerData getPlayerData(UUID player) {
+    private static PlayerStoredData getPlayerData(UUID player) {
         if(!playerData.containsKey(player))
-            playerData.put(player, new PlayerData(player));
+            playerData.put(player, new PlayerStoredData(player));
         return playerData.get(player);
     }
     //endregion
 
     //region save
     public static void save() {
-        for(Map.Entry<UUID, PlayerData> entry : Sets.newHashSet(playerData.entrySet())) {
+        for(Map.Entry<UUID, PlayerStoredData> entry : Sets.newHashSet(playerData.entrySet())) {
             entry.getValue().save();
             if(entry.getValue().shouldDisposeReferences)
                 playerData.remove(entry.getKey());
@@ -156,18 +81,10 @@ public final class PlayerDataManager {
     }
     //endregion
 
-    private static class PlayerData {
+    private static class PlayerStoredData {
         //region Internal variables
         private File playerDataFile;
         private boolean isChanged, saving, shouldDisposeReferences = false;
-        //endregion
-
-        //region Cache variables
-        @Nullable
-        private UUID prevChunkOwner;
-        private boolean claimWarning, isInBorderland;
-        private int prevY, prevChunkX, prevChunkZ;
-        private float clanHomeCheckX, clanHomeCheckY, clanHomeCheckZ;
         //endregion
 
         //region Saved variables
@@ -179,7 +96,7 @@ public final class PlayerDataManager {
         //endregion
 
         //region Constructor
-        private PlayerData(UUID playerId) {
+        private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
             if(!load(playerId))
                 PlayerEventLogic.onFirstLogin(playerId);
@@ -222,7 +139,7 @@ public final class PlayerDataManager {
             saving = true;
             new Thread(() -> {
                 JsonObject obj = new JsonObject();
-                if(defaultClan != null)
+                if (defaultClan != null)
                     obj.addProperty("defaultClan", defaultClan.toString());
                 obj.addProperty("cooldown", cooldown);
 
@@ -236,7 +153,7 @@ public final class PlayerDataManager {
                     e.printStackTrace();
                 }
                 saving = isChanged = false;
-            }).run();
+            }).start();
         }
         //endregion
 

@@ -22,7 +22,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
 import the_fireplace.clans.data.ChunkRestoreData;
-import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
@@ -157,8 +157,8 @@ public class RaidManagementLogic {
     }
 
     public static boolean shouldCancelFallingBlockCreation(EntityFallingBlock entity) {
-        Clan owningClan = ClaimDataManager.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
-        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimDataManager.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().disableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
+        Clan owningClan = ClaimData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
+        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().disableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
     }
 
     private static void doSlimePush(World world, EnumFacing facing, BlockPos newPos, EnumFacing shiftDir) {

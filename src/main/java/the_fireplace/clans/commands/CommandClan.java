@@ -24,7 +24,7 @@ import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -152,7 +152,7 @@ public class CommandClan extends CommandBase {
             else
                 args = new String[]{};
             //Make the first arg the default clan name because a clan name was not specified
-            Clan defaultClan = sender instanceof EntityPlayerMP ? ClanCache.getClanById(PlayerDataManager.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
+            Clan defaultClan = sender instanceof EntityPlayerMP ? ClanCache.getClanById(PlayerData.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
             args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getClanName() : "null"}, args);
         }
         //Check permissions and run command

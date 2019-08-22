@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -43,7 +43,7 @@ public class CommandSetDefault extends ClanSubCommand {
 		Clan def = ClanCache.getClanByName(args[0]);
 		if(def != null) {
 			if(def.getMembers().containsKey(sender.getUniqueID())) {
-				PlayerDataManager.setDefaultClan(sender.getUniqueID(), def.getClanId());
+				PlayerData.setDefaultClan(sender.getUniqueID(), def.getClanId());
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanName()).setStyle(TextStyles.GREEN));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getClanName()).setStyle(TextStyles.RED));

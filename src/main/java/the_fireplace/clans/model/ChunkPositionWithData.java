@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class ChunkPositionWithData extends ChunkPosition {
         if(!value.getClass().isPrimitive() && !value.getClass().isAssignableFrom(BigDecimal.class) && !value.getClass().isAssignableFrom(List.class) && !value.getClass().isAssignableFrom(Map.class) && !value.getClass().isAssignableFrom(JsonElement.class))
             Clans.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
         addonData.put(key, value);
-        ClaimDataManager.ClanClaimData dat = ClaimDataManager.getChunkClaimData(this);
+        ClaimData.ClaimStoredData dat = ClaimData.getChunkClaimData(this);
         if(dat != null)
             dat.markChanged();
     }
@@ -128,7 +128,7 @@ public class ChunkPositionWithData extends ChunkPosition {
      * @return this, for easy chaining
      */
     public ChunkPositionWithData retrieveCentralData() {
-        ChunkPositionWithData data = ClaimDataManager.getChunkPositionData(this);
+        ChunkPositionWithData data = ClaimData.getChunkPositionData(this);
         if(data != null) {
             this.isBorderland = data.isBorderland;
             this.addonData = data.addonData;

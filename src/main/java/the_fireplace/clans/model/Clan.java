@@ -13,9 +13,9 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.api.event.ClanFormedEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.data.ClaimDataManager;
+import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.util.ClansEventManager;
 import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
@@ -280,7 +280,7 @@ public class Clan {
     }
 
     public int getClaimCount() {
-        return ClaimDataManager.getClaimedChunks(getClanId()).size();
+        return ClaimData.getClaimedChunks(getClanId()).size();
     }
 
     public int getMaxClaimCount() {
@@ -548,7 +548,7 @@ public class Clan {
             Clans.getPaymentHandler().ensureAccountExists(member);
             if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
                 rem += this.payLeaders(distFunds);
-            PlayerDataManager.updateDefaultClan(member, getClanId());
+            PlayerData.updateDefaultClan(member, getClanId());
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
             if (player != null) {

@@ -14,8 +14,8 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.api.event.PreLandAbandonEvent;
 import the_fireplace.clans.api.event.PreLandClaimEvent;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.data.ClaimDataManager;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.cache.PlayerCache;
+import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
@@ -32,7 +32,7 @@ public class ClanManagementUtil {
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, ChunkPositionWithData claimChunk, boolean force) {
-        UUID claimOwner = ClaimDataManager.getChunkClanId(claimChunk);
+        UUID claimOwner = ClaimData.getChunkClanId(claimChunk);
         Clan claimClan = ClanCache.getClanById(claimOwner);
         if(claimOwner != null && claimClan != null && (!force || claimOwner.equals(selectedClan.getClanId()))) {
             if(!claimOwner.equals(selectedClan.getClanId())) {
@@ -47,7 +47,7 @@ public class ClanManagementUtil {
             claimClan.refundClaim();
         }
         if(selectedClan.isLimitless()) {
-            ClaimDataManager.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
+            ClaimData.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
             return true;
         } else {
@@ -63,11 +63,11 @@ public class ClanManagementUtil {
                         if (inClanHomeRange) {
                             if (Clans.getConfig().isEnforceInitialClaimSeparation())
                                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
-                            else if (PlayerDataManager.getClaimWarning(sender.getUniqueID()))
+                            else if (PlayerCache.getClaimWarning(sender.getUniqueID()))
                                 return claimChunk(sender, claimChunk, selectedClan, force);
                             else {
                                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
-                                PlayerDataManager.setClaimWarning(sender.getUniqueID(), true);
+                                PlayerCache.setClaimWarning(sender.getUniqueID(), true);
                             }
                         } else
                             return claimChunk(sender, claimChunk, selectedClan, force);
@@ -85,7 +85,7 @@ public class ClanManagementUtil {
         if (force || selectedClan.payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.getPosX(), claimChunk.getPosZ()), claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
-                ClaimDataManager.swapChunk(claimChunk, null, selectedClan.getClanId());
+                ClaimData.swapChunk(claimChunk, null, selectedClan.getClanId());
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
                 return true;
             } else {
@@ -137,7 +137,7 @@ public class ClanManagementUtil {
             targetClan.unsetHome();
         }
 
-        ClaimDataManager.delChunk(targetClan, new ChunkPositionWithData(c));
+        ClaimData.delChunk(targetClan, new ChunkPositionWithData(c));
         if(!targetClan.isLimitless())
             Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
     }

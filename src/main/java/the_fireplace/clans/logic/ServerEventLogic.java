@@ -20,10 +20,10 @@ public class ServerEventLogic {
     }
 
     public static void onServerStopping() {
-        ClaimDataManager.save();
+        ClaimData.save();
         ClanDatabase.save();
         RaidRestoreDatabase.save();
         RaidCollectionDatabase.save();
-        PlayerDataManager.save();
+        PlayerData.save();
     }
 }

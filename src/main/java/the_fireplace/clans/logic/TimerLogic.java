@@ -8,6 +8,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
@@ -26,11 +27,12 @@ import java.util.UUID;
 
 public class TimerLogic {
     public static void runFiveMinuteLogic() {
-        ClaimDataManager.save();
+        ClaimData.save();
         ClanDatabase.save();
         RaidCollectionDatabase.save();
         RaidRestoreDatabase.save();
-        PlayerDataManager.save();
+        PlayerData.save();
+        PlayerCache.cleanup();
     }
 
     public static void runOneMinuteLogic() {
@@ -50,7 +52,7 @@ public class TimerLogic {
                                 EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
                                 //noinspection ConstantConditions
                                 if (player != null) {
-                                    PlayerDataManager.updateDefaultClan(player.getUniqueID(), clan.getClanId());
+                                    PlayerData.updateDefaultClan(player.getUniqueID(), clan.getClanId());
                                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getClanName()).setStyle(TextStyles.YELLOW));
                                 }
                             }
@@ -74,16 +76,16 @@ public class TimerLogic {
 
     public static void runOneSecondLogic() {
         RaidingParties.decrementBuffers();
-        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : Sets.newHashSet(PlayerDataManager.clanHomeWarmups.entrySet())) {
+        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : Sets.newHashSet(PlayerCache.clanHomeWarmups.entrySet())) {
             if (entry.getValue().getValue1() > 0) {
-                if(Math.abs(entry.getKey().posX - PlayerDataManager.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerDataManager.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posY-PlayerDataManager.getClanHomeCheckY(entry.getKey().getUniqueID())) < 0.1f)
-                    PlayerDataManager.clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
+                if(Math.abs(entry.getKey().posX - PlayerCache.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerCache.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posY- PlayerCache.getClanHomeCheckY(entry.getKey().getUniqueID())) < 0.1f)
+                    PlayerCache.clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
                 else {
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
-                    PlayerDataManager.clanHomeWarmups.remove(entry.getKey());
+                    PlayerCache.clanHomeWarmups.remove(entry.getKey());
                 }
             } else
-                PlayerDataManager.clanHomeWarmups.remove(entry.getKey());
+                PlayerCache.clanHomeWarmups.remove(entry.getKey());
 
             if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
                 Clan c = ClanCache.getClanById(entry.getValue().getValue2());
@@ -99,7 +101,7 @@ public class TimerLogic {
             if (raid.checkRaidEndTimer())
                 raid.defenderVictory();
 
-        ClaimDataManager.decrementBorderlandsRegenTimers();
+        ClaimData.decrementBorderlandsRegenTimers();
     }
 
     public static void runTwoSecondLogic() {
@@ -108,26 +110,26 @@ public class TimerLogic {
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
-        if(Clans.getConfig().isPreventMobsOnClaims() && ClaimDataManager.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension) != null && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimDataManager.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland()))
+        if(Clans.getConfig().isPreventMobsOnClaims() && ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension) != null && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland()))
             mob.setDead();
     }
 
     public static void runPlayerSecondLogic(EntityPlayer player) {
-        int cooldown = PlayerDataManager.getCooldown(player.getUniqueID());
+        int cooldown = PlayerData.getCooldown(player.getUniqueID());
         if(cooldown > 0)
-            PlayerDataManager.setCooldown(player.getUniqueID(), cooldown - 1);
-        checkRaidAbandonmentTime(ClaimDataManager.getChunkClanId(player.chunkCoordX, player.chunkCoordZ, player.dimension), ClanCache.getPlayerClans(player.getUniqueID()), player);
+            PlayerData.setCooldown(player.getUniqueID(), cooldown - 1);
+        checkRaidAbandonmentTime(ClaimData.getChunkClanId(player.chunkCoordX, player.chunkCoordZ, player.dimension), ClanCache.getPlayerClans(player.getUniqueID()), player);
     }
 
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
         Chunk c = player.getEntityWorld().getChunk(player.getPosition());
         UUID chunkClanId = ChunkUtils.getChunkOwner(c);
         ArrayList<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
-        UUID playerStoredClaimId = PlayerDataManager.getPreviousChunkOwner(player.getUniqueID());
+        UUID playerStoredClaimId = PlayerCache.getPreviousChunkOwner(player.getUniqueID());
         Clan chunkClan = ClanCache.getClanById(chunkClanId);
-        ChunkPositionWithData data = ClaimDataManager.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
+        ChunkPositionWithData data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
         boolean isInBorderland = data != null && data.isBorderland();
-        boolean playerStoredIsInBorderland = PlayerDataManager.getStoredIsInBorderland(player.getUniqueID());
+        boolean playerStoredIsInBorderland = PlayerCache.getStoredIsInBorderland(player.getUniqueID());
         if (chunkClanId != null && chunkClan == null) {
             ChunkUtils.clearChunkOwner(c);
             chunkClanId = null;
@@ -144,29 +146,29 @@ public class TimerLogic {
             if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
                 needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
-                data = ClaimDataManager.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
-                chunkClan = ClaimDataManager.getChunkClan(data);
+                data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
+                chunkClan = ClaimData.getChunkClan(data);
                 chunkClanId = chunkClan != null ? chunkClan.getClanId() : null;
                 isInBorderland = data != null && data.isBorderland();
             }
 
             if(!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland))
                 handleTerritoryChangedMessage(player, chunkClan, playerClans, isInBorderland);
-            PlayerDataManager.setPreviousY(player.getUniqueID(), (int) Math.round(player.posY));
+            PlayerCache.setPreviousY(player.getUniqueID(), (int) Math.round(player.posY));
         } else if (chunkClanId == null && Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() > 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0 && !(PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness")))
             handleDepthChangedMessage(player);
         EntityPlayerMP playerMP = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
         if (playerMP != null) {
             checkAndResetClaimWarning(playerMP);
 
-            PlayerDataManager.setPreviousChunkX(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).x);
-            PlayerDataManager.setPreviousChunkZ(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).z);
+            PlayerCache.setPreviousChunkX(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).x);
+            PlayerCache.setPreviousChunkZ(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).z);
         }
     }
 
     private static void handleDepthChangedMessage(EntityPlayer player) {
         int curY = (int) Math.round(player.posY);
-        int prevY = PlayerDataManager.getPreviousY(player.getUniqueID());
+        int prevY = PlayerCache.getPreviousY(player.getUniqueID());
         int yBound = (Clans.getConfig().getMinWildernessY() < 0 ? player.world.getSeaLevel() : Clans.getConfig().getMinWildernessY());
         if (curY >= yBound && prevY < yBound) {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW));
@@ -175,11 +177,11 @@ public class TimerLogic {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
         }
-        PlayerDataManager.setPreviousY(player.getUniqueID(), curY);
+        PlayerCache.setPreviousY(player.getUniqueID(), curY);
     }
 
     private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, ArrayList<Clan> playerClans, boolean isBorderland) {
-        PlayerDataManager.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanId() : null, isBorderland);
+        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanId() : null, isBorderland);
         Style color = TextStyles.GREEN;
         if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
             color = TextStyles.YELLOW;
@@ -214,9 +216,9 @@ public class TimerLogic {
     }
 
     private static void checkAndResetClaimWarning(EntityPlayerMP player) {
-        if(PlayerDataManager.getClaimWarning(player.getUniqueID())) {
-            if(PlayerDataManager.getPreviousChunkX(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerDataManager.getPreviousChunkZ(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).z) {
-                PlayerDataManager.setClaimWarning(player.getUniqueID(), false);
+        if(PlayerCache.getClaimWarning(player.getUniqueID())) {
+            if(PlayerCache.getPreviousChunkX(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerCache.getPreviousChunkZ(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).z) {
+                PlayerCache.setClaimWarning(player.getUniqueID(), false);
             }
         }
     }

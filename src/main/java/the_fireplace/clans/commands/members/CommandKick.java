@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -93,8 +93,8 @@ public class CommandKick extends ClanSubCommand {
 			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
 				EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
 				targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", selectedClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
-				if(selectedClan.getClanId().equals(PlayerDataManager.getDefaultClan(targetPlayer.getUniqueID())))
-					PlayerDataManager.updateDefaultClan(targetPlayer.getUniqueID(), selectedClan.getClanId());
+				if(selectedClan.getClanId().equals(PlayerData.getDefaultClan(targetPlayer.getUniqueID())))
+					PlayerData.updateDefaultClan(targetPlayer.getUniqueID(), selectedClan.getClanId());
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.fail", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));

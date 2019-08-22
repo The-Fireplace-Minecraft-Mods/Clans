@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerDataManager;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -57,7 +57,7 @@ public class CommandLeave extends ClanSubCommand {
 			}
 		}
 		if(selectedClan.removeMember(sender.getUniqueID())) {
-			PlayerDataManager.updateDefaultClan(sender.getUniqueID(), selectedClan.getClanId());
+			PlayerData.updateDefaultClan(sender.getUniqueID(), selectedClan.getClanId());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			selectedClan.messageAllOnline(TextStyles.YELLOW, "commands.clan.leave.left", sender.getDisplayName(), selectedClan.getClanName());
 		} else //Internal error because this should be unreachable
