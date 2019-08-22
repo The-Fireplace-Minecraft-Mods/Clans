@@ -159,10 +159,14 @@ public class TimerLogic {
             handleDepthChangedMessage(player);
         EntityPlayerMP playerMP = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
         if (playerMP != null) {
-            checkAndResetClaimWarning(playerMP);
+            if(PlayerCache.getPreviousChunkX(player.getUniqueID()) != c.x || PlayerCache.getPreviousChunkZ(player.getUniqueID()) != c.z) {
+                checkAndResetClaimWarning(playerMP);
+                if(PlayerCache.getIsShowingChunkBorders(player.getUniqueID()))
+                    ChunkUtils.showChunkBounds(c, playerMP);
 
-            PlayerCache.setPreviousChunkX(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).x);
-            PlayerCache.setPreviousChunkZ(player.getUniqueID(), playerMP.getServerWorld().getChunk(player.getPosition()).z);
+                PlayerCache.setPreviousChunkX(player.getUniqueID(), c.x);
+                PlayerCache.setPreviousChunkZ(player.getUniqueID(), c.z);
+            }
         }
     }
 
@@ -217,9 +221,7 @@ public class TimerLogic {
 
     private static void checkAndResetClaimWarning(EntityPlayerMP player) {
         if(PlayerCache.getClaimWarning(player.getUniqueID())) {
-            if(PlayerCache.getPreviousChunkX(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).x || PlayerCache.getPreviousChunkZ(player.getUniqueID()) != player.getServerWorld().getChunk(player.getPosition()).z) {
-                PlayerCache.setClaimWarning(player.getUniqueID(), false);
-            }
+            PlayerCache.setClaimWarning(player.getUniqueID(), false);
         }
     }
 

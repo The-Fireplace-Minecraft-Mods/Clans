@@ -1,7 +1,12 @@
 package the_fireplace.clans.util;
 
 import com.google.common.collect.Lists;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
@@ -194,5 +199,47 @@ public class ChunkUtils {
 		adjacent.add(c.offset(0, -1));
 		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimData.getChunkClanId(c2)) || ClaimData.getChunkPositionData(c2).isBorderland());
 		return adjacent;
+	}
+
+	public static void showChunkBounds(Chunk c, EntityPlayerMP player) {
+		NetHandlerPlayServer conn = player.connection;
+		if(conn == null)
+			return;
+		World w = player.getEntityWorld();
+		int xStart = c.getPos().getXStart();
+		int xEnd = c.getPos().getXEnd();
+		int zStart = c.getPos().getZStart();
+		int zEnd = c.getPos().getZEnd();
+
+		sendGlowStoneToPositions(conn, w,
+				//Corners
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zStart)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart+(zEnd > zStart ? 1 : -1))),
+
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zEnd)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd+(zEnd > zStart ? -1 : 1))),
+
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zEnd)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd+(zEnd > zStart ? -1 : 1))),
+
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zStart)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart+(zEnd > zStart ? 1 : -1))),
+
+				//Midpoints
+				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zStart)),
+				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zEnd)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, (zStart+zEnd)/2)),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, (zStart+zEnd)/2))
+		);
+	}
+
+	public static void sendGlowStoneToPositions(NetHandlerPlayServer conn, World w, BlockPos... positions) {
+	    //TODO track positions so we can clear this when the player changes chunks?
+		for(BlockPos pos: positions)
+			conn.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, Blocks.GLOWSTONE.getDefaultState()));
 	}
 }

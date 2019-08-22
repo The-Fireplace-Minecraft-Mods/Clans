@@ -28,6 +28,10 @@ public final class PlayerCache {
         return getPlayerCache(player).claimWarning;
     }
 
+    public static boolean getIsShowingChunkBorders(UUID player) {
+        return getPlayerCache(player).isShowingChunkBorders;
+    }
+
     public static float getClanHomeCheckX(UUID player) {
         return getPlayerCache(player).clanHomeCheckX;
     }
@@ -61,6 +65,10 @@ public final class PlayerCache {
 
     public static void setClaimWarning(UUID player, boolean claimWarning) {
         getPlayerCache(player).claimWarning = claimWarning;
+    }
+
+    public static void setIsShowingChunkBorders(UUID player, boolean isShowingChunkBorders) {
+        getPlayerCache(player).isShowingChunkBorders = isShowingChunkBorders;
     }
 
     public static void setClanHomeCheckX(UUID player, float prevX) {
@@ -112,7 +120,7 @@ public final class PlayerCache {
         //region Cache variables
         @Nullable
         private UUID prevChunkOwner;
-        private boolean claimWarning, isInBorderland;
+        private boolean claimWarning, isInBorderland, isShowingChunkBorders;
         private int prevY, prevChunkX, prevChunkZ;
         private float clanHomeCheckX, clanHomeCheckY, clanHomeCheckZ;
         //endregion
