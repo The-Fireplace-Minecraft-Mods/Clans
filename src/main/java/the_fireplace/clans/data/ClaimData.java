@@ -174,7 +174,8 @@ public final class ClaimData {
 
     public static void swapChunk(ChunkPositionWithData pos, @Nullable UUID oldOwner, UUID newOwner) {
         delChunk(oldOwner != null ? oldOwner : getChunkClanId(pos), pos);
-        addChunk(newOwner, pos);
+        //Create a new ChunkPositionWithData because the old one has addon data and borderland data attached
+        addChunk(newOwner, new ChunkPositionWithData(pos));
     }
 
     /**

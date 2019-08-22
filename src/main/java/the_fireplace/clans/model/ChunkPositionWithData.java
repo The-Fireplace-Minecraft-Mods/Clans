@@ -29,6 +29,10 @@ public class ChunkPositionWithData extends ChunkPosition {
         super(x, z, d);
     }
 
+    public ChunkPositionWithData(ChunkPosition position) {
+        super(position.getPosX(), position.getPosZ(), position.getDim());
+    }
+
     public ChunkPositionWithData(Chunk c) {
         super(c);
     }
