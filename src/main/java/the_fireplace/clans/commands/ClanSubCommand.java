@@ -77,19 +77,21 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
-				Clan playerClan = ClanCache.getClanByName(args[0]);
-				if(sender instanceof EntityPlayerMP) {
-					List<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
-					if (playerClan != null && !playerClans.contains(playerClan)) {
-						sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
-						return;
+				if(args.length > 0) {
+					Clan playerClan = ClanCache.getClanByName(args[0]);
+					if (sender instanceof EntityPlayerMP) {
+						List<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+						if (playerClan != null && !playerClans.contains(playerClan)) {
+							sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
+							return;
+						}
 					}
+					//noinspection ConstantConditions
+					this.selectedClan = playerClan;
 				}
-				//noinspection ConstantConditions
-				this.selectedClan = playerClan;
 				String[] args2;
 				//Check if the first arg is a clan name. If so, this is a clan command. Otherwise, an opclan or raid command.
-				if(ClanCache.clanNameTaken(args[0]) && !ClanCache.forbiddenClanNames.contains(args[0])) {
+				if(args.length > 0 && ClanCache.clanNameTaken(args[0]) && !ClanCache.forbiddenClanNames.contains(args[0])) {
 					//Remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
 					if (greedyArgs) {
 						if (args.length > 2)
