@@ -114,9 +114,9 @@ public final class RaidingParties {
 
 	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, Clans.getConfig().getRaidBufferTime());
-		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime());
+		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime());
 		for(UUID attacker: getRaids().get(raidTarget).getAttackers())
-			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN));
+			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getClanName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
 	}
 
 	private static void activateRaid(Clan raidTarget) {
@@ -124,9 +124,9 @@ public final class RaidingParties {
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), startingRaid);
-		raidTarget.messageAllOnline(TextStyles.GREEN, "clans.raid.activate", raidTarget.getClanName());
+		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.activate", raidTarget.getClanName());
 		for(UUID attacker: getActiveRaid(raidTarget).getAttackers())
-			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN));
+			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN), true);
 	}
 
 	public static void endRaid(Clan targetClan, boolean raiderVictory) {
@@ -134,6 +134,7 @@ public final class RaidingParties {
 			ITextComponent defenderMessage = TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.end", targetClan.getClanName());
 			defenderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(defender.getUniqueID(), raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.YELLOW : TextStyles.GREEN);
 			defender.sendMessage(defenderMessage);
+			defender.sendStatusMessage(defenderMessage, true);
 		}
 
 		for(UUID attackerId: getActiveRaid(targetClan).getInitAttackers()) {
@@ -144,6 +145,7 @@ public final class RaidingParties {
 				raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
 
 				attacker.sendMessage(raiderMessage);
+				attacker.sendStatusMessage(raiderMessage, true);
 			}
 		}
 

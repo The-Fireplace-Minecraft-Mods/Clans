@@ -562,22 +562,38 @@ public class Clan {
 
     //region messageAllOnline
     public void messageAllOnline(Style textStyle, String translationKey, Object... args) {
-        messageAllOnline(EnumRank.ANY, textStyle, translationKey, args);
+        messageAllOnline(false, textStyle, translationKey, args);
     }
 
     public void messageAllOnline(EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
-        messageAllOnline(EnumRank.ANY, excluded, textStyle, translationKey, args);
+        messageAllOnline(false, excluded, textStyle, translationKey, args);
     }
 
     public void messageAllOnline(EnumRank minRank, Style textStyle, String translationKey, Object... args) {
-        messageAllOnline(minRank, null, textStyle, translationKey, args);
+        messageAllOnline(false, minRank, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(boolean actionBar, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(actionBar, EnumRank.ANY, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(boolean actionBar, EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(actionBar, EnumRank.ANY, excluded, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(boolean actionBar, EnumRank minRank, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(actionBar, minRank, null, textStyle, translationKey, args);
     }
 
     public void messageAllOnline(EnumRank minRank, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+        messageAllOnline(false, minRank, excluded, textStyle, translationKey, args);
+    }
+
+    public void messageAllOnline(boolean actionBar, EnumRank minRank, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
         HashMap<EntityPlayerMP, EnumRank> online = getOnlineMembers();
         for(EntityPlayerMP member : online.keySet())
             if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
-                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle));
+                member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar);
     }
     //endregion
 

@@ -237,7 +237,7 @@ public class ChunkUtils {
 		);
 	}
 
-	public static void sendGlowStoneToPositions(NetHandlerPlayServer conn, World w, BlockPos... positions) {
+	private static void sendGlowStoneToPositions(NetHandlerPlayServer conn, World w, BlockPos... positions) {
 	    //TODO track positions so we can clear this when the player changes chunks?
 		for(BlockPos pos: positions)
 			conn.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, Blocks.GLOWSTONE.getDefaultState()));
