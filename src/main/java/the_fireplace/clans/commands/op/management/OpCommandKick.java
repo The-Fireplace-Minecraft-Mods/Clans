@@ -9,9 +9,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.commands.members.CommandKick;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -43,20 +43,21 @@ public class OpCommandKick extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
+		String player = args[1];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(player);
 
 			if(target != null) {
 				if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-					if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
-						CommandKick.kickMember(server, sender, selectedClan, target);
+					if (ClanCache.getPlayerClans(target.getId()).contains(c)) {
+						ClanManagementUtil.kickMember(server, sender, c, target);
 					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), c.getClanName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_in_clan", target.getName(), c.getClanName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", args[0]).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", player).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

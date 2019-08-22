@@ -64,10 +64,9 @@ public final class ClanCache {
 	public static List<Clan> getPlayerClans(@Nullable UUID player) {
 		if(player == null)
 			return Collections.unmodifiableList(Lists.newArrayList());
-		if(playerClans.containsKey(player))
-			return Collections.unmodifiableList(playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
-		//Use a new arraylist because we want the list in the map to be modifiable, and the result of the lookup is not.
-		playerClans.put(player, Lists.newArrayList(ClanDatabase.lookupPlayerClans(player)));
+		if(!playerClans.containsKey(player))
+		    //Use a new arraylist because we want the list in the map to be modifiable, and the result of the lookup is not.
+		    playerClans.put(player, Lists.newArrayList(ClanDatabase.lookupPlayerClans(player)));
 		return Collections.unmodifiableList(playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
 	}
 

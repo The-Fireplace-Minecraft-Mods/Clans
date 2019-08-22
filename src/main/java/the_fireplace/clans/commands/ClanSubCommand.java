@@ -76,7 +76,7 @@ public abstract class ClanSubCommand extends CommandBase {
 			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "clans.error.nullserver"));
 		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
-			if(args.length >= getMinArgs() && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
+			if(args.length >= getMinArgs()+1 && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
 				if(args.length > 0) {
 					Clan playerClan = ClanCache.getClanByName(args[0]);
 					if (sender instanceof EntityPlayerMP) {

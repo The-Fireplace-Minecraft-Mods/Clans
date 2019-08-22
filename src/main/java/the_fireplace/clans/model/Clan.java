@@ -565,7 +565,7 @@ public class Clan {
         messageAllOnline(false, textStyle, translationKey, args);
     }
 
-    public void messageAllOnline(EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+    public void messageAllOnline(@Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
         messageAllOnline(false, excluded, textStyle, translationKey, args);
     }
 
@@ -577,7 +577,7 @@ public class Clan {
         messageAllOnline(actionBar, EnumRank.ANY, textStyle, translationKey, args);
     }
 
-    public void messageAllOnline(boolean actionBar, EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
+    public void messageAllOnline(boolean actionBar, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
         messageAllOnline(actionBar, EnumRank.ANY, excluded, textStyle, translationKey, args);
     }
 

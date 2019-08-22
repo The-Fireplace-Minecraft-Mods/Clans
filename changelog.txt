@@ -27,3 +27,4 @@ Fixed "You are now entering Wilderness" message showing up twice the first time 
 Fixed /clan setdescription adding "setdescription" and selected clan if not default to the target clan's description
 Fixed clan selection when using /clan [clan name] <subcommand> with at least one optional arg
 Fixed default raid permissions
+Fixed /[op]clan kick telling the player twice if they kick themself.

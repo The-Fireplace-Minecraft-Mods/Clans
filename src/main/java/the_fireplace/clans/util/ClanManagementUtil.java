@@ -16,6 +16,7 @@ import the_fireplace.clans.api.event.PreLandClaimEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.data.ClaimData;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
@@ -229,5 +230,20 @@ public class ClanManagementUtil {
             }
         } else
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
+    }
+
+    public static void kickMember(MinecraftServer server, ICommandSender sender, Clan selectedClan, GameProfile target) throws CommandException {
+        if(selectedClan.removeMember(target.getId())) {
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.success", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+            selectedClan.messageAllOnline(sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null, TextStyles.YELLOW, "commands.clan.kick.kicked_other", target.getName(), selectedClan.getClanName(), sender.getDisplayName().getFormattedText());
+            if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
+                EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
+                if(sender instanceof EntityPlayerMP && !((EntityPlayerMP) sender).getUniqueID().equals(target.getId()))
+                    targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", selectedClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
+                if(selectedClan.getClanId().equals(PlayerData.getDefaultClan(targetPlayer.getUniqueID())))
+                    PlayerData.updateDefaultClan(targetPlayer.getUniqueID(), selectedClan.getClanId());
+            }
+        } else
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.fail", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
     }
 }

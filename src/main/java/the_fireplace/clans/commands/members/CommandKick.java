@@ -8,12 +8,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.data.PlayerData;
-import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -60,10 +58,8 @@ public class CommandKick extends ClanSubCommand {
 				if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
 					EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 					EnumRank targetRank = selectedClan.getMembers().get(target.getId());
-					if (senderRank == EnumRank.LEADER) {
-						kickMember(server, sender, selectedClan, target);
-					} else if (targetRank == EnumRank.MEMBER) {
-						kickMember(server, sender, selectedClan, target);
+					if (senderRank == EnumRank.LEADER || targetRank == EnumRank.MEMBER) {
+						ClanManagementUtil.kickMember(server, sender, selectedClan, target);
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 				} else
@@ -84,19 +80,5 @@ public class CommandKick extends ClanSubCommand {
 					playerNames.add(playerProf.getName());
 			}
 		return args.length == 1 ? playerNames : Collections.emptyList();
-	}
-
-	public static void kickMember(MinecraftServer server, ICommandSender sender, Clan selectedClan, GameProfile target) throws CommandException {
-		if(selectedClan.removeMember(target.getId())) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.success", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-			selectedClan.messageAllOnline(sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null, TextStyles.YELLOW, "commands.clan.kick.kicked_other", target.getName(), selectedClan.getClanName(), sender.getDisplayName().getFormattedText());
-			if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
-				EntityPlayerMP targetPlayer = getPlayer(server, sender, target.getName());
-				targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", selectedClan.getClanName(), sender.getName()).setStyle(TextStyles.YELLOW));
-				if(selectedClan.getClanId().equals(PlayerData.getDefaultClan(targetPlayer.getUniqueID())))
-					PlayerData.updateDefaultClan(targetPlayer.getUniqueID(), selectedClan.getClanId());
-			}
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.fail", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }
