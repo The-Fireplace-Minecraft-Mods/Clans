@@ -5,6 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.PermissionManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -14,6 +15,11 @@ public abstract class RaidSubCommand extends ClanSubCommand {
 	@Override
 	public final String getName() {
 		return "raid";
+	}
+
+	@Override
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		return !PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + getUsage(server).split(" ")[1]);
 	}
 
 	@Override

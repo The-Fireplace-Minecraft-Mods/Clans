@@ -26,3 +26,4 @@ Dynmap claims are now removed when a clan gets disbanded
 Fixed "You are now entering Wilderness" message showing up twice the first time you enter it after logging in on claimed land on a server with Wilderness Protection and Min Wilderness Protection Y enabled
 Fixed /clan setdescription adding "setdescription" and selected clan if not default to the target clan's description
 Fixed clan selection when using /clan [clan name] <subcommand> with at least one optional arg
+Fixed default raid permissions
