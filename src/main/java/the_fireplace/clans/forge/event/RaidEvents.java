@@ -24,7 +24,8 @@ public class RaidEvents {
 
 	@SubscribeEvent
 	public static void onPlayerDeath(LivingDeathEvent event) {
-		RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity());
+		if(event.getEntity() instanceof EntityPlayerMP)
+			RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity());
 	}
 
 	@SubscribeEvent
@@ -42,5 +43,4 @@ public class RaidEvents {
 		if(event.getEntity() instanceof EntityFallingBlock)
 			event.setCanceled(RaidManagementLogic.shouldCancelFallingBlockCreation((EntityFallingBlock)event.getEntity()));
 	}
-
 }
