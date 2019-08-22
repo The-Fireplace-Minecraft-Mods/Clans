@@ -8,11 +8,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ChatPageUtil {
 
-    public static void showPaginatedChat(ICommandSender sender, String command, List<ITextComponent> items, int page) {
+    public static void showPaginatedChat(ICommandSender sender, String command, Collection<ITextComponent> items, int page) {
         int resultsOnPage = 7;
         int current = page;
         int totalPageCount = items.size() % resultsOnPage > 0 ? (items.size()/resultsOnPage)+1 : items.size()/resultsOnPage;
@@ -47,7 +48,7 @@ public class ChatPageUtil {
         sender.sendMessage(bottom);
     }
 
-    public static void showPaginatedChat(ICommandSender target, String command, List<ITextComponent> items) {
+    public static void showPaginatedChat(ICommandSender target, String command, Collection<ITextComponent> items) {
         showPaginatedChat(target, command, items, 1);
     }
 }

@@ -39,21 +39,21 @@ public class PlayerEventLogic {
     }
 
     public static void onPlayerLoggedOut(UUID playerId) {
-        ClanCache.getOpAutoClaimLands().remove(playerId);
-        ClanCache.getOpAutoAbandonClaims().remove(playerId);
-        ClanCache.getAutoAbandonClaims().remove(playerId);
-        ClanCache.getAutoClaimLands().remove(playerId);
-        ClanCache.getClanChattingPlayers().remove(playerId);
+        ClanCache.opAutoClaimLands.remove(playerId);
+        ClanCache.opAutoAbandonClaims.remove(playerId);
+        ClanCache.autoAbandonClaims.remove(playerId);
+        ClanCache.autoClaimLands.remove(playerId);
+        ClanCache.clanChattingPlayers.remove(playerId);
         PlayerData.setShouldDisposeReferences(playerId, true);
         PlayerCache.setNeedsCleanup(playerId, true);
     }
 
     public static void onPlayerChangedDimension(EntityPlayer player) {
         PlayerCache.setClaimWarning(player.getUniqueID(), false);
-        Clan ocAutoClaim = ClanCache.getOpAutoClaimLands().remove(player.getUniqueID());
-        boolean ocAutoAbandon = ClanCache.getOpAutoAbandonClaims().remove(player.getUniqueID());
-        Clan cAutoAbandon = ClanCache.getAutoAbandonClaims().remove(player.getUniqueID());
-        Clan cAutoClaim = ClanCache.getAutoClaimLands().remove(player.getUniqueID());
+        Clan ocAutoClaim = ClanCache.opAutoClaimLands.remove(player.getUniqueID());
+        boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(player.getUniqueID());
+        Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(player.getUniqueID());
+        Clan cAutoClaim = ClanCache.autoClaimLands.remove(player.getUniqueID());
         if(ocAutoAbandon)
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
         if(cAutoAbandon != null)
@@ -83,7 +83,7 @@ public class PlayerEventLogic {
     }
 
     public static void sendClanChat(EntityPlayer player, ITextComponent message) {
-        Clan clanChat = ClanCache.getClanChattingPlayers().get(player.getUniqueID());
+        Clan clanChat = ClanCache.clanChattingPlayers.get(player.getUniqueID());
         for(EntityPlayerMP member: clanChat.getOnlineMembers().keySet())
             member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
     }

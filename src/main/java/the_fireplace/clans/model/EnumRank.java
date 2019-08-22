@@ -1,8 +1,6 @@
 package the_fireplace.clans.model;
 
-import java.io.Serializable;
-
-public enum EnumRank implements Serializable {
+public enum EnumRank {
 	LEADER,
 	ADMIN,
 	MEMBER,

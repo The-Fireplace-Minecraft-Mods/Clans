@@ -10,7 +10,6 @@ import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,9 +19,9 @@ import java.util.Map;
  */
 public class ChunkPositionWithData extends ChunkPosition {
     private boolean isBorderland;
-    private HashMap<String, Object> addonData = Maps.newHashMap();
+    private Map<String, Object> addonData = Maps.newHashMap();
 
-    public HashMap<String, Object> getAddonData() {
+    public Map<String, Object> getAddonData() {
         return addonData;
     }
 

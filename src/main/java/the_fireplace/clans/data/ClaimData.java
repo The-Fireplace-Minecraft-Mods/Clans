@@ -29,14 +29,14 @@ public final class ClaimData {
         if(!isLoaded)
             load();
         ClaimStoredData claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed.getChunks().stream().filter(d -> !d.isBorderland()).collect(Collectors.toSet()) : Collections.emptySet();
+        return Collections.unmodifiableSet(claimed != null ? claimed.getChunks().stream().filter(d -> !d.isBorderland()).collect(Collectors.toSet()) : Collections.emptySet());
     }
 
     public static Set<ChunkPositionWithData> getBorderlandChunks(UUID clan) {
         if(!isLoaded)
             load();
         ClaimStoredData claimed = claimedChunks.get(clan);
-        return claimed != null ? claimed.getChunks().stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet();
+        return Collections.unmodifiableSet(claimed != null ? claimed.getChunks().stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet());
     }
 
     public static Set<Clan> clansWithClaims() {
@@ -51,7 +51,7 @@ public final class ClaimData {
             } else
                 delClan(clanId.getKey());
         }
-        return claimClans;
+        return Collections.unmodifiableSet(claimClans);
     }
 
     //region addChunk
@@ -104,7 +104,7 @@ public final class ClaimData {
         for(ChunkPositionWithData pos: getClaimedChunks(clanId))
             if(!dims.contains(pos.getDim()))
                 dims.add(pos.getDim());
-            return dims;
+            return Collections.unmodifiableList(dims);
     }
 
     @Nullable
@@ -217,51 +217,12 @@ public final class ClaimData {
                     e.printStackTrace();
                 }
             }
-        readLegacy();
         isLoaded = true;
         for(Map.Entry<UUID, ClaimStoredData> entry : claimedChunks.entrySet()) {
             if(Clans.getConfig().isEnableBorderlands() && !entry.getValue().hasBorderlands)
                 entry.getValue().genBorderlands();
             else if(!Clans.getConfig().isEnableBorderlands() && entry.getValue().hasBorderlands)
                 entry.getValue().clearBorderlands();
-        }
-    }
-
-    private static boolean reading;
-
-    @Deprecated
-    private static void readLegacy() {
-        if(!reading) {
-            File oldFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "chunkclancache.json");
-            if(!oldFile.exists())
-                return;
-            reading = true;
-            JsonParser jsonParser = new JsonParser();
-            try {
-                Object obj = jsonParser.parse(new FileReader(oldFile));
-                if (obj instanceof JsonObject) {
-                    JsonObject jsonObject = (JsonObject) obj;
-                    JsonArray claimedChunkMap = jsonObject.get("claimedChunks").getAsJsonArray();
-                    for (int i = 0; i < claimedChunkMap.size(); i++) {
-                        Set<ChunkPositionWithData> positions = Sets.newHashSet();
-                        UUID clan = UUID.fromString(claimedChunkMap.get(i).getAsJsonObject().get("key").getAsString());
-                        ClaimStoredData newData = new ClaimStoredData(clan);
-                        for (JsonElement element : claimedChunkMap.get(i).getAsJsonObject().get("value").getAsJsonArray()) {
-                            ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
-                            claimDataMap.put(pos, newData);
-                            positions.add(pos);
-                        }
-                        newData.addAllChunks(positions);
-                        claimedChunks.put(clan, newData);
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                //do nothing, it just hasn't been created yet
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            reading = false;
-            oldFile.delete();
         }
     }
 

@@ -1,7 +1,7 @@
 package the_fireplace.clans.model;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
@@ -11,14 +11,14 @@ import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class Raid {
-	private ArrayList<UUID> initAttackers;
-	private HashMap<UUID, Integer> attackers, defenders;
+	private Set<UUID> initAttackers;
+	private Map<UUID, Integer> attackers, defenders;
 	private Clan target;
 	private int remainingSeconds = Clans.getConfig().getMaxRaidDuration() * 60;
 	private long cost;
@@ -26,7 +26,7 @@ public class Raid {
 
 	public Raid(EntityPlayerMP starter, Clan targetClan){
 		attackers = Maps.newHashMap();
-		initAttackers = Lists.newArrayList();
+		initAttackers = Sets.newHashSet();
 		defenders = Maps.newHashMap();
 		addAttacker(starter);
 		this.target = targetClan;
@@ -63,15 +63,15 @@ public class Raid {
 	}
 
 	public Set<UUID> getAttackers() {
-		return attackers.keySet();
+		return Collections.unmodifiableSet(attackers.keySet());
 	}
 
 	public Set<UUID> getDefenders() {
-		return defenders.keySet();
+		return Collections.unmodifiableSet(defenders.keySet());
 	}
 
-	public ArrayList<UUID> getInitAttackers() {
-		return initAttackers;
+	public Set<UUID> getInitAttackers() {
+		return Collections.unmodifiableSet(initAttackers);
 	}
 
 	public int getAttackerCount(){
@@ -189,6 +189,7 @@ public class Raid {
 	public void activate() {
 		isActive = true;
 		setDefenders(target.getOnlineMembers().keySet());
+		initAttackers = Collections.unmodifiableSet(initAttackers);
 	}
 
 	public void setCost(long cost) {

@@ -3,6 +3,7 @@ package the_fireplace.clans.model;
 import com.google.common.collect.Sets;
 import the_fireplace.clans.data.ClaimData;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class CoordNodeTree {
         for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
             if((pos.getPosX() != excludeCoordX || pos.getPosZ() != excludeCoordZ) && pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
-        initCoordNodes = coordNodes;
+        initCoordNodes = Collections.unmodifiableSet(coordNodes);
         this.dim = dim;
     }
 
@@ -24,7 +25,7 @@ public class CoordNodeTree {
         for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
             if(pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
-        initCoordNodes = Sets.newHashSet(coordNodes);
+        initCoordNodes = Collections.unmodifiableSet(coordNodes);
         this.dim = dim;
     }
 

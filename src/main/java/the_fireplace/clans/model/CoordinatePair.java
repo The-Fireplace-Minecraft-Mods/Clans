@@ -30,7 +30,5 @@ public class CoordinatePair extends OrderedPair<Integer, Integer> {
     public int getY() {
         return getValue2();
     }
-
-
 }
 

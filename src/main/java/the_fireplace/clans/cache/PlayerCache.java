@@ -6,14 +6,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import the_fireplace.clans.model.OrderedPair;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public final class PlayerCache {
     //Clan home warmup cache
-    public static HashMap<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
-    private static HashMap<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
+    public static Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
+    private static Map<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
 
     @Nullable
     public static UUID getPreviousChunkOwner(UUID player) {

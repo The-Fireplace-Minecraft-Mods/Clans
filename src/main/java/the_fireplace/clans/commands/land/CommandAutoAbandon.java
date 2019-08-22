@@ -40,9 +40,9 @@ public class CommandAutoAbandon extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan rm = ClanCache.getAutoAbandonClaims().remove(sender.getUniqueID());
+        Clan rm = ClanCache.autoAbandonClaims.remove(sender.getUniqueID());
 		if(rm == null) {
-			ClanCache.getAutoAbandonClaims().put(sender.getUniqueID(), selectedClan);
+            ClanCache.autoAbandonClaims.put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan);
 		} else

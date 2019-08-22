@@ -2,7 +2,6 @@ package the_fireplace.clans.cache;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
@@ -22,14 +21,14 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public final class RaidingParties {
-	private static HashMap<Clan, Raid> raids = Maps.newHashMap();
-	private static HashMap<UUID, Raid> raidingPlayers = Maps.newHashMap();
-	private static ArrayList<Clan> raidedClans = Lists.newArrayList();
-	private static HashMap<Clan, Raid> activeraids = Maps.newHashMap();
-	private static HashMap<Clan, Integer> bufferTimes = Maps.newHashMap();
+	private static Map<Clan, Raid> raids = Maps.newHashMap();
+	private static Map<UUID, Raid> raidingPlayers = Maps.newHashMap();
+	private static List<Clan> raidedClans = Lists.newArrayList();
+	private static Map<Clan, Raid> activeraids = Maps.newHashMap();
+	private static Map<Clan, Integer> bufferTimes = Maps.newHashMap();
 
-	public static HashMap<Clan, Raid> getRaids() {
-		return raids;
+	public static Map<Clan, Raid> getRaids() {
+		return Collections.unmodifiableMap(raids);
 	}
 
 	public static Raid getRaid(String name){
@@ -45,7 +44,7 @@ public final class RaidingParties {
 	}
 
 	public static Set<UUID> getRaidingPlayers() {
-		return Sets.newHashSet(raidingPlayers.keySet());
+		return Collections.unmodifiableSet(raidingPlayers.keySet());
 	}
 
 	public static boolean hasActiveRaid(Clan clan){
@@ -57,7 +56,7 @@ public final class RaidingParties {
 	}
 
 	public static Collection<Raid> getActiveRaids() {
-		return Sets.newHashSet(activeraids.values());
+		return Collections.unmodifiableCollection(activeraids.values());
 	}
 
 	public static boolean aboutToBeRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
@@ -162,6 +161,6 @@ public final class RaidingParties {
 	}
 
 	public static Collection<Clan> getRaidedClans() {
-		return raidedClans;
+		return Collections.unmodifiableCollection(raidedClans);
 	}
 }

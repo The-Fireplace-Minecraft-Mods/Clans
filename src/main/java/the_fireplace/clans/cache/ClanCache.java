@@ -15,27 +15,30 @@ import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public final class ClanCache {
-	private static HashMap<UUID, ArrayList<Clan>> playerClans = Maps.newHashMap();
-	private static HashMap<String, Clan> clanNames = Maps.newHashMap();
-	private static ArrayList<String> clanBanners = Lists.newArrayList();
-	private static HashMap<UUID, Clan> clanInvites = Maps.newHashMap();
-	private static HashMap<Clan, BlockPos> clanHomes = Maps.newHashMap();
+	private static Map<UUID, List<Clan>> playerClans = Maps.newHashMap();
+	private static Map<String, Clan> clanNames = Maps.newHashMap();
+	private static List<String> clanBanners = Lists.newArrayList();
+	private static Map<UUID, Clan> clanInvites = Maps.newHashMap();
+	private static Map<Clan, BlockPos> clanHomes = Maps.newHashMap();
 
-	private static ArrayList<UUID> buildAdmins = Lists.newArrayList();
-	private static HashMap<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
+	private static List<UUID> buildAdmins = Lists.newArrayList();
+	public static Map<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
 
 	//Maps of (Player Unique ID) -> (Clan)
-	private static HashMap<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
-	private static HashMap<UUID, Clan> autoClaimLands = Maps.newHashMap();
-	private static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
-	private static HashMap<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
+	public static Map<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
+	public static Map<UUID, Clan> autoClaimLands = Maps.newHashMap();
+	public static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
+	public static Map<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
 
-	public static final ArrayList<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid", "null");
+	public static final List<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid", "null");
 	static {
 		forbiddenClanNames.addAll(CommandClan.commands.keySet());
 		forbiddenClanNames.addAll(CommandClan.aliases.keySet());
@@ -58,13 +61,13 @@ public final class ClanCache {
 		return clanNames.get(clanName.toLowerCase());
 	}
 
-	public static ArrayList<Clan> getPlayerClans(@Nullable UUID player) {
+	public static List<Clan> getPlayerClans(@Nullable UUID player) {
 		if(player == null)
-			return Lists.newArrayList();
+			return Collections.unmodifiableList(Lists.newArrayList());
 		if(playerClans.containsKey(player))
 			return (playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
 		playerClans.put(player, ClanDatabase.lookupPlayerClans(player));
-		return (playerClans.get(player) != null ? Lists.newArrayList(playerClans.get(player)) : Lists.newArrayList());
+		return (playerClans.get(player) != null ? Collections.unmodifiableList(playerClans.get(player)) : Collections.unmodifiableList(Lists.newArrayList()));
 	}
 
 	public static EnumRank getPlayerRank(UUID player, Clan clan) {
@@ -100,8 +103,8 @@ public final class ClanCache {
 			clanBanners.remove(banner.toLowerCase());
 	}
 
-	public static HashMap<String, Clan> getClanNames() {
-		return Maps.newHashMap(clanNames);
+	public static Map<String, Clan> getClanNames() {
+		return Collections.unmodifiableMap(clanNames);
 	}
 
 	public static void addName(Clan nameClan){
@@ -143,12 +146,12 @@ public final class ClanCache {
 		return clanInvites.remove(player);
 	}
 
-	public static HashMap<Clan, BlockPos> getClanHomes() {
+	public static Map<Clan, BlockPos> getClanHomes() {
 		if(clanHomes.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
 				if(clan.hasHome())
 					clanHomes.put(clan, clan.getHome());
-		return Maps.newHashMap(clanHomes);
+		return Collections.unmodifiableMap(clanHomes);
 	}
 
 	public static void setClanHome(Clan c, BlockPos home) {
@@ -188,29 +191,9 @@ public final class ClanCache {
 	}
 
 	public static void updateChat(UUID uuid, Clan clan) {
-		if(getClanChattingPlayers().containsKey(uuid) && getClanChattingPlayers().get(uuid).equals(clan))
-			getClanChattingPlayers().remove(uuid);
+		if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
+			clanChattingPlayers.remove(uuid);
 		else
-			getClanChattingPlayers().put(uuid, clan);
-	}
-
-	public static HashMap<UUID, Clan> getClanChattingPlayers() {
-		return clanChattingPlayers;
-	}
-
-	public static HashMap<UUID, Clan> getAutoAbandonClaims() {
-		return autoAbandonClaims;
-	}
-
-	public static HashMap<UUID, Clan> getAutoClaimLands() {
-		return autoClaimLands;
-	}
-
-	public static List<UUID> getOpAutoAbandonClaims() {
-		return opAutoAbandonClaims;
-	}
-
-	public static HashMap<UUID, Clan> getOpAutoClaimLands() {
-		return opAutoClaimLands;
+			clanChattingPlayers.put(uuid, clan);
 	}
 }

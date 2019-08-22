@@ -9,7 +9,6 @@ import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.util.ClansEventManager;
 
-
 /**
  * Several useful files for accessing data are:
  * {@link the_fireplace.clans.cache.ClanCache}

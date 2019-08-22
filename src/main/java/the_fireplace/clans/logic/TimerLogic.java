@@ -20,10 +20,7 @@ import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class TimerLogic {
     public static void runFiveMinuteLogic() {
@@ -124,7 +121,7 @@ public class TimerLogic {
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
         Chunk c = player.getEntityWorld().getChunk(player.getPosition());
         UUID chunkClanId = ChunkUtils.getChunkOwner(c);
-        ArrayList<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
+        List<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
         UUID playerStoredClaimId = PlayerCache.getPreviousChunkOwner(player.getUniqueID());
         Clan chunkClan = ClanCache.getClanById(chunkClanId);
         ChunkPositionWithData data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
@@ -137,14 +134,14 @@ public class TimerLogic {
 
         if (!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
             boolean needsRecalc = false;
-            if(ClanCache.getOpAutoAbandonClaims().contains(player.getUniqueID()))
+            if(ClanCache.opAutoAbandonClaims.contains(player.getUniqueID()))
                 needsRecalc = ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP) player, null);
-            if(ClanCache.getAutoAbandonClaims().containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP) player, ClanCache.getAutoAbandonClaims().get(player.getUniqueID())) || needsRecalc;
-            if(ClanCache.getOpAutoClaimLands().containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getOpAutoClaimLands().get(player.getUniqueID()), true) || needsRecalc;
-            if(ClanCache.getAutoClaimLands().containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.getAutoClaimLands().get(player.getUniqueID()), false) || needsRecalc;
+            if(ClanCache.autoAbandonClaims.containsKey(player.getUniqueID()))
+                needsRecalc = ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP) player, ClanCache.autoAbandonClaims.get(player.getUniqueID())) || needsRecalc;
+            if(ClanCache.opAutoClaimLands.containsKey(player.getUniqueID()))
+                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.opAutoClaimLands.get(player.getUniqueID()), true) || needsRecalc;
+            if(ClanCache.autoClaimLands.containsKey(player.getUniqueID()))
+                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.autoClaimLands.get(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);
@@ -184,7 +181,7 @@ public class TimerLogic {
         PlayerCache.setPreviousY(player.getUniqueID(), curY);
     }
 
-    private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, ArrayList<Clan> playerClans, boolean isBorderland) {
+    private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, Collection<Clan> playerClans, boolean isBorderland) {
         PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanId() : null, isBorderland);
         Style color = TextStyles.GREEN;
         if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
@@ -225,7 +222,7 @@ public class TimerLogic {
         }
     }
 
-    private static void checkRaidAbandonmentTime(@Nullable UUID chunkClan, ArrayList<Clan> playerClans, EntityPlayer player) {
+    private static void checkRaidAbandonmentTime(@Nullable UUID chunkClan, Collection<Clan> playerClans, EntityPlayer player) {
         for(Clan pc: playerClans)
             if (RaidingParties.hasActiveRaid(pc)) {
                 Raid r = RaidingParties.getActiveRaid(pc);

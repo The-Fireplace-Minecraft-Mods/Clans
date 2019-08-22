@@ -39,8 +39,7 @@ public class CommandSeeChunk extends ClanSubCommand {
 		return TranslationUtil.getRawTranslationString(sender, "commands.clan.seechunk.usage");
 	}
 
-	@SuppressWarnings("Duplicates")
-    @Override
+	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		assert server != null;
 		World w = sender.getEntityWorld();

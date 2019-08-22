@@ -40,9 +40,9 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			Clan rm = ClanCache.getOpAutoClaimLands().remove(sender.getUniqueID());
+            Clan rm = ClanCache.opAutoClaimLands.remove(sender.getUniqueID());
 			if(rm == null) {
-				ClanCache.getOpAutoClaimLands().put(sender.getUniqueID(), c);
+                ClanCache.opAutoClaimLands.put(sender.getUniqueID(), c);
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", c.getClanName()).setStyle(TextStyles.GREEN));
 				ClanManagementUtil.checkAndAttemptClaim(sender, c, true);
 			} else

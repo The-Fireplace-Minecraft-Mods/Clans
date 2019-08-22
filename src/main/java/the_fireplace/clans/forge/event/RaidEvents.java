@@ -24,8 +24,7 @@ public class RaidEvents {
 
 	@SubscribeEvent
 	public static void onPlayerDeath(LivingDeathEvent event) {
-		if(event.getEntity() instanceof EntityPlayerMP)
-			event.setCanceled(RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity()));
+		RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity());
 	}
 
 	@SubscribeEvent

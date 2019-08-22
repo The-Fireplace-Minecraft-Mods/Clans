@@ -35,7 +35,7 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onServerChat(ServerChatEvent event) {
         if(event.getPlayer() != null) {
-            if(ClanCache.getClanChattingPlayers().containsKey(event.getPlayer().getUniqueID())) {
+            if(ClanCache.clanChattingPlayers.containsKey(event.getPlayer().getUniqueID())) {
                 event.setCanceled(true);
                 PlayerEventLogic.sendClanChat(event.getPlayer(), event.getComponent());
             } else if (Clans.getConfig().isShowDefaultClanInChat()) {

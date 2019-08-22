@@ -54,7 +54,7 @@ public class RaidManagementLogic {
         return false;
     }
 
-    public static boolean onPlayerDeath(EntityPlayerMP player) {
+    public static void onPlayerDeath(EntityPlayerMP player) {
         if(!player.getEntityWorld().isRemote) {
             for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
                 if (clan != null && RaidingParties.hasActiveRaid(clan))
@@ -63,7 +63,6 @@ public class RaidManagementLogic {
                     RaidingParties.getRaid(player).removeAttacker(player);
             }
         }
-        return false;
     }
 
     public static void checkAndRestoreChunk(Chunk chunk) {

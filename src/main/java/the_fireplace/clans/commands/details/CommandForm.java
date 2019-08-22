@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.details;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -41,7 +40,7 @@ public class CommandForm extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(selectedClan == null || Clans.getConfig().isAllowMultiClanMembership()) {
 			String newClanName = TextStyles.stripFormatting(args[0]);
 			if (Clans.getConfig().getMaxNameLength() > 0 && newClanName.length() > Clans.getConfig().getMaxNameLength())

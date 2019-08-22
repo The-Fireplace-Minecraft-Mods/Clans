@@ -23,11 +23,11 @@ public final class RaidCollectionDatabase {
 		return instance;
 	}
 
-	public static HashMap<UUID, List<String>> getCollectItems() {
-		return getInstance().collectItems;
+	public static Map<UUID, List<String>> getCollectItems() {
+		return Collections.unmodifiableMap(getInstance().collectItems);
 	}
 
-	HashMap<UUID, List<String>> collectItems = Maps.newHashMap();
+	private HashMap<UUID, List<String>> collectItems = Maps.newHashMap();
 
 	public static boolean hasCollectItems(UUID player){
 		return getCollectItems().containsKey(player) && !getCollectItems().get(player).isEmpty();
@@ -41,7 +41,7 @@ public final class RaidCollectionDatabase {
 	}
 
 	public static List<String> getCollectItems(UUID player){
-		return hasCollectItems(player) ? getInstance().collectItems.get(player) : Lists.newArrayList();
+		return Collections.unmodifiableList(hasCollectItems(player) ? getInstance().collectItems.get(player) : Lists.newArrayList());
 	}
 
 	public void removeCollectItems(UUID player, Collection<String> toRemove){
@@ -73,7 +73,7 @@ public final class RaidCollectionDatabase {
 		isChanged = false;
 	}
 
-	@Deprecated
+	@Deprecated//TODO remove in 1.5
 	private static void loadLegacy() {
 		JsonParser jsonParser = new JsonParser();
 		try {

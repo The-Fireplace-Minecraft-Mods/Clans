@@ -64,7 +64,6 @@ public class ChunkUtils {
 		return !getConnectedClaimPositions(c, checkOwner).isEmpty();
 	}
 
-	@SuppressWarnings("Duplicates")
 	public static boolean canBeAbandoned(Chunk c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
 			checkOwner = getChunkOwner(c);

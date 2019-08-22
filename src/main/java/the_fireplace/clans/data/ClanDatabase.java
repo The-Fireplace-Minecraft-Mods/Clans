@@ -2,7 +2,6 @@ package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -11,10 +10,7 @@ import the_fireplace.clans.model.Clan;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public final class ClanDatabase {
     private static ClanDatabase instance = null;
@@ -40,7 +36,7 @@ public final class ClanDatabase {
     }
 
     public static Collection<Clan> getClans(){
-        return Sets.newHashSet(getInstance().clans.values());
+        return Collections.unmodifiableCollection(getInstance().clans.values());
     }
 
     public static boolean addClan(UUID clanId, Clan clan){
@@ -76,12 +72,12 @@ public final class ClanDatabase {
      * @return
      * The player's clans, or an empty list if the player isn't in any
      */
-    public static ArrayList<Clan> lookupPlayerClans(UUID player){
+    public static List<Clan> lookupPlayerClans(UUID player){
         ArrayList<Clan> clans = Lists.newArrayList();
         for(Clan clan : getInstance().clans.values())
             if(clan.getMembers().containsKey(player))
                 clans.add(clan);
-        return clans;
+        return Collections.unmodifiableList(clans);
     }
 
     private static void load() {

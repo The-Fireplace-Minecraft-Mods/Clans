@@ -36,7 +36,7 @@ public class Clan {
 
     private String clanName, clanBanner;
     private String description = TranslationUtil.getStringTranslation("clan.default_description");
-    private HashMap<UUID, EnumRank> members;
+    private Map<UUID, EnumRank> members;
     private UUID clanId;
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
@@ -50,7 +50,7 @@ public class Clan {
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
 
-    private HashMap<String, Object> addonData = Maps.newHashMap();
+    private Map<String, Object> addonData = Maps.newHashMap();
 
     public Clan(String clanName, UUID leader){
         this.clanName = TextStyles.stripFormatting(clanName);
@@ -183,16 +183,16 @@ public class Clan {
         return Collections.unmodifiableMap(members);
     }
 
-    public ArrayList<UUID> getLeaders() {
+    public List<UUID> getLeaders() {
         ArrayList<UUID> leaders = Lists.newArrayList();
         for(Map.Entry<UUID, EnumRank> member: members.entrySet())
             if(member.getValue().equals(EnumRank.LEADER))
                 leaders.add(member.getKey());
-        return leaders;
+        return Collections.unmodifiableList(leaders);
     }
 
     public long payLeaders(long totalAmount) {
-        ArrayList<UUID> leaders = getLeaders();
+        List<UUID> leaders = getLeaders();
         if(leaders.isEmpty())
             return totalAmount;
         long remainder = totalAmount % leaders.size();
@@ -205,7 +205,7 @@ public class Clan {
         return 0;
     }
 
-    public HashMap<EntityPlayerMP, EnumRank> getOnlineMembers() {
+    public Map<EntityPlayerMP, EnumRank> getOnlineMembers() {
         HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
         for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
             EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
@@ -213,11 +213,11 @@ public class Clan {
             if(player != null)
                 online.put(player, member.getValue());
         }
-        return online;
+        return Collections.unmodifiableMap(online);
     }
 
     public Set<Map.Entry<EntityPlayerMP, EnumRank>> getOnlineSurvivalMembers() {
-        return getOnlineMembers().entrySet().stream().filter(e -> !e.getKey().isCreative() && !e.getKey().isSpectator()).collect(Collectors.toSet());
+        return Collections.unmodifiableSet(getOnlineMembers().entrySet().stream().filter(e -> !e.getKey().isCreative() && !e.getKey().isSpectator()).collect(Collectors.toSet()));
     }
 
     public UUID getClanId() {
@@ -590,7 +590,7 @@ public class Clan {
     }
 
     public void messageAllOnline(boolean actionBar, EnumRank minRank, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
-        HashMap<EntityPlayerMP, EnumRank> online = getOnlineMembers();
+        Map<EntityPlayerMP, EnumRank> online = getOnlineMembers();
         for(EntityPlayerMP member : online.keySet())
             if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
                 member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar);

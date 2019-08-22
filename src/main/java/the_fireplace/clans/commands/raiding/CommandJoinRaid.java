@@ -17,7 +17,9 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -73,8 +75,8 @@ public class CommandJoinRaid extends RaidSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		HashMap<Clan, Raid> raids = RaidingParties.getRaids();
-		ArrayList<String> targetClanNames = Lists.newArrayList();
+		Map<Clan, Raid> raids = RaidingParties.getRaids();
+		List<String> targetClanNames = Lists.newArrayList();
 		for(Map.Entry<Clan, Raid> entry: raids.entrySet())
 			if(sender.getCommandSenderEntity() != null && !entry.getKey().getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()))
 				targetClanNames.add(entry.getKey().getClanName());
