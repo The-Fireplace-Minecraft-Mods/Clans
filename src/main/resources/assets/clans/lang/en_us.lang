@@ -28,7 +28,7 @@ commands.clan.common.insufficient_funds=You do not have enough funds to do this.
 commands.clan.common.insufficient_clan_funds=%s does not have enough funds to do this.
 commands.clan.common.not_leader=You are not a leader of %s.
 commands.clan.common.not_admin=You are not an admin of %s.
-commands.clan.common.not_in_clan=The player %s is not in %s.
+commands.clan.common.player_not_in_clan=The player %s is not in %s.
 commands.clan.common.not_on_limitless=You cannot use %s on %s because it is a limitless clan.
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
 

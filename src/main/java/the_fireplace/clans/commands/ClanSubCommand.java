@@ -82,7 +82,7 @@ public abstract class ClanSubCommand extends CommandBase {
 					if (sender instanceof EntityPlayerMP) {
 						List<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 						if (playerClan != null && !playerClans.contains(playerClan)) {
-							sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", playerClan.getClanName()).setStyle(TextStyles.RED));
 							return;
 						}
 					}
