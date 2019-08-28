@@ -11,6 +11,15 @@ commands.opclan.usage=/opclan <指令> [参数]
 commands.raid.usage=/raid <指令> [参数]
 commands.raid.disabled=此服务器上禁用了袭击模式。
 
+commands.clan.help.usage=/clan help [page|subcommand]
+commands.clan.help.description=The clan help command.
+
+commands.opclan.help.usage=/opclan help [page|subcommand]
+commands.opclan.help.description=The opclan help command.
+
+commands.raid.help.usage=/raid help [page|subcommand]
+commands.raid.help.description=The raid help command.
+
 commands.clan.common.player=你必须是一名玩家才能做到这一点
 commands.clan.common.not_in_clan=你不在 %s中
 commands.clan.common.notfound=这个 %s 部落找不到
@@ -19,13 +28,23 @@ commands.clan.common.insufficient_funds=金钱不足。
 commands.clan.common.insufficient_clan_funds=%s 金钱不足
 commands.clan.common.not_leader=你不是 %s部落的族长
 commands.clan.common.not_admin=你不是 %s部落的长老
-commands.clan.common.not_in_clan=这个玩家 %s 不在 %s部落中
+commands.clan.common.player_not_in_clan=这个玩家 %s 不在 %s部落中
+commands.clan.common.not_on_limitless=You cannot use %s on %s because it is a limitless clan.
+commands.clan.common.not_boolean=%s could not be identified as a boolean.
+
+commands.clan.common.help_format=%s: %s
+commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
 
 commands.clan.banner.usage=/clan banner 部落图腾。
+commands.clan.banner.description=Turn the banner you are holding into the clan banner.
 commands.clan.banner.clan_nobanner=%s 没有图腾。
 commands.clan.banner.player_nobanner=你没有拿图腾。
 
+commands.clan.clanchat.usage=/clan clanchat
+commands.clan.clanchat.description=Toggle if you are talking in clan chat.
+
 commands.clan.details.usage=/clan details <部落> （使用此命令查看部落详情）
+commands.clan.details.description=View details about a clan.
 commands.clan.details.noclan=你没有在部落里。使用 %s 获取另一个部落的详细信息。
 commands.clan.details.console=您必须在从控制台查看详细信息时指定一个部落。使用 %s 获取部落的详细信息。
 commands.clan.details.notfound=目标部落 %s 不存在。
@@ -39,26 +58,39 @@ commands.clan.details.admin=长老 %s
 commands.clan.details.no_members=错误： %s 没有成员
 commands.clan.details.upkeep=维护（费用）为 %s %s 每 %s 一天
 commands.clan.details.rent=赋税 (收入) 是 %s %s 每 %s 一天
+commands.clan.details.rent_individual=Individual rent is %s %s every %s days.
 commands.clan.details.trend=预估收入 %s %s 每天
 commands.clan.details.increase_rent=您可能需要将赋税增加到 %s 或者找到减少维护费的方法
 commands.clan.details.reduce_upkeep=你可能需要找到一种减少维护费的方法
 commands.clan.details.breaking_even=%s 是没有盈利或负债的。
+commands.clan.details.rentdue=Rent is due in %s hours.
+commands.clan.details.upkeepdue=Upkeep is due in %s hours.
+comamnds.clan.details.base_amount=%s(base)
+commands.clan.details.times_members=*%s(members)
+commands.clan.details.times_claims=*%s(claims)
+commands.clan.details.equals_total==%s
+commands.clan.details.limitless=This clan is limitless, and most likely belongs to the server.
 
 commands.clan.disband.usage=/clan disband（解散部落）
+commands.clan.disband.description=Disband your clan.
 commands.clan.disband.success=你解散了 %s 部落
 commands.clan.disband.disbanded=%s 已被 %s 解散
+commands.clan.disband.limitless=You cannot disband %1$s using /clan disband because it is limitless. Use /opclan disband %1$s to disband it.
 
 commands.clan.form.usage=/clan form <名称> [图腾] （创建一个部落）
+commands.clan.form.description=Form a new clan.
 commands.clan.form.success=部落创建成功。
 commands.clan.form.insufficient_funds=你没有足够的资金来组建一个部落。创建成本为 %s %s。
 commands.clan.form.already_in_clan=你已经在一个部落里。
 
 commands.clan.list.usage=/clan list [种类]  （查看部落列表）
+commands.clan.list.description=View a list of clans. Sort by [money|land|members], anything else is alphabetical.
 commands.clan.list.clans=此服务器部落有：
 commands.clan.list.listitem=%s - %s
 commands.clan.list.noclans=此服务器上还没有部落
 
 commands.clan.playerinfo.usage=/clan playerinfo [玩家] （查看部落中的玩家信息）
+commands.clan.playerinfo.description=View what clans a player is in.
 commands.clan.playerinfo.console=你必须从控制台查看详细信息时指定玩家，使用 %s 获取部落中玩家的详细信息。
 commands.clan.playerinfo.notfound=目标玩家 %s 找不到。
 commands.clan.playerinfo.name=玩家名称: %s
@@ -69,51 +101,62 @@ commands.clan.playerinfo.member= %s部落的成员
 commands.clan.playerinfo.noclans=%s 不在任何部落中
 
 commands.clan.setbanner.usage=/clan setbanner [图腾名称] （创建部落图腾）
+commands.clan.setbanner.description=Set your clan's banner to one you are holding, or type the banner's NBT form.
 commands.clan.setbanner.invalid=你指定的部落图腾无效
 commands.clan.setbanner.taken=你指定的部落图腾已被占用
 commands.clan.setbanner.success=已设置 %s 部落的图腾
 commands.clan.setbanner.notheld=你的图腾没有拿在手上
 
 commands.clan.setcolor.usage=/clan setcolor <颜色代码> (设置部落颜色)
+commands.clan.setcolor.description=Set the clan's color for clan chat, fancymap, Dynmap, etc. Basic color names, Hex colors(0x######), and RGB Ints are supported.
 commands.clan.setcolor.success=%s 颜色已设置
 commands.clan.setcolor.invalid=颜色代码 %s 无效
 
 commands.clan.setdefault.usage=/clan setdefault <部落> <设置默认部落）
+commands.clan.setdefault.description=Sets the clan to use when you don't type /clan [clanname] <subcommand> [args...].
 commands.clan.setdefault.success=你的默认部落 %s
 
 commands.clan.setdescription.usage=/clan setdescription (创建一个新的部落宣言)
-commands.clan.setdescription.success=部落宣言设置为 %s 
+commands.clan.setdescription.description=Sets your clan's description.
+commands.clan.setdescription.success=部落宣言设置为 %s
 
 commands.clan.setname.usage=/clan setname <新名称> （设置部落名称）
+commands.clan.setname.description=Sets your clan's name.
 commands.clan.setname.toolong=这个 %s 部落名称太长。此服务器的最大名称长度为 %s 个字符。
 commands.clan.setname.taken= %s 部落名称已被使用。
 commands.clan.setname.success=你已经将 %s 重命名为 %s
 
 commands.clan.addfunds.usage=/clan addfunds <金额> （增加部落资金）
+commands.clan.addfunds.description=Adds funds from your economy account to the clan's economy account.
 commands.clan.addfunds.format=资金格式不正确
 commands.clan.addfunds.success=你将 %s %s 添加到 %s部落的账户中
 commands.clan.addfunds.added=%s 将 %s %s 添加到 %s部落的账户中
 
 commands.clan.balance.usage=/clan balance 查看部落余额
+commands.clan.balance.description=View the clan's account balance.
 commands.clan.balance.balance=%s 的部落资金: %s %s
 
 commands.clan.setrent.usage=/clan setrent <赋税金额> （设置部落赋税，默认真实一天的赋税标准）
+commands.clan.setrent.description=Set how much rent your clan members get charged.
 commands.clan.setrent.success=%s 将部落的赋税标准设置为 %s
 commands.clan.setrent.overmax=无法将赋税设置为高于 %s的当前最大值(%s %s)
 commands.clan.setrent.negative=无法设置负赋税
 commands.clan.setrent.disabled=/clan setrent 赋税设置被此服务禁用
 
 commands.clan.takefunds.usage=/clan takefunds <数量> 领取津贴
+commands.clan.takefunds.description=Take funds out of the clan's economy account.
 commands.clan.takefunds.disabled=/clan takefunds 此服务器禁用职位津贴奖励
 commands.clan.takefunds.success=你将获取 %s %s 津贴从 %s部落的余额中
 commands.clan.takefunds.taken=%s 获取 %s %s 职位津贴从 %s部落余额中
 
 commands.clan.abandonclaim.usage=/clan abandonclaim （放弃土地）
+commands.clan.abandonclaim.description=Abandon the 16x16 chunk of land you are currently standing in.
 commands.clan.abandonclaim.success=土地已成功放弃
 commands.clan.abandonclaim.wrongclan=这块土地不属于 %s
 commands.clan.abandonclaim.notclaimed=这块土地未被放弃
 
 commands.clan.claim.usage=/clan claim （占领土地）
+commands.clan.claim.description=Claim the 16x16 chunk of land you are currently standing in.
 commands.clan.claim.taken=%s 已被占领
 commands.clan.claim.taken_other=另一个部落 (%s) 已占领这块土地
 commands.clan.claim.proximity_error=你不能占领这块土地，因为它太靠近另一个部落的领土。在再次尝试之前，请确保距离其他部落的领土至少有 %s 个方块距离。你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
@@ -123,33 +166,53 @@ commands.clan.claim.disconnected=您不能申请这块土地，因为它不在�
 commands.clan.claim.success=为 %s 占领土地
 commands.clan.claim.insufficient_funds=%s部落中的资金不足，无法占领土地。它需要%s%s
 
+commands.clan.autoabandon.usage=/clan autoabandon
+commands.clan.autoabandon.description=Automatically abandon claims as you enter them.
+commands.clan.autoabandon.start=You are now autoabandoning land for %s.
+commands.clan.autoabandon.stop=You are no longer autoabandoning land for %s.
+
+commands.clan.autoclaim.usage=/clan autoclaim
+commands.clan.autoclaim.description=Automatically claim land as you enter it.
+commands.clan.autoclaim.start=You are now autoclaiming land for %s.
+commands.clan.autoclaim.stop=You are no longer autoclaiming land for %s.
+
 commands.clan.fancymap.usage=/clan fancymap （部落大地图）
+commands.clan.fancymap.description=View a large claim map color coded using clan colors.
 
 commands.clan.map.usage=/clan map （查看部落地图）
+commands.clan.map.description=View a small claim map color coded by what clans you are in.
+
+commands.clan.seechunk.usage=/clan seechunk [on|off]
+commands.clan.seechunk.description=See the edges of the chunk you are currently standing in. On and off are for toggling if this happens as you walk around.
 
 commands.clan.accept.usage=/clan accept （接受部落邀请）
+commands.clan.accept.description=Accept an invitation to join a clan.
 commands.clan.accept.success=你加入了 %s 部落
 commands.clan.accept.accepted=%s 加入了 %s 部落
 commands.clan.accept.no_invites=您没有任何待处理的邀请
 
 commands.clan.decline.usage=/clan decline （拒绝加入部落）
+commands.clan.decline.description=Decline an invitation to join a clan.
 commands.clan.decline.success=你拒绝了加入 %s 部落
 commands.clan.decline.declined=%s 拒绝加入 %s 的邀请
 
 commands.clan.demote.usage=/clan demote <玩家名称> （降低玩家的职位）
+commands.clan.demote.description=Demote a player in your clan, Leader to Admin or Admin to Member.
 commands.clan.demote.success=你已将 %s 降低为 %s 在 %s 中
 commands.clan.demote.demoted=你已被 %s 降低为 %s 在 %s 中
 commands.clan.demote.error=玩家 %s 不能被降级
 
 commands.clan.invite.usage=/clan invite <玩家名称> （邀请玩家加入部落）
+commands.clan.invite.description=Invite a player to your clan.
 commands.clan.invite.success=你已邀请 %s 加入 %s 部落
-commands.clan.invite.invited=您已被邀请加入 %1$s部落，同意输入 %1$s /clan accept 拒绝输入 /clan decline 
+commands.clan.invite.invited=您已被邀请加入 %1$s部落，同意输入 %1$s /clan accept 拒绝输入 /clan decline
 commands.clan.invite.pending=玩家 %s 已被邀请加入部落，等待该玩家同意或拒绝邀请。
 commands.clan.invite.failedinvite=%s 尝试邀请你加入部落,但你已经有 %2$s待处理的邀请，你在同意此条邀请之前，你必须先处理 %2$s 的邀请。
 commands.clan.invite.already_in_this=玩家 %s 已经在 %s 邀请中
 commands.clan.invite.already_in_any=玩家 %s 已经加入过部落
 
 commands.clan.kick.usage=/clan kick <玩家> （从部落踢出玩家）
+commands.clan.kick.description=Kick a player out of your clan.
 commands.clan.kick.leave=要离开部落, 使用 /clan leave指令退出部落
 commands.clan.kick.authority=你没有权限踢出 %s
 commands.clan.kick.success=你已经从 %s 部落中请离了 %s 玩家
@@ -158,6 +221,7 @@ commands.clan.kick.kicked_other=%s 已被 %s 从 %s 部落中请离
 commands.clan.kick.fail=玩家 %s 无法从 %s 部落中踢出，如果%1$s 是 %2$s 的唯一族长，在尝试踢出 %1$s 之前，应该讲另一位玩家提升为族长
 
 commands.clan.leave.usage=/clan leave （离开当前部落）
+commands.clan.leave.description=Leave your clan.
 commands.clan.leave.disband=你是 %s 部落最后一个成员， 要离开之前，请使用 /clan disband 解散部落
 commands.clan.leave.promote=你不能在没有族长的情况下离开 %s 部落，离开之前需要一个族长
 commands.clan.leave.success=你退出了 %s 部落
@@ -165,13 +229,17 @@ commands.clan.leave.left=%s 退出了 %s 部落
 commands.clan.leave.error=内部错误：您无法从 %s 中退出，请将此情况报告给服务器管理员
 
 commands.clan.promote.usage=/clan promote <玩家> （提升玩家职位）
+commands.clan.promote.description=Promote a player in your clan. Member to Admin or Admin to Leader.
 commands.clan.promote.success=你已在 %s 中将 %s 提升为 %s
 commands.clan.promote.notify=%s 已被 %s 提升为 %s 中的 %s
 commands.clan.promote.promoted=你已被 %s 从 %s 提升为 %s
 commands.clan.promote.error=玩家 %s 不能被提升
 
 commands.clan.home.usage=/clan home （传送到部落之家）
+commands.clan.home.description=Teleport to your clan's home.
 commands.clan.home.nohome=%s 部落没有设置部落之家，部落族长应该使用/clan sethome 来创建一个
+commands.clan.home.warmup=Preparing to teleport you to the %s clan home. Remain still and avoid damage for %s seconds.
+commands.clan.home.cancelled=Your clan home teleport was cancelled.
 commands.clan.home.cooldown=你需要等待 %s 后才能使用此命令
 commands.clan.home.blocked=传送到部落之家错误，请确保没有被挡住
 commands.clan.home.return_dim=将你传送回你所在的维度时出错
@@ -179,55 +247,91 @@ commands.clan.home.dim_error=传送到部落之家时出错
 commands.clan.home.disabled=/clan home 命令被服务器禁用
 
 commands.clan.sethome.usage=/clan sethome （设置部落之家位置）
+commands.clan.sethome.description=Set your clan's home.
 commands.clan.sethome.proximity=你太靠近另一个部落的家了。你必须至少与其他氏族的家隔离 %s ，才能回到你的部落之家。使用/clan fancymap查看附近部落的位置。
 commands.clan.sethome.success=部落之家已设置
 commands.clan.sethome.territory=部落之家只能在你部落领土范围内设置
 
 commands.clan.trapped.usage=/clan trapped （传送到部落边界）
+commands.clan.trapped.description=Teleport out of another clan's territory if you are stuck.
 commands.clan.trapped.fail=部落中无法使用
 
+commands.clan.permissions.usage=/clan permissions
+commands.clan.permissions.description=See what your clan's options and permissions are currently set to.
+
+commands.clan.set.usage=/clan set <permission> [player] <value>
+commands.clan.set.description=Set values for your clan's options and permissions. To see your current options and permissions, use /clan permissions.
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim [强制] （管理员放弃领土指令）
-commands.opclan.abandonclaim.success=从 %s 放弃领土
-commands.opclan.abandonclaim.wrongclan=这片土地不属于 %s 要强制 %s 放弃它，请使用/opclan abandonclaim
-commands.opclan.abandonclaim.disconnected=你不能放弃这块土地，因为这样做会造成至少一个断开连接的土地
+commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 
 commands.opclan.addfunds.usage=/opclan addfunds <部落> <资金> （增加部落资金）
+commands.opclan.addfunds.description=Add funds to any clan's balance.
+
+commands.opclan.autoabandon.usage=/opclan autoabandon
+commands.opclan.autoabandon.description=Automatically abandon claims as you walk around, regardless of who owns them.
+commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
+commands.opclan.autoabandon.stop=You are no longer autoabandoning land for everyone.
+
+commands.opclan.autoclaim.usage=/opclan autoclaim <clan>
+commands.opclan.autoclaim.description=Automatically claim land for a clan as you walk around, regardless of who currently owns it.
 
 commands.opclan.buildadmin.usage=/opclan buildadmin （设置管理员自由建造权限）
+commands.opclan.buildadmin.description=Enter admin mode, allowing you to build/destroy/interact/attack on any clan's territory.
 commands.opclan.buildadmin.on=你现在处于管理员自由建造模式
 commands.opclan.buildadmin.off=你不再处于管理员自由建造模式
 
 commands.opclan.claim.usage=/opclan claim [强制] （管理员强制占领土地）
-commands.opclan.claim.taken_other=另一个部落 (%1$s) 已经占领这块土地，想要从 %1$s 部落获取此土地，请使用/opclan claim 管理员命令
+commands.opclan.claim.description=Claim a 16x16 chunk of land for the target clan, regardless of who currently owns it.
+
+commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <player>
+commands.opclan.setrank.description=Make a player a rank in a clan.
+commands.opclan.setrank.success=You have made %s a %s in %s.
+commands.opclan.setrank.set=You have been made a %s in %s by %s.
 
 commands.opclan.disband.usage=/opclan disband <部落>  （管理员解散部落）
+commands.opclan.disband.description=Disband any clan.
 
 commands.opclan.kick.usage=/opclan kick <部落> <玩家> OP踢出玩家指令
+commands.opclan.kick.description=Kick a member from any clan.
 
 commands.opclan.setcolor.usage=/opclan [目标部落] setcolor <颜色代码> （管理员设置部落颜色）
+commands.opclan.setcolor.description=Change any clan's color.
 
 commands.opclan.setdescription.usage=/opclan [目标部落] setdescription <新描述> （管理员设置部落宣言）
+commands.opclan.setdescription.description=Set any clan's description.
 
 commands.opclan.setname.usage=/opclan [目标部落] setname <新名称> （管理员设置部落名称）
+commands.opclan.setname.description=Set any clan's name.
 
 commands.opclan.setshield.usage=/opclan setshield <部落> <时长.分钟> （管理员设置部落保护时长）
+commands.opclan.setshield.description=Set the amount of shield for any clan, in minutes.
 commands.opclan.setshield.format=设置保护时间格式不正确
 commands.opclan.setshield.success=部落保护时间从 %s 设置为 %s 分钟
+
+commands.opclan.setlimitless.usage=/opclan setlimitless <clan> <true|1|false|0>
+commands.opclan.setlimitless.description=Set if a clan is limitless. Limitless clans cannot be raided and do not use economy features.
+commands.opclan.setlimitless.success_t=You have made %s a limitless clan.
+commands.opclan.setlimitless.success_f=You have removed the limitless status from %s.
 
 commands.raid.common.notinparty=你没有在一个突袭模式中
 
 commands.raid.collect.usage=/raid collect （收集物品）
+commands.raid.collect.description=Collect your blocks placed/forbidden items from during a raid.
 commands.raid.collect.makespace=你的剩余空间已经用完了。在您的库存中腾出空间，然后重试。
 commands.raid.collect.success=收集成功
 commands.raid.collect.empty=你没有使用任何东西
+commands.raid.collect.raiding=You cannot collect items while raiding.
 
 commands.raid.invite.usage=/raid invite <玩家> （邀请玩家一起突袭部落）
+commands.raid.invite.description=Invite a player to join the raiding party you are in.
 commands.raid.invite.invited=你被邀请参加针对 %1$s 部落的突袭行动，参加请输入/raid join %1$s
 commands.raid.invite.success=你成功邀请 %s 参加突袭行动
 commands.raid.invite.inclan=你不能邀请别人袭击他们自己的部落
 commands.raid.invite.limit=你的突袭行动不能容纳更多的玩家，此次活动有 %s 是进攻人员，目前限制 %s 人
 
 commands.raid.join.usage=/raid join <目标部落> （发起针对目标部落的突袭行动）
+commands.raid.join.description=Join a raiding party against the target clan. One will be formed if it does not exist.
 commands.raid.join.created=你成功发起了针对 %s 部落的突袭行动
 commands.raid.join.create_fail=%s 你没有足够的在线玩家进行行动
 commands.raid.join.shield=%s 正在保护期间，请在 %s 小时候重试
@@ -237,36 +341,42 @@ commands.raid.join.inclan=你不能突袭你自己的部落
 commands.raid.join.inparty=你已经在一个突袭行动中，想要继续你必须先离开你所在的突袭行动。
 
 commands.raid.leave.usage=/raid leave （离开突袭行动）
+commands.raid.leave.description=Leave the raiding party you are in.
 commands.raid.leave.success=你成功离开了针对 %s 部落的突袭行动
 
 commands.raid.start.usage=/raid start （开始突袭行动）
+commands.raid.start.description=Start the raid. You will be charged the fee to do so, if there is one.
 commands.raid.start.success=你成功启动了针对 %s 部落的突袭行动
-commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落发动突袭，它需要 %s %s 
+commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落发动突袭，它需要 %s %s
 commands.raid.start.raiding=突袭行动已经启动
 commands.raid.start.error=内部错误：另一个突袭行动正在袭击这个部落。请在 %s 小时内重试。请将此情况报告给服务器管理员
 
 clans.protection.break.claimed=你不能破坏另一个部落领土上的方块
+clans.protection.break.borderland=You cannot break blocks this close to another clan's territory.
 clans.protection.break.raid=你不能在突袭过程中破坏这个方块，请等待突袭完成后再试
 clans.protection.break.claimed_raid=你不能在另一个部落的领土上破坏这个方块
 clans.protection.break.wilderness=未归属的荒野领土不能放置任何方块
 
 clans.protection.place.territory=你没有权限在别人部落领土建造
+clans.protection.place.borderland=You cannot place blocks this close to another clan's territory.
 clans.protection.place.wilderness=你无法在未归属的荒野领土建造任何东西
 
 clans.protection.interact.territory=你没有权限在别人部落领土上交互任何方块
+clans.protection.interact.borderland=You cannot interact with blocks this close to another clan's territory.
 
-clans.rent.kicked=由于无力支付赋税，你已被踢出 %s 
+clans.rent.kicked=由于无力支付赋税，你已被踢出 %s
 
 clans.upkeep.disbanded=%s 部落由于没有资金用于维护而被解散
 
 clans.wilderness=荒野
 clans.underground=地下
 
-clans.territory.entry=你正在输入 %s 
+clans.territory.entry=你正在输入 %s
 clans.territory.entrydesc=~%s
 clans.territory.unclaimed=这块土地是无主的
 clans.territory.protected=这块土地是无主的并受到保护
 clans.territory.clanterritory=部落 %s 的领土
+clans.territory.borderland=%s's borderlands
 
 clans.raid.glowing.defender=针对 %s 部落的突袭行动，还有 %s 分钟结束，你会发光发热一直到结束，还有 %s 的突袭队员还活着
 clans.raid.glowing.attacker=针对 %s 部落的突袭行动，还有 %s 分钟结束，剩余的防御玩家 %s 将发光发热，直到突袭结束
@@ -276,10 +386,18 @@ clans.raid.rmtimer.rm_defender=您现在被判定为被杀，因为您在 %s 的
 clans.raid.rmtimer.warn_attacker=你不在 %s的领土，如果你在领土外围呆的世界超过 %s 秒，你将从突袭行动中被踢出
 clans.raid.rmtimer.warn_defender=你现在不在 %s 的领土内，如果你在外面呆的时间超过 %s 秒，突袭行动胜利后会被判定为死亡
 
+clans.raid.confiscated=The following item is not allowed during raids and has been confiscated: %s. You can reclaim it when the raid ends with /raid collect.
+
 clans.raid.init.defender=有 %s 成员将对 %s 部落发动突袭，行动开始后将以秒计时
 clans.raid.init.attacker=你的突袭行动有 %s 成员，正准备突袭 %s 部落，将在 %s 秒后开始
 
-clans.raid.activate=突袭 %s 部落的行动已经开始！ 
+clans.raid.activate=突袭 %s 部落的行动已经开始！
 clans.raid.end=针对 %s 部落的突袭行动已经结束！
 clans.raid.victory.raider=进攻成员获得胜利
 clans.raid.victory.clan=%s 取得了胜利！
+
+clans.chat.prefix=<%s Chat>
+clans.chat.defaultclan=<%s>
+clans.chat.page.next=[Next]
+clans.chat.page.prev=[Previous]
+clans.chat.page.num=Page: %s/%s
