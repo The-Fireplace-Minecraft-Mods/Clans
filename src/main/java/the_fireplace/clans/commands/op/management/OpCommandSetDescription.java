@@ -16,6 +16,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OpCommandSetDescription extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "setdescription";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 2;
 	}
@@ -23,11 +28,6 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setdescription.usage");
 	}
 
 	@Override

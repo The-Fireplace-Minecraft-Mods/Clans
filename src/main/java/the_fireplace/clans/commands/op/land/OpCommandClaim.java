@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.op.land;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
@@ -17,6 +16,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class OpCommandClaim extends OpClanSubCommand {
+	@Override
+	public String getName() {
+		return "claim";
+	}
 
 	@Override
 	public int getMinArgs() {
@@ -26,11 +29,6 @@ public class OpCommandClaim extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.claim.usage");
 	}
 
 	@Override

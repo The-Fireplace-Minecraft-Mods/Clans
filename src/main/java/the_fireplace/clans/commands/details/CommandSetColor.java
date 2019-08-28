@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.details;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -16,6 +15,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandSetColor extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "setcolor";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -28,11 +32,6 @@ public class CommandSetColor extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setcolor.usage");
 	}
 
 	@Override

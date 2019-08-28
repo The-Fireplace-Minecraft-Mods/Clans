@@ -13,7 +13,6 @@ import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,6 +22,11 @@ import java.util.List;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CommandSeeChunk extends ClanSubCommand {
+	@Override
+	public String getName() {
+		return "seechunk";
+	}
+
 	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ANY;
@@ -36,11 +40,6 @@ public class CommandSeeChunk extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.seechunk.usage");
 	}
 
 	@Override

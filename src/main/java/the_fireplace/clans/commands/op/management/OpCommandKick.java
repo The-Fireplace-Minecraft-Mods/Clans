@@ -26,6 +26,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class OpCommandKick extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "kick";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 2;
 	}
@@ -33,11 +38,6 @@ public class OpCommandKick extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 2;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.kick.usage");
 	}
 
 	@Override

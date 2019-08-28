@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.members;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -20,6 +19,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandAccept extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "accept";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return Clans.getConfig().isAllowMultiClanMembership() ? EnumRank.ANY : EnumRank.NOCLAN;
 	}
@@ -32,11 +36,6 @@ public class CommandAccept extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.accept.usage");
 	}
 
 	@Override

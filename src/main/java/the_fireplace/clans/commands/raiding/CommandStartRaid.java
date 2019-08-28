@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.raiding;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -21,6 +20,11 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 public class CommandStartRaid extends RaidSubCommand {
 	@Override
+	public String getName() {
+		return "start";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 0;
 	}
@@ -28,11 +32,6 @@ public class CommandStartRaid extends RaidSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.raid.start.usage");
 	}
 
 	@Override

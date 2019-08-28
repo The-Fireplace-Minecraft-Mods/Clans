@@ -25,6 +25,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class CommandDemote extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "demote";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -37,11 +42,6 @@ public class CommandDemote extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.demote.usage");
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package the_fireplace.clans.commands.permissions;
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
@@ -21,6 +20,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class CommandPermissions extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "permissions";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.MEMBER;
 	}
@@ -33,11 +37,6 @@ public class CommandPermissions extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.permissions.usage");
 	}
 
     @Override

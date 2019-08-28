@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.raiding;
 
 import com.google.common.collect.Lists;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -12,22 +13,22 @@ import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.util.ChatPageUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class CommandRaidHelp extends RaidSubCommand {
-
     @Override
-    @Nonnull
-    public String getUsage(@Nullable ICommandSender sender) {
-        return TranslationUtil.getRawTranslationString(sender, "commands.clan.help.usage");
+    public String getName() {
+        return "help";
     }
 
     @Override
-    public void runFromAnywhere(@Nullable MinecraftServer server, @Nonnull ICommandSender sender, @Nullable String[] args) throws CommandException {
+    public void runFromAnywhere(@Nullable MinecraftServer server, ICommandSender sender, @Nullable String[] args) throws CommandException {
         if(args == null || args.length == 0 || args[0].matches("\\d+")) {
             int page = args == null || args.length < 1 ? 1 : parseInt(args[0]);
             List<ITextComponent> helps = Lists.newArrayList();
@@ -48,7 +49,7 @@ public class CommandRaidHelp extends RaidSubCommand {
     }
 
     @Override
-    public boolean checkPermission(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return true;
     }
 

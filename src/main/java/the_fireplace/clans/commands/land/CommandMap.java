@@ -2,7 +2,6 @@ package the_fireplace.clans.commands.land;
 
 import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
@@ -25,6 +24,11 @@ import java.util.UUID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CommandMap extends ClanSubCommand {
+	@Override
+	public String getName() {
+		return "map";
+	}
+
 	private static final char[] mapchars = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
 	@Override
 	public EnumRank getRequiredClanRank() {
@@ -39,11 +43,6 @@ public class CommandMap extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.map.usage");
 	}
 
 	@SuppressWarnings("Duplicates")

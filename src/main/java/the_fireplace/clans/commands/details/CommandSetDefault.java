@@ -22,6 +22,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class CommandSetDefault extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "setdefault";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.MEMBER;
 	}
@@ -34,11 +39,6 @@ public class CommandSetDefault extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setdefault.usage");
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.details;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -15,6 +14,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandDisband extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "disband";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -27,11 +31,6 @@ public class CommandDisband extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.disband.usage");
 	}
 
 	@Override

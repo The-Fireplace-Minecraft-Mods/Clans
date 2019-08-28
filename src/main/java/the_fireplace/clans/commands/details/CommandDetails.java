@@ -28,6 +28,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class CommandDetails extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "details";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ANY;
 	}
@@ -40,11 +45,6 @@ public class CommandDetails extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.details.usage");
 	}
 
 	@Override

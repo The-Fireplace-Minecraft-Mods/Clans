@@ -27,6 +27,11 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 public class CommandInvite extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "invite";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ADMIN;
 	}
@@ -39,11 +44,6 @@ public class CommandInvite extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.invite.usage");
 	}
 
 	@Override

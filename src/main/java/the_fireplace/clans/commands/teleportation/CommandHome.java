@@ -2,7 +2,6 @@ package the_fireplace.clans.commands.teleportation;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -27,6 +26,11 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 public class CommandHome extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "home";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.MEMBER;
 	}
@@ -39,11 +43,6 @@ public class CommandHome extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.home.usage");
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package the_fireplace.clans.commands.details;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.SyntaxErrorException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBanner;
@@ -25,6 +24,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandSetBanner extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "setbanner";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -37,11 +41,6 @@ public class CommandSetBanner extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.setbanner.usage");
 	}
 
 	@Override

@@ -26,6 +26,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class OpCommandSetRank extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "setrank";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 3;
 	}
@@ -33,11 +38,6 @@ public class OpCommandSetRank extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 3;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setrank.usage");
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package the_fireplace.clans.commands.members;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -20,6 +19,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class CommandLeave extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "leave";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.MEMBER;
 	}
@@ -32,11 +36,6 @@ public class CommandLeave extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "clans.command.leave.usage");
 	}
 
 	@Override

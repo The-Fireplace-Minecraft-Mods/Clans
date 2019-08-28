@@ -22,6 +22,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class CommandSet extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "set";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -34,11 +39,6 @@ public class CommandSet extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 3;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.set.usage");
 	}
 
     @Override

@@ -20,6 +20,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "setshield";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 2;
 	}
@@ -27,11 +32,6 @@ public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 2;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setshield.usage");
 	}
 
 	@Override

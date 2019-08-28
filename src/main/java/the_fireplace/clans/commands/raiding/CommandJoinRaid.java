@@ -25,6 +25,11 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 public class CommandJoinRaid extends RaidSubCommand {
 	@Override
+	public String getName() {
+		return "join";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 1;
 	}
@@ -32,11 +37,6 @@ public class CommandJoinRaid extends RaidSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.raid.join.usage");
 	}
 
 	@Override

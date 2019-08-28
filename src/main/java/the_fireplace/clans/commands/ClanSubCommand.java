@@ -27,16 +27,17 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ClanSubCommand extends CommandBase {
+
 	@Override
-	public String getName() {
-		return "clan";
+	public String getUsage(ICommandSender sender) {
+		return TranslationUtil.getRawTranslationString(sender, "commands.clan."+getName()+".usage");
 	}
 
 	protected Clan selectedClan;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1]))
+		if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getName()))
 			return false;
 		if(getRequiredClanRank() == EnumRank.ANY || getRequiredClanRank() == EnumRank.NOCLAN && allowConsoleUsage() && !(sender instanceof Entity))
 			return true;

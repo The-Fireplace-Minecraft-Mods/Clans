@@ -2,7 +2,6 @@ package the_fireplace.clans.commands.raiding;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -22,6 +21,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class CommandCollect extends RaidSubCommand {
 	@Override
+	public String getName() {
+		return "collect";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 0;
 	}
@@ -29,11 +33,6 @@ public class CommandCollect extends RaidSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.raid.collect.usage");
 	}
 
 	@Override

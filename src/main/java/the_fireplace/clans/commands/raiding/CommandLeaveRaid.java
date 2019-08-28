@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.raiding;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -18,6 +17,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandLeaveRaid extends RaidSubCommand {
 	@Override
+	public String getName() {
+		return "leave";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 0;
 	}
@@ -25,11 +29,6 @@ public class CommandLeaveRaid extends RaidSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.raid.leave.usage");
 	}
 
 	@Override

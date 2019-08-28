@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.teleportation;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CommandTrapped extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "trapped";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.ANY;
 	}
@@ -35,11 +39,6 @@ public class CommandTrapped extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 0;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.trapped.usage");
 	}
 
 	@Override

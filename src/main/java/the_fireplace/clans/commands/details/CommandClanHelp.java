@@ -21,10 +21,9 @@ import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 public class CommandClanHelp extends ClanSubCommand {
-
     @Override
-    public String getUsage(@Nullable ICommandSender sender) {
-        return TranslationUtil.getRawTranslationString(sender, "commands.clan.help.usage");
+    public String getName() {
+        return "help";
     }
 
     @Override

@@ -25,6 +25,11 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class CommandPromote extends ClanSubCommand {
 	@Override
+	public String getName() {
+		return "promote";
+	}
+
+	@Override
 	public EnumRank getRequiredClanRank() {
 		return EnumRank.LEADER;
 	}
@@ -37,11 +42,6 @@ public class CommandPromote extends ClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.clan.promote.usage");
 	}
 
 	@Override

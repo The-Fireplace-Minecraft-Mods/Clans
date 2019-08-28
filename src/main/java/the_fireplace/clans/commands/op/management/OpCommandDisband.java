@@ -21,6 +21,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class OpCommandDisband extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "disband";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 1;
 	}
@@ -28,11 +33,6 @@ public class OpCommandDisband extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 1;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.disband.usage");
 	}
 
 	@Override

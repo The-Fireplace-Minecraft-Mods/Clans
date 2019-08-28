@@ -15,6 +15,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OpCommandSetColor extends OpClanSubCommand {
 	@Override
+	public String getName() {
+		return "setcolor";
+	}
+
+	@Override
 	public int getMinArgs() {
 		return 2;
 	}
@@ -22,11 +27,6 @@ public class OpCommandSetColor extends OpClanSubCommand {
 	@Override
 	public int getMaxArgs() {
 		return 2;
-	}
-
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan.setcolor.usage");
 	}
 
 	@Override
