@@ -13,6 +13,8 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.api.event.ClanFormedEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
@@ -43,12 +45,28 @@ public class Clan {
     private int homeDimension;
     private boolean isLimitless = false;
     private long rent = 0;
-    private int wins = 0;
-    private int losses = 0;
+    private int wins = 0, losses = 0;
     private long shield = Clans.getConfig().getInitialShield() * 60;
     private long rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+
+    public static final Map<String, EnumRank> defaultPermissions = Maps.newHashMap();
+
+    static {
+        for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
+            if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN))
+                defaultPermissions.put(entry.getKey(), entry.getValue().getRequiredClanRank());
+        defaultPermissions.put("access", EnumRank.MEMBER);
+        defaultPermissions.put("interact", EnumRank.MEMBER);
+        defaultPermissions.put("build", EnumRank.MEMBER);
+        defaultPermissions.put("harmmob", EnumRank.MEMBER);
+        defaultPermissions.put("harmanimal", EnumRank.MEMBER);
+    }
+
+    //private Map<String, Integer> options;
+    private Map<String, EnumRank> permissions = Maps.newHashMap();
+    private Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
 
     private Map<String, Object> addonData = Maps.newHashMap();
 
@@ -71,6 +89,10 @@ public class Clan {
         if(!Clans.getConfig().isAllowMultiClanMembership())
             ClanCache.removeInvite(leader);
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
+        for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
+            permissions.put(perm.getKey(), perm.getValue());
+            permissionOverrides.put(perm.getKey(), Maps.newHashMap());
+        }
         isChanged = true;
     }
 
@@ -103,6 +125,21 @@ public class Clan {
         ret.addProperty("upkeepTimestamp", upkeepTimestamp);
         ret.addProperty("color", color);
 
+        JsonArray permissions = new JsonArray();
+        for(Map.Entry<String, EnumRank> entry: this.permissions.entrySet()) {
+            JsonObject perm = new JsonObject();
+            perm.addProperty("name", entry.getKey());
+            perm.addProperty("value", entry.getValue().name());
+            JsonArray overrides = new JsonArray();
+            for(Map.Entry<UUID, Boolean> override: permissionOverrides.get(entry.getKey()).entrySet()) {
+                JsonObject or = new JsonObject();
+                or.addProperty("player", override.getKey().toString());
+                or.addProperty("allowed", override.getValue());
+            }
+            perm.add("overrides", overrides);
+        }
+        ret.add("permissions", permissions);
+
         JsonHelper.attachAddonData(ret, this.addonData);
 
         return ret;
@@ -133,6 +170,20 @@ public class Clan {
         if(obj.has("color")) {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+        }
+        if(obj.has("permissions")) {
+            for(JsonElement e: obj.getAsJsonArray("permissions")) {
+                JsonObject perm = e.getAsJsonObject();
+                permissions.put(perm.get("name").getAsString(), EnumRank.valueOf(perm.get("value").getAsString()));
+                permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
+                for(JsonElement o: perm.getAsJsonArray("overrides"))
+                    permissionOverrides.get(perm.get("name").getAsString()).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
+            }
+        } else {
+            for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
+                permissions.put(perm.getKey(), perm.getValue());
+                permissionOverrides.put(perm.getKey(), Maps.newHashMap());
+            }
         }
         addonData = JsonHelper.getAddonData(obj);
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
@@ -490,6 +541,33 @@ public class Clan {
 
     public boolean payForClaim() {
         return Clans.getPaymentHandler().deductAmount(getClaimCount() < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getClanId());
+    }
+
+    public void setPerm(String permission, EnumRank rank) {
+        permissions.put(permission, rank);
+        markChanged();
+    }
+
+    public void addPermissionOverride(String permission, UUID playerId, boolean value) {
+        permissionOverrides.get(permission).put(playerId, value);
+        markChanged();
+    }
+
+    public boolean hasPerm(String permission, @Nullable UUID playerId) {
+        if(playerId == null)
+            return false;
+        if(permissionOverrides.get(permission).containsKey(playerId))
+            return permissionOverrides.get(permission).get(playerId);
+        else
+            return permissions.get(permission).equals(EnumRank.ANY) || (members.containsKey(playerId) && members.get(playerId).greaterOrEquals(permissions.get(permission)));
+    }
+
+    public Map<String, EnumRank> getPermissions() {
+        return Collections.unmodifiableMap(permissions);
+    }
+
+    public Map<String, Map<UUID, Boolean>> getPermissionOverrides() {
+        return Collections.unmodifiableMap(permissionOverrides);
     }
 
     /**

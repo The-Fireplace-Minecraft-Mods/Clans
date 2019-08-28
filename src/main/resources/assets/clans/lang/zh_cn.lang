@@ -257,10 +257,14 @@ commands.clan.trapped.description=Teleport out of another clan's territory if yo
 commands.clan.trapped.fail=部落中无法使用
 
 commands.clan.permissions.usage=/clan permissions
-commands.clan.permissions.description=See what your clan's options and permissions are currently set to.
+commands.clan.permissions.description=See what your clan's permissions are currently set to.
+commands.clan.permissions.format=%s: %s
+commands.clan.permissions.override=Player Override: %s: %s
 
 commands.clan.set.usage=/clan set <permission> [player] <value>
-commands.clan.set.description=Set values for your clan's options and permissions. To see your current options and permissions, use /clan permissions.
+commands.clan.set.description=Set values for your clan's permissions. With a player, the value is true or false. Otherwise, you are setting the rank that has access, and your options are MEMBER, ADMIN, LEADER, or ANY. Note that each rank includes higher ranks, and ANY allows players that aren't in the clan. To see your current permissions, use /clan permissions.
+commands.clan.set.invalid_perm=Invalid permission: %s
+commands.clan.set.success=Permission set succeeded!
 
 commands.opclan.abandonclaim.usage=/opclan abandonclaim [强制] （管理员放弃领土指令）
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.

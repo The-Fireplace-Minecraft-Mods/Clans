@@ -2,6 +2,7 @@ package the_fireplace.clans.abstraction;
 
 import java.util.List;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface IConfig {
     //General clan config
     boolean isMultipleClanLeaders();
@@ -29,8 +30,7 @@ public interface IConfig {
     boolean isEnableBorderlands();
     boolean isPreventMobsOnClaims();
     boolean isPreventMobsOnBorderlands();
-    boolean allowBreakProtection();
-    boolean allowPlaceProtection();
+    boolean allowBuildProtection();
     boolean allowInjuryProtection();
     boolean allowInteractionProtection();
     boolean isChainTNT();

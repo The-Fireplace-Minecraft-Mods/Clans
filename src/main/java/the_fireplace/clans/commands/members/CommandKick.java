@@ -47,27 +47,24 @@ public class CommandKick extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+		GameProfile target = parsePlayerName(server, args[0]);
 
-		if(target != null) {
-			if(target.getId().equals(sender.getUniqueID())) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.leave").setStyle(TextStyles.RED));
-				return;
-			}
-			if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-				if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
-					EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
-					EnumRank targetRank = selectedClan.getMembers().get(target.getId());
-					if (senderRank == EnumRank.LEADER || targetRank == EnumRank.MEMBER) {
-						ClanManagementUtil.kickMember(server, sender, selectedClan, target);
-					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
+		if(target.getId().equals(sender.getUniqueID())) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.leave").setStyle(TextStyles.RED));
+			return;
+		}
+		if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
+			if (ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
+				EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
+				EnumRank targetRank = selectedClan.getMembers().get(target.getId());
+				if (senderRank == EnumRank.LEADER || targetRank == EnumRank.MEMBER) {
+					ClanManagementUtil.kickMember(server, sender, selectedClan, target);
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.player_not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.playernotfound", args[0]));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.player_not_in_clan", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@Override

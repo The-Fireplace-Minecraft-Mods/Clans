@@ -3,12 +3,12 @@ package the_fireplace.clans.commands.details;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
@@ -46,18 +46,15 @@ public class CommandPlayerInfo extends ClanSubCommand {
 	}
 
 	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if(args.length == 0) {
 			if(sender instanceof EntityPlayerMP)
 				showPlayerClanDetails(server, sender, ((EntityPlayerMP)sender).getGameProfile());
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.console", TranslationUtil.getStringTranslation(getUsage(sender))).setStyle(TextStyles.RED));
 		} else {
-			GameProfile targetPlayer = Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getGameProfileForUsername(args[0]);
-			if(targetPlayer == null)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.notfound", args[0]).setStyle(TextStyles.RED));
-			else
-				showPlayerClanDetails(server, sender, targetPlayer);
+			GameProfile targetPlayer = parsePlayerName(server, args[0]);
+			showPlayerClanDetails(server, sender, targetPlayer);
 		}
 	}
 

@@ -28,7 +28,7 @@ import java.util.Objects;
 public class CommandInvite extends ClanSubCommand {
 	@Override
 	public EnumRank getRequiredClanRank() {
-		return EnumRank.ADMIN;//TODO Config option to let normal players or only the leader send invite
+		return EnumRank.ADMIN;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class CommandInvite extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
 		} else
-			throw new PlayerNotFoundException("commands.generic.player.unspecified");
+			throw new PlayerNotFoundException("commands.generic.player.notFound", args[0]);
 	}
 
 	@Override

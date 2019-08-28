@@ -1,11 +1,9 @@
 package the_fireplace.clans.commands;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -45,15 +43,14 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(sender instanceof Entity) {
 			if(selectedClan != null) {
 				EnumRank playerRank = ClanCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
-				switch (playerRank) {
+				switch (getRequiredClanRank()) {
 					case LEADER:
-						return !getRequiredClanRank().equals(EnumRank.NOCLAN);
 					case ADMIN:
-						return !getRequiredClanRank().equals(EnumRank.LEADER) && !getRequiredClanRank().equals(EnumRank.NOCLAN);
+						return selectedClan.hasPerm(getName(), ((Entity) sender).getUniqueID());
 					case MEMBER:
-						return getRequiredClanRank().equals(EnumRank.MEMBER);
+						return playerRank.greaterOrEquals(EnumRank.MEMBER);
 					case NOCLAN:
-						return getRequiredClanRank().equals(EnumRank.NOCLAN);
+						return playerRank.equals(EnumRank.NOCLAN);
 					default:
 						return false;
 				}
@@ -144,5 +141,12 @@ public abstract class ClanSubCommand extends CommandBase {
 			return null;
 		else
 			throw new CommandException("commands.clan.common.not_boolean", arg);
+	}
+
+	public static GameProfile parsePlayerName(MinecraftServer server, String username) throws CommandException {
+		GameProfile result = server.getPlayerProfileCache().getGameProfileForUsername(username);
+		if(result == null)
+			throw new PlayerNotFoundException("commands.generic.player.notFound", username);
+		return result;
 	}
 }

@@ -4,6 +4,7 @@ Added a new system to replace the opclan: limitless clans. These behave similarl
 New command: /opclan setlimitless <clan> <true|1|false|0>
 New command: /opclan setrank <member|admin|leader> <clan> <player>
 New command: /clan seechunk [on|off]
+Clan permission system: set which clan ranks and/or players are allowed to do what in your clan.
 
 Changes:
 /[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
@@ -29,3 +30,4 @@ Fixed /clan setdescription adding "setdescription" and selected clan if not defa
 Fixed clan selection when using /clan [clan name] <subcommand> with at least one optional arg
 Fixed default raid permissions
 Fixed /[op]clan kick telling the player twice if they kick themself.
+Fixed "You are not in <clan>" having a format error

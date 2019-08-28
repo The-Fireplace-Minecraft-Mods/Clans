@@ -21,6 +21,8 @@ import the_fireplace.clans.commands.finance.CommandSetRent;
 import the_fireplace.clans.commands.finance.CommandTakeFunds;
 import the_fireplace.clans.commands.land.*;
 import the_fireplace.clans.commands.members.*;
+import the_fireplace.clans.commands.permissions.CommandPermissions;
+import the_fireplace.clans.commands.permissions.CommandSet;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
@@ -79,6 +81,9 @@ public class CommandClan extends CommandBase {
         }
         //help
         put("help", new CommandClanHelp());
+        //permissions
+        put("permissions", new CommandPermissions());
+        put("set", new CommandSet());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -113,6 +118,9 @@ public class CommandClan extends CommandBase {
         aliases.put("deposit", "addfunds");
         aliases.put("af", "addfunds");
         aliases.put("withdraw", "takefunds");
+        aliases.put("perms", "permissions");
+        aliases.put("options", "permissions");
+        aliases.put("setperm", "set");
     }
 
     public static String processAlias(String subCommand) {
@@ -147,10 +155,12 @@ public class CommandClan extends CommandBase {
             } else
                 args = new String[]{args[0]};
         } else {
-            if (args.length > 1)
-                args = Arrays.copyOfRange(args, 1, args.length);
-            else
-                args = new String[]{};
+            //Skip greedy commands because this would cause part of the description to be cut off
+            if(!greedyCommands.contains(tag))
+                if (args.length > 1)
+                    args = Arrays.copyOfRange(args, 1, args.length);
+                else
+                    args = new String[]{};
             //Make the first arg the default clan name because a clan name was not specified
             Clan defaultClan = sender instanceof EntityPlayerMP ? ClanCache.getClanById(PlayerData.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
             args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getClanName() : "null"}, args);

@@ -62,7 +62,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 				} else
-					throw new PlayerNotFoundException("commands.generic.player.unspecified");
+					throw new PlayerNotFoundException("commands.generic.player.notFound", args[0]);
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				Clans.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");

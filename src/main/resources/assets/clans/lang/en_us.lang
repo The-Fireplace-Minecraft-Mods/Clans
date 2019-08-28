@@ -256,6 +256,16 @@ commands.clan.trapped.usage=/clan trapped
 commands.clan.trapped.description=Teleport out of another clan's territory if you are stuck.
 commands.clan.trapped.fail=No, you're not trapped in someone else's claim.
 
+commands.clan.permissions.usage=/clan permissions [page]
+commands.clan.permissions.description=See what your clan's permissions are currently set to.
+commands.clan.permissions.format=%s: %s
+commands.clan.permissions.override=Player Override: %s: %s
+
+commands.clan.set.usage=/clan set <permission> [player] <value>
+commands.clan.set.description=Set values for your clan's permissions. With a player, the value is true or false. Otherwise, you are setting the rank that has access, and your options are MEMBER, ADMIN, LEADER, or ANY. Note that each rank includes higher ranks, and ANY allows players that aren't in the clan. To see your current permissions, use /clan permissions.
+commands.clan.set.invalid_perm=Invalid permission: %s
+commands.clan.set.success=Permission set succeeded!
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 
