@@ -171,6 +171,10 @@ public class Clan {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         }
+        for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
+            permissions.put(perm.getKey(), perm.getValue());
+            permissionOverrides.put(perm.getKey(), Maps.newHashMap());
+        }
         if(obj.has("permissions")) {
             for(JsonElement e: obj.getAsJsonArray("permissions")) {
                 JsonObject perm = e.getAsJsonObject();
@@ -180,11 +184,6 @@ public class Clan {
                 permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
                 for(JsonElement o: perm.getAsJsonArray("overrides"))
                     permissionOverrides.get(perm.get("name").getAsString()).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
-            }
-        } else {
-            for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
-                permissions.put(perm.getKey(), perm.getValue());
-                permissionOverrides.put(perm.getKey(), Maps.newHashMap());
             }
         }
         addonData = JsonHelper.getAddonData(obj);
