@@ -55,7 +55,7 @@ public class Clan {
 
     static {
         for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
-            if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN))
+            if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN) && !entry.getValue().getRequiredClanRank().equals(EnumRank.ANY))
                 defaultPermissions.put(entry.getKey(), entry.getValue().getRequiredClanRank());
         defaultPermissions.put("access", EnumRank.MEMBER);
         defaultPermissions.put("interact", EnumRank.MEMBER);
@@ -174,6 +174,8 @@ public class Clan {
         if(obj.has("permissions")) {
             for(JsonElement e: obj.getAsJsonArray("permissions")) {
                 JsonObject perm = e.getAsJsonObject();
+                if(!defaultPermissions.containsKey(perm.get("name").getAsString()))
+                    continue;
                 permissions.put(perm.get("name").getAsString(), EnumRank.valueOf(perm.get("value").getAsString()));
                 permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
                 for(JsonElement o: perm.getAsJsonArray("overrides"))
