@@ -17,6 +17,7 @@ Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan
 New alias for /clan clanchat: /clan chat
 Changes between Wilderness and Underground are no longer shown to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
 Underground is shown as Wilderness to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
+Improved various tab completions
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.

@@ -6,12 +6,17 @@ buildscript {
             url = "http://files.minecraftforge.net/maven"
         }
         maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+        maven {
             name = "Modmuss50"
             url = "http://maven.modmuss50.me/"
         }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:spongegradle:0.8.1'
         classpath 'ModsIOUpload:ModsIOUpload:+'
     }
 }
@@ -20,6 +25,8 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.gradle'
+apply plugin: 'org.spongepowered.plugin'
 apply plugin: 'net.cazzar.gradle.modsio'
 
 version = "1.4.0"
@@ -74,24 +81,6 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-task showVersion {
-    description "Displays the current version"
-    group "help"
-    
-    compileJava.dependsOn showVersion
-    deobfCompileDummyTask.dependsOn showVersion
-    extractMcpMappings.dependsOn showVersion
-  
-    doLast {
-        def versionFile = new File(buildDir, '.version')
-    
-        versionFile.getParentFile().mkdirs()
-        versionFile.text = version
-    }
-    
-    outputs.upToDateWhen { false }
 }
 
 task deobfJar(type: Jar) {
