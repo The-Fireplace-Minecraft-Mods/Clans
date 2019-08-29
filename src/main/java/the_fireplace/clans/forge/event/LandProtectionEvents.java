@@ -5,6 +5,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -39,6 +40,11 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		event.setCanceled(LandProtectionEventLogic.rightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack()));
+	}
+
+	@SubscribeEvent
+	public static void minecartInteract(MinecartInteractEvent event) {
+		event.setCanceled(LandProtectionEventLogic.rightClickMinecart(event.getMinecart(), event.getPlayer()));
 	}
 
 	@SubscribeEvent

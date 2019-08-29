@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -164,6 +165,24 @@ public class LandProtectionEventLogic {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
                         }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean rightClickMinecart(EntityMinecart minecart, EntityPlayer player) {
+        if(!minecart.world.isRemote && Clans.getConfig().allowInteractionProtection()) {
+            Chunk c = minecart.world.getChunk(minecart.getPosition());
+            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            if (chunkClan != null && !ChunkUtils.isBorderland(c)) {
+                if (player instanceof EntityPlayerMP) {
+                    boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
+                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) player)
+                            && !chunkClan.hasPerm("access", player.getUniqueID())
+                            && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)) {
+                        return !isRaidedBy;
                     }
                 }
             }
