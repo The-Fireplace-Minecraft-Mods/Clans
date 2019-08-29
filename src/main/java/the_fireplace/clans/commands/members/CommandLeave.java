@@ -41,7 +41,7 @@ public class CommandLeave extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
-		if(senderRank == EnumRank.LEADER) {
+		if(senderRank == EnumRank.LEADER && !selectedClan.isLimitless()) {
 			if(selectedClan.getMembers().size() == 1){
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClan.getClanName()).setStyle(TextStyles.RED));
 				return;
