@@ -237,7 +237,7 @@ public class LandProtectionEventLogic {
         }
     }
 
-    public static boolean onLivingDamage(Entity target, @Nullable Entity attacker) {
+    public static boolean onEntityDamage(Entity target, @Nullable Entity attacker) {
         if(!target.getEntityWorld().isRemote && Clans.getConfig().allowInjuryProtection()) {
             Chunk c = target.getEntityWorld().getChunk(target.getPosition());
             Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));

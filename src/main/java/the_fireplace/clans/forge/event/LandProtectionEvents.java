@@ -6,6 +6,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -54,7 +55,14 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onLivingDamage(event.getEntity(), event.getSource().getTrueSource()));
+		event.setCanceled(LandProtectionEventLogic.onEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
+		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
+			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
+	}
+
+	@SubscribeEvent
+	public static void onAttackEntity(AttackEntityEvent event) {
+		event.setCanceled(LandProtectionEventLogic.onEntityDamage(event.getEntity(), event.getEntityPlayer()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
