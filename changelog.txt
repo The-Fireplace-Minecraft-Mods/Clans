@@ -1,7 +1,7 @@
 Additions:
 Added a config option to set items that are forbidden during raids.
-Added a new system to replace the opclan: limitless clans. These behave similarly to opclan, except they have members, and can be disbanded. Existing opclans will be converted into limitless clans.
-New command: /opclan setlimitless <clan> <true|1|false|0>
+Added a new system to replace the opclan: server clans. These behave similarly to opclan, except they have members, and can be disbanded. Existing opclans will be converted into server clans.
+New command: /opclan setserver <clan> <true|1|false|0>
 New command: /opclan setrank <member|admin|leader> <clan> <player>
 New command: /clan seechunk [on|off]
 Clan permission system: set which clan ranks and/or players are allowed to do what in your clan.

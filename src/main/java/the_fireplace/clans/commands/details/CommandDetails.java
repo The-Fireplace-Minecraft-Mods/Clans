@@ -82,8 +82,8 @@ public class CommandDetails extends ClanSubCommand {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", clan.getClaimCount()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", clan.getMemberCount()).setStyle(TextStyles.GREEN));
-		if(clan.isLimitless())
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.limitless").setStyle(TextStyles.GREEN));
+		if(clan.isServer())
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.server").setStyle(TextStyles.GREEN));
 		List<UUID> leaders = Lists.newArrayList();
 		List<UUID> admins = Lists.newArrayList();
 		List<UUID> members = Lists.newArrayList();
@@ -120,7 +120,7 @@ public class CommandDetails extends ClanSubCommand {
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getClanName()).setStyle(TextStyles.RED));
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
-		if((senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) && !clan.isLimitless()) {
+		if((senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) && !clan.isServer()) {
 			if(Clans.getConfig().getChargeRentDays() <= 0 && Clans.getConfig().getClanUpkeepDays() <= 0)
 				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.details.disabled"));
 			long upkeep = 0;

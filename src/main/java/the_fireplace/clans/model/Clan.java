@@ -43,7 +43,7 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private boolean isLimitless = false;
+    private boolean isServer = false;
     private long rent = 0;
     private int wins = 0, losses = 0;
     private long shield = Clans.getConfig().getInitialShield() * 60;
@@ -116,7 +116,7 @@ public class Clan {
         ret.addProperty("homeZ", homeZ);
         ret.addProperty("hasHome", hasHome);
         ret.addProperty("homeDimension", homeDimension);
-        ret.addProperty("isLimitless", isLimitless);
+        ret.addProperty("isServer", isServer);
         ret.addProperty("rent", rent);
         ret.addProperty("wins", wins);
         ret.addProperty("losses", losses);
@@ -155,7 +155,7 @@ public class Clan {
             newMembers.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
         this.members = newMembers;
         this.clanId = UUID.fromString(obj.get("clanId").getAsString());
-        this.isLimitless = obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.get("isLimitless").getAsBoolean();
+        this.isServer = obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean();
         this.homeX = obj.get("homeX").getAsFloat();
         this.homeY = obj.get("homeY").getAsFloat();
         this.homeZ = obj.get("homeZ").getAsFloat();
@@ -431,12 +431,12 @@ public class Clan {
         }
     }
 
-    public boolean isLimitless(){
-        return isLimitless;
+    public boolean isServer(){
+        return isServer;
     }
 
-    public void setLimitless(boolean limitless){
-        this.isLimitless = limitless;
+    public void setServer(boolean server){
+        this.isServer = server;
         markChanged();
     }
 
@@ -609,7 +609,7 @@ public class Clan {
             RaidingParties.removeRaid(RaidingParties.getRaid(this));
         Clans.getDynmapCompat().clearAllTeamMarkers(this);
         ClanDatabase.removeClan(getClanId());
-        if(isLimitless())
+        if(isServer())
             return;
 
         long distFunds = Clans.getPaymentHandler().getBalance(this.getClanId());

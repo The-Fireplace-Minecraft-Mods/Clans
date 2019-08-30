@@ -40,7 +40,7 @@ public class CommandSetRent extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(Clans.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
-		if(!selectedClan.isLimitless()) {
+		if(!selectedClan.isServer()) {
 			int newRent = Integer.parseInt(args[0]);
 			if (newRent >= 0) {
 				long maxRent = Clans.getConfig().getMaxRent();
@@ -54,6 +54,6 @@ public class CommandSetRent extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "setrent", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "setrent", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

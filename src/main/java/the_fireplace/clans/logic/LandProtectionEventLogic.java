@@ -261,7 +261,7 @@ public class LandProtectionEventLogic {
                     return !(target instanceof IMob ? chunkClan.hasPerm("harmmob", sourceId) : chunkClan.hasPerm("harmanimal", sourceId))
                             && !RaidingParties.hasActiveRaid(chunkClan)
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker)
-                            && (!chunkClan.isLimitless() || !(target instanceof IMob));//Players can harm things
+                            && (!chunkClan.isServer() || !(target instanceof IMob));//Players can harm things
                 }
             }
         }

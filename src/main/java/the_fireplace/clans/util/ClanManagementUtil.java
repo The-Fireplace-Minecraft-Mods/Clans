@@ -44,10 +44,10 @@ public class ClanManagementUtil {
                 return false;
             }
         }
-        if(claimClan != null && !claimChunk.isBorderland() && !claimClan.isLimitless()) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
+        if(claimClan != null && !claimChunk.isBorderland() && !claimClan.isServer()) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
             claimClan.refundClaim();
         }
-        if(selectedClan.isLimitless()) {
+        if(selectedClan.isServer()) {
             ClaimData.swapChunk(claimChunk, claimOwner, selectedClan.getClanId());
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
             return true;
@@ -113,7 +113,7 @@ public class ClanManagementUtil {
                 return true;
             }
             if(selectedClan == null || claimOwnerClanId.equals(selectedClan.getClanId())) {
-                if(selectedClan == null || claimOwnerClan.isLimitless() || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.canBeAbandoned(c, claimOwnerClanId)) {
+                if(selectedClan == null || claimOwnerClan.isServer() || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.canBeAbandoned(c, claimOwnerClanId)) {
                     return finishClaimAbandonment(sender, c, claimOwnerClan);
                 } else {//We are forcing connected claims and there is a claim connected
                     //Prevent creation of disconnected claims
@@ -139,7 +139,7 @@ public class ClanManagementUtil {
         }
 
         ClaimData.delChunk(targetClan, new ChunkPositionWithData(c));
-        if(!targetClan.isLimitless())
+        if(!targetClan.isServer())
             Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getClanId());
     }
 

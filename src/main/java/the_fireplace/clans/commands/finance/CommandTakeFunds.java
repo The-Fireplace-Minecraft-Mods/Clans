@@ -40,7 +40,7 @@ public class CommandTakeFunds extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(!Clans.getConfig().isLeaderWithdrawFunds())
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.takefunds.disabled"));
-		if(!selectedClan.isLimitless()) {
+		if(!selectedClan.isServer()) {
 			long amount = Long.parseLong(args[0]);
 			if(Clans.getPaymentHandler().deductAmount(amount, selectedClan.getClanId())) {
 				if(Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID())) {
@@ -53,6 +53,6 @@ public class CommandTakeFunds extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_clan_funds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "takefunds", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "takefunds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

@@ -29,7 +29,7 @@ commands.clan.common.insufficient_clan_funds=%s 金钱不足
 commands.clan.common.not_leader=你不是 %s部落的族长
 commands.clan.common.not_admin=你不是 %s部落的长老
 commands.clan.common.player_not_in_clan=这个玩家 %s 不在 %s部落中
-commands.clan.common.not_on_limitless=You cannot use %s on %s because it is a limitless clan.
+commands.clan.common.not_on_server=You cannot use %s on %s because it is a server clan.
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
 
 commands.clan.common.help_format=%s: %s
@@ -69,13 +69,13 @@ comamnds.clan.details.base_amount=%s(base)
 commands.clan.details.times_members=*%s(members)
 commands.clan.details.times_claims=*%s(claims)
 commands.clan.details.equals_total==%s
-commands.clan.details.limitless=This clan is limitless, and most likely belongs to the server.
+commands.clan.details.server=This clan is server, and most likely belongs to the server.
 
 commands.clan.disband.usage=/clan disband（解散部落）
 commands.clan.disband.description=Disband your clan.
 commands.clan.disband.success=你解散了 %s 部落
 commands.clan.disband.disbanded=%s 已被 %s 解散
-commands.clan.disband.limitless=You cannot disband %1$s using /clan disband because it is limitless. Use /opclan disband %1$s to disband it.
+commands.clan.disband.server=You cannot disband %1$s using /clan disband because it is server. Use /opclan disband %1$s to disband it.
 
 commands.clan.form.usage=/clan form <名称> [图腾] （创建一个部落）
 commands.clan.form.description=Form a new clan.
@@ -313,10 +313,10 @@ commands.opclan.setshield.description=Set the amount of shield for any clan, in 
 commands.opclan.setshield.format=设置保护时间格式不正确
 commands.opclan.setshield.success=部落保护时间从 %s 设置为 %s 分钟
 
-commands.opclan.setlimitless.usage=/opclan setlimitless <clan> <true|1|false|0>
-commands.opclan.setlimitless.description=Set if a clan is limitless. Limitless clans cannot be raided and do not use economy features.
-commands.opclan.setlimitless.success_t=You have made %s a limitless clan.
-commands.opclan.setlimitless.success_f=You have removed the limitless status from %s.
+commands.opclan.setserver.usage=/opclan setserver <clan> <true|1|false|0>
+commands.opclan.setserver.description=Set if a clan is server. Server clans cannot be raided and do not use economy features.
+commands.opclan.setserver.success_t=You have made %s a server clan.
+commands.opclan.setserver.success_f=You have removed the server status from %s.
 
 commands.raid.common.notinparty=你没有在一个突袭模式中
 

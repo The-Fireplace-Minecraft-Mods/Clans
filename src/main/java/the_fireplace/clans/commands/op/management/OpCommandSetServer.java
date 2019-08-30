@@ -19,10 +19,10 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandSetLimitless extends OpClanSubCommand {
+public class OpCommandSetServer extends OpClanSubCommand {
 	@Override
 	public String getName() {
-		return "setlimitless";
+		return "setserver";
 	}
 
 	@Override
@@ -40,10 +40,10 @@ public class OpCommandSetLimitless extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			boolean limitless;
-			limitless = parseBool(args[1]);
-			c.setLimitless(limitless);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setlimitless.success_"+(limitless ? 't' : 'f'), c.getClanName()).setStyle(TextStyles.GREEN));
+			boolean serverClan;
+			serverClan = parseBool(args[1]);
+			c.setServer(serverClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

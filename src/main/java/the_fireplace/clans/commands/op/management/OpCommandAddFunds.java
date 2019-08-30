@@ -40,7 +40,7 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			if(!c.isLimitless()) {
+			if(!c.isServer()) {
 				long amount;
 				try {
 					amount = Long.parseLong(args[1]);
@@ -55,7 +55,7 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "addfunds", clan).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", clan).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

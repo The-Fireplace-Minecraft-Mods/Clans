@@ -41,7 +41,7 @@ public class CommandOpClan extends CommandBase {
         put("setrank", new OpCommandSetRank());
         put("kick", new OpCommandKick());
         put("disband", new OpCommandDisband());
-        put("setlimitless", new OpCommandSetLimitless());
+        put("setserver", new OpCommandSetServer());
         //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
         //help

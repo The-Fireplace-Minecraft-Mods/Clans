@@ -165,7 +165,7 @@ public final class ClaimData {
     public static boolean delClan(@Nullable UUID clan) {
         if(clan == null)
             return false;
-        for(Map.Entry<ChunkPositionWithData, ClaimStoredData> entry : claimDataMap.entrySet())
+        for(Map.Entry<ChunkPositionWithData, ClaimStoredData> entry : Sets.newHashSet(claimDataMap.entrySet()))
             if(entry.getValue().clan.equals(clan))
                 claimDataMap.remove(entry.getKey());
         claimedChunks.get(clan).chunkDataFile.delete();

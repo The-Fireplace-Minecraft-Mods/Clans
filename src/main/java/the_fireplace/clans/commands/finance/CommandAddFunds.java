@@ -37,7 +37,7 @@ public class CommandAddFunds extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!selectedClan.isLimitless()) {
+		if(!selectedClan.isServer()) {
 			long amount;
 			try {
 				amount = Long.parseLong(args[0]);
@@ -58,6 +58,6 @@ public class CommandAddFunds extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_funds").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_limitless", "addfunds", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
 }

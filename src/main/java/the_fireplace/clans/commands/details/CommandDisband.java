@@ -36,11 +36,11 @@ public class CommandDisband extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
-			if(!selectedClan.isLimitless()) {
+			if(!selectedClan.isServer()) {
 				selectedClan.disband(server, sender, "commands.clan.disband.disbanded", selectedClan.getClanName(), sender.getName());
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.limitless", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClan.getClanName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanName()).setStyle(TextStyles.RED));
 	}
