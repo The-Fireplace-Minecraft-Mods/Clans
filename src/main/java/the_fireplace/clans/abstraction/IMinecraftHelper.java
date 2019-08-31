@@ -15,5 +15,5 @@ public interface IMinecraftHelper {
     Integer[] getDimensionIds();
     @Nullable
     Block getBlock(ResourceLocation res);
-    boolean isAllowedNonPlayerEntity(Entity entity);
+    boolean isAllowedNonPlayerEntity(@Nullable Entity entity, boolean ifNotFakePlayer);
 }

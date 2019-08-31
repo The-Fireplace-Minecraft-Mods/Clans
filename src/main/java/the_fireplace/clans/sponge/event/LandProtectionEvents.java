@@ -22,6 +22,6 @@ public class LandProtectionEvents {
         Location location = blockSnapshot.getLocation().orElse(null);
         if(player == null || location == null)
             return;
-        LandProtectionEventLogic.onBlockBroken((World)player.getWorld(), new BlockPos(location.getX(), location.getY(), location.getZ()), (EntityPlayer) player);
+        LandProtectionEventLogic.shouldCancelBlockBroken((World)player.getWorld(), new BlockPos(location.getX(), location.getY(), location.getZ()), (EntityPlayer) player);
     }
 }

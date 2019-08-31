@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
+import net.minecraft.entity.Entity;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.*;
@@ -113,6 +114,11 @@ public final class ClaimData {
     }
 
     @Nullable
+    public static ChunkPositionWithData getChunkPositionData(Entity entity) {
+        return getChunkPositionData(new ChunkPosition(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension));
+    }
+
+    @Nullable
     public static ChunkPositionWithData getChunkPositionData(ChunkPosition pos) {
         if(!isLoaded)
             load();
@@ -130,6 +136,11 @@ public final class ClaimData {
     @Nullable
     public static Clan getChunkClan(int x, int z, int dim) {
         return ClanCache.getClanById(getChunkClanId(x, z, dim));
+    }
+
+    @Nullable
+    public static Clan getChunkClan(Entity entity) {
+        return ClanCache.getClanById(getChunkClanId(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension));
     }
 
     @Nullable

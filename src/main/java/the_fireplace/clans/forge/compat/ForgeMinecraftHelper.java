@@ -43,7 +43,7 @@ public class ForgeMinecraftHelper implements IMinecraftHelper {
     }
 
     @Override
-    public boolean isAllowedNonPlayerEntity(Entity entity) {
-        return FakePlayerUtil.isAllowedFakePlayer(entity);
+    public boolean isAllowedNonPlayerEntity(@Nullable Entity entity, boolean ifNotFakePlayer) {
+        return FakePlayerUtil.isAllowedFakePlayer(entity, ifNotFakePlayer);
     }
 }

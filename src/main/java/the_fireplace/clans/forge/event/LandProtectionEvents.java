@@ -20,32 +20,36 @@ import the_fireplace.clans.logic.PlayerEventLogic;
 public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
-		event.setCanceled(LandProtectionEventLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
+		if(!event.isCanceled())
+			LandProtectionEventLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer());
 	}
 
 	@SubscribeEvent
 	public static void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
-		event.setCanceled(LandProtectionEventLogic.onCropTrampled(event.getWorld(), event.getPos(), event.getEntity() instanceof EntityPlayer ? (EntityPlayer)event.getEntity() : null));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelCropTrample(event.getWorld(), event.getPos(), event.getEntity() instanceof EntityPlayer ? (EntityPlayer)event.getEntity() : null));
 	}
 
 	@SubscribeEvent
 	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock()));
+		if(!event.isCanceled())
+			LandProtectionEventLogic.onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
 	}
 
 	@SubscribeEvent
 	public static void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onFluidPlaceBlock(event.getWorld(), event.getLiquidPos(), event.getPos()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelFluidPlaceBlock(event.getWorld(), event.getLiquidPos(), event.getPos()));
 	}
 
 	@SubscribeEvent
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		event.setCanceled(LandProtectionEventLogic.rightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack()));
 	}
 
 	@SubscribeEvent
 	public static void minecartInteract(MinecartInteractEvent event) {
-		event.setCanceled(LandProtectionEventLogic.rightClickMinecart(event.getMinecart(), event.getPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelMinecartInteract(event.getMinecart(), event.getPlayer()));
 	}
 
 	@SubscribeEvent
@@ -55,20 +59,20 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
 
 	@SubscribeEvent
 	public static void onAttackEntity(AttackEntityEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onEntityDamage(event.getEntity(), event.getEntityPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getEntityPlayer()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
 
 	@SubscribeEvent
 	public static void onEntitySpawn(EntityJoinWorldEvent event) {
-		event.setCanceled(LandProtectionEventLogic.onEntitySpawn(event.getWorld(), event.getEntity()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity()));
 	}
 }
