@@ -24,6 +24,7 @@ import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
+import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
@@ -34,7 +35,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -335,11 +335,12 @@ public class LandProtectionEventLogic {
                 && permissionClan.hasPerm("harmanimal", attackingPlayerId);
     }
 
-    public static boolean shouldCancelEntitySpawn(World world, Entity entity) {
+    public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
+        ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
         return Clans.getConfig().isPreventMobsOnClaims()
                 && !world.isRemote
                 && entity instanceof IMob
-                && ClaimData.getChunkClan(entity) != null
-                && (Clans.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(entity)).isBorderland());
+                && ClaimData.getChunkClan(spawnChunkPosition) != null
+                && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland());
     }
 }

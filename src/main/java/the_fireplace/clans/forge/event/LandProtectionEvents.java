@@ -3,14 +3,16 @@ package the_fireplace.clans.forge.event;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
@@ -72,7 +74,15 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onEntitySpawn(EntityJoinWorldEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity()));
+	public static void onEntitySpawn(LivingSpawnEvent.CheckSpawn event) {
+		boolean cancel = LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+		event.setResult(cancel ? Event.Result.DENY : Event.Result.DEFAULT);
+	}
+
+	@SubscribeEvent
+	public static void onSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
+		boolean cancel = LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+		event.setResult(cancel ? Event.Result.DENY : Event.Result.DEFAULT);
+		event.setCanceled(cancel);
 	}
 }
