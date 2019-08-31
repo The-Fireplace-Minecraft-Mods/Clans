@@ -85,6 +85,17 @@ public final class RaidingParties {
 		raidingPlayers.put(raider.getUniqueID(), raid);
 	}
 
+	public static void playerLoggedOut(UUID player) {
+		for(Raid raid: raids.values()) {
+			raid.removeAttacker(player);
+			raid.removeDefender(player);
+		}
+		for(Raid raid: activeraids.values()) {
+			raid.removeAttacker(player);
+			raid.removeDefender(player);
+		}
+	}
+
 	public static void removeRaider(UUID raider){
 		raidingPlayers.remove(raider);
 	}
@@ -124,8 +135,12 @@ public final class RaidingParties {
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), startingRaid);
 		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.activate", raidTarget.getClanName());
-		for(UUID attacker: getActiveRaid(raidTarget).getAttackers())
-			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN), true);
+		for(UUID attacker: getActiveRaid(raidTarget).getAttackers()) {
+			EntityPlayer attackerEntity = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker);
+			//noinspection ConstantConditions
+			if(attackerEntity != null)
+				attackerEntity.sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN), true);
+		}
 	}
 
 	public static void endRaid(Clan targetClan, boolean raiderVictory) {

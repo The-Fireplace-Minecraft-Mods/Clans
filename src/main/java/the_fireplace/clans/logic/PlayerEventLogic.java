@@ -44,6 +44,7 @@ public class PlayerEventLogic {
         ClanCache.autoAbandonClaims.remove(playerId);
         ClanCache.autoClaimLands.remove(playerId);
         ClanCache.clanChattingPlayers.remove(playerId);
+        RaidingParties.playerLoggedOut(playerId);
         PlayerData.setShouldDisposeReferences(playerId, true);
         PlayerCache.setNeedsCleanup(playerId, true);
     }

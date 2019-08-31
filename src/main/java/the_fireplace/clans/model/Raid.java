@@ -84,10 +84,10 @@ public class Raid {
 		RaidingParties.addRaider(player, this);
 	}
 
-	public boolean removeAttacker(EntityPlayer player) {
-		boolean rm = this.attackers.remove(player.getUniqueID()) != null;
+	public boolean removeAttacker(UUID player) {
+		boolean rm = this.attackers.remove(player) != null;
 		if(rm) {
-			RaidingParties.removeRaider(player.getUniqueID());
+			RaidingParties.removeRaider(player);
 			if(this.attackers.isEmpty()) {
 				if(isActive)
 					defenderVictory();
@@ -138,7 +138,7 @@ public class Raid {
 	public void incrementAttackerAbandonmentTime(EntityPlayer member) {
 		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
 		if(attackers.get(member.getUniqueID()) > Clans.getConfig().getMaxAttackerAbandonmentTime()) {
-			removeAttacker(member);
+			removeAttacker(member.getUniqueID());
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getClanName()).setStyle(TextStyles.YELLOW));
 		} else if(attackers.get(member.getUniqueID()) == 1)
 			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getClanName(), Clans.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
@@ -157,7 +157,7 @@ public class Raid {
 			return;
 		defenders.put(defender.getUniqueID(), defenders.get(defender.getUniqueID()) + 1);
 		if(defenders.get(defender.getUniqueID()) > Clans.getConfig().getMaxClanDesertionTime()) {
-			removeDefender(defender);
+			removeDefender(defender.getUniqueID());
 			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 		} else if(defenders.get(defender.getUniqueID()) == 1)
 			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
@@ -172,9 +172,9 @@ public class Raid {
 			this.defenders.put(defender.getUniqueID(), 0);
 	}
 
-	public void removeDefender(EntityPlayer player) {
-		defenders.remove(player.getUniqueID());
-		if(defenders.size() <= 0)
+	public void removeDefender(UUID player) {
+		defenders.remove(player);
+		if(defenders.size() <= 0 && isActive)
 			raiderVictory();
 	}
 
