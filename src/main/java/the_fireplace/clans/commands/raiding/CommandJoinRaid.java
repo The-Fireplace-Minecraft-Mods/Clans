@@ -10,6 +10,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
+import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
@@ -77,9 +78,9 @@ public class CommandJoinRaid extends RaidSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		Map<Clan, Raid> raids = RaidingParties.getRaids();
 		List<String> targetClanNames = Lists.newArrayList();
-		for(Map.Entry<Clan, Raid> entry: raids.entrySet())
-			if(sender.getCommandSenderEntity() != null && !entry.getKey().getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()))
-				targetClanNames.add(entry.getKey().getClanName());
+		for(Clan clan: ClanDatabase.getClans())
+			if(sender.getCommandSenderEntity() != null && !clan.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !clan.isServer())
+				targetClanNames.add(clan.getClanName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();
 	}
 }
