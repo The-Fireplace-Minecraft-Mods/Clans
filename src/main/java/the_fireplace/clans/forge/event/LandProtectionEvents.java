@@ -68,7 +68,7 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onAttackEntity(AttackEntityEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getEntityPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getTarget(), event.getEntityPlayer()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
