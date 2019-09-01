@@ -58,9 +58,9 @@ public class RaidManagementLogic {
         if(!player.getEntityWorld().isRemote) {
             for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
                 if (clan != null && RaidingParties.hasActiveRaid(clan))
-                    RaidingParties.getActiveRaid(clan).removeDefender(player);
+                    RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
                 if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
-                    RaidingParties.getRaid(player).removeAttacker(player);
+                    RaidingParties.getRaid(player).removeAttacker(player.getUniqueID());
             }
         }
     }

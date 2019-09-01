@@ -36,7 +36,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
-				raid.removeAttacker(sender);
+				raid.removeAttacker(sender.getUniqueID());
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.leave.success", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
