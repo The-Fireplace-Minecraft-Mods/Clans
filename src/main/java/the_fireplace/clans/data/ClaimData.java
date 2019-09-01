@@ -193,6 +193,8 @@ public final class ClaimData {
      * Use a timer so in the future, when mass claiming and abandoning chunks is possible, it isn't regenerating every single time a claim or abandon is done.
      */
     public static void decrementBorderlandsRegenTimers() {
+        if(!isLoaded)
+            load();
         if(Clans.getConfig().isEnableBorderlands())
             for(Map.Entry<UUID, Integer> entry: Sets.newHashSet(regenBordersTimer.entrySet())) {
                 if(entry.getValue() <= 0) {
