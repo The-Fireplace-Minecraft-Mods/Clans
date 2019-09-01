@@ -2,6 +2,7 @@ package the_fireplace.clans.forge.compat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -268,8 +269,11 @@ public class DynmapCompat implements IDynmapCompat {
         if (!teamMembers.isEmpty()) {
             stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
 
-            for (UUID member : teamMembers)
-                stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(Objects.requireNonNull(Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member)).getName())).append("</span></div>");
+            for (UUID member : teamMembers) {
+                GameProfile gp = Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member);
+                if(gp != null)
+                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(gp.getName())).append("</span></div>");
+            }
         }
 
         stToolTip.append("</div>");
