@@ -4,7 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -60,7 +61,7 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingDamage(LivingDamageEvent event) {
+	public static void onLivingDamage(LivingHurtEvent event) {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
@@ -69,8 +70,11 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onAttackEntity(AttackEntityEvent event) {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getTarget(), event.getEntityPlayer()));
-		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
-			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
+	}
+
+	@SubscribeEvent
+	public static void onKnockback(LivingKnockBackEvent event) {
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntityLiving(), event.getAttacker()));
 	}
 
 	@SubscribeEvent

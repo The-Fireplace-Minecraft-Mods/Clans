@@ -50,47 +50,55 @@ public class PlayerEventLogic {
     }
 
     public static void onPlayerChangedDimension(EntityPlayer player) {
-        PlayerCache.setClaimWarning(player.getUniqueID(), false);
-        Clan ocAutoClaim = ClanCache.opAutoClaimLands.remove(player.getUniqueID());
-        boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(player.getUniqueID());
-        Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(player.getUniqueID());
-        Clan cAutoClaim = ClanCache.autoClaimLands.remove(player.getUniqueID());
-        if(ocAutoAbandon)
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
-        if(cAutoAbandon != null)
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getClanName()).setStyle(TextStyles.GREEN));
-        if(ocAutoClaim != null)
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
-        if(cAutoClaim != null)
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
+        if(!player.world.isRemote) {
+            PlayerCache.setClaimWarning(player.getUniqueID(), false);
+            Clan ocAutoClaim = ClanCache.opAutoClaimLands.remove(player.getUniqueID());
+            boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(player.getUniqueID());
+            Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(player.getUniqueID());
+            Clan cAutoClaim = ClanCache.autoClaimLands.remove(player.getUniqueID());
+            if (ocAutoAbandon)
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
+            if (cAutoAbandon != null)
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getClanName()).setStyle(TextStyles.GREEN));
+            if (ocAutoClaim != null)
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
+            if (cAutoClaim != null)
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
+        }
     }
 
     public static ITextComponent getPlayerChatMessage(EntityPlayer player, ITextComponent initialMessage) {
-        UUID defaultClanId = PlayerData.getDefaultClan(player.getUniqueID());
-        if (defaultClanId != null) {
-            Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
-            if (playerDefaultClan != null)
-                return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getClanName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
-            else
-                PlayerData.updateDefaultClan(player.getUniqueID(), null);
+        if(!player.world.isRemote) {
+            UUID defaultClanId = PlayerData.getDefaultClan(player.getUniqueID());
+            if (defaultClanId != null) {
+                Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
+                if (playerDefaultClan != null)
+                    return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getClanName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
+                else
+                    PlayerData.updateDefaultClan(player.getUniqueID(), null);
+            }
         }
         return initialMessage;
     }
 
     public static void onPlayerRespawn(EntityPlayer player) {
-        Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
-        if(defClan != null && defClan.hasHome() && defClan.getHome() != null)
-            CommandHome.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
+        if(!player.world.isRemote) {
+            Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
+            if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
+                CommandHome.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
+        }
     }
 
     public static void sendClanChat(EntityPlayer player, ITextComponent message) {
-        Clan clanChat = ClanCache.clanChattingPlayers.get(player.getUniqueID());
-        for(EntityPlayerMP member: clanChat.getOnlineMembers().keySet())
-            member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
+        if(!player.world.isRemote) {
+            Clan clanChat = ClanCache.clanChattingPlayers.get(player.getUniqueID());
+            for (EntityPlayerMP member : clanChat.getOnlineMembers().keySet())
+                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
+        }
     }
 
     public static float breakSpeed(EntityPlayer player, float oldSpeed) {//TODO should borderlands be impacted by this?
-        if(RaidingParties.isRaidedBy(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
+        if(!player.world.isRemote && RaidingParties.isRaidedBy(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
             return oldSpeed * (float)Clans.getConfig().getRaidBreakSpeedMultiplier();
         }
         return oldSpeed;
@@ -98,7 +106,7 @@ public class PlayerEventLogic {
     
     public static void onPlayerDamage(EntityPlayer player) {
         //noinspection SuspiciousMethodCalls
-        if(PlayerCache.clanHomeWarmups.remove(player) != null)
+        if(!player.world.isRemote && PlayerCache.clanHomeWarmups.remove(player) != null)
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
     }
 }
