@@ -25,9 +25,9 @@ public final class ChunkRestoreData {
 			replaceBlocks.put(pos, block);
 	}
 
-	public void addRemoveBlock(int x, int y, int z) {
+	public void addRemoveBlock(int x, int y, int z, String block) {
 		BlockPos pos = new BlockPos(x, y, z);
-		if(replaceBlocks.remove(pos) == null)
+		if(!replaceBlocks.remove(pos, block))
 			removeBlocks.add(pos);
 	}
 

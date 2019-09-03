@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.util.BlockSerializeUtil;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -49,7 +50,7 @@ public final class RaidRestoreDatabase {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
 		if(!getInstance().raidedChunks.containsKey(coords))
 			getInstance().raidedChunks.put(coords, new ChunkRestoreData());
-		getInstance().raidedChunks.get(coords).addRemoveBlock(pos.getX(), pos.getY(), pos.getZ());
+		getInstance().raidedChunks.get(coords).addRemoveBlock(pos.getX(), pos.getY(), pos.getZ(), BlockSerializeUtil.blockToString(c.getWorld().getBlockState(pos)));
 		isChanged = true;
 	}
 
