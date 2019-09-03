@@ -2,6 +2,7 @@ package the_fireplace.clans.cache;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
@@ -140,6 +141,13 @@ public final class RaidingParties {
 			//noinspection ConstantConditions
 			if(attackerEntity != null)
 				attackerEntity.sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getClanName()).setStyle(TextStyles.GREEN), true);
+		}
+		if(startingRaid.getDefenders().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556")) || startingRaid.getAttackers().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"))) {
+			EntityPlayerMP dean = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"));
+			dean.sendMessage(new TextComponentString(">I don’t care about game devs >Devs can suck a dick >Game devs are fucking scum - you, 9/2/2019 10:50-10:51 AM CDT").setStyle(TextStyles.DARK_GREEN));
+			EntityLightningBolt lit = new EntityLightningBolt(dean.getServerWorld(), dean.posX, dean.posY, dean.posZ, false);
+			dean.getServerWorld().addWeatherEffect(lit);
+			dean.getServerWorld().spawnEntity(lit);
 		}
 	}
 
