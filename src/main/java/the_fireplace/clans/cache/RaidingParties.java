@@ -154,7 +154,7 @@ public final class RaidingParties {
 	public static void endRaid(Clan targetClan, boolean raiderVictory) {
 		for(EntityPlayerMP defender: targetClan.getOnlineMembers().keySet()) {
 			ITextComponent defenderMessage = TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.end", targetClan.getClanName());
-			defenderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(defender.getUniqueID(), raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.YELLOW : TextStyles.GREEN);
+			defenderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(defender.getUniqueID(), raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan", targetClan.getClanName()))).setStyle(raiderVictory ? TextStyles.YELLOW : TextStyles.GREEN);
 			defender.sendMessage(defenderMessage);
 			defender.sendStatusMessage(defenderMessage, true);
 		}
@@ -164,7 +164,7 @@ public final class RaidingParties {
 			//noinspection ConstantConditions
 			if(attacker != null) {
 				ITextComponent raiderMessage = TranslationUtil.getTranslation(attackerId, "clans.raid.end", targetClan.getClanName());
-				raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan"))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
+				raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan", targetClan.getClanName()))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
 
 				attacker.sendMessage(raiderMessage);
 				attacker.sendStatusMessage(raiderMessage, true);

@@ -397,8 +397,8 @@ clans.raid.init.attacker=Your raiding party, with %s members, is preparing to ra
 
 clans.raid.activate=The raid against %s has begun!
 clans.raid.end=The raid against %s has ended!
-clans.raid.victory.raider=The raiders were victorious!
-clans.raid.victory.clan=%s was victorious!
+clans.raid.victory.raider=The raiders were victorious against %s!
+clans.raid.victory.clan=%s was victorious against the raiders!
 
 clans.chat.prefix=<%s Chat>
 clans.chat.defaultclan=<%s>

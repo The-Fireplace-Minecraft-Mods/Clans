@@ -158,9 +158,9 @@ public class Raid {
 		defenders.put(defender.getUniqueID(), defenders.get(defender.getUniqueID()) + 1);
 		if(defenders.get(defender.getUniqueID()) > Clans.getConfig().getMaxClanDesertionTime()) {
 			removeDefender(defender.getUniqueID());
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", target.getClanName()).setStyle(TextStyles.YELLOW));
 		} else if(defenders.get(defender.getUniqueID()) == 1)
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", target.getClanName(), Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetDefenderAbandonmentTime(EntityPlayer defender) {
