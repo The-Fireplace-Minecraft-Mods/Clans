@@ -84,7 +84,7 @@ public final class ClaimData {
         if(!claimedChunks.containsKey(clan.getClanId()))
             claimedChunks.put(clan.getClanId(), new ClaimStoredData(clan.getClanId()));
         claimDataMap.remove(pos);
-        if(claimedChunks.get(clan.getClanId()).delChunk(pos))
+        if(claimedChunks.get(clan.getClanId()).delChunk(pos) && !pos.isBorderland())
             regenBordersTimer.put(clan.getClanId(), 5);
     }
 
@@ -370,7 +370,9 @@ public final class ClaimData {
 
         public void clearBorderlands() {
             if(hasBorderlands) {
-                chunks.removeIf(ChunkPositionWithData::isBorderland);
+                for(ChunkPositionWithData chunk: getChunks())
+                    if(chunk.isBorderland())
+                        ClaimData.delChunk(clan, chunk);
                 hasBorderlands = false;
                 markChanged();
             }

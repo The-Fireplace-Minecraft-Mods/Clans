@@ -33,3 +33,4 @@ Fixed default raid permissions
 Fixed /[op]clan kick telling the player twice if they kick themself.
 Fixed "You are not in <clan>" having a format error
 Fixed mobs spawning then despawning on claimed land if they aren't allowed
+Fixed borderlands not getting correctly cleared when abandoning claims
