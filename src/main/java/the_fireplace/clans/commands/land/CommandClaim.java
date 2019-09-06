@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.land;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -30,11 +31,14 @@ public class CommandClaim extends ClanSubCommand {
 
 	@Override
 	public int getMaxArgs() {
-		return 0;
+		return 1;
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
+	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+		if(args.length == 0)
+			ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
+		else if(ClanManagementUtil.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
+			ClanManagementUtil.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
 	}
 }

@@ -28,6 +28,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ClanManagementUtil {
+    public static boolean checkCanClaimRadius(EntityPlayerMP sender, Clan selectedClan, int radius, String mode) {
+        //TODO
+        return false;
+    }
+
+    public static void claimRadius(EntityPlayerMP sender, Clan selectedClan, int radius, String mode) {
+        //TODO
+    }
+
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, boolean force) {
         return checkAndAttemptClaim(sender, selectedClan, new ChunkPositionWithData(sender.chunkCoordX, sender.chunkCoordZ, sender.getEntityWorld().provider.getDimension()).retrieveCentralData(), force);
     }

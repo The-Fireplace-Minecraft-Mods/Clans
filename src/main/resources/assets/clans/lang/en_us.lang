@@ -155,7 +155,7 @@ commands.clan.abandonclaim.success=Claim abandoned from %s.
 commands.clan.abandonclaim.wrongclan=This land does not belong to %s.
 commands.clan.abandonclaim.notclaimed=This land is not claimed.
 
-commands.clan.claim.usage=/clan claim
+commands.clan.claim.usage=/clan claim [radius]
 commands.clan.claim.description=Claim the 16x16 chunk of land you are currently standing in.
 commands.clan.claim.taken=%s has already claimed this land.
 commands.clan.claim.taken_other=Another clan (%s) has already claimed this land.
