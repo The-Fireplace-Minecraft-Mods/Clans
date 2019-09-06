@@ -142,6 +142,60 @@ public final class ClansForge {
         public static boolean allowInjuryProtection = true;
         @Config.Comment("Always allow TNT to ignite other TNT, regardless of whether other blocks are protected.")
         public static boolean chainTNT = true;
+        @Config.Comment("A list of blocks that are able to be locked.")
+        public static String[] lockableBlocks = {
+                "minecraft:chest",
+                "minecraft:furnace",
+                "minecraft:jukebox",
+                "minecraft:white_shulker_box",
+                "minecraft:orange_shulker_box",
+                "minecraft:magenta_shulker_box",
+                "minecraft:light_blue_shulker_box",
+                "minecraft:yellow_shulker_box",
+                "minecraft:lime_shulker_box",
+                "minecraft:pink_shulker_box",
+                "minecraft:gray_shulker_box",
+                "minecraft:silver_shulker_box",
+                "minecraft:cyan_shulker_box",
+                "minecraft:purple_shulker_box",
+                "minecraft:blue_shulker_box",
+                "minecraft:brown_shulker_box",
+                "minecraft:green_shulker_box",
+                "minecraft:red_shulker_box",
+                "minecraft:black_shulker_box",
+                "minecraft:bed",
+                "minecraft:dispenser",
+                "minecraft:lever",//TODO find out if pressure plates can be locked
+                //"minecraft:stone_pressure_plate",
+                //"minecraft:wooden_pressure_plate",
+                "minecraft:stone_pressure_plate",
+                "minecraft:wooden_pressure_plate",
+                "minecraft:stone_button",
+                "minecraft:trapdoor",
+                "minecraft:fence_gate",
+                "minecraft:wooden_button",
+                "minecraft:trapped_chest",
+                //"minecraft:light_weighted_pressure_plate",
+                //"minecraft:heavy_weighted_pressure_plate",
+                "minecraft:daylight_detector",
+                "minecraft:hopper",
+                "minecraft:dropper",
+                "minecraft:spruce_fence_gate",
+                "minecraft:birch_fence_gate",
+                "minecraft:jungle_fence_gate",
+                "minecraft:dark_oak_fence_gate",
+                "minecraft:acacia_fence_gate",
+                "minecraft:wooden_door",
+                "minecraft:repeater",
+                "minecraft:comparator",
+                "minecraft:spruce_door",
+                "minecraft:birch_door",
+                "minecraft:jungle_door",
+                "minecraft:acacia_door",
+                "minecraft:dark_oak_door",
+                "minecraft:beacon",
+                "minecraft:brewing_stand",
+        };
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
         public static boolean protectWilderness = true;
@@ -368,6 +422,11 @@ public final class ClansForge {
         @Override
         public boolean isChainTNT() {
             return chainTNT;
+        }
+
+        @Override
+        public List<String> getLockableBlocks() {
+            return Lists.newArrayList(lockableBlocks);
         }
 
         @Override

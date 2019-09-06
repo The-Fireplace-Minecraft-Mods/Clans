@@ -34,6 +34,7 @@ public interface IConfig {
     boolean allowInjuryProtection();
     boolean allowInteractionProtection();
     boolean isChainTNT();
+    List<String> getLockableBlocks();
 
     //Wilderness guard
     boolean isProtectWilderness();

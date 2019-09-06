@@ -62,11 +62,15 @@ public class Clan {
         defaultPermissions.put("build", EnumRank.MEMBER);
         defaultPermissions.put("harmmob", EnumRank.MEMBER);
         defaultPermissions.put("harmanimal", EnumRank.MEMBER);
+        defaultPermissions.put("lockadmin", EnumRank.LEADER);
     }
 
     //private Map<String, Integer> options;
     private Map<String, EnumRank> permissions = Maps.newHashMap();
     private Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
+    
+    private Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = Maps.newHashMap();
+    private Map<BlockPos, Map<UUID, Boolean>> lockOverrides = Maps.newHashMap();
 
     private Map<String, Object> addonData = Maps.newHashMap();
 
@@ -97,6 +101,7 @@ public class Clan {
     }
 
     //region JsonObject conversions
+    @SuppressWarnings("DuplicatedCode")
     public JsonObject toJsonObject() {
         JsonObject ret = new JsonObject();
         ret.addProperty("clanName", TextStyles.stripFormatting(clanName));
@@ -139,6 +144,22 @@ public class Clan {
             perm.add("overrides", overrides);
         }
         ret.add("permissions", permissions);
+
+        JsonArray locks = new JsonArray();
+        for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: this.locks.entrySet()) {
+            JsonObject lock = new JsonObject();
+            lock.add("position", JsonHelper.toJsonObject(entry.getKey()));
+            lock.addProperty("type", entry.getValue().getValue1().ordinal());
+            lock.addProperty("owner", entry.getValue().getValue2().toString());
+            JsonArray overrides = new JsonArray();
+            for(Map.Entry<UUID, Boolean> override: lockOverrides.get(entry.getKey()).entrySet()) {
+                JsonObject or = new JsonObject();
+                or.addProperty("player", override.getKey().toString());
+                or.addProperty("allowed", override.getValue());
+            }
+            lock.add("overrides", overrides);
+        }
+        ret.add("locks", locks);
 
         JsonHelper.attachAddonData(ret, this.addonData);
 
@@ -184,6 +205,16 @@ public class Clan {
                 permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
                 for(JsonElement o: perm.getAsJsonArray("overrides"))
                     permissionOverrides.get(perm.get("name").getAsString()).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
+            }
+        }
+        if(obj.has("locks")) {
+            for(JsonElement e: obj.getAsJsonArray("locks")) {
+                JsonObject lock = e.getAsJsonObject();
+                BlockPos pos = JsonHelper.fromJsonObject(lock.get("position").getAsJsonObject());
+                locks.put(pos, new OrderedPair<>(EnumLockType.values()[lock.get("type").getAsInt()], UUID.fromString(lock.get("owner").getAsString())));
+                lockOverrides.put(pos, Maps.newHashMap());
+                for(JsonElement o: lock.getAsJsonArray("overrides"))
+                    lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
         }
         addonData = JsonHelper.getAddonData(obj);
@@ -552,6 +583,37 @@ public class Clan {
     public void addPermissionOverride(String permission, UUID playerId, boolean value) {
         permissionOverrides.get(permission).put(playerId, value);
         markChanged();
+    }
+
+    public void addLock(BlockPos pos, EnumLockType type, UUID owner) {
+        locks.put(pos, new OrderedPair<>(type, owner));
+        markChanged();
+    }
+
+    public void addLockOverride(BlockPos pos, UUID playerId, boolean value) {
+        if(!lockOverrides.containsKey(pos))
+            lockOverrides.put(pos, Maps.newHashMap());
+        lockOverrides.get(pos).put(playerId, value);
+        markChanged();
+    }
+
+    public boolean hasAccess(BlockPos pos, @Nullable UUID playerId, String defaultToPermission) {
+        if(playerId == null)
+            return false;
+        if(lockOverrides.get(pos).containsKey(playerId))
+            return lockOverrides.get(pos).get(playerId);
+        else if(locks.containsKey(pos)) {
+            switch(locks.get(pos).getValue1()) {
+                case OPEN:
+                    return true;
+                case CLAN:
+                default:
+                    return members.containsKey(playerId);
+                case PRIVATE:
+                    return locks.get(pos).getValue2().equals(playerId);
+            }
+        } else
+            return hasPerm(defaultToPermission, playerId);
     }
 
     public boolean hasPerm(String permission, @Nullable UUID playerId) {

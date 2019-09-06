@@ -31,6 +31,7 @@ commands.clan.common.not_admin=You are not an admin of %s.
 commands.clan.common.player_not_in_clan=The player %s is not in %s.
 commands.clan.common.not_on_server=You cannot use %s on %s because it is a server clan.
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
+commands.clan.common.not_locked=The block you are looking at is not locked.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
@@ -265,6 +266,41 @@ commands.clan.set.usage=/clan set <permission> [player] <value>
 commands.clan.set.description=Set values for your clan's permissions. With a player, the value is true or false. Otherwise, you are setting the rank that has access, and your options are MEMBER, ADMIN, LEADER, or ANY. Note that each rank includes higher ranks, and ANY allows players that aren't in the clan. To see your current permissions, use /clan permissions.
 commands.clan.set.invalid_perm=Invalid permission: %s
 commands.clan.set.success=Permission set succeeded!
+
+commands.clan.lock.usage=/clan lock [private|clan|open]
+commands.clan.lock.description=Locks the block you are looking at. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan
+commands.clan.lock.locked=This block is already locked by %s.
+commands.clan.lock.failed=You cannot lock that. If you believe this is in error, please contact your server's administrator.
+commands.clan.lock.not_block=You are not looking at a block or are too far from the block to lock it.
+commands.clan.lock.success=You have successfully locked the block you are looking at.
+
+commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
+commands.clan.lockchunk.description=Locks all unlocked lockable blocks in the chunk. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan
+commands.clan.lockchunk.success=You have successfully locked all lockable blocks in the chunk.
+
+commands.clan.unlock.usage=/clan unlock
+commands.clan.unlock.description=Unlocks the block you are looking at. Only the player who locked it or players with "lockadmin" clan permission can do this.
+commands.clan.unlock.locked=You cannot unlock this block because it is locked by %s.
+commands.clan.unlock.not_block=You are not looking at a block or are too far from the block to unlock it.
+commands.clan.unlock.success=You have successfully unlocked the block you are looking at.
+
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|all]
+commands.clan.unlockchunk.description=Unlocks all your locked blocks in the chunk. Only players with "lockadmin" clan permission can use the player|all option, setting a player clears locks by the specified player, saying all clears all locks.
+commands.clan.unlockchunk.success=You have successfully unlocked all of your locked blocks in the chunk.
+commands.clan.unlockchunk.success_player=You have successfully unlocked all of %s's locked blocks in the chunk.
+commands.clan.unlockchunk.success_all=You have successfully unlocked all locked blocks in the chunk.
+
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Grants a player access to the locked block you are looking at. You can only grant access to blocks if you are the player who locked it or have the "lockadmin" clan permission.
+commands.clan.grantaccess.locked=You cannot grant access to this block because it is locked by %s.
+commands.clan.grantaccess.not_block=You are not looking at a block or are too far from the block to grant access to it.
+commands.clan.grantaccess.success=You have successfully granted %s access to the block you are looking at.
+
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Denies a player access to the locked block you are looking at. You can only deny access to blocks if you are the player who locked it or have the "lockadmin" clan permission.
+commands.clan.denyaccess.locked=You cannot deny access to this block because it is locked by %s.
+commands.clan.denyaccess.not_block=You are not looking at a block or are too far from the block to deny access to it.
+commands.clan.denyaccess.success=You have successfully denied %s access to the block you are looking at.
 
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
