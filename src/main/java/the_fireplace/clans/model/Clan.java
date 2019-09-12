@@ -616,6 +616,19 @@ public class Clan {
             return hasPerm(defaultToPermission, playerId);
     }
 
+    public boolean isLocked(BlockPos pos) {
+        return locks.containsKey(pos);
+    }
+
+    public boolean isLockOwner(BlockPos pos, UUID checkOwner) {
+        return locks.getOrDefault(pos, new OrderedPair<>(null, UUID.fromString("00000000-0000-0000-0000-000000000000"))).getValue2().equals(checkOwner);
+    }
+
+    @Nullable
+    public UUID getLockOwner(BlockPos pos) {
+        return locks.getOrDefault(pos, new OrderedPair<>(null, null)).getValue2();
+    }
+
     public boolean hasPerm(String permission, @Nullable UUID playerId) {
         if(playerId == null)
             return false;

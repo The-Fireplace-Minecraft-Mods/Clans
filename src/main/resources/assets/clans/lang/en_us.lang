@@ -272,6 +272,7 @@ commands.clan.lock.description=Locks the block you are looking at. Modes: privat
 commands.clan.lock.locked=This block is already locked by %s.
 commands.clan.lock.failed=You cannot lock that. If you believe this is in error, please contact your server's administrator.
 commands.clan.lock.not_block=You are not looking at a block or are too far from the block to lock it.
+commands.clan.lock.wrong_owner=The block you are looking at is not claimed by %s.
 commands.clan.lock.success=You have successfully locked the block you are looking at.
 
 commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]

@@ -1,9 +1,6 @@
 package the_fireplace.clans.model;
 
-import mcp.MethodsReturnNonnullByDefault;
-
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
 /**
@@ -16,8 +13,6 @@ import java.util.Objects;
  */
 
 @SuppressWarnings("WeakerAccess")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class OrderedPair<V1, V2> {
     private V1 obj1;
     private V2 obj2;
