@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.lock;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,6 +14,7 @@ import the_fireplace.clans.model.EnumLockType;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.EntityUtil;
+import the_fireplace.clans.util.MultiblockUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -79,9 +81,11 @@ public class CommandLock extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(selectedClan.getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
 			return;
 		}
-		if(Clans.getConfig().getLockableBlocks().contains(sender.getEntityWorld().getBlockState(targetBlockPos).getBlock().getRegistryName().toString())) {
+		IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
+		if(Clans.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
 			selectedClan.addLock(targetBlockPos, mode, sender.getUniqueID());
-			//for(BlockPos pos: )//TODO Multiblock handling
+			for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
+				selectedClan.addLock(pos, mode, sender.getUniqueID());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.success").setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.failed").setStyle(TextStyles.RED));
