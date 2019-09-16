@@ -32,6 +32,7 @@ commands.clan.common.player_not_in_clan=The player %s is not in %s.
 commands.clan.common.not_on_server=You cannot use %s on %s because it is a server clan.
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
 commands.clan.common.not_locked=The block you are looking at is not locked.
+commands.clan.common.invalid_lock_type=The lock type '%s' is invalid.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.

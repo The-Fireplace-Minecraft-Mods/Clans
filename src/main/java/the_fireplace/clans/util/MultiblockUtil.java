@@ -34,7 +34,14 @@ public class MultiblockUtil {
         Set<BlockPos> connected = getConnectedPositions(world, pos, state);
         if(state == null)//This extra call can be avoided by passing in the state, which I imagine most use cases will already have available
             state = world.getBlockState(pos);
-        //TODO include connected chests
+        if(state.getBlock() instanceof BlockChest)
+            for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL) {
+                BlockPos offPos = pos.offset(enumfacing);
+                if (world.getBlockState(offPos).getBlock() == state) {
+                    connected.add(offPos);
+                    break;
+                }
+            }
 
         return connected;
     }

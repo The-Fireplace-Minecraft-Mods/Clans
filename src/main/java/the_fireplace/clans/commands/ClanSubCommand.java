@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.model.EnumLockType;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
@@ -149,5 +150,25 @@ public abstract class ClanSubCommand extends CommandBase {
 		if(result == null)
 			throw new PlayerNotFoundException("commands.generic.player.notFound", username);
 		return result;
+	}
+
+	public static EnumLockType parseLockType(@Nullable String type) throws WrongUsageException {
+		if(type == null)
+			return EnumLockType.PRIVATE;
+		else
+			switch(type.toLowerCase()) {
+				case "private":
+				case "p":
+					return EnumLockType.PRIVATE;
+				case "clan":
+				case "c":
+					return EnumLockType.CLAN;
+				case "open":
+				case "public":
+				case "o":
+					return EnumLockType.OPEN;
+				default:
+					throw new WrongUsageException("commands.clan.common.invalid_lock_type");
+			}
 	}
 }

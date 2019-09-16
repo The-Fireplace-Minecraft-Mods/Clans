@@ -3,7 +3,6 @@ package the_fireplace.clans.commands.lock;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -46,27 +45,7 @@ public class CommandLock extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		EnumLockType mode;
-		if(args.length == 0)
-			mode = EnumLockType.PRIVATE;
-		else
-			switch(args[0].toLowerCase()) {
-				case "private":
-				case "p":
-					mode = EnumLockType.PRIVATE;
-					break;
-				case "clan":
-				case "c":
-					mode = EnumLockType.CLAN;
-					break;
-				case "open":
-				case "public":
-				case "o":
-					mode = EnumLockType.OPEN;
-					break;
-				default:
-					throw new WrongUsageException(getUsage(sender));
-			}
+		EnumLockType mode = parseLockType(args.length == 0 ? null : args[0]);
 		RayTraceResult lookRay = EntityUtil.getLookRayTrace(sender, 4);
 		if(lookRay == null || lookRay.typeOfHit != RayTraceResult.Type.BLOCK) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.not_block").setStyle(TextStyles.RED));
