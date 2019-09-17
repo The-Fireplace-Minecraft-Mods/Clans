@@ -590,6 +590,11 @@ public class Clan {
         markChanged();
     }
 
+    public void delLock(BlockPos pos) {
+        if(locks.remove(pos) != null)
+            markChanged();
+    }
+
     public void addLockOverride(BlockPos pos, UUID playerId, boolean value) {
         if(!lockOverrides.containsKey(pos))
             lockOverrides.put(pos, Maps.newHashMap());
