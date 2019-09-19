@@ -33,6 +33,7 @@ commands.clan.common.not_on_server=You cannot use %s on %s because it is a serve
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
 commands.clan.common.not_locked=The block you are looking at is not locked.
 commands.clan.common.invalid_lock_type=The lock type '%s' is invalid.
+commands.clan.common.not_claimed_by=The chunk you are standing in is not claimed by %s.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
@@ -291,6 +292,7 @@ commands.clan.unlockchunk.description=Unlocks all your locked blocks in the chun
 commands.clan.unlockchunk.success=You have successfully unlocked all of your locked blocks in the chunk.
 commands.clan.unlockchunk.success_player=You have successfully unlocked all of %s's locked blocks in the chunk.
 commands.clan.unlockchunk.success_all=You have successfully unlocked all locked blocks in the chunk.
+commands.clan.unlockchunk.failed=You do not have permission to unlock other players' blocks in this clan.
 
 commands.clan.grantaccess.usage=/clan grantaccess <player>
 commands.clan.grantaccess.description=Grants a player access to the locked block you are looking at. You can only grant access to blocks if you are the player who locked it or have the "lockadmin" clan permission.
