@@ -48,6 +48,11 @@ public class LandProtectionEventLogic {
             if (chunkClan != null) {
                 if (breaker instanceof EntityPlayerMP) {
                     boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
+                    IBlockState targetState = world.getBlockState(pos);
+                    if(chunkClan.isLocked(pos) && !chunkClan.isLockOwner(pos, breaker.getUniqueID()) && !chunkClan.hasPerm("lockadmin", breaker.getUniqueID())) {
+                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", chunkClan.getLockOwner(pos)).setStyle(TextStyles.RED));
+                        return true;
+                    }
                     if (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker)
                             && !chunkClan.hasPerm("build", breaker.getUniqueID())
                             && !isRaided
@@ -56,7 +61,6 @@ public class LandProtectionEventLogic {
                         breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.break.borderland" : "clans.protection.break.claimed").setStyle(TextStyles.RED));
                         return true;
                     } else if (isRaided && !ChunkUtils.isBorderland(c)) {
-                        IBlockState targetState = world.getBlockState(pos);
                         if (targetState.getBlock().hasTileEntity(targetState)) {
                             if(ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
                                 breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
@@ -64,6 +68,9 @@ public class LandProtectionEventLogic {
                                 breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
                             return true;
                         }
+                    } else if(chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "build")) {
+                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked").setStyle(TextStyles.RED));
+                        return true;
                     }
                 }
                 return false;
@@ -189,6 +196,13 @@ public class LandProtectionEventLogic {
                 if (player instanceof EntityPlayerMP) {
                     IBlockState targetState = world.getBlockState(pos);
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
+                    if(chunkClan.isLocked(pos)) {
+                        if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "interact")) {
+                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
+                            return true;
+                        } else
+                            return false;
+                    }
                     if (!ClanCache.isClaimAdmin((EntityPlayerMP) player)
                             && !chunkClan.hasPerm("interact", player.getUniqueID())
                             && !(targetState.getBlock() instanceof BlockContainer && chunkClan.hasPerm("access", player.getUniqueID()))

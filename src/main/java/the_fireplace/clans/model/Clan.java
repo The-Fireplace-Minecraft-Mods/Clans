@@ -602,9 +602,11 @@ public class Clan {
         markChanged();
     }
 
-    public boolean hasAccess(BlockPos pos, @Nullable UUID playerId, String defaultToPermission) {
+    public boolean hasLockAccess(BlockPos pos, @Nullable UUID playerId, String defaultToPermission) {
         if(playerId == null)
             return false;
+        if(hasPerm("lockadmin", playerId))
+            return true;
         if(lockOverrides.get(pos).containsKey(playerId))
             return lockOverrides.get(pos).get(playerId);
         else if(locks.containsKey(pos)) {

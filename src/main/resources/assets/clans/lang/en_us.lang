@@ -400,6 +400,7 @@ clans.protection.break.borderland=You cannot break blocks this close to another 
 clans.protection.break.raid=You cannot break this block during a raid. Please wait until the raid is completed and try again.
 clans.protection.break.claimed_raid=You cannot break this block while in another clan's territory.
 clans.protection.break.wilderness=You cannot break blocks in Wilderness.
+clans.protection.break.locked=You cannot break this block because it is locked by %s.
 
 clans.protection.place.territory=You cannot place blocks in another clan's territory.
 clans.protection.place.borderland=You cannot place blocks this close to another clan's territory.
@@ -407,6 +408,7 @@ clans.protection.place.wilderness=You cannot place blocks in Wilderness.
 
 clans.protection.interact.territory=You cannot interact with blocks in another clan's territory.
 clans.protection.interact.borderland=You cannot interact with blocks this close to another clan's territory.
+clans.protection.interact.locked=You cannot interact with this block because it is locked by %s.
 
 clans.rent.kicked=You have been kicked out of %s due to inability to pay rent.
 

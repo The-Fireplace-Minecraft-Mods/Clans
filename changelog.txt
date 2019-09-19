@@ -5,6 +5,7 @@ New command: /opclan setserver <clan> <true|1|false|0>
 New command: /opclan setrank <member|admin|leader> <clan> <player>
 New command: /clan seechunk [on|off]
 Clan permission system: set which clan ranks and/or players are allowed to do what in your clan.
+Block locking system: Lock chests, levers, etc on claimed land.
 
 Changes:
 /[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
