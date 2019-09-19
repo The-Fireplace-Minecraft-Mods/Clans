@@ -20,10 +20,7 @@ import the_fireplace.clans.commands.finance.CommandBalance;
 import the_fireplace.clans.commands.finance.CommandSetRent;
 import the_fireplace.clans.commands.finance.CommandTakeFunds;
 import the_fireplace.clans.commands.land.*;
-import the_fireplace.clans.commands.lock.CommandLock;
-import the_fireplace.clans.commands.lock.CommandLockChunk;
-import the_fireplace.clans.commands.lock.CommandUnlock;
-import the_fireplace.clans.commands.lock.CommandUnlockChunk;
+import the_fireplace.clans.commands.lock.*;
 import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.permissions.CommandPermissions;
 import the_fireplace.clans.commands.permissions.CommandSet;
@@ -93,6 +90,8 @@ public class CommandClan extends CommandBase {
         put("lockchunk", new CommandLockChunk());
         put("unlock", new CommandUnlock());
         put("unlockchunk", new CommandUnlockChunk());
+        put("grantaccess", new CommandGrantAccess());
+        put("denyaccess", new CommandDenyAccess());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -141,6 +140,8 @@ public class CommandClan extends CommandBase {
         aliases.put("lc", "lockchunk");
         aliases.put("ul", "unlock");
         aliases.put("ulc", "unlockchunk");
+        aliases.put("ga", "grantaccess");
+        aliases.put("da", "denyaccess");
     }
 
     public static String processAlias(String subCommand) {
