@@ -20,6 +20,10 @@ import the_fireplace.clans.commands.finance.CommandBalance;
 import the_fireplace.clans.commands.finance.CommandSetRent;
 import the_fireplace.clans.commands.finance.CommandTakeFunds;
 import the_fireplace.clans.commands.land.*;
+import the_fireplace.clans.commands.lock.CommandLock;
+import the_fireplace.clans.commands.lock.CommandLockChunk;
+import the_fireplace.clans.commands.lock.CommandUnlock;
+import the_fireplace.clans.commands.lock.CommandUnlockChunk;
 import the_fireplace.clans.commands.members.*;
 import the_fireplace.clans.commands.permissions.CommandPermissions;
 import the_fireplace.clans.commands.permissions.CommandSet;
@@ -84,12 +88,18 @@ public class CommandClan extends CommandBase {
         //permissions
         put("permissions", new CommandPermissions());
         put("set", new CommandSet());
+        //locks
+        put("lock", new CommandLock());
+        put("lockchunk", new CommandLockChunk());
+        put("unlock", new CommandUnlock());
+        put("unlockchunk", new CommandUnlockChunk());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
     private static final List<String> financeCommands = Lists.newArrayList("balance", "addfunds", "takefunds", "setrent", "finances");
 
     static {
+        //land
         aliases.put("c", "claim");
         aliases.put("cc", "clanchat");
         aliases.put("chat", "clanchat");
@@ -101,8 +111,10 @@ public class CommandClan extends CommandBase {
         aliases.put("m", "map");
         aliases.put("fm", "fancymap");
         aliases.put("sc", "seechunk");
+        //members
         aliases.put("i", "invite");
         aliases.put("inv", "invite");
+        //clan constants/details/other
         aliases.put("create", "form");
         aliases.put("b", "banner");
         aliases.put("clan", "details");
@@ -112,15 +124,23 @@ public class CommandClan extends CommandBase {
         aliases.put("pi", "playerinfo");
         aliases.put("player", "playerinfo");
         aliases.put("setcolour", "setcolor");
+        //teleportation related
         aliases.put("h", "home");
         aliases.put("t", "trapped");
         aliases.put("unstuck", "trapped");
+        //finances
         aliases.put("deposit", "addfunds");
         aliases.put("af", "addfunds");
         aliases.put("withdraw", "takefunds");
+        //permissions
         aliases.put("perms", "permissions");
         aliases.put("options", "permissions");
         aliases.put("setperm", "set");
+        //locks
+        aliases.put("l", "lock");
+        aliases.put("lc", "lockchunk");
+        aliases.put("ul", "unlock");
+        aliases.put("ulc", "unlockchunk");
     }
 
     public static String processAlias(String subCommand) {
