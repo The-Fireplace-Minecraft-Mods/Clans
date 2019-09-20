@@ -136,11 +136,13 @@ public class Clan {
             perm.addProperty("name", entry.getKey());
             perm.addProperty("value", entry.getValue().name());
             JsonArray overrides = new JsonArray();
-            for(Map.Entry<UUID, Boolean> override: permissionOverrides.get(entry.getKey()).entrySet()) {
-                JsonObject or = new JsonObject();
-                or.addProperty("player", override.getKey().toString());
-                or.addProperty("allowed", override.getValue());
-            }
+            if(permissionOverrides.containsKey(entry.getKey()))
+                for(Map.Entry<UUID, Boolean> override: permissionOverrides.get(entry.getKey()).entrySet()) {
+                    JsonObject or = new JsonObject();
+                    or.addProperty("player", override.getKey().toString());
+                    or.addProperty("allowed", override.getValue());
+                    overrides.add(or);
+                }
             perm.add("overrides", overrides);
         }
         ret.add("permissions", permissions);
@@ -152,11 +154,13 @@ public class Clan {
             lock.addProperty("type", entry.getValue().getValue1().ordinal());
             lock.addProperty("owner", entry.getValue().getValue2().toString());
             JsonArray overrides = new JsonArray();
-            for(Map.Entry<UUID, Boolean> override: lockOverrides.get(entry.getKey()).entrySet()) {
-                JsonObject or = new JsonObject();
-                or.addProperty("player", override.getKey().toString());
-                or.addProperty("allowed", override.getValue());
-            }
+            if(lockOverrides.containsKey(entry.getKey()))
+                for(Map.Entry<UUID, Boolean> override: lockOverrides.get(entry.getKey()).entrySet()) {
+                    JsonObject or = new JsonObject();
+                    or.addProperty("player", override.getKey().toString());
+                    or.addProperty("allowed", override.getValue());
+                    overrides.add(or);
+                }
             lock.add("overrides", overrides);
         }
         ret.add("locks", locks);
