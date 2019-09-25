@@ -306,6 +306,15 @@ commands.clan.denyaccess.locked=You cannot deny access to this block because it 
 commands.clan.denyaccess.not_block=You are not looking at a block or are too far from the block to deny access to it.
 commands.clan.denyaccess.success=You have successfully denied %s access to the block you are looking at.
 
+commands.clan.lockinfo.usage=/clan lockinfo
+commands.clan.lockinfo.description=View lock information about the block you are looking at.
+commands.clan.lockinfo.locked_by=Owner: %s
+commands.clan.lockinfo.type=Type: %s
+commands.clan.lockinfo.overrides=Overrides:
+commands.clan.lockinfo.allowed=%s: allowed
+commands.clan.lockinfo.denied=%s: denied
+commands.clan.lockinfo.not_block=You are not looking at a block or are too far from the block to view lock information.
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 
