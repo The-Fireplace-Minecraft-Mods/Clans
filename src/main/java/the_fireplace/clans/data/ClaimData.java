@@ -179,7 +179,8 @@ public final class ClaimData {
         for(Map.Entry<ChunkPositionWithData, ClaimStoredData> entry : Sets.newHashSet(claimDataMap.entrySet()))
             if(entry.getValue().clan.equals(clan))
                 claimDataMap.remove(entry.getKey());
-        claimedChunks.get(clan).chunkDataFile.delete();
+        if(claimedChunks.containsKey(clan))
+            claimedChunks.get(clan).chunkDataFile.delete();
         return claimedChunks.remove(clan) != null;
     }
 
