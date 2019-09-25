@@ -69,9 +69,9 @@ public class CommandFancyMap extends ClanSubCommand {
 					else if(pos.isBorderland())
 						row.append('§').append(Integer.toHexString(clan.getTextColor().getColorIndex())).append('-');
 					else {
-						if (!symbolMap.containsKey(clan.getClanId()))
-							symbolMap.put(clan.getClanId(), mapchars[symbolMap.size() % mapchars.length]);
-						row.append(center.z == z && center.x == x ? "§9": '§'+Integer.toHexString(clan.getTextColor().getColorIndex())).append(symbolMap.get(clan.getClanId()));
+						if (!symbolMap.containsKey(clan.getId()))
+							symbolMap.put(clan.getId(), mapchars[symbolMap.size() % mapchars.length]);
+						row.append(center.z == z && center.x == x ? "§9": '§'+Integer.toHexString(clan.getTextColor().getColorIndex())).append(symbolMap.get(clan.getId()));
 					}
 				}
 				sender.sendMessage(new TextComponentString(row.toString()));
@@ -79,7 +79,7 @@ public class CommandFancyMap extends ClanSubCommand {
 			sender.sendMessage(new TextComponentString("=====================================================").setStyle(TextStyles.GREEN));
 			for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
 				Clan c = ClanCache.getClanById(symbol.getKey());
-				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanName() : TranslationUtil.getStringTranslation(sender.getUniqueID(), "clans.wilderness"))).setStyle(new Style().setColor(c != null ? c.getTextColor() : TextFormatting.YELLOW)));
+				sender.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getName() : TranslationUtil.getStringTranslation(sender.getUniqueID(), "clans.wilderness"))).setStyle(new Style().setColor(c != null ? c.getTextColor() : TextFormatting.YELLOW)));
 			}
 		}).start();
 	}

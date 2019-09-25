@@ -53,18 +53,18 @@ public class CommandJoinRaid extends RaidSubCommand {
 						if(!target.isShielded()) {
 							if (!target.getOnlineSurvivalMembers().isEmpty() && target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > 0) {
 								new Raid(sender, target);
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.created", target.getClanName()).setStyle(TextStyles.GREEN));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.created", target.getName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.create_fail", target.getClanName()).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.create_fail", target.getName()).setStyle(TextStyles.RED));
 						} else
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getClanName(), Math.round(100f*target.getShield()/60)/100f).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getName(), Math.round(100f*target.getShield()/60)/100f).setStyle(TextStyles.RED));
 					} else { //Join an existing raid
 						Raid raid = RaidingParties.getRaid(target);
 						if(target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
 							raid.addAttacker(sender);
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getClanName()).setStyle(TextStyles.GREEN));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.limit", target.getClanName(), raid.getAttackerCount(), target.getOnlineMembers().size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.limit", target.getName(), raid.getAttackerCount(), target.getOnlineMembers().size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 					}
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.inclan").setStyle(TextStyles.RED));
@@ -78,7 +78,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 		List<String> targetClanNames = Lists.newArrayList();
 		for(Clan clan: ClanDatabase.getClans())
 			if(sender.getCommandSenderEntity() != null && !clan.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !clan.isServer())
-				targetClanNames.add(clan.getClanName());
+				targetClanNames.add(clan.getName());
 		return args.length == 1 ? targetClanNames : Collections.emptyList();
 	}
 }

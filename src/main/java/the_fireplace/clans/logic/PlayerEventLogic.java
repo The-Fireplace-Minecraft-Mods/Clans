@@ -59,11 +59,11 @@ public class PlayerEventLogic {
             if (ocAutoAbandon)
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
             if (cAutoAbandon != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getClanName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getName()).setStyle(TextStyles.GREEN));
             if (ocAutoClaim != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getName()).setStyle(TextStyles.GREEN));
             if (cAutoClaim != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getName()).setStyle(TextStyles.GREEN));
         }
     }
 
@@ -73,7 +73,7 @@ public class PlayerEventLogic {
             if (defaultClanId != null) {
                 Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
                 if (playerDefaultClan != null)
-                    return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getClanName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
+                    return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
                 else
                     PlayerData.updateDefaultClan(player.getUniqueID(), null);
             }
@@ -93,7 +93,7 @@ public class PlayerEventLogic {
         if(!player.world.isRemote) {
             Clan clanChat = ClanCache.clanChattingPlayers.get(player.getUniqueID());
             for (EntityPlayerMP member : clanChat.getOnlineMembers().keySet())
-                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
+                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
         }
     }
 

@@ -49,7 +49,7 @@ public class CommandPromote extends ClanSubCommand {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
 			ClanManagementUtil.promoteClanMember(server, sender, args[0], selectedClan);
 		else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getName()).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")

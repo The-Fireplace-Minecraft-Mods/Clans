@@ -53,6 +53,6 @@ public class CommandPermissions extends ClanSubCommand {
 			page = parseInt(args[0]);
 		else
 			page = 1;
-		ChatPageUtil.showPaginatedChat(sender, "/clan "+selectedClan.getClanName()+" permissions %s", texts, page);
+		ChatPageUtil.showPaginatedChat(sender, "/clan "+selectedClan.getName()+" permissions %s", texts, page);
 	}
 }

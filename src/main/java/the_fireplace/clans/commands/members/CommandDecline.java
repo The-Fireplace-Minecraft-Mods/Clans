@@ -41,8 +41,8 @@ public class CommandDecline extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Clan declineClan = ClanCache.removeInvite(sender.getUniqueID());
 		if(declineClan != null) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getClanName()).setStyle(TextStyles.GREEN));
-			declineClan.messageAllOnline(EnumRank.ADMIN, TextStyles.YELLOW, "commands.clan.decline.declined", sender.getDisplayNameString(), declineClan.getClanName());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getName()).setStyle(TextStyles.GREEN));
+			declineClan.messageAllOnline(EnumRank.ADMIN, TextStyles.YELLOW, "commands.clan.decline.declined", sender.getDisplayNameString(), declineClan.getName());
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}

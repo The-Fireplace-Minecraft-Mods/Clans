@@ -50,7 +50,7 @@ public final class PlayerData {
             if(ClanCache.getPlayerClans(player).isEmpty())
                 setDefaultClan(player, null);
             else
-                setDefaultClan(player, ClanCache.getPlayerClans(player).get(0).getClanId());
+                setDefaultClan(player, ClanCache.getPlayerClans(player).get(0).getId());
     }
 
     public static void setCooldown(UUID player, int cooldown) {

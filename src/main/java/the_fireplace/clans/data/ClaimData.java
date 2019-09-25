@@ -59,13 +59,13 @@ public final class ClaimData {
     public static void addChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        if(!claimedChunks.containsKey(clan.getClanId()))
-            claimedChunks.put(clan.getClanId(), new ClaimStoredData(clan.getClanId()));
-        claimedChunks.get(clan.getClanId()).addChunk(pos);
-        claimDataMap.put(pos, claimedChunks.get(clan.getClanId()));
+        if(!claimedChunks.containsKey(clan.getId()))
+            claimedChunks.put(clan.getId(), new ClaimStoredData(clan.getId()));
+        claimedChunks.get(clan.getId()).addChunk(pos);
+        claimDataMap.put(pos, claimedChunks.get(clan.getId()));
         if(!pos.isBorderland())
-            regenBordersTimer.put(clan.getClanId(), 5);
-        claimedChunks.get(clan.getClanId()).isChanged = true;
+            regenBordersTimer.put(clan.getId(), 5);
+        claimedChunks.get(clan.getId()).isChanged = true;
     }
 
     public static void addChunk(@Nullable UUID clanId, ChunkPositionWithData pos) {
@@ -81,11 +81,11 @@ public final class ClaimData {
     public static void delChunk(Clan clan, ChunkPositionWithData pos) {
         if(!isLoaded)
             load();
-        if(!claimedChunks.containsKey(clan.getClanId()))
-            claimedChunks.put(clan.getClanId(), new ClaimStoredData(clan.getClanId()));
+        if(!claimedChunks.containsKey(clan.getId()))
+            claimedChunks.put(clan.getId(), new ClaimStoredData(clan.getId()));
         claimDataMap.remove(pos);
-        if(claimedChunks.get(clan.getClanId()).delChunk(pos) && !pos.isBorderland())
-            regenBordersTimer.put(clan.getClanId(), 5);
+        if(claimedChunks.get(clan.getId()).delChunk(pos) && !pos.isBorderland())
+            regenBordersTimer.put(clan.getId(), 5);
     }
 
     /**

@@ -37,11 +37,11 @@ public class CommandDisband extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
 			if(!selectedClan.isServer()) {
-				selectedClan.disband(server, sender, "commands.clan.disband.disbanded", selectedClan.getClanName(), sender.getName());
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+				selectedClan.disband(server, sender, "commands.clan.disband.disbanded", selectedClan.getName(), sender.getName());
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClan.getName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getName()).setStyle(TextStyles.RED));
 	}
 }

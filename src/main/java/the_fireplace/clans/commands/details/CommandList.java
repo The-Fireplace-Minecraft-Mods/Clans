@@ -53,7 +53,7 @@ public class CommandList extends ClanSubCommand {
 			if(args.length > 0)
 				switch (args[0]) {
 					case "money":
-						clans.sort(Comparator.comparingLong(clan -> Clans.getPaymentHandler().getBalance(clan.getClanId())));
+						clans.sort(Comparator.comparingLong(clan -> Clans.getPaymentHandler().getBalance(clan.getId())));
 						break;
 					case "land":
 					case "claims":
@@ -63,10 +63,10 @@ public class CommandList extends ClanSubCommand {
 						clans.sort(Comparator.comparingInt(Clan::getMemberCount));
 				}
 			else
-				clans.sort(Comparator.comparing(Clan::getClanName));
+				clans.sort(Comparator.comparing(Clan::getName));
 			ArrayList<ITextComponent> listItems = Lists.newArrayList();
 			for (Clan clan : clans)
-				listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClanName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+				listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 			int page;
 			if(args.length > 1)
 				page = parseInt(args[1]);

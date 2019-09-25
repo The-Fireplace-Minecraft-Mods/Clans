@@ -45,7 +45,7 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(selectedClan.getClanId().equals(ClaimData.getChunkClanId(new ChunkPositionWithData(c)))) {
+		if(selectedClan.getId().equals(ClaimData.getChunkClanId(new ChunkPositionWithData(c)))) {
 			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())
 				if(pos.getValue() != null && pos.getKey() != selectedClan && pos.getValue().getDistance(sender.getPosition().getX(), sender.getPosition().getY(), sender.getPosition().getZ()) < Clans.getConfig().getMinClanHomeDist()) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", Clans.getConfig().getMinClanHomeDist()).setStyle(TextStyles.RED));

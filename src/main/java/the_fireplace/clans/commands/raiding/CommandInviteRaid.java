@@ -55,7 +55,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 					Map<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
 					if (clanPlayers.size() > raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
 						if (!clanPlayers.containsKey(target)) {
-							target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+							target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));

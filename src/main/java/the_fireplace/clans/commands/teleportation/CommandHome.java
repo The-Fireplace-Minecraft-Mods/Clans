@@ -55,14 +55,14 @@ public class CommandHome extends ClanSubCommand {
 		int cooldown = PlayerData.getCooldown(sender.getUniqueID());
 		if(cooldown <= 0) {
 			if (!selectedClan.hasHome() || home == null)
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getName()).setStyle(TextStyles.RED));
 			else {
 				if(Clans.getConfig().getClanHomeWarmupTime() > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getClanName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
 					PlayerCache.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
 					PlayerCache.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
 					PlayerCache.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
-					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getClanId()));
+					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getId()));
 				} else
 					teleportHome(sender, selectedClan, home, playerDim, false);
 			}

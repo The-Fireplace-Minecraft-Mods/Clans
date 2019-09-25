@@ -55,14 +55,14 @@ public class CommandInvite extends ClanSubCommand {
 			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
 				if (!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
 					if (ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getName()).setStyle(TextStyles.GREEN));
+						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getName()).setStyle(TextStyles.GREEN));
 					} else {
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getClanName()).setStyle(TextStyles.YELLOW));
+						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getName()).setStyle(TextStyles.YELLOW));
 					}
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getName()).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
 		} else

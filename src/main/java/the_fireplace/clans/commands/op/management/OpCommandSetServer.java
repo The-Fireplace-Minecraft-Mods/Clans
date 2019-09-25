@@ -43,7 +43,7 @@ public class OpCommandSetServer extends OpClanSubCommand {
 			boolean serverClan;
 			serverClan = parseBool(args[1]);
 			c.setServer(serverClan);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

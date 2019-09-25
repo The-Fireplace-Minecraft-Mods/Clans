@@ -45,7 +45,7 @@ public class OpCommandSetColor extends OpClanSubCommand {
 				return;
 			}
 			c.setColor(color);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", c.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", c.getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

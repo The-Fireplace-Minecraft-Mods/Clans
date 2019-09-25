@@ -308,26 +308,26 @@ public class Clan {
         return Collections.unmodifiableSet(getOnlineMembers().entrySet().stream().filter(e -> !e.getKey().isCreative() && !e.getKey().isSpectator()).collect(Collectors.toSet()));
     }
 
-    public UUID getClanId() {
+    public UUID getId() {
         return clanId;
     }
 
-    public String getClanName() {
+    public String getName() {
         return clanName;
     }
 
-    public void setClanName(String clanName) {
+    public void setName(String clanName) {
         ClanCache.removeName(this.clanName);
         this.clanName = clanName;
         ClanCache.addName(this);
         markChanged();
     }
 
-    public String getClanBanner() {
+    public String getBanner() {
         return clanBanner;
     }
 
-    public void setClanBanner(String clanBanner) {
+    public void setBanner(String clanBanner) {
         ClanCache.removeBanner(this.clanBanner);
         ClanCache.addBanner(clanBanner);
         this.clanBanner = clanBanner;
@@ -368,7 +368,7 @@ public class Clan {
     }
 
     public int getClaimCount() {
-        return ClaimData.getClaimedChunks(getClanId()).size();
+        return ClaimData.getClaimedChunks(getId()).size();
     }
 
     public int getMaxClaimCount() {
@@ -574,11 +574,11 @@ public class Clan {
     }
 
     public void refundClaim() {
-        Clans.getPaymentHandler().addAmount(getClaimCount() <= Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getClanId());
+        Clans.getPaymentHandler().addAmount(getClaimCount() <= Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getId());
     }
 
     public boolean payForClaim() {
-        return Clans.getPaymentHandler().deductAmount(getClaimCount() < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getClanId());
+        return Clans.getPaymentHandler().deductAmount(getClaimCount() < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getId());
     }
 
     public void setPerm(String permission, EnumRank rank) {
@@ -714,11 +714,11 @@ public class Clan {
         if(RaidingParties.isPreparingRaid(this))
             RaidingParties.removeRaid(RaidingParties.getRaid(this));
         Clans.getDynmapCompat().clearAllTeamMarkers(this);
-        ClanDatabase.removeClan(getClanId());
+        ClanDatabase.removeClan(getId());
         if(isServer())
             return;
 
-        long distFunds = Clans.getPaymentHandler().getBalance(this.getClanId());
+        long distFunds = Clans.getPaymentHandler().getBalance(this.getId());
         long rem;
         distFunds += Clans.getConfig().getClaimChunkCost() * this.getClaimCount();
         if (Clans.getConfig().isLeaderRecieveDisbandFunds()) {
@@ -733,7 +733,7 @@ public class Clan {
             Clans.getPaymentHandler().ensureAccountExists(member);
             if (!Clans.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
                 rem += this.payLeaders(distFunds);
-            PlayerData.updateDefaultClan(member, getClanId());
+            PlayerData.updateDefaultClan(member, getId());
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
             if (player != null) {
@@ -741,7 +741,7 @@ public class Clan {
                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), disbandMessageTranslationKey, translationArgs).setStyle(TextStyles.YELLOW));
             }
         }
-        Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getClanId()), this.getClanId());
+        Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getId()), this.getId());
     }
     //endregion
 

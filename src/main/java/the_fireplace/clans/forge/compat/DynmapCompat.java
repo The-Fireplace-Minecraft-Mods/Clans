@@ -144,7 +144,7 @@ public class DynmapCompat implements IDynmapCompat {
 
         for(Clan clan: ClaimData.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getClanId()))
+            for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
                 if(!addedDims.contains(chunk.getDim())) {
                     teamDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
@@ -238,7 +238,7 @@ public class DynmapCompat implements IDynmapCompat {
     @Override
     public void refreshTooltip(Clan clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getClanId()))
+        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
             if(!addedDims.contains(chunk.getDim())) {
                 refreshTooltip(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
@@ -283,7 +283,7 @@ public class DynmapCompat implements IDynmapCompat {
     @Override
     public void clearAllTeamMarkers(Clan clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getClanId()))
+        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
             if(!addedDims.contains(chunk.getDim())) {
                 clearAllTeamMarkers(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());

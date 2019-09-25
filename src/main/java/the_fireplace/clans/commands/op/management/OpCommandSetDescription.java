@@ -39,7 +39,7 @@ public class OpCommandSetDescription extends OpClanSubCommand {
 			for(String arg: ArrayUtils.subarray(args, 1, args.length))
 				newDescription.append(arg).append(' ');
 			c.setDescription(newDescription.toString());
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setdescription.success", c.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setdescription.success", c.getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

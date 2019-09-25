@@ -41,7 +41,7 @@ public class Raid {
 			reward *= target.getClaimCount();
 		if(Clans.getConfig().isWinRaidMultiplierPlayers())
 			reward *= defenders.size();
-		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getClanId());
+		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getId());
 		long remainder = reward % initAttackers.size();
 		reward /= initAttackers.size();
 		for(UUID player: initAttackers) {
@@ -57,7 +57,7 @@ public class Raid {
 	public void defenderVictory() {
 		RaidingParties.endRaid(target, false);
 		//Reward the defenders the cost of the raid
-		Clans.getPaymentHandler().addAmount(cost, target.getClanId());
+		Clans.getPaymentHandler().addAmount(cost, target.getId());
 		target.addShield(Clans.getConfig().getDefenseShield() * 60);
 		target.addWin();
 	}
@@ -112,13 +112,13 @@ public class Raid {
 				EntityPlayerMP d2 = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
 				if (d2 != null)
-					d2.sendMessage(TranslationUtil.getTranslation(d2.getUniqueID(), "clans.raid.glowing.defender", target.getClanName(), Clans.getConfig().getRemainingTimeToGlow(), attackers.size()).setStyle(TextStyles.YELLOW));
+					d2.sendMessage(TranslationUtil.getTranslation(d2.getUniqueID(), "clans.raid.glowing.defender", target.getName(), Clans.getConfig().getRemainingTimeToGlow(), attackers.size()).setStyle(TextStyles.YELLOW));
 			}
 			for(UUID member: getAttackers()) {
 				EntityPlayerMP m2 = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
 				if(m2 != null)
-					m2.sendMessage(TranslationUtil.getTranslation(m2.getUniqueID(), "clans.raid.glowing.attacker", target.getClanName(), Clans.getConfig().getRemainingTimeToGlow(), defenders.size()).setStyle(TextStyles.YELLOW));
+					m2.sendMessage(TranslationUtil.getTranslation(m2.getUniqueID(), "clans.raid.glowing.attacker", target.getName(), Clans.getConfig().getRemainingTimeToGlow(), defenders.size()).setStyle(TextStyles.YELLOW));
 			}
 		}
 		if(remainingSeconds-- <= Clans.getConfig().getRemainingTimeToGlow() * 60)
@@ -139,9 +139,9 @@ public class Raid {
 		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
 		if(attackers.get(member.getUniqueID()) > Clans.getConfig().getMaxAttackerAbandonmentTime()) {
 			removeAttacker(member.getUniqueID());
-			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getClanName()).setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getName()).setStyle(TextStyles.YELLOW));
 		} else if(attackers.get(member.getUniqueID()) == 1)
-			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getClanName(), Clans.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getName(), Clans.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetAttackerAbandonmentTime(EntityPlayer member) {
@@ -158,9 +158,9 @@ public class Raid {
 		defenders.put(defender.getUniqueID(), defenders.get(defender.getUniqueID()) + 1);
 		if(defenders.get(defender.getUniqueID()) > Clans.getConfig().getMaxClanDesertionTime()) {
 			removeDefender(defender.getUniqueID());
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", target.getClanName()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", target.getName()).setStyle(TextStyles.YELLOW));
 		} else if(defenders.get(defender.getUniqueID()) == 1)
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", target.getClanName(), Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", target.getName(), Clans.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetDefenderAbandonmentTime(EntityPlayer defender) {

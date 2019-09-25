@@ -93,11 +93,11 @@ public class CommandPlayerInfo extends ClanSubCommand {
 				defaultClan = ClanCache.getClanById(PlayerData.getDefaultClan(target.getId()));
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.clans").setStyle(TextStyles.GREEN));
 			for(Clan leader: leaders)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", leader.getClanName()).setStyle(defaultClan != null && leader.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", leader.getName()).setStyle(defaultClan != null && leader.getId().equals(defaultClan.getId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 			for(Clan admin: admins)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.admin", admin.getClanName()).setStyle(defaultClan != null && admin.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.admin", admin.getName()).setStyle(defaultClan != null && admin.getId().equals(defaultClan.getId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 			for(Clan member: members)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.member", member.getClanName()).setStyle(defaultClan != null && member.getClanId().equals(defaultClan.getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.member", member.getName()).setStyle(defaultClan != null && member.getId().equals(defaultClan.getId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.noclans", target.getName()).setStyle(TextStyles.GREEN));
 	}

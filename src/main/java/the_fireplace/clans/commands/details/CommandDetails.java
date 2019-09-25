@@ -78,7 +78,7 @@ public class CommandDetails extends ClanSubCommand {
 
 	@SuppressWarnings("ConstantConditions")
 	private void showDetails(MinecraftServer server, ICommandSender sender, Clan clan) throws CommandException {
-		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", clan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", clan.getName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", clan.getClaimCount()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", clan.getMemberCount()).setStyle(TextStyles.GREEN));
@@ -118,7 +118,7 @@ public class CommandDetails extends ClanSubCommand {
 					sender.sendMessage(new TextComponentString(m.getName()).setStyle(server.getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW));
 			}
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getName()).setStyle(TextStyles.RED));
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
 		if((senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) && !clan.isServer()) {
 			if(Clans.getConfig().getChargeRentDays() <= 0 && Clans.getConfig().getClanUpkeepDays() <= 0)
@@ -165,7 +165,7 @@ public class CommandDetails extends ClanSubCommand {
 				}
 			}
 			if(rent <= 0 && upkeep <= 0 && leaders.contains(senderId))
-				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.breaking_even", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.breaking_even", selectedClan.getName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

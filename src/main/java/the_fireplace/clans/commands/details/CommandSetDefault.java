@@ -46,10 +46,10 @@ public class CommandSetDefault extends ClanSubCommand {
 		Clan def = ClanCache.getClanByName(args[0]);
 		if(def != null) {
 			if(def.getMembers().containsKey(sender.getUniqueID())) {
-				PlayerData.setDefaultClan(sender.getUniqueID(), def.getClanId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanName()).setStyle(TextStyles.GREEN));
+				PlayerData.setDefaultClan(sender.getUniqueID(), def.getId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound").setStyle(TextStyles.RED));
 	}
@@ -59,7 +59,7 @@ public class CommandSetDefault extends ClanSubCommand {
 		List<String> ret = Lists.newArrayList();
 		if(args.length == 1 && sender instanceof EntityPlayerMP)
 			for(Clan c: ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID()))
-				ret.add(c.getClanName());
+				ret.add(c.getName());
 		return ret;
 	}
 }

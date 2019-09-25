@@ -44,9 +44,9 @@ public class CommandAccept extends ClanSubCommand {
 		if(acceptClan != null){
 			acceptClan.addMember(sender.getUniqueID());
 			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-				PlayerData.setDefaultClan(sender.getUniqueID(), acceptClan.getClanId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanName()).setStyle(TextStyles.GREEN));
-			acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanName());
+				PlayerData.setDefaultClan(sender.getUniqueID(), acceptClan.getId());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getName()).setStyle(TextStyles.GREEN));
+			acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getName());
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
 	}

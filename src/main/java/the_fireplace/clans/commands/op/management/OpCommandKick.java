@@ -53,9 +53,9 @@ public class OpCommandKick extends OpClanSubCommand {
 					if (ClanCache.getPlayerClans(target.getId()).contains(c)) {
 						ClanManagementUtil.kickMember(server, sender, c, target);
 					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanName()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getName()).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", player).setStyle(TextStyles.RED));
 		} else

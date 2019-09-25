@@ -186,7 +186,7 @@ public class CommandClan extends CommandBase {
                     args = new String[]{};
             //Make the first arg the default clan name because a clan name was not specified
             Clan defaultClan = sender instanceof EntityPlayerMP ? ClanCache.getClanById(PlayerData.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
-            args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getClanName() : "null"}, args);
+            args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getName() : "null"}, args);
         }
         //Check permissions and run command
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
@@ -229,7 +229,7 @@ public class CommandClan extends CommandBase {
                 List<String> arg1List = Lists.newArrayList(commands.keySet());
                 if (sender instanceof EntityPlayerMP)
                     for (Clan c : ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID()))
-                        arg1List.add(c.getClanName());
+                        arg1List.add(c.getName());
                 return arg1List;
             } else if(commands.get(args[0]) != null) {
                 return commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos);

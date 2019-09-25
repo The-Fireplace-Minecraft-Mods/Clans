@@ -46,8 +46,8 @@ public class CommandLockChunk extends ClanSubCommand {
 		EnumLockType mode = parseLockType(args.length == 0 ? null : args[0]);
 
 		Chunk c = sender.world.getChunk(sender.getPosition());
-		if (!selectedClan.getClanId().equals(ChunkUtils.getChunkOwner(c))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getClanName()).setStyle(TextStyles.RED));
+		if (!selectedClan.getId().equals(ChunkUtils.getChunkOwner(c))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getName()).setStyle(TextStyles.RED));
 			return;
 		}
 		for(int y=0; y <= 255; y++)

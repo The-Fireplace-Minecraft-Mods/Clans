@@ -36,8 +36,8 @@ public class OpCommandSetName extends OpClanSubCommand {
 		if(c != null) {
 			String newName = args[0];
 			if (!ClanCache.clanNameTaken(newName)) {
-				String oldName = c.getClanName();
-				c.setClanName(newName);
+				String oldName = c.getName();
+				c.setName(newName);
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));

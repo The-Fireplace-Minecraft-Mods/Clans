@@ -43,15 +43,15 @@ public class CommandBanner extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		NBTTagCompound banner;
-		if(selectedClan.getClanBanner() != null) {
+		if(selectedClan.getBanner() != null) {
 			try {
-				banner = JsonToNBT.getTagFromJson(selectedClan.getClanBanner());
+				banner = JsonToNBT.getTagFromJson(selectedClan.getBanner());
 			} catch (NBTException e) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getName()).setStyle(TextStyles.RED));
 				return;
 			}
 		} else {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getName()).setStyle(TextStyles.RED));
 			return;
 		}
 		if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {

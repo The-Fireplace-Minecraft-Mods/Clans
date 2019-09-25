@@ -43,8 +43,8 @@ public final class ClanDatabase {
         if(!getInstance().clans.containsKey(clanId)) {
             getInstance().clans.put(clanId, clan);
             ClanCache.addName(clan);
-            if(clan.getClanBanner() != null)
-                ClanCache.addBanner(clan.getClanBanner());
+            if(clan.getBanner() != null)
+                ClanCache.addBanner(clan.getBanner());
             clan.markChanged();
             return true;
         }
@@ -88,7 +88,7 @@ public final class ClanDatabase {
             try {
                 Clan loadedClan = Clan.load(file);
                 if(loadedClan != null)
-                    instance.clans.put(loadedClan.getClanId(), loadedClan);
+                    instance.clans.put(loadedClan.getId(), loadedClan);
             } catch (Exception e) {
                 e.printStackTrace();
             }

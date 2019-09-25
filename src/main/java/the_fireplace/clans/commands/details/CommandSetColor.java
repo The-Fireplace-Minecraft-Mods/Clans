@@ -43,7 +43,7 @@ public class CommandSetColor extends ClanSubCommand {
 			else
 				color = args[0].startsWith("0x") ? Integer.parseInt(args[0].substring(2), 16) : Integer.parseInt(args[0]);
 			selectedClan.setColor(color);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 		} catch(NumberFormatException e) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.invalid", args[0]).setStyle(TextStyles.RED));
 		}

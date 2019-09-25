@@ -39,32 +39,32 @@ public class TimerLogic {
         if (Clans.getConfig().getClanUpkeepDays() > 0 || Clans.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
                 if (Clans.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
-                    Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getClanName());
+                    Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
                     for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
                         if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
-                            Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getClanId());
+                            Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
                         else if (Clans.getConfig().isEvictNonpayers())
                             if (member.getValue() != EnumRank.LEADER && (Clans.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
                                 clan.removeMember(member.getKey());
                                 EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
                                 //noinspection ConstantConditions
                                 if (player != null) {
-                                    PlayerData.updateDefaultClan(player.getUniqueID(), clan.getClanId());
-                                    player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getClanName()).setStyle(TextStyles.YELLOW));
+                                    PlayerData.updateDefaultClan(player.getUniqueID(), clan.getId());
+                                    player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getName()).setStyle(TextStyles.YELLOW));
                                 }
                             }
                     }
                     clan.updateNextRentTimeStamp();
                 }
                 if (Clans.getConfig().getClanUpkeepDays() > 0 && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
-                    Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getClanName());
+                    Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
                     int upkeep = Clans.getConfig().getClanUpkeepCost();
                     if (Clans.getConfig().isMultiplyUpkeepMembers())
                         upkeep *= clan.getMemberCount();
                     if (Clans.getConfig().isMultiplyUpkeepClaims())
                         upkeep *= clan.getClaimCount();
-                    if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getClanId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
-                        clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getClanName());
+                    if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
+                        clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
                     else
                         clan.updateNextUpkeepTimeStamp();
                 }
@@ -145,7 +145,7 @@ public class TimerLogic {
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);
-                chunkClanId = chunkClan != null ? chunkClan.getClanId() : null;
+                chunkClanId = chunkClan != null ? chunkClan.getId() : null;
                 isInBorderland = data != null && data.isBorderland();
             }
 
@@ -182,7 +182,7 @@ public class TimerLogic {
     }
 
     private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, Collection<Clan> playerClans, boolean isBorderland) {
-        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanId() : null, isBorderland);
+        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getId() : null, isBorderland);
         Style color = TextStyles.GREEN;
         if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
             color = TextStyles.YELLOW;
@@ -204,10 +204,10 @@ public class TimerLogic {
                     territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
             }
         } else if(isBorderland) {
-            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", chunkClan.getClanName());
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", chunkClan.getName());
             territoryDesc = "";
         } else {
-            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", chunkClan.getClanName());
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", chunkClan.getName());
             territoryDesc = chunkClan.getDescription();
         }
 
@@ -227,7 +227,7 @@ public class TimerLogic {
             if (RaidingParties.hasActiveRaid(pc)) {
                 Raid r = RaidingParties.getActiveRaid(pc);
                 if(r.getDefenders().contains(player.getUniqueID()))
-                    if (pc.getClanId().equals(chunkClan))
+                    if (pc.getId().equals(chunkClan))
                         r.resetDefenderAbandonmentTime(player);
                     else
                         r.incrementDefenderAbandonmentTime(player);
@@ -236,7 +236,7 @@ public class TimerLogic {
             Raid r = RaidingParties.getRaid(player);
             if (r.isActive()) {
                 if(r.getAttackers().contains(player.getUniqueID()))
-                    if (r.getTarget().getClanId().equals(chunkClan))
+                    if (r.getTarget().getId().equals(chunkClan))
                         r.resetAttackerAbandonmentTime(player);
                     else
                         r.incrementAttackerAbandonmentTime(player);

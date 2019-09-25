@@ -49,7 +49,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				return;
 			}
 			c.setShield(duration);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getClanName(), duration).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getName(), duration).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

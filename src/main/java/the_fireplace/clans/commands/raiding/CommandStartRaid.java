@@ -50,9 +50,9 @@ public class CommandStartRaid extends RaidSubCommand {
 							raid.setCost(raidCost);
 							if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
 								RaidingParties.initRaid(raid.getTarget());
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getClanName()).setStyle(TextStyles.GREEN));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getClanName(), raidCost, Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), raidCost, Clans.getPaymentHandler().getCurrencyName(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible

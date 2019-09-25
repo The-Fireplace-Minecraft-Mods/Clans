@@ -40,8 +40,8 @@ public class OpCommandDisband extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
-			c.disband(server, sender, "commands.clan.disband.disbanded", c.getClanName(), sender.getName());
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", c.getClanName()).setStyle(TextStyles.GREEN));
+			c.disband(server, sender, "commands.clan.disband.disbanded", c.getName(), sender.getName());
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", c.getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

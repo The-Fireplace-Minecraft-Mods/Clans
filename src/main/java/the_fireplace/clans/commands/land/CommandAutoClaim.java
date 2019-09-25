@@ -42,9 +42,9 @@ public class CommandAutoClaim extends ClanSubCommand {
         Clan rm = ClanCache.autoClaimLands.remove(sender.getUniqueID());
 		if(rm == null) {
             ClanCache.autoClaimLands.put(sender.getUniqueID(), selectedClan);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getName()).setStyle(TextStyles.GREEN));
 			ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
 	}
 }

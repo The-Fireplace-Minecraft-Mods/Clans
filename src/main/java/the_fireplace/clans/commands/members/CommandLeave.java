@@ -43,7 +43,7 @@ public class CommandLeave extends ClanSubCommand {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 		if(senderRank == EnumRank.LEADER && !selectedClan.isServer()) {
 			if(selectedClan.getMembers().size() == 1){
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClan.getName()).setStyle(TextStyles.RED));
 				return;
 			}
 			List<UUID> leaders = Lists.newArrayList();
@@ -51,16 +51,16 @@ public class CommandLeave extends ClanSubCommand {
 				if(selectedClan.getMembers().get(member).equals(EnumRank.LEADER))
 					leaders.add(member);
 			if(leaders.size() <= 1) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.promote", selectedClan.getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.promote", selectedClan.getName()).setStyle(TextStyles.RED));
 				return;
 			}
 		}
 		if(selectedClan.removeMember(sender.getUniqueID())) {
-			PlayerData.updateDefaultClan(sender.getUniqueID(), selectedClan.getClanId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
-			selectedClan.messageAllOnline(TextStyles.YELLOW, "commands.clan.leave.left", sender.getDisplayName(), selectedClan.getClanName());
+			PlayerData.updateDefaultClan(sender.getUniqueID(), selectedClan.getId());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+			selectedClan.messageAllOnline(TextStyles.YELLOW, "commands.clan.leave.left", sender.getDisplayName(), selectedClan.getName());
 		} else //Internal error because this should be unreachable
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getName()).setStyle(TextStyles.RED));
 	}
 
 }

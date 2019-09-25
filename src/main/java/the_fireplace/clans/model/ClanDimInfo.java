@@ -17,7 +17,7 @@ public class ClanDimInfo {
     }
 
     public ClanDimInfo(Clan clan, int dim) {
-        this(clan.getClanId().toString(), dim, clan.getClanName(), clan.getDescription(), clan.getColor());
+        this(clan.getId().toString(), dim, clan.getName(), clan.getDescription(), clan.getColor());
     }
 
     public String getClanIdString() {

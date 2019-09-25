@@ -54,8 +54,8 @@ public class CommandSetBanner extends ClanSubCommand {
 				if(ClanCache.clanBannerTaken(args[0]))
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 				else {
-					selectedClan.setClanBanner(args[0]);
-					sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+					selectedClan.setBanner(args[0]);
+					sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 				}
 			} catch(NBTException e){
 				throw new SyntaxErrorException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.setbanner.invalid"));
@@ -75,8 +75,8 @@ public class CommandSetBanner extends ClanSubCommand {
 		if(ClanCache.clanBannerTaken(banner))
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 		else {
-			playerClan.setClanBanner(banner);
-			sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getClanName()).setStyle(TextStyles.GREEN));
+			playerClan.setBanner(banner);
+			sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

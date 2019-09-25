@@ -57,7 +57,7 @@ public final class ClanCache {
 	public static Clan getClanByName(String clanName){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName().toLowerCase(), clan);
+				clanNames.put(clan.getName().toLowerCase(), clan);
 		return clanNames.get(clanName.toLowerCase());
 	}
 
@@ -78,23 +78,23 @@ public final class ClanCache {
 		clanName = clanName.toLowerCase();
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getClanName().toLowerCase(), clan);
+				clanNames.put(clan.getName().toLowerCase(), clan);
 		return forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
 	}
 
 	public static boolean clanBannerTaken(String clanBanner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				if(clan.getClanBanner() != null)
-					clanBanners.add(clan.getClanBanner().toLowerCase());
+				if(clan.getBanner() != null)
+					clanBanners.add(clan.getBanner().toLowerCase());
 		return clanBanners.contains(clanBanner.toLowerCase());
 	}
 
 	public static void addBanner(String banner) {
 		if(clanBanners.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				if(clan.getClanBanner() != null)
-					clanBanners.add(clan.getClanBanner().toLowerCase());
+				if(clan.getBanner() != null)
+					clanBanners.add(clan.getBanner().toLowerCase());
 		clanBanners.add(banner.toLowerCase());
 	}
 
@@ -110,8 +110,8 @@ public final class ClanCache {
 	public static void addName(Clan nameClan){
 		if(clanNames.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(TextStyles.stripFormatting(clan.getClanName().toLowerCase()), clan);
-		clanNames.put(TextStyles.stripFormatting(nameClan.getClanName().toLowerCase()), nameClan);
+				clanNames.put(TextStyles.stripFormatting(clan.getName().toLowerCase()), clan);
+		clanNames.put(TextStyles.stripFormatting(nameClan.getName().toLowerCase()), nameClan);
 	}
 
 	public static void removeName(String name){
@@ -172,8 +172,8 @@ public final class ClanCache {
 				clanInvites.remove(clanInvite.getKey());
 		for(UUID player: playerClans.keySet())
 			removePlayerClan(player, c);
-		removeName(c.getClanName());
-		removeBanner(c.getClanBanner());
+		removeName(c.getName());
+		removeBanner(c.getBanner());
 	}
 
 	public static boolean toggleClaimAdmin(EntityPlayerMP admin){

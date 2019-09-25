@@ -40,6 +40,6 @@ public class CommandSetDescription extends ClanSubCommand {
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
 		selectedClan.setDescription(newTagline.toString());
-		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 	}
 }
