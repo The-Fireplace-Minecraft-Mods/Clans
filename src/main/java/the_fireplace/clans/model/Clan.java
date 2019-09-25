@@ -2,6 +2,7 @@ package the_fireplace.clans.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -415,6 +416,7 @@ public class Clan {
         if(removed) {
             ClanCache.removePlayerClan(player, this);
             Clans.getDynmapCompat().refreshTooltip(this);
+            removeLockData(player);
             markChanged();
         }
         return removed;
@@ -638,6 +640,15 @@ public class Clan {
     @Nullable
     public UUID getLockOwner(BlockPos pos) {
         return locks.getOrDefault(pos, new OrderedPair<>(null, null)).getValue2();
+    }
+
+    public void removeLockData(UUID player) {
+        for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: Sets.newHashSet(locks.entrySet()))
+            if(entry.getValue().getValue2().equals(player))
+                locks.remove(entry.getKey());
+        for(Map.Entry<BlockPos, Map<UUID, Boolean>> entry: Sets.newHashSet(lockOverrides.entrySet()))
+            if(entry.getValue().containsKey(player))
+                lockOverrides.get(entry.getKey()).remove(player);
     }
 
     public boolean hasPerm(String permission, @Nullable UUID playerId) {
