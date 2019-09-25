@@ -14,7 +14,9 @@ import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,7 +51,16 @@ public class CommandLockInfo extends ClanSubCommand {
 		BlockPos targetBlockPos = lookRay.getBlockPos();
 		if(selectedClan.isLocked(targetBlockPos)) {
 			GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(selectedClan.getLockOwner(targetBlockPos)));
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN)
+			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(selectedClan.getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
+			Map<UUID, Boolean> overrides = selectedClan.getLockOverrides(targetBlockPos);
+			if(!overrides.isEmpty()) {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.overrides"));
+				for(Map.Entry<UUID, Boolean> entry: overrides.entrySet()) {
+					GameProfile p2 = server.getPlayerProfileCache().getProfileByUUID(entry.getKey());
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), entry.getValue() ? "commands.clan.lockinfo.allowed" : "commands.clan.lockinfo.denied", p2 != null ? p2.getName() : "unknown"));
+				}
+			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_locked").setStyle(TextStyles.GREEN));
 	}

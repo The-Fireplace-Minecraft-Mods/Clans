@@ -642,6 +642,15 @@ public class Clan {
         return locks.getOrDefault(pos, new OrderedPair<>(null, null)).getValue2();
     }
 
+    @Nullable
+    public EnumLockType getLockType(BlockPos pos) {
+        return locks.getOrDefault(pos, new OrderedPair<>(null, null)).getValue1();
+    }
+
+    public Map<UUID, Boolean> getLockOverrides(BlockPos pos) {
+        return Collections.unmodifiableMap(lockOverrides.getOrDefault(pos, Maps.newHashMap()));
+    }
+
     public void removeLockData(UUID player) {
         for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: Sets.newHashSet(locks.entrySet()))
             if(entry.getValue().getValue2().equals(player))

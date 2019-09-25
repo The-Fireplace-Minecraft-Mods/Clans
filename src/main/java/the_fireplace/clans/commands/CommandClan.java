@@ -92,6 +92,7 @@ public class CommandClan extends CommandBase {
         put("unlockchunk", new CommandUnlockChunk());
         put("grantaccess", new CommandGrantAccess());
         put("denyaccess", new CommandDenyAccess());
+        put("lockinfo", new CommandLockInfo());
 	}};
 
     public static final Map<String, String> aliases = Maps.newHashMap();
@@ -142,6 +143,7 @@ public class CommandClan extends CommandBase {
         aliases.put("ulc", "unlockchunk");
         aliases.put("ga", "grantaccess");
         aliases.put("da", "denyaccess");
+        aliases.put("li", "lockinfo");
     }
 
     public static String processAlias(String subCommand) {
