@@ -28,6 +28,8 @@ public class CommandRaid extends CommandBase {
         put("invite", new CommandInviteRaid());
 	    put("start", new CommandStartRaid());
         put("collect", new CommandCollect());
+        //Teleportation
+        put("thru", new CommandThru());
         //help
         put("help", new CommandRaidHelp());
 	}};
@@ -39,6 +41,8 @@ public class CommandRaid extends CommandBase {
         aliases.put("l", "leave");
         aliases.put("i", "invite");
         aliases.put("c", "collect");
+
+        aliases.put("t", "thru");
     }
 
     public static String processAlias(String subCommand) {

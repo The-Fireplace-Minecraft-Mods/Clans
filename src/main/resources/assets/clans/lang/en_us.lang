@@ -367,7 +367,8 @@ commands.opclan.setserver.description=Set if a clan is a server clan. Server cla
 commands.opclan.setserver.success_t=You have made %s a server clan.
 commands.opclan.setserver.success_f=You have removed the server status from %s.
 
-commands.raid.common.notinparty=You are not in a raiding party!
+commands.raid.common.notinparty=You are not in a raiding party.
+commands.raid.common.not_raiding=You are not in an active raid.
 
 commands.raid.collect.usage=/raid collect
 commands.raid.collect.description=Collect your blocks placed/forbidden items from during a raid.
@@ -403,6 +404,12 @@ commands.raid.start.success=You successfully started the raid against %s.
 commands.raid.start.insufficient_funds=You have insufficient funds to start the raid against %s. It costs %s %s.
 commands.raid.start.raiding=The raid has already been started.
 commands.raid.start.error=Internal Error: Another raiding party is raiding this clan right now. Try again in %s hours. Server owners, please report this.
+
+commands.raid.thru.usage=/raid thru
+commands.raid.thru.description=Go through protected blocks
+commands.raid.thru.not_block=You are not looking at a block or are too far from the block to view lock information.
+commands.raid.thru.wrong_pos_owner=The block you are looking at is not in %s's territory.
+commands.raid.thru.failed=There is nowhere on the other side of this to safely teleport.
 
 clans.protection.break.claimed=You cannot break blocks in another clan's territory.
 clans.protection.break.borderland=You cannot break blocks this close to another clan's territory.
