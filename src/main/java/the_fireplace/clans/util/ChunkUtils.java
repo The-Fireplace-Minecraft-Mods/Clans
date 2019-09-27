@@ -44,8 +44,7 @@ public class ChunkUtils {
 	}
 
 	public static boolean isBorderland(Chunk c) {
-		ChunkPositionWithData pos = ClaimData.getChunkPositionData(c.x, c.z, c.getWorld().provider.getDimension());
-		return pos != null && pos.isBorderland();
+		return ClaimData.isBorderland(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {

@@ -108,6 +108,11 @@ public final class ClaimData {
             return Collections.unmodifiableList(dims);
     }
 
+    public static boolean isBorderland(int x, int z, int d) {
+        ChunkPositionWithData data = getChunkPositionData(new ChunkPosition(x, z, d));
+        return data != null && data.isBorderland();
+    }
+
     @Nullable
     public static ChunkPositionWithData getChunkPositionData(int x, int z, int d) {
         return getChunkPositionData(new ChunkPosition(x, z, d));
