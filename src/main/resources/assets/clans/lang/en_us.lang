@@ -174,6 +174,7 @@ commands.clan.claim.disconnected_r=You cannot claim this land because it would n
 commands.clan.claim.success=Land claimed for %s.
 commands.clan.claim.insufficient_funds=Insufficient funds in %s's account to claim chunk. It costs %s %s.
 commands.clan.claim.insufficient_funds_r=Insufficient funds in %s's account to claim %s chunks. It costs %s %s.
+commands.clan.claim.start_r=Starting to claim everything within the radius you requested, please wait...
 
 commands.clan.autoabandon.usage=/clan autoabandon
 commands.clan.autoabandon.description=Automatically abandon claims as you enter them.

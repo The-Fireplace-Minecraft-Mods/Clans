@@ -20,11 +20,11 @@ public final class ClaimData {
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
 
     //Main storage
-    private static HashMap<UUID, ClaimStoredData> claimedChunks;
+    private static Map<UUID, ClaimStoredData> claimedChunks;
     //Cache for easy access to data based on chunk position
-    private static HashMap<ChunkPositionWithData, ClaimStoredData> claimDataMap;
+    private static Map<ChunkPositionWithData, ClaimStoredData> claimDataMap;
 
-    public static HashMap<UUID, Integer> regenBordersTimer;
+    public static Map<UUID, Integer> regenBordersTimer;
 
     public static Set<ChunkPositionWithData> getClaimedChunks(UUID clan) {
         if(!isLoaded)
@@ -127,10 +127,7 @@ public final class ClaimData {
     public static ChunkPositionWithData getChunkPositionData(ChunkPosition pos) {
         if(!isLoaded)
             load();
-        for(ChunkPositionWithData pos2 : claimDataMap.keySet())
-            if(pos2.equals(pos))
-                return pos2;
-        return null;
+        return claimDataMap.keySet().stream().filter(p -> p.equals(pos)).findFirst().orElse(null);
     }
 
     @Nullable
@@ -160,6 +157,8 @@ public final class ClaimData {
     public static UUID getChunkClanId(@Nullable ChunkPositionWithData position) {
         if(!isLoaded)
             load();
+        if(position == null)
+            return null;
         ClaimStoredData data = claimDataMap.get(position);
         return data != null ? data.clan : null;
     }
@@ -221,7 +220,7 @@ public final class ClaimData {
         if(!chunkDataLocation.exists())
             chunkDataLocation.mkdirs();
         claimedChunks = Maps.newHashMap();
-        claimDataMap = Maps.newHashMap();
+        claimDataMap = Maps.newConcurrentMap();
         regenBordersTimer = Maps.newHashMap();
         File[] files = chunkDataLocation.listFiles();
         if(files != null)

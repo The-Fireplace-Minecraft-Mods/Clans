@@ -134,7 +134,7 @@ public final class ClansForge {
         public static boolean preventMobsOnClaims = true;
         @Config.Comment("Prevents mobs from spawning in borderlands. Requires enableBorderlands and preventMobsOnClaims.")
         public static boolean preventMobsOnBorderlands = true;
-        @Config.Comment("Allow protection against brealing and placing blocks on claimed land.")
+        @Config.Comment("Allow protection against breaking and placing blocks on claimed land.")
         public static boolean allowBuildProtection = true;
         @Config.Comment("Allow protection against interacting on claimed land.")
         public static boolean allowInteractProtection = true;

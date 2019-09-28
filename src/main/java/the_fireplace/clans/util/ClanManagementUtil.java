@@ -112,11 +112,20 @@ public class ClanManagementUtil {
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public static void claimRadius(EntityPlayerMP sender, Clan selectedClan, int radius, String mode) {
-        //TODO
+        final int cX = sender.chunkCoordX, cZ = sender.chunkCoordZ;
+        //This could take a LONG time with a large radius, do it on a different thread to prevent server timeout
+        new Thread(() ->{
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.start_r").setStyle(TextStyles.GREEN));
+            if (mode.equalsIgnoreCase("square"))
+                for (int x = cX - radius; x <= cX + radius; x++)
+                    for (int z = cZ - radius; z <= cZ + radius; z++)
+                        claimChunk(sender, new ChunkPositionWithData(x, z, sender.dimension), selectedClan, selectedClan.isServer(), false);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+        }).start();
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP sender, Clan selectedClan, boolean force) {
@@ -135,18 +144,16 @@ public class ClanManagementUtil {
                 return false;
             }
         }
-        if(claimClan != null && !claimChunk.isBorderland() && !claimClan.isServer()) {//In this scenario, we are always forcing the claim, so we should refund the clan the land is being taken from
+        if(claimClan != null && !claimChunk.isBorderland() && !claimClan.isServer()) {//In this scenario, we are always forcing the claim and it is over someone else's claim, so we should refund the clan the land is being taken from
             claimClan.refundClaim();
         }
         if(selectedClan.isServer()) {
-            ClaimData.swapChunk(claimChunk, claimOwner, selectedClan.getId());
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
-            return true;
+            return claimChunk(sender, claimChunk, selectedClan, true, true);
         } else {
             if (force || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, selectedClan.getId()) || selectedClan.getClaimCount() == 0) {
                 if (force || Clans.getConfig().getMaxClaims() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
                     if (selectedClan.getClaimCount() > 0)
-                        claimChunk(sender, claimChunk, selectedClan, force);
+                        claimChunk(sender, claimChunk, selectedClan, force, true);
                     else if (Clans.getConfig().getMinClanHomeDist() > 0 && Clans.getConfig().getInitialClaimSeparationMultiplier() > 0) {
                         boolean inClanHomeRange = false;
                         for (Map.Entry<Clan, BlockPos> pos : ClanCache.getClanHomes().entrySet())
@@ -156,15 +163,15 @@ public class ClanManagementUtil {
                             if (Clans.getConfig().isEnforceInitialClaimSeparation())
                                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_error", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
                             else if (PlayerCache.getClaimWarning(sender.getUniqueID()))
-                                return claimChunk(sender, claimChunk, selectedClan, force);
+                                return claimChunk(sender, claimChunk, selectedClan, force, true);
                             else {
                                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.proximity_warning", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
                                 PlayerCache.setClaimWarning(sender.getUniqueID(), true);
                             }
                         } else
-                            return claimChunk(sender, claimChunk, selectedClan, force);
+                            return claimChunk(sender, claimChunk, selectedClan, force, true);
                     } else
-                        return claimChunk(sender, claimChunk, selectedClan, force);
+                        return claimChunk(sender, claimChunk, selectedClan, force, true);
                 } else
                     sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.maxed", selectedClan.getName(), selectedClan.getMaxClaimCount()).setStyle(TextStyles.RED));
             } else
@@ -173,12 +180,13 @@ public class ClanManagementUtil {
         return false;
     }
 
-    public static boolean claimChunk(EntityPlayerMP sender, ChunkPositionWithData claimChunk, Clan selectedClan, boolean force) {
-        if (force || selectedClan.payForClaim()) {
+    public static boolean claimChunk(EntityPlayerMP sender, ChunkPositionWithData claimChunk, Clan selectedClan, boolean noClaimCost, boolean showMessage) {
+        if (noClaimCost || selectedClan.payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.getPosX(), claimChunk.getPosZ()), claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
                 ClaimData.swapChunk(claimChunk, null, selectedClan.getId());
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+                if(showMessage)
+                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
                 return true;
             } else {
                 sender.sendMessage(event.cancelledMessage);
