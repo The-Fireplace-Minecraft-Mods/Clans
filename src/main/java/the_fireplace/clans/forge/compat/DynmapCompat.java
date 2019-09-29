@@ -89,7 +89,8 @@ public class DynmapCompat implements IDynmapCompat {
     public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {
         Clans.getMinecraftHelper().getLogger().debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
 
-        claimUpdates.add(clanDimInfo);
+        if(Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).isVisibleOnDynmap())
+            claimUpdates.add(clanDimInfo);
     }
 
     /**

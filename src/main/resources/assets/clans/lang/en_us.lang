@@ -374,6 +374,11 @@ commands.opclan.setserver.description=Set if a clan is a server clan. Server cla
 commands.opclan.setserver.success_t=You have made %s a server clan.
 commands.opclan.setserver.success_f=You have removed the server status from %s.
 
+commands.opclan.setoption.usage=/opclan set <clan> <option> <value>
+commands.opclan.setoption.description=Set various options for a clan. Valid options are maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server.
+commands.opclan.setoption.success=You have successfully set the %s option for %s to %s.
+commands.opclan.setoption.failed=The option %s was not found.
+
 commands.raid.common.notinparty=You are not in a raiding party.
 commands.raid.common.not_raiding=You are not in an active raid.
 

@@ -298,6 +298,8 @@ public class LandProtectionEventLogic {
             //Do not cancel if the attacker is in admin mode or the chunk is not a claim
             if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(c))
                 return false;
+            if(!chunkClan.isMobDamageAllowed() && attacker instanceof IMob)
+                return true;
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : attacker instanceof EntityTameable && ((EntityTameable) attacker).getOwner() instanceof EntityPlayer ? (EntityPlayer) ((EntityTameable) attacker).getOwner() : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if(target instanceof EntityPlayer || (target instanceof EntityTameable && ((EntityTameable) target).getOwnerId() != null)) {
@@ -351,10 +353,11 @@ public class LandProtectionEventLogic {
 
     public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
         ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
-        return Clans.getConfig().isPreventMobsOnClaims()
-                && !world.isRemote
+        Clan c = ClaimData.getChunkClan(spawnChunkPosition);
+        return !world.isRemote
                 && entity instanceof IMob
-                && ClaimData.getChunkClan(spawnChunkPosition) != null
-                && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland());
+                && c != null
+                && (Clans.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
+                && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
     }
 }

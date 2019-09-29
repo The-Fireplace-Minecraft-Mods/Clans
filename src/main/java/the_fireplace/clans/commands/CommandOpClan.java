@@ -42,6 +42,7 @@ public class CommandOpClan extends CommandBase {
         put("kick", new OpCommandKick());
         put("disband", new OpCommandDisband());
         put("setserver", new OpCommandSetServer());
+        put("setoption", new OpCommandSetOption());
         //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
         //help
@@ -64,6 +65,8 @@ public class CommandOpClan extends CommandBase {
         aliases.put("setcolour", "setcolor");
         aliases.put("deposit", "addfunds");
         aliases.put("af", "addfunds");
+        aliases.put("set", "setoption");
+        aliases.put("so", "setoption");
     }
 
     public static String processAlias(String subCommand) {

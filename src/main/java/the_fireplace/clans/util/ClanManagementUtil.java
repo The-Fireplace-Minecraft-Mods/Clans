@@ -33,14 +33,17 @@ public class ClanManagementUtil {
             int chunkCount = radius * radius;
             int initClaimCount = selectedClan.getClaimCount();
             if(!selectedClan.isServer()) {
-                if(Clans.getConfig().getMaxClaims() > 0 && chunkCount + initClaimCount > selectedClan.getMaxClaimCount()) {
+                if(selectedClan.getMaxClaimCount() > 0 && chunkCount + initClaimCount > selectedClan.getMaxClaimCount()) {
                     sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.maxed_r", chunkCount, selectedClan.getName(), selectedClan.getMaxClaimCount(), initClaimCount));
                     return false;
                 }
                 int cost;
                 int reducedCostCount = Clans.getConfig().getReducedCostClaimCount() - initClaimCount;
+                int customCost = selectedClan.hasCustomClaimCost() ? selectedClan.getClaimCost() : -1;
 
-                if (reducedCostCount > 0)
+                if(customCost >= 0)
+                    cost = customCost;
+                else if (reducedCostCount > 0)
                     cost = Clans.getConfig().getReducedChunkClaimCost() * reducedCostCount + Clans.getConfig().getClaimChunkCost() * (chunkCount - reducedCostCount);
                 else
                     cost = Clans.getConfig().getClaimChunkCost() * chunkCount;
@@ -117,7 +120,7 @@ public class ClanManagementUtil {
 
     public static void claimRadius(EntityPlayerMP sender, Clan selectedClan, int radius, String mode) {
         final int cX = sender.chunkCoordX, cZ = sender.chunkCoordZ;
-        //This could take a LONG time with a large radius, do it on a different thread to prevent server timeout
+        //This could take a long time with a large radius, do it on a different thread to prevent lag spike and server timeout
         new Thread(() ->{
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.claim.start_r").setStyle(TextStyles.GREEN));
             if (mode.equalsIgnoreCase("square"))
@@ -151,7 +154,7 @@ public class ClanManagementUtil {
             return claimChunk(sender, claimChunk, selectedClan, true, true);
         } else {
             if (force || !Clans.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, selectedClan.getId()) || selectedClan.getClaimCount() == 0) {
-                if (force || Clans.getConfig().getMaxClaims() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
+                if (force || selectedClan.getMaxClaimCount() <= 0 || selectedClan.getClaimCount() < selectedClan.getMaxClaimCount()) {
                     if (selectedClan.getClaimCount() > 0)
                         claimChunk(sender, claimChunk, selectedClan, force, true);
                     else if (Clans.getConfig().getMinClanHomeDist() > 0 && Clans.getConfig().getInitialClaimSeparationMultiplier() > 0) {

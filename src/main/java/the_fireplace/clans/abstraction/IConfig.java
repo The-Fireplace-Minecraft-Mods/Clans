@@ -1,5 +1,7 @@
 package the_fireplace.clans.abstraction;
 
+import the_fireplace.clans.model.Clan;
+
 import java.util.List;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -10,6 +12,9 @@ public interface IConfig {
     boolean isAllowMultiClanMembership();
     int getClanHomeWarmupTime();
     int getClanHomeCooldownTime();
+    /**
+     * This should not be directly used, use {@link Clan#getMaxClaimCount()} instead.
+     */
     int getMaxClaims();
     boolean isMultiplyMaxClaimsByPlayers();
     boolean isShowDefaultClanInChat();

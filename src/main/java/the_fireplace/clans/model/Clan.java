@@ -405,7 +405,54 @@ public class Clan {
     }
 
     public int getMaxClaimCount() {
+        if(options.get("maxclaims") > -1)
+            return options.get("maxclaims");
         return Clans.getConfig().isMultiplyMaxClaimsByPlayers() ? getMemberCount() * Clans.getConfig().getMaxClaims() : Clans.getConfig().getMaxClaims();
+    }
+
+    public void setOption(String option, int value) {
+        options.put(option, value);
+    }
+
+    public boolean isServer(){
+        return options.get("server") == 1;
+    }
+
+    public void setServer(boolean server){
+        this.options.put("server", server ? 1 : 0);
+        markChanged();
+    }
+
+    @Nullable
+    public Boolean getMobSpawnOverride() {
+        return options.get("mobspawning") < 0 ? null : options.get("mobspawning") == 1;
+    }
+
+    public boolean isMobDamageAllowed() {
+        return options.get("mobdamage") == 1;
+    }
+
+    public int getClaimCost() {
+        return getClaimCost(getClaimCount());
+    }
+
+    /**
+     * Gets the cost of one claim when the clan has a certain number of claims
+     */
+    public int getClaimCost(int currentClaimCount) {
+        return options.get("claimcost") < 0 ? (currentClaimCount < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost()) : options.get("claimcost");
+    }
+
+    public boolean hasCustomClaimCost() {
+        return options.get("claimcost") >= 0;
+    }
+
+    public boolean isUpkeepExempt() {
+        return options.get("upkeepexemption") == 1;
+    }
+
+    public boolean isVisibleOnDynmap() {
+        return options.get("dynmapvisible") == 1;
     }
 
     public String getDescription() {
@@ -499,15 +546,6 @@ public class Clan {
                 return true;
             } return false;
         }
-    }
-
-    public boolean isServer(){
-        return options.get("server") == 1;
-    }
-
-    public void setServer(boolean server){
-        this.options.put("server", server ? 1 : 0);
-        markChanged();
     }
 
     public long getRent() {
@@ -607,11 +645,11 @@ public class Clan {
     }
 
     public void refundClaim() {
-        Clans.getPaymentHandler().addAmount(getClaimCount() <= Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getId());
+        Clans.getPaymentHandler().addAmount(getClaimCost(), getId());
     }
 
     public boolean payForClaim() {
-        return Clans.getPaymentHandler().deductAmount(getClaimCount() < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : Clans.getConfig().getClaimChunkCost(), getId());
+        return Clans.getPaymentHandler().deductAmount(getClaimCost(), getId());
     }
 
     public void setPerm(String permission, EnumRank rank) {

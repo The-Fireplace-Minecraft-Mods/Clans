@@ -56,13 +56,14 @@ public class TimerLogic {
                     }
                     clan.updateNextRentTimeStamp();
                 }
-                if (Clans.getConfig().getClanUpkeepDays() > 0 && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
+                if (Clans.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
                     int upkeep = Clans.getConfig().getClanUpkeepCost();
                     if (Clans.getConfig().isMultiplyUpkeepMembers())
                         upkeep *= clan.getMemberCount();
                     if (Clans.getConfig().isMultiplyUpkeepClaims())
                         upkeep *= clan.getClaimCount();
+                    //TODO sell claims if needed to raise the amount of clan funds.
                     if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
                         clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
                     else
@@ -107,7 +108,8 @@ public class TimerLogic {
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
-        if(Clans.getConfig().isPreventMobsOnClaims() && ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension) != null && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland()))
+        Clan c = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
+        if(c != null && (Clans.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride())) && (Clans.getConfig().isPreventMobsOnBorderlands() || !ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride())))
             mob.setDead();
     }
 
