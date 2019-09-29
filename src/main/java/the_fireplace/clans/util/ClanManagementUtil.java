@@ -182,7 +182,7 @@ public class ClanManagementUtil {
 
     public static boolean claimChunk(EntityPlayerMP sender, ChunkPositionWithData claimChunk, Clan selectedClan, boolean noClaimCost, boolean showMessage) {
         if (noClaimCost || selectedClan.payForClaim()) {
-            PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, sender.world.getChunk(claimChunk.getPosX(), claimChunk.getPosZ()), claimChunk, sender.getUniqueID(), selectedClan));
+            PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(sender.world, claimChunk, sender.getUniqueID(), selectedClan));
             if(!event.isCancelled) {
                 ClaimData.swapChunk(claimChunk, null, selectedClan.getId());
                 if(showMessage)
