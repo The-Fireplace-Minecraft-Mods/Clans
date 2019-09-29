@@ -28,6 +28,10 @@ public final class ClansAPI {
         return Clans.getPaymentHandler();
     }
 
+    public static boolean isClaimed(int chunkX, int chunkZ, int dimension) {
+        return ClaimData.getChunkClan(chunkX, chunkZ, dimension) != null;
+    }
+
     public static <V> void registerEvent(Class<V> eventType, IClansEventHandler<V> handler) {
         ClansEventManager.registerEvent(eventType, handler);
     }

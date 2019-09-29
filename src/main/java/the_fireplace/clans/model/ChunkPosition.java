@@ -1,6 +1,7 @@
 package the_fireplace.clans.model;
 
 import com.google.gson.JsonObject;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkPosition {
@@ -94,5 +95,9 @@ public class ChunkPosition {
 
     public int getDim() {
         return dim;
+    }
+
+    public ChunkPos toChunkPos() {
+        return new ChunkPos(posX, posZ);
     }
 }
