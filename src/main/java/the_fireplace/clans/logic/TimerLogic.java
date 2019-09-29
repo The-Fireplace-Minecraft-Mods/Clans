@@ -63,7 +63,15 @@ public class TimerLogic {
                         upkeep *= clan.getMemberCount();
                     if (Clans.getConfig().isMultiplyUpkeepClaims())
                         upkeep *= clan.getClaimCount();
-                    //TODO sell claims if needed to raise the amount of clan funds.
+                    if(Clans.getConfig().isDisbandNoUpkeep() && upkeep > Clans.getPaymentHandler().getBalance(clan.getId()) && upkeep <= Clans.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
+                        while(upkeep > Clans.getPaymentHandler().getBalance(clan.getId())) {
+                            ChunkPositionWithData[] chunks = (ChunkPositionWithData[]) ClaimData.getClaimedChunks(clan.getId()).toArray();
+                            if(chunks.length == 0)//This _should_ always be false, but just in case...
+                                break;
+                            ChunkPositionWithData pos = chunks[new Random().nextInt(chunks.length)];
+                            ClanManagementUtil.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
+                        }
+                    }
                     if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
                         clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
                     else

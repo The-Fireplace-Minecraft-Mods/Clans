@@ -22,8 +22,8 @@ public class ChunkEdge {
     public ChunkEdge (AdjacentChunk chunk, Edge edge) {
         if (chunk != null && edge != null) {
             // Get the position of the chunk which is the upper left corner
-            int xPos = chunk.getPos().getRealPosX();
-            int zPos = chunk.getPos().getRealPosZ();
+            int xPos = chunk.getPos().getBlockPosX();
+            int zPos = chunk.getPos().getBlockPosZ();
             m_edgeType = edge;
 
             switch (edge) {

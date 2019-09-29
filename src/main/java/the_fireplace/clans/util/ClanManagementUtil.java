@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
@@ -229,20 +230,25 @@ public class ClanManagementUtil {
     }
 
     public static void abandonClaim(EntityPlayerMP sender, Chunk c, Clan targetClan) {
+        abandonClaim(c.x, c.z, sender.dimension, targetClan);
+    }
+
+    public static void abandonClaim(int chunkX, int chunkZ, int dim, Clan targetClan) {
+        ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         //Unset clan home if it is in the chunk
         if (targetClan.getHome() != null
                 && targetClan.hasHome()
-                && sender.dimension == targetClan.getHomeDim()
-                && targetClan.getHome().getX() >= c.getPos().getXStart()
-                && targetClan.getHome().getX() <= c.getPos().getXEnd()
-                && targetClan.getHome().getZ() >= c.getPos().getZStart()
-                && targetClan.getHome().getZ() <= c.getPos().getZEnd()) {
+                && dim == targetClan.getHomeDim()
+                && targetClan.getHome().getX() >= pos.getXStart()
+                && targetClan.getHome().getX() <= pos.getXEnd()
+                && targetClan.getHome().getZ() >= pos.getZStart()
+                && targetClan.getHome().getZ() <= pos.getZEnd()) {
             targetClan.unsetHome();
         }
 
-        ClaimData.delChunk(targetClan, new ChunkPositionWithData(c));
+        ClaimData.delChunk(targetClan, new ChunkPositionWithData(chunkX, chunkZ, dim));
         if(!targetClan.isServer())
-            Clans.getPaymentHandler().addAmount(Clans.getConfig().getClaimChunkCost(), targetClan.getId());
+            targetClan.refundClaim();
     }
 
     public static boolean abandonClaimWithAdjacencyCheck(EntityPlayerMP sender, Chunk c, Clan targetClan) {

@@ -7,6 +7,7 @@ New command: /clan seechunk [on|off]
 Clan permission system: set which clan ranks and/or players are allowed to do what in your clan.
 Block locking system: Lock chests, levers, etc on claimed land.
 New command: /raid thru teleports the player past unbreakable blocks during a raid. This prevents clans from making walls of locked blocks to stop raiders from getting in.
+New command: /opclan set <clan> <option> <value> allows overriding some config settings for specific clans, and setting some other properties such as if mobs do damage, upkeep exemption, and dynmap visibility.
 
 Changes:
 /[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
@@ -23,6 +24,7 @@ Changes between Wilderness and Underground are no longer shown to users who are 
 Underground is shown as Wilderness to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
 Improved various tab completions
 Minecarts are now protected on claimed land
+If a clan would be disbanded because of inability to pay upkeep, random claims get abandoned to pay the upkeep cost.
 
 Fixes/Internal Changes:
 Fixed /clan and /raid commands being unusable in console.

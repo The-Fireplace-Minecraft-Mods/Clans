@@ -24,14 +24,14 @@ public class ChunkPosition {
     /**
      * @return Return the real X position of the chunk in blocks
      */
-    public int getRealPosX() {
+    public int getBlockPosX() {
         return (this.posX << 4);
     }
 
     /**
      * @return Return the real Z position of the chunk in blocks
      */
-    public int getRealPosZ() {
+    public int getBlockPosZ() {
         return (this.posZ << 4);
     }
 
