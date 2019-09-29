@@ -44,7 +44,6 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private boolean isServer = false;
     private long rent = 0;
     private int wins = 0, losses = 0;
     private long shield = Clans.getConfig().getInitialShield() * 60;
@@ -74,6 +73,7 @@ public class Clan {
         defaultOptions.put("mobdamage", 1);
         defaultOptions.put("upkeepexemption", 0);
         defaultOptions.put("dynmapvisible", 1);
+        defaultOptions.put("server", 0);
     }
 
     private Map<String, Integer> options = Maps.newHashMap();
@@ -134,7 +134,6 @@ public class Clan {
         ret.addProperty("homeZ", homeZ);
         ret.addProperty("hasHome", hasHome);
         ret.addProperty("homeDimension", homeDimension);
-        ret.addProperty("isServer", isServer);
         ret.addProperty("rent", rent);
         ret.addProperty("wins", wins);
         ret.addProperty("losses", losses);
@@ -204,7 +203,6 @@ public class Clan {
             newMembers.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
         this.members = newMembers;
         this.clanId = UUID.fromString(obj.get("clanId").getAsString());
-        this.isServer = obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean();
         this.homeX = obj.get("homeX").getAsFloat();
         this.homeY = obj.get("homeY").getAsFloat();
         this.homeZ = obj.get("homeZ").getAsFloat();
@@ -245,6 +243,18 @@ public class Clan {
                     lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
         }
+        if(obj.has("options")) {
+            for(JsonElement e: obj.getAsJsonArray("options")) {
+                JsonObject perm = e.getAsJsonObject();
+                if(!defaultOptions.containsKey(perm.get("name").getAsString()))
+                    continue;
+                options.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
+            }
+        }
+        //TODO remove this legacy compat in 1.5
+        if(obj.has("isOpclan") || obj.has("isLimitless") || obj.has("isServer"))
+            this.options.put("server", (obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean()) ? 1 : 0);
+
         addonData = JsonHelper.getAddonData(obj);
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
@@ -492,11 +502,11 @@ public class Clan {
     }
 
     public boolean isServer(){
-        return isServer;
+        return options.get("server") == 1;
     }
 
     public void setServer(boolean server){
-        this.isServer = server;
+        this.options.put("server", server ? 1 : 0);
         markChanged();
     }
 
