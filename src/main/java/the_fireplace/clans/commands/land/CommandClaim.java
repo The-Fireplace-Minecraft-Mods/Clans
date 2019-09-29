@@ -7,9 +7,12 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ClanManagementUtil;
+import the_fireplace.clans.util.PermissionManager;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static the_fireplace.clans.util.PermissionManager.CLAN_COMMAND_PREFIX;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,7 +41,9 @@ public class CommandClaim extends ClanSubCommand {
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
 			ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
-		else if(ClanManagementUtil.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
+		else if((!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius")) && ClanManagementUtil.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
 			ClanManagementUtil.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
+		else if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius"))
+			throw new CommandException("commands.generic.permission");
 	}
 }

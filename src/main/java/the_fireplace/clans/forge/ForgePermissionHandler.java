@@ -15,18 +15,17 @@ public class ForgePermissionHandler implements IPermissionHandler {
     public ForgePermissionHandler() {
         for(String subcommand: CommandClan.commands.keySet())
             registerPermission(CLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
-        registerPermission(CLAN_COMMAND_PREFIX+"help", DefaultPermissionLevel.ALL, "");
 
         for(String subcommand: CommandRaid.commands.keySet())
             registerPermission(RAID_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
-        registerPermission(RAID_COMMAND_PREFIX+"help", DefaultPermissionLevel.ALL, "");
 
         for(String subcommand: CommandOpClan.commands.keySet())
             registerPermission(OPCLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.OP, "");
-        registerPermission(OPCLAN_COMMAND_PREFIX+"help", DefaultPermissionLevel.OP, "");
 
         registerPermission(PROTECTION_PREFIX+"break.protected_wilderness", DefaultPermissionLevel.NONE, "");
         registerPermission(PROTECTION_PREFIX+"build.protected_wilderness", DefaultPermissionLevel.NONE, "");
+
+        registerPermission(CLAN_COMMAND_PREFIX+"claim.radius", DefaultPermissionLevel.ALL, "");
     }
 
     @Override
