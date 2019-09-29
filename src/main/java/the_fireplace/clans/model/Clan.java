@@ -53,6 +53,7 @@ public class Clan {
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
 
     public static final Map<String, EnumRank> defaultPermissions = Maps.newHashMap();
+    public static final Map<String, Integer> defaultOptions = Maps.newHashMap();
 
     static {
         for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
@@ -64,9 +65,18 @@ public class Clan {
         defaultPermissions.put("harmmob", EnumRank.MEMBER);
         defaultPermissions.put("harmanimal", EnumRank.MEMBER);
         defaultPermissions.put("lockadmin", EnumRank.LEADER);
+        
+        //Config option overrides
+        defaultOptions.put("maxclaims", -1);
+        defaultOptions.put("mobspawning", -1);
+        defaultOptions.put("claimcost", -1);
+        //Custom properties
+        defaultOptions.put("mobdamage", 1);
+        defaultOptions.put("upkeepexemption", 0);
+        defaultOptions.put("dynmapvisible", 1);
     }
 
-    //private Map<String, Integer> options;
+    private Map<String, Integer> options = Maps.newHashMap();
     private Map<String, EnumRank> permissions = Maps.newHashMap();
     private Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
     
@@ -98,6 +108,8 @@ public class Clan {
             permissions.put(perm.getKey(), perm.getValue());
             permissionOverrides.put(perm.getKey(), Maps.newHashMap());
         }
+        for(Map.Entry<String, Integer> opt: defaultOptions.entrySet())
+            options.put(opt.getKey(), opt.getValue());
         isChanged = true;
     }
 
@@ -145,6 +157,7 @@ public class Clan {
                     overrides.add(or);
                 }
             perm.add("overrides", overrides);
+            permissions.add(perm);
         }
         ret.add("permissions", permissions);
 
@@ -163,8 +176,18 @@ public class Clan {
                     overrides.add(or);
                 }
             lock.add("overrides", overrides);
+            locks.add(lock);
         }
         ret.add("locks", locks);
+
+        JsonArray options = new JsonArray();
+        for(Map.Entry<String, Integer> entry: this.options.entrySet()) {
+            JsonObject opt = new JsonObject();
+            opt.addProperty("name", entry.getKey());
+            opt.addProperty("value", entry.getValue());
+            options.add(opt);
+        }
+        ret.add("options", options);
 
         JsonHelper.attachAddonData(ret, this.addonData);
 
