@@ -89,13 +89,15 @@ task deobfJar(type: Jar) {
 }
 
 task signJar(type: SignJar, dependsOn: reobfJar) {
-    alias = project.alias
-    storePass = project.storePass
-    keyPass = project.keyPass
-    keyStore = project.keyStore
+    if (project.hasProperty("alias") && project.hasProperty("storePass") && project.hasProperty("keyPass") && project.hasProperty("keyStore")) {
+        alias = project.alias
+        storePass = project.storePass
+        keyPass = project.keyPass
+        keyStore = project.keyStore
 
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
 }
 
 build.dependsOn signJar
