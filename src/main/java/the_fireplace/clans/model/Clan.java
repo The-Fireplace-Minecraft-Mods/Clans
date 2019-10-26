@@ -243,6 +243,8 @@ public class Clan {
                     lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
         }
+        for(Map.Entry<String, Integer> opt: defaultOptions.entrySet())
+            options.put(opt.getKey(), opt.getValue());
         if(obj.has("options")) {
             for(JsonElement e: obj.getAsJsonArray("options")) {
                 JsonObject perm = e.getAsJsonObject();

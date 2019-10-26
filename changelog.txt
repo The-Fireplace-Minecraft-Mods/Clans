@@ -1,41 +1,8 @@
 Additions:
-Added a config option to set items that are forbidden during raids.
-Added a new system to replace the opclan: server clans. These behave similarly to opclan, except they have members, and can be disbanded. Existing opclans will be converted into server clans.
-New command: /opclan setserver <clan> <true|1|false|0>
-New command: /opclan setrank <member|admin|leader> <clan> <player>
-New command: /clan seechunk [on|off]
-Clan permission system: set which clan ranks and/or players are allowed to do what in your clan.
-Block locking system: Lock chests, levers, etc on claimed land.
-New command: /raid thru teleports the player past unbreakable blocks during a raid. This prevents clans from making walls of locked blocks to stop raiders from getting in.
-New command: /opclan set <clan> <option> <value> allows overriding some config settings for specific clans, and setting some other properties such as if mobs do damage, upkeep exemption, and dynmap visibility.
+
 
 Changes:
-/[clan|opclan|raid] help commands now have command usage and descriptions, are paginated, and sorted alphabetically. In addition, you can view help for specific subcommands.
-Players can no longer use /raid collect while in the middle of a raid
-Removed /opclan promote and /opclan demote (use /opclan setrank)
-Syntax/behavior change: /opclan claim/autoclaim now have a <clan> argument, and always force claim for the target clan.
-Syntax/behavior change: /opclan abandonclaim/autoabandon now take no arguments, and always force claim abandonment.
-Syntax/behavior change: /opclan setcolor/setdescription/setname now have a <clan> argument to select which clan to set that data for.
-/clan home now tells you how long the warmup is and cancels it if you move or are hurt during the warmup period
-/clan form no longer takes a [banner] parameter
-/clan claim now accepts a [radius] parameter to claim chunks in a square around the player
-New alias for /clan clanchat: /clan chat
-Changes between Wilderness and Underground are no longer shown to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
-Underground is shown as Wilderness to users who are allowed to build in Wilderness when using Wilderness Protection and min Wilderness Y
-Improved various tab completions
-Minecarts are now protected on claimed land
-If a clan would be disbanded because of inability to pay upkeep, random claims get abandoned to pay the upkeep cost.
+
 
 Fixes/Internal Changes:
-Fixed /clan and /raid commands being unusable in console.
-Major performance improvement to rent/upkeep checking logic
-Dynmap Clan tooltip is now refreshed when a clan member is added or removed
-Dynmap claims are now removed when a clan gets disbanded
-Fixed "You are now entering Wilderness" message showing up twice the first time you enter it after logging in on claimed land on a server with Wilderness Protection and Min Wilderness Protection Y enabled
-Fixed /clan setdescription adding "setdescription" and selected clan if not default to the target clan's description
-Fixed clan selection when using /clan [clan name] <subcommand> with at least one optional arg
-Fixed default raid permissions
-Fixed /[op]clan kick telling the player twice if they kick themself.
-Fixed "You are not in <clan>" having a format error
-Fixed mobs spawning then despawning on claimed land if they aren't allowed
-Fixed borderlands not getting correctly cleared when abandoning claims
+Fixed NPE loading a pre-1.4 clan into a Clans 1.4 environment.
