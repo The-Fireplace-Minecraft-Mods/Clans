@@ -38,7 +38,7 @@ public class PlayerEvents {
             if(ClanCache.clanChattingPlayers.containsKey(event.getPlayer().getUniqueID())) {
                 event.setCanceled(true);
                 PlayerEventLogic.sendClanChat(event.getPlayer(), event.getComponent());
-            } else if (Clans.getConfig().isShowDefaultClanInChat()) {
+            } else {
                 event.setComponent(PlayerEventLogic.getPlayerChatMessage(event.getPlayer(), event.getComponent()));
             }
         }

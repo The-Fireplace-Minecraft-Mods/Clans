@@ -73,7 +73,7 @@ public class PlayerEventLogic {
             if (defaultClanId != null) {
                 Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
                 if (playerDefaultClan != null)
-                    return TranslationUtil.getTranslation("clans.chat.defaultclan", playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
+                    return TranslationUtil.getTranslation(Clans.getConfig().getDefaultClanPrefix(), playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
                 else
                     PlayerData.updateDefaultClan(player.getUniqueID(), null);
             }

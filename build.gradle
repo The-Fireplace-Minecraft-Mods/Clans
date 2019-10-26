@@ -29,7 +29,7 @@ apply plugin: 'org.spongepowered.gradle'
 apply plugin: 'org.spongepowered.plugin'
 apply plugin: 'net.cazzar.gradle.modsio'
 
-version = "1.4.1"
+version = "1.5.0"
 group = "the_fireplace.clans"
 archivesBaseName = "Clans-1.12.2"
 

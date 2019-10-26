@@ -1,8 +1,10 @@
 commands.clan.setcolor.usage=/clan setcolour <colour>
+commands.clan.setcolor.description=Set the clan's colour for clan chat, fancymap, Dynmap, etc. Basic colour names, Hex colors(0x######), and RGB Ints are supported.
 commands.clan.setcolor.success=%s colour set.
-commands.clan.setcolor.invalid=The colour integer %s is invalid.
+commands.clan.setcolor.invalid=The colour %s is invalid.
 
-commands.opclan.setcolor.usage=/opclan [target clan] setcolour <colour>
+commands.opclan.setcolor.usage=/opclan setcolour <clan> <colour>
+commands.opclan.setcolor.description=Change any clan's colour.
 
 clans.protection.break.wilderness=You cannot break blocks in the Outback.
 

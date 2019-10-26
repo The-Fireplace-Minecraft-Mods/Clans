@@ -471,7 +471,6 @@ clans.raid.victory.raider=进攻成员获得胜利
 clans.raid.victory.clan=%s 取得了胜利！
 
 clans.chat.prefix=<%s Chat>
-clans.chat.defaultclan=<%s>
 clans.chat.page.next=[Next]
 clans.chat.page.prev=[Previous]
 clans.chat.page.num=Page: %s/%s

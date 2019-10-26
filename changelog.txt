@@ -1,8 +1,9 @@
 Additions:
-
+Added config option to set the default clan prefix in chat, replacing the option for if it should be shown.
 
 Changes:
-
+Added Canadian/Australian/British English translations for /[op]clan setcolor's description
 
 Fixes/Internal Changes:
 Fixed NPE loading a pre-1.4 clan into a Clans 1.4 environment.
+Fixed /opclan setcolor usage for Canadian/Australian/British English

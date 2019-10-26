@@ -17,7 +17,7 @@ public interface IConfig {
      */
     int getMaxClaims();
     boolean isMultiplyMaxClaimsByPlayers();
-    boolean isShowDefaultClanInChat();
+    String getDefaultClanPrefix();
     String getServerDefaultClan();
 
     //General mod configuration

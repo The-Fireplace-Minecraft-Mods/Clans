@@ -113,7 +113,7 @@ commands.clan.setbanner.notheld=You are not holding a banner.
 commands.clan.setcolor.usage=/clan setcolor <color>
 commands.clan.setcolor.description=Set the clan's color for clan chat, fancymap, Dynmap, etc. Basic color names, Hex colors(0x######), and RGB Ints are supported.
 commands.clan.setcolor.success=%s color set.
-commands.clan.setcolor.invalid=The color integer %s is invalid.
+commands.clan.setcolor.invalid=The color %s is invalid.
 
 commands.clan.setdefault.usage=/clan setdefault <clan>
 commands.clan.setdefault.description=Sets the clan to use when you don't type /clan [clanname] <subcommand> [args...].
@@ -471,7 +471,6 @@ clans.raid.victory.raider=The raiders were victorious against %s!
 clans.raid.victory.clan=%s was victorious against the raiders!
 
 clans.chat.prefix=<%s Chat>
-clans.chat.defaultclan=<%s>
 clans.chat.page.next=[Next]
 clans.chat.page.prev=[Previous]
 clans.chat.page.num=Page: %s/%s
