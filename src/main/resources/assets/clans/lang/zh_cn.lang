@@ -31,6 +31,9 @@ commands.clan.common.not_admin=你不是 %s部落的长老
 commands.clan.common.player_not_in_clan=这个玩家 %s 不在 %s部落中
 commands.clan.common.not_on_server=You cannot use %s on %s because it is a server clan.
 commands.clan.common.not_boolean=%s could not be identified as a boolean.
+commands.clan.common.not_locked=The block you are looking at is not locked.
+commands.clan.common.invalid_lock_type=The lock type '%s' is invalid.
+commands.clan.common.not_claimed_by=The chunk you are standing in is not claimed by %s.
 
 commands.clan.common.help_format=%s: %s
 commands.clan.common.invalid_help=Invalid help parameter: %s. Please enter a page number or subcommand.
@@ -159,12 +162,19 @@ commands.clan.claim.usage=/clan claim （占领土地）
 commands.clan.claim.description=Claim the 16x16 chunk of land you are currently standing in.
 commands.clan.claim.taken=%s 已被占领
 commands.clan.claim.taken_other=另一个部落 (%s) 已占领这块土地
+commands.clan.claim.taken_other_r=Another clan (%s) has already claimed land within the radius you specified.
 commands.clan.claim.proximity_error=你不能占领这块土地，因为它太靠近另一个部落的领土。在再次尝试之前，请确保距离其他部落的领土至少有 %s 个方块距离。你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
+commands.clan.claim.proximity_error_r=You cannot claim this land because would be too close to another clan's home. Make sure all land within the radius is at least %s blocks away from other clans' homes before trying again. Try using /clan fancymap to help determine where other clans are.
 commands.clan.claim.proximity_warning=建议你不要占领这块土地，因为它位于另一个部落领土中的 %s 范围领土内， 使用 /clan claim 再次占领这片土地。 你可以使用 /clan fancymap 来帮助确定其他部落的领土位置。
+commands.clan.claim.proximity_warning_r=It is recommended that you do not claim this land because it would be within %s blocks of another clan's home. Type /clan claim again to claim this land anyways. Try using /clan fancymap to help determine where other clans are.
 commands.clan.claim.maxed=s 已经达到或高于其当前最大领土数量 %s
+commands.clan.claim.maxed_r=Claiming %s chunks would put %s above its max claim count of %s. It has currently claimed %s chunks.
 commands.clan.claim.disconnected=您不能申请这块土地，因为它不在另一块%s土地的旁边。
+commands.clan.claim.disconnected_r=You cannot claim this land because it would not connect to another of %s's claims.
 commands.clan.claim.success=为 %s 占领土地
 commands.clan.claim.insufficient_funds=%s部落中的资金不足，无法占领土地。它需要%s%s
+commands.clan.claim.insufficient_funds_r=Insufficient funds in %s's account to claim %s chunks. It costs %s %s.
+commands.clan.claim.start_r=Starting to claim everything within the radius you requested, please wait...
 
 commands.clan.autoabandon.usage=/clan autoabandon
 commands.clan.autoabandon.description=Automatically abandon claims as you enter them.
@@ -266,6 +276,52 @@ commands.clan.set.description=Set values for your clan's permissions. With a pla
 commands.clan.set.invalid_perm=Invalid permission: %s
 commands.clan.set.success=Permission set succeeded!
 
+commands.clan.lock.usage=/clan lock [private|clan|open]
+commands.clan.lock.description=Locks the block you are looking at. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan
+commands.clan.lock.locked=This block is already locked by %s.
+commands.clan.lock.failed=You cannot lock that. If you believe this is in error, please contact your server's administrator.
+commands.clan.lock.not_block=You are not looking at a block or are too far from the block to lock it.
+commands.clan.lock.wrong_owner=The block you are looking at is not claimed by %s.
+commands.clan.lock.success=You have successfully locked the block you are looking at.
+
+commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
+commands.clan.lockchunk.description=Locks all unlocked lockable blocks in the chunk. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan
+commands.clan.lockchunk.success=You have successfully locked all lockable blocks in the chunk.
+
+commands.clan.unlock.usage=/clan unlock
+commands.clan.unlock.description=Unlocks the block you are looking at. Only the player who locked it or players with "lockadmin" clan permission can do this.
+commands.clan.unlock.locked=You cannot unlock this block because it is locked by %s.
+commands.clan.unlock.not_block=You are not looking at a block or are too far from the block to unlock it.
+commands.clan.unlock.success=You have successfully unlocked the block you are looking at.
+
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|all]
+commands.clan.unlockchunk.description=Unlocks all your locked blocks in the chunk. Only players with "lockadmin" clan permission can use the player|all option, setting a player clears locks by the specified player, saying all clears all locks.
+commands.clan.unlockchunk.success=You have successfully unlocked all of your locked blocks in the chunk.
+commands.clan.unlockchunk.success_player=You have successfully unlocked all of %s's locked blocks in the chunk.
+commands.clan.unlockchunk.success_all=You have successfully unlocked all locked blocks in the chunk.
+commands.clan.unlockchunk.failed=You do not have permission to unlock other players' blocks in this clan.
+
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Grants a player access to the locked block you are looking at. You can only grant access to blocks if you are the player who locked it or have the "lockadmin" clan permission.
+commands.clan.grantaccess.locked=You cannot grant access to this block because it is locked by %s.
+commands.clan.grantaccess.not_block=You are not looking at a block or are too far from the block to grant access to it.
+commands.clan.grantaccess.success=You have successfully granted %s access to the block you are looking at.
+
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Denies a player access to the locked block you are looking at. You can only deny access to blocks if you are the player who locked it or have the "lockadmin" clan permission.
+commands.clan.denyaccess.locked=You cannot deny access to this block because it is locked by %s.
+commands.clan.denyaccess.not_block=You are not looking at a block or are too far from the block to deny access to it.
+commands.clan.denyaccess.success=You have successfully denied %s access to the block you are looking at.
+
+commands.clan.lockinfo.usage=/clan lockinfo
+commands.clan.lockinfo.description=View lock information about the block you are looking at.
+commands.clan.lockinfo.locked_by=Owner: %s
+commands.clan.lockinfo.type=Type: %s
+commands.clan.lockinfo.overrides=Overrides:
+commands.clan.lockinfo.allowed=%s: allowed
+commands.clan.lockinfo.denied=%s: denied
+commands.clan.lockinfo.not_block=You are not looking at a block or are too far from the block to view lock information.
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim [强制] （管理员放弃领土指令）
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 
@@ -318,7 +374,13 @@ commands.opclan.setserver.description=Set if a clan is server. Server clans cann
 commands.opclan.setserver.success_t=You have made %s a server clan.
 commands.opclan.setserver.success_f=You have removed the server status from %s.
 
+commands.opclan.setoption.usage=/opclan set <clan> <option> <value>
+commands.opclan.setoption.description=Set various options for a clan. Valid options are maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server.
+commands.opclan.setoption.success=You have successfully set the %s option for %s to %s.
+commands.opclan.setoption.failed=The option %s was not found.
+
 commands.raid.common.notinparty=你没有在一个突袭模式中
+commands.raid.common.not_raiding=You are not in an active raid.
 
 commands.raid.collect.usage=/raid collect （收集物品）
 commands.raid.collect.description=Collect your blocks placed/forbidden items from during a raid.
@@ -355,11 +417,18 @@ commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落�
 commands.raid.start.raiding=突袭行动已经启动
 commands.raid.start.error=内部错误：另一个突袭行动正在袭击这个部落。请在 %s 小时内重试。请将此情况报告给服务器管理员
 
+commands.raid.thru.usage=/raid thru
+commands.raid.thru.description=Go through protected blocks
+commands.raid.thru.not_block=You are not looking at a block or are too far from the block to view lock information.
+commands.raid.thru.wrong_pos_owner=The block you are looking at is not in %s's territory.
+commands.raid.thru.failed=There is nowhere on the other side of this to safely teleport.
+
 clans.protection.break.claimed=你不能破坏另一个部落领土上的方块
 clans.protection.break.borderland=You cannot break blocks this close to another clan's territory.
 clans.protection.break.raid=你不能在突袭过程中破坏这个方块，请等待突袭完成后再试
 clans.protection.break.claimed_raid=你不能在另一个部落的领土上破坏这个方块
 clans.protection.break.wilderness=未归属的荒野领土不能放置任何方块
+clans.protection.break.locked=You cannot break this block because it is locked by %s.
 
 clans.protection.place.territory=你没有权限在别人部落领土建造
 clans.protection.place.borderland=You cannot place blocks this close to another clan's territory.
@@ -367,6 +436,7 @@ clans.protection.place.wilderness=你无法在未归属的荒野领土建造任�
 
 clans.protection.interact.territory=你没有权限在别人部落领土上交互任何方块
 clans.protection.interact.borderland=You cannot interact with blocks this close to another clan's territory.
+clans.protection.interact.locked=You cannot interact with this block because it is locked by %s.
 
 clans.rent.kicked=由于无力支付赋税，你已被踢出 %s
 
