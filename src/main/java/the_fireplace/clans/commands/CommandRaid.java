@@ -38,6 +38,7 @@ public class CommandRaid extends CommandBase {
 
     static {
         aliases.put("j", "join");
+        aliases.put("form", "join");
         aliases.put("l", "leave");
         aliases.put("i", "invite");
         aliases.put("c", "collect");
