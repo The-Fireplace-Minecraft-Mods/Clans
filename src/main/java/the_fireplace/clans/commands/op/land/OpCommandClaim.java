@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
+import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -36,7 +36,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null)
-			ClanManagementUtil.checkAndAttemptClaim(sender, c, true);
+			ClanManagementLogic.checkAndAttemptClaim(sender, c, true);
 		else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

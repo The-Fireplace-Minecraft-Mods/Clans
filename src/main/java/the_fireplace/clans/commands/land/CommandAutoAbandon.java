@@ -5,9 +5,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -43,7 +43,7 @@ public class CommandAutoAbandon extends ClanSubCommand {
 		if(rm == null) {
             ClanCache.autoAbandonClaims.put(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClan.getName()).setStyle(TextStyles.GREEN));
-			ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan);
+			ClanManagementLogic.checkAndAttemptAbandon(sender, selectedClan);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.stop", rm.getName()).setStyle(TextStyles.GREEN));
 	}

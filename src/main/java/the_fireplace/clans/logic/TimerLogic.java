@@ -14,7 +14,6 @@ import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -69,7 +68,7 @@ public class TimerLogic {
                             if(chunks.length == 0)//This _should_ always be false, but just in case...
                                 break;
                             ChunkPositionWithData pos = chunks[new Random().nextInt(chunks.length)];
-                            ClanManagementUtil.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
+                            ClanManagementLogic.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                         }
                     }
                     if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
@@ -145,13 +144,13 @@ public class TimerLogic {
         if (!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
             boolean needsRecalc = false;
             if(ClanCache.opAutoAbandonClaims.contains(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP) player, null);
+                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, null);
             if(ClanCache.autoAbandonClaims.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptAbandon((EntityPlayerMP) player, ClanCache.autoAbandonClaims.get(player.getUniqueID())) || needsRecalc;
+                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, ClanCache.autoAbandonClaims.get(player.getUniqueID())) || needsRecalc;
             if(ClanCache.opAutoClaimLands.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.opAutoClaimLands.get(player.getUniqueID()), true) || needsRecalc;
+                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.opAutoClaimLands.get(player.getUniqueID()), true) || needsRecalc;
             if(ClanCache.autoClaimLands.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementUtil.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.autoClaimLands.get(player.getUniqueID()), false) || needsRecalc;
+                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.autoClaimLands.get(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);

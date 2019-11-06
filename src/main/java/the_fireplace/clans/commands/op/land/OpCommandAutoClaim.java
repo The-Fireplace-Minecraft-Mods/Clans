@@ -7,8 +7,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
+import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -44,7 +44,7 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 			if(rm == null) {
                 ClanCache.opAutoClaimLands.put(sender.getUniqueID(), c);
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", c.getName()).setStyle(TextStyles.GREEN));
-				ClanManagementUtil.checkAndAttemptClaim(sender, c, true);
+				ClanManagementLogic.checkAndAttemptClaim(sender, c, true);
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
 		} else

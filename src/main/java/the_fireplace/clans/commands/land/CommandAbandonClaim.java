@@ -4,8 +4,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ClanManagementUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,6 +35,6 @@ public class CommandAbandonClaim extends ClanSubCommand {
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanManagementUtil.checkAndAttemptAbandon(sender, selectedClan);
+		ClanManagementLogic.checkAndAttemptAbandon(sender, selectedClan);
 	}
 }

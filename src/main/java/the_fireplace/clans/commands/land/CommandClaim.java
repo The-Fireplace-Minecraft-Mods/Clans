@@ -5,8 +5,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ClanManagementUtil;
 import the_fireplace.clans.util.PermissionManager;
 
 import javax.annotation.Nullable;
@@ -40,9 +40,9 @@ public class CommandClaim extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
-			ClanManagementUtil.checkAndAttemptClaim(sender, selectedClan, false);
-		else if((!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius")) && ClanManagementUtil.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
-			ClanManagementUtil.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
+			ClanManagementLogic.checkAndAttemptClaim(sender, selectedClan, false);
+		else if((!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius")) && ClanManagementLogic.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
+			ClanManagementLogic.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
 		else if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius"))
 			throw new CommandException("commands.generic.permission");
 	}
