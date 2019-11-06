@@ -24,6 +24,7 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.ClansEventManager;
+import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -194,6 +195,10 @@ public class ClanManagementLogic {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
             if(!event.isCancelled) {
                 ClaimData.swapChunk(claimChunk, null, claimingClan.getId());
+                if(!claimingClan.hasHome() && claimChunk.getPosX() == claimingPlayer.chunkCoordX && claimChunk.getPosZ() == claimingPlayer.chunkCoordZ && claimChunk.getDim() == claimingPlayer.dimension)
+                    //Make sure the player is allowed to sethome, both by the clan and the server
+                    if(claimingClan.hasPerm("sethome", claimingPlayer.getUniqueID()) && (!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(claimingPlayer, PermissionManager.CLAN_COMMAND_PREFIX+"sethome")))
+                        claimingClan.setHome(claimingPlayer.getPosition(), claimingPlayer.dimension);
                 if(showMessage)
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.success", claimingClan.getName()).setStyle(TextStyles.GREEN));
                 return true;

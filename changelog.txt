@@ -4,6 +4,7 @@ Added config option to set the default clan prefix in chat, replacing the option
 Changes:
 Added Canadian/Australian/British English translations for /[op]clan setcolor's description
 /raid join has a new alias: /raid form
+The clan home is automatically set when a chunk is claimed, a home is not set, and the person claiming has permission to set the clan's home.
 
 Fixes/Internal Changes:
 Fixed NPE loading a pre-1.4 clan into a Clans 1.4 environment.
