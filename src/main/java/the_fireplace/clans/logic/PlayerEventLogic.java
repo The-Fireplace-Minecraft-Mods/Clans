@@ -8,10 +8,10 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -85,7 +85,7 @@ public class PlayerEventLogic {
         if(!player.world.isRemote) {
             Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
             if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
-                CommandHome.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
+                EntityUtil.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
         }
     }
 

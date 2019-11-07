@@ -379,6 +379,9 @@ commands.opclan.setoption.description=Set various options for a clan. Valid opti
 commands.opclan.setoption.success=You have successfully set the %s option for %s to %s.
 commands.opclan.setoption.failed=The option %s was not found.
 
+commands.opclan.tp.usage=/opclan tp <clan>
+commands.opclan.tp.description=Teleport to a clan's home.
+
 commands.raid.common.notinparty=You are not in a raiding party.
 commands.raid.common.not_raiding=You are not in an active raid.
 

@@ -15,6 +15,7 @@ import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.commands.op.OpCommandHelp;
 import the_fireplace.clans.commands.op.land.*;
 import the_fireplace.clans.commands.op.management.*;
+import the_fireplace.clans.commands.op.teleportation.OpCommandTeleport;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -45,6 +46,7 @@ public class CommandOpClan extends CommandBase {
         put("setoption", new OpCommandSetOption());
         //Op tools
         put("buildadmin", new OpCommandBuildAdmin());
+        put("tp", new OpCommandTeleport());
         //help
         put("help", new OpCommandHelp());
 	}};
@@ -67,6 +69,7 @@ public class CommandOpClan extends CommandBase {
         aliases.put("af", "addfunds");
         aliases.put("set", "setoption");
         aliases.put("so", "setoption");
+        aliases.put("teleport", "tp");
     }
 
     public static String processAlias(String subCommand) {

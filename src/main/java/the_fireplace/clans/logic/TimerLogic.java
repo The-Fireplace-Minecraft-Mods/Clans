@@ -10,10 +10,10 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
-import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -96,7 +96,7 @@ public class TimerLogic {
                 Clan c = ClanCache.getClanById(entry.getValue().getValue2());
                 //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
                 if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
-                    CommandHome.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
+                    EntityUtil.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
                 else
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
             }

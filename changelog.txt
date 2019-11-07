@@ -1,5 +1,6 @@
 Additions:
 Added config option to set the default clan prefix in chat, replacing the option for if it should be shown.
+Added /opclan tp <clan>
 
 Changes:
 Added Canadian/Australian/British English translations for /[op]clan setcolor's description
