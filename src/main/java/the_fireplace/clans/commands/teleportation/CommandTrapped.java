@@ -9,9 +9,11 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -49,23 +51,10 @@ public class CommandTrapped extends ClanSubCommand {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
 		} else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {
-			int x = 0, z = 0, tmp, dx = 0, dz = -1;
-			while(true) {//Spiral out until a player friendly chunk is found
-				Chunk test = player.world.getChunk(origin.x + x, origin.z + z);
-				Clan testChunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(test));
-				if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(player.getUniqueID())) {
-					player.attemptTeleport((test.getPos().getXStart() + test.getPos().getXEnd())/2f, test.getHeight(new BlockPos((test.getPos().getXStart() + test.getPos().getXEnd())/2f, 0, (test.getPos().getZStart() + test.getPos().getZEnd())/2f)), (test.getPos().getZStart() + test.getPos().getZEnd())/2f);
-					break;
-				}
-				if(x == z || (x < 0 && x == -z) || (x > 0 && x == 1-z)) {
-					tmp = dx;
-					dx = -dz;
-					dz = tmp;
-				}
-				x += dx;
-				z += dz;
-			}
+			Chunk safeChunk = EntityUtil.findSafeChunkFor(player, new ChunkPosition(origin));
+			EntityUtil.teleportSafelyToChunk(player, safeChunk);
 		} else
 			player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.trapped.fail").setStyle(TextStyles.RED));
 	}
+
 }

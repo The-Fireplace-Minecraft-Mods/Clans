@@ -154,11 +154,13 @@ public final class ClaimData {
     }
 
     @Nullable
-    public static UUID getChunkClanId(@Nullable ChunkPositionWithData position) {
+    public static UUID getChunkClanId(@Nullable ChunkPosition position) {
         if(!isLoaded)
             load();
         if(position == null)
             return null;
+        if(!(position instanceof ChunkPositionWithData))
+            position = new ChunkPositionWithData(position);
         ClaimStoredData data = claimDataMap.get(position);
         return data != null ? data.clan : null;
     }

@@ -2,13 +2,19 @@ package the_fireplace.clans.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.PlayerData;
+import the_fireplace.clans.model.ChunkPosition;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -25,7 +31,7 @@ public class EntityUtil {
     }
 
     @Nullable
-    public static BlockPos getSafeLocation(World worldIn, BlockPos pos, int tries) {
+    public static BlockPos getSafeLocation(World worldIn, BlockPos pos, int maxTries) {
         int i = pos.getX();
         int j = pos.getY();
         int k = pos.getZ();
@@ -42,7 +48,7 @@ public class EntityUtil {
 
                     if (hasRoomForPlayer(worldIn, blockpos))
                         return blockpos;
-                    else if(--tries <= 0)
+                    else if(--maxTries <= 0)
                         return null;
                 }
             }
@@ -76,5 +82,37 @@ public class EntityUtil {
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
         } else if(!noCooldown)
             PlayerData.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
+    }
+
+    public static boolean teleportSafelyToChunk(EntityPlayer player, Chunk chunk) {
+        BlockPos center = new BlockPos((chunk.getPos().getXStart() + chunk.getPos().getXEnd())/2f, chunk.getHeight(new BlockPos((chunk.getPos().getXStart() + chunk.getPos().getXEnd())/2f, 0, (chunk.getPos().getZStart() + chunk.getPos().getZEnd())/2f)), (chunk.getPos().getZStart() + chunk.getPos().getZEnd())/2f);
+        center = getSafeLocation(chunk.getWorld(), center, 50);
+        if(center == null)
+            return false;
+        int chunkDim = chunk.getWorld().provider.getDimension();
+        if(player.dimension != chunkDim) {
+            player.setPortal(player.getPosition());
+            if(player.changeDimension(chunkDim) == null)
+                return false;
+        }
+        return player.attemptTeleport(center.getX(), center.getY(), center.getZ());
+    }
+
+    public static Chunk findSafeChunkFor(EntityPlayerMP player, ChunkPosition origin) {
+        int x = 0, z = 0, tmp, dx = 0, dz = -1;
+        while(true) {//Spiral out until a player friendly chunk is found
+            ChunkPosition test = new ChunkPosition(origin.getPosX() + x, origin.getPosZ() + z, origin.getDim());
+            Clan testChunkOwner = ClanCache.getClanById(ClaimData.getChunkClanId(test));
+            if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(player.getUniqueID())) {
+                return Clans.getMinecraftHelper().getServer().getWorld(origin.getDim()).getChunk(test.getPosX(), test.getPosZ());
+            }
+            if(x == z || (x < 0 && x == -z) || (x > 0 && x == 1-z)) {
+                tmp = dx;
+                dx = -dz;
+                dz = tmp;
+            }
+            x += dx;
+            z += dz;
+        }
     }
 }
