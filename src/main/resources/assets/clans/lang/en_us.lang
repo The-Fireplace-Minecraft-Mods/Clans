@@ -283,6 +283,7 @@ commands.clan.lock.failed=You cannot lock that. If you believe this is in error,
 commands.clan.lock.not_block=You are not looking at a block or are too far from the block to lock it.
 commands.clan.lock.wrong_owner=The block you are looking at is not claimed by %s.
 commands.clan.lock.success=You have successfully locked the block you are looking at.
+commands.clan.lock.permission=%s does not allow you to use lock type %s.
 
 commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
 commands.clan.lockchunk.description=Locks all unlocked lockable blocks in the chunk. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan

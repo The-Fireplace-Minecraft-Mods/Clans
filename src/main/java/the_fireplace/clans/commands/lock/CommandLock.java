@@ -56,6 +56,10 @@ public class CommandLock extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClan.getName()).setStyle(TextStyles.RED));
 			return;
 		}
+		if(!selectedClan.hasPerm("lock."+mode.toString().toLowerCase(), sender.getUniqueID())) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
+			return;
+		}
 		if(selectedClan.isLocked(targetBlockPos) && !selectedClan.isLockOwner(targetBlockPos, sender.getUniqueID())) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(selectedClan.getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
 			return;

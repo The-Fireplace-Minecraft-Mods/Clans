@@ -50,6 +50,10 @@ public class CommandLockChunk extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getName()).setStyle(TextStyles.RED));
 			return;
 		}
+		if(!selectedClan.hasPerm("lock."+mode.toString().toLowerCase(), sender.getUniqueID())) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
+			return;
+		}
 		for(int y=0; y <= 255; y++)
 			for(int x=c.getPos().getXStart(); x <= c.getPos().getXEnd(); x++)
 				for(int z=c.getPos().getZStart(); z <= c.getPos().getZEnd(); z++) {

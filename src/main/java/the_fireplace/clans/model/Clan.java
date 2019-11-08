@@ -64,6 +64,9 @@ public class Clan {
         defaultPermissions.put("harmmob", EnumRank.MEMBER);
         defaultPermissions.put("harmanimal", EnumRank.MEMBER);
         defaultPermissions.put("lockadmin", EnumRank.LEADER);
+        defaultPermissions.put("lock.private", EnumRank.MEMBER);
+        defaultPermissions.put("lock.clan", EnumRank.MEMBER);
+        defaultPermissions.put("lock.open", EnumRank.MEMBER);
         
         //Config option overrides
         defaultOptions.put("maxclaims", -1);

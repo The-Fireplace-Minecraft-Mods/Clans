@@ -1,6 +1,7 @@
 Additions:
 Added config option to set the default clan prefix in chat, replacing the option for if it should be shown.
 Added /opclan tp <clan>
+Added some new clan permissions: lock.private, lock.clan, lock.open, so clans can restrict their members from using certain lock types.
 
 Changes:
 Added Canadian/Australian/British English translations for /[op]clan setcolor's description
