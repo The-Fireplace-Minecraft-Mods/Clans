@@ -36,7 +36,7 @@ import java.util.UUID;
 
 public class RaidManagementLogic {
     public static boolean shouldCancelBlockDrops(World world, BlockPos pos) {
-        if(!world.isRemote && !Clans.getConfig().disableRaidRollback()) {
+        if(!world.isRemote && !Clans.getConfig().isDisableRaidRollback()) {
             Chunk c = world.getChunk(pos);
             UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (chunkOwner != null) {
@@ -77,7 +77,7 @@ public class RaidManagementLogic {
     }
 
     public static void onNeighborBlockNotified(World world, IBlockState state, BlockPos pos) {
-        if(!world.isRemote && !Clans.getConfig().disableRaidRollback()) {
+        if(!world.isRemote && !Clans.getConfig().isDisableRaidRollback()) {
             if (state.getBlock() instanceof BlockPistonBase) {
                 if (state.getProperties().containsKey(BlockPistonBase.FACING) && state.getProperties().containsKey(BlockPistonBase.EXTENDED)) {
                     Comparable facing = state.getProperties().get(BlockPistonBase.FACING);
@@ -159,7 +159,7 @@ public class RaidManagementLogic {
         if(entity.world.isRemote)
             return false;
         Clan owningClan = ClaimData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
-        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().disableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
+        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().isDisableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
     }
 
     private static void doSlimePush(World world, EnumFacing facing, BlockPos newPos, EnumFacing shiftDir) {

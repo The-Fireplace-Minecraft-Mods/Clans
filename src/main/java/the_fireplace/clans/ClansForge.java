@@ -236,6 +236,8 @@ public final class ClansForge {
         public static boolean enableStealing = false;
         @Config.Comment("A list of items allowed in a raid. If it contains a *, this list is a blacklist, so everything except bedrock is allowed by default. Otherwise, it is a whitelist.")
         public static String[] raidItemList = {"*", "minecraft:bedrock"};
+        @Config.Comment("If enabled, raiders will be teleported outside the raid target's home territory when they start the raid.")
+        public static boolean teleportOnRaidStart = true;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -525,12 +527,12 @@ public final class ClansForge {
         }
 
         @Override
-        public boolean disableRaidRollback() {
+        public boolean isDisableRaidRollback() {
             return disableRaidRollback;
         }
 
         @Override
-        public boolean enableStealing() {
+        public boolean isEnableStealing() {
             return enableStealing;
         }
 
@@ -617,6 +619,11 @@ public final class ClansForge {
         @Override
         public List<String> getRaidItemList() {
             return Lists.newArrayList(raidItemList);
+        }
+
+        @Override
+        public boolean isTeleportToRaidStart() {
+            return teleportOnRaidStart;
         }
 
         @Override

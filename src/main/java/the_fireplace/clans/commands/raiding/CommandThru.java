@@ -56,7 +56,7 @@ public class CommandThru extends RaidSubCommand {
 			return;
 		}
 
-		if(r.getTarget().isLocked(targetBlockPos) || !Clans.getConfig().enableStealing() && sender.world.getBlockState(targetBlockPos).getBlock() instanceof BlockContainer){
+		if(r.getTarget().isLocked(targetBlockPos) || !Clans.getConfig().isEnableStealing() && sender.world.getBlockState(targetBlockPos).getBlock() instanceof BlockContainer){
 			for (int step = 2; step < 9; step++) {
 				BlockPos telePos = EntityUtil.getSafeLocation(sender.world, targetBlockPos.offset(lookRay.sideHit.getOpposite(), step), step-1);
 				if(telePos != null) {

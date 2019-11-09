@@ -94,7 +94,7 @@ public class LandProtectionEventLogic {
             if (breaker instanceof EntityPlayerMP) {
                 Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().disableRaidRollback()) {
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
                         IBlockState targetState = world.getBlockState(pos);
                         RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     }
@@ -163,7 +163,7 @@ public class LandProtectionEventLogic {
             if (placer instanceof EntityPlayerMP) {
                 Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().disableRaidRollback()) {
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
                         ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
                         out.setCount(1);
                         if (!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
@@ -208,13 +208,13 @@ public class LandProtectionEventLogic {
                             && !(targetState.getBlock() instanceof BlockContainer && chunkClan.hasPerm("access", player.getUniqueID()))
                             && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
                             && (!isRaidedBy
-                                || !Clans.getConfig().enableStealing() && targetState.getBlock() instanceof BlockContainer
+                                || !Clans.getConfig().isEnableStealing() && targetState.getBlock() instanceof BlockContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg)) {
                         if (!(heldItem.getItem() instanceof ItemBlock)) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
                         } else if (!isRaidedBy
-                                || !Clans.getConfig().enableStealing() && targetState.getBlock() instanceof BlockContainer
+                                || !Clans.getConfig().isEnableStealing() && targetState.getBlock() instanceof BlockContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
@@ -265,7 +265,7 @@ public class LandProtectionEventLogic {
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
                 IBlockState targetState = world.getBlockState(pos);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().disableRaidRollback() && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback() && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
                         RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     else if (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
                         removeBlocks.add(pos);

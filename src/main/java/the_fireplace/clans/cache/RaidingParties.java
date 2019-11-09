@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
@@ -12,9 +13,11 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.logic.RaidManagementLogic;
+import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -130,8 +133,14 @@ public final class RaidingParties {
 	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, Clans.getConfig().getRaidBufferTime());
 		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), Clans.getConfig().getRaidBufferTime());
-		for(UUID attacker: getRaids().get(raidTarget).getAttackers())
-			Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker).sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
+		for(UUID raiderId: getRaids().get(raidTarget).getAttackers()) {
+			EntityPlayerMP raiderEntity = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(raiderId);
+			raiderEntity.sendStatusMessage(TranslationUtil.getTranslation(raiderId, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
+			if(Clans.getConfig().isTeleportToRaidStart() && raidTarget.hasHome() && raidTarget.getHome() != null) {
+				ChunkPos targetHomeChunkPos = new ChunkPos(raidTarget.getHome());
+				EntityUtil.teleportSafelyToChunk(raiderEntity, EntityUtil.findSafeChunkFor(raiderEntity, new ChunkPosition(targetHomeChunkPos.x, targetHomeChunkPos.z, raidTarget.getHomeDim())));
+			}
+		}
 	}
 
 	private static void activateRaid(Clan raidTarget) {

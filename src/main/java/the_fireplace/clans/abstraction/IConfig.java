@@ -55,10 +55,11 @@ public interface IConfig {
     int getDefenseShield();
     int getInitialShield();
     boolean isNoReclaimTNT();
-    boolean disableRaidRollback();
-    boolean enableStealing();
+    boolean isDisableRaidRollback();
+    boolean isEnableStealing();
     double getRaidBreakSpeedMultiplier();
     List<String> getRaidItemList();
+    boolean isTeleportToRaidStart();
 
     //Costs, rewards, and multipliers
     int getFormClanCost();
