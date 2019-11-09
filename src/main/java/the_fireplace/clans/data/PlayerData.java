@@ -1,5 +1,6 @@
 package the_fireplace.clans.data;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
@@ -30,6 +31,10 @@ public final class PlayerData {
         return getPlayerData(player).cooldown;
     }
 
+    public static List<UUID> getInvites(UUID player) {
+        return Collections.unmodifiableList(getPlayerData(player).invites);
+    }
+
     //endregion
 
     //region saved data setters
@@ -55,6 +60,22 @@ public final class PlayerData {
 
     public static void setCooldown(UUID player, int cooldown) {
         getPlayerData(player).setCooldown(cooldown);
+    }
+
+    /**
+     * Adds an invite from a clan to a player's data.
+     * @return true if the player did not already have an invite pending from that clan, false otherwise.
+     */
+    public static boolean addInvite(UUID player, UUID clan) {
+        return getPlayerData(player).addInvite(clan);
+    }
+
+    /**
+     * Removes an invite from a clan from a player's data.
+     * @return true if the invite was removed, or false if they didn't have a pending invite from the specified clan.
+     */
+    public static boolean removeInvite(UUID player, UUID clan) {
+        return getPlayerData(player).removeInvite(clan);
     }
     //endregion
 
@@ -91,6 +112,7 @@ public final class PlayerData {
         @Nullable
         private UUID defaultClan;
         private int cooldown;
+        private List<UUID> invites;
 
         private Map<String, Object> addonData = Maps.newHashMap();
         //endregion
@@ -98,6 +120,7 @@ public final class PlayerData {
         //region Constructor
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
+            invites = Lists.newArrayList();
             if(!load())
                 PlayerEventLogic.onFirstLogin(playerId);
         }
@@ -121,6 +144,7 @@ public final class PlayerData {
                     JsonObject jsonObject = (JsonObject) obj;
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
+                    invites = jsonObject.has("invites") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("invites")) : Lists.newArrayList();
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -142,6 +166,7 @@ public final class PlayerData {
                 if (defaultClan != null)
                     obj.addProperty("defaultClan", defaultClan.toString());
                 obj.addProperty("cooldown", cooldown);
+                obj.add("invites", JsonHelper.toJsonArray(invites));
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -172,6 +197,19 @@ public final class PlayerData {
             }
         }
         //endregion
+
+        public boolean addInvite(UUID invite) {
+            boolean ret = !invites.contains(invite);
+            invites.add(invite);
+            isChanged = ret;
+            return ret;
+        }
+
+        public boolean removeInvite(UUID invite) {
+            boolean ret = invites.remove(invite);
+            isChanged = ret;
+            return ret;
+        }
 
         //region Addon Data
         /**

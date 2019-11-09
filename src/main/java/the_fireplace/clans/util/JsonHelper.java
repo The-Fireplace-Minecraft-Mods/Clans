@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class JsonHelper {
     public static void attachAddonData(JsonObject obj, Map<String, Object> addonDataMap) {
@@ -122,5 +123,21 @@ public class JsonHelper {
 
     public static BlockPos fromJsonObject(JsonObject obj) {
         return new BlockPos(obj.get("x").getAsInt(), obj.get("y").getAsInt(), obj.get("z").getAsInt());
+    }
+
+    public static JsonArray toJsonArray(List<UUID> uuidList) {
+        JsonArray arr = new JsonArray();
+        for(UUID uuid: uuidList) {
+            arr.add(uuid.toString());
+        }
+        return arr;
+    }
+
+    public static List<UUID> uuidListFromJsonArray(JsonArray arr) {
+        List<UUID> uuids = Lists.newArrayList();
+        for(JsonElement elem : arr) {
+            uuids.add(UUID.fromString(elem.getAsString()));
+        }
+        return uuids;
     }
 }
