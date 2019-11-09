@@ -157,7 +157,7 @@ public final class RaidingParties {
 		}
 		if(startingRaid.getDefenders().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556")) || startingRaid.getAttackers().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"))) {
 			EntityPlayerMP dean = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"));
-			dean.sendMessage(new TextComponentString(">I don’t care about game devs >Devs can suck a dick >Game devs are fucking scum - you, 9/2/2019 10:50-10:51 AM CDT").setStyle(TextStyles.DARK_GREEN));
+			dean.sendMessage(new TextComponentString(">I don’t care about game devs >Devs can suck a dick >Game devs are fucking scum").setStyle(TextStyles.DARK_GREEN).appendSibling(new TextComponentString(" - you, 9/2/2019 10:50-10:51 AM CDT").setStyle(TextStyles.RESET)));
 			EntityLightningBolt lit = new EntityLightningBolt(dean.getServerWorld(), dean.posX, dean.posY, dean.posZ, false);
 			dean.getServerWorld().addWeatherEffect(lit);
 			dean.getServerWorld().spawnEntity(lit);
