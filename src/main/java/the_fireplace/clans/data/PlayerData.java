@@ -35,6 +35,14 @@ public final class PlayerData {
         return Collections.unmodifiableList(getPlayerData(player).invites);
     }
 
+    public static List<UUID> getBlockedClans(UUID player) {
+        return Collections.unmodifiableList(getPlayerData(player).blockedClans);
+    }
+
+    public static boolean getIsBlockingAllInvites(UUID player) {
+        return getPlayerData(player).inviteBlock;
+    }
+
     //endregion
 
     //region saved data setters
@@ -77,6 +85,29 @@ public final class PlayerData {
     public static boolean removeInvite(UUID player, UUID clan) {
         return getPlayerData(player).removeInvite(clan);
     }
+
+    /**
+     * Adds an invite block for a clan to a player's data. This also deletes any existing invites from the clan being blocked.
+     * @return true if the player did not already block that clan, false otherwise.
+     */
+    public static boolean addInviteBlock(UUID player, UUID clan) {
+        boolean ret = getPlayerData(player).addInviteBlock(clan);
+        if(ret)
+            removeInvite(player, clan);
+        return ret;
+    }
+
+    /**
+     * Removes an invite block for a clan from a player's data.
+     * @return true if the clan was unblocked, or false if the specified clan wasn't blocked.
+     */
+    public static boolean removeInviteBlock(UUID player, UUID clan) {
+        return getPlayerData(player).removeInviteBlock(clan);
+    }
+
+    public static void setGlobalInviteBlock(UUID player, boolean block) {
+        getPlayerData(player).setGlobalInviteBlock(block);
+    }
     //endregion
 
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
@@ -112,7 +143,8 @@ public final class PlayerData {
         @Nullable
         private UUID defaultClan;
         private int cooldown;
-        private List<UUID> invites;
+        private boolean inviteBlock;
+        private List<UUID> invites, blockedClans;
 
         private Map<String, Object> addonData = Maps.newHashMap();
         //endregion
@@ -120,9 +152,12 @@ public final class PlayerData {
         //region Constructor
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
-            invites = Lists.newArrayList();
-            if(!load())
+            if(!load()) {
+                invites = Lists.newArrayList();
+                blockedClans = Lists.newArrayList();
+                inviteBlock = false;
                 PlayerEventLogic.onFirstLogin(playerId);
+            }
         }
         //endregion
 
@@ -145,6 +180,8 @@ public final class PlayerData {
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
                     invites = jsonObject.has("invites") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("invites")) : Lists.newArrayList();
+                    blockedClans = jsonObject.has("blockedClans") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("blockedClans")) : Lists.newArrayList();
+                    inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -167,6 +204,8 @@ public final class PlayerData {
                     obj.addProperty("defaultClan", defaultClan.toString());
                 obj.addProperty("cooldown", cooldown);
                 obj.add("invites", JsonHelper.toJsonArray(invites));
+                obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
+                obj.addProperty("inviteBlock", inviteBlock);
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -198,17 +237,37 @@ public final class PlayerData {
         }
         //endregion
 
-        public boolean addInvite(UUID invite) {
-            boolean ret = !invites.contains(invite);
-            invites.add(invite);
+        public boolean addInvite(UUID clan) {
+            boolean ret = !invites.contains(clan);
+            invites.add(clan);
             isChanged = ret;
             return ret;
         }
 
-        public boolean removeInvite(UUID invite) {
-            boolean ret = invites.remove(invite);
+        public boolean removeInvite(UUID clan) {
+            boolean ret = invites.remove(clan);
             isChanged = ret;
             return ret;
+        }
+
+        public boolean addInviteBlock(UUID clan) {
+            boolean ret = !blockedClans.contains(clan);
+            blockedClans.add(clan);
+            isChanged = ret;
+            return ret;
+        }
+
+        public boolean removeInviteBlock(UUID clan) {
+            boolean ret = blockedClans.remove(clan);
+            isChanged = ret;
+            return ret;
+        }
+
+        public void setGlobalInviteBlock(boolean inviteBlock) {
+            if(this.inviteBlock != inviteBlock) {
+                this.inviteBlock = inviteBlock;
+                isChanged = true;
+            }
         }
 
         //region Addon Data
