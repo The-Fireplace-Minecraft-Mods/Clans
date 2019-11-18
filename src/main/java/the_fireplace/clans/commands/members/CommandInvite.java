@@ -76,6 +76,7 @@ public class CommandInvite extends ClanSubCommand {
 		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 		if(!Clans.getConfig().isAllowMultiClanMembership())
 			players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
+		players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(selectedClan));
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)
 			playerNames.add(profile.getName());
