@@ -85,7 +85,7 @@ public class PlayerEventLogic {
         if(!player.world.isRemote) {
             Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
             if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
-                EntityUtil.teleportHome(player, defClan, defClan.getHome(), player.dimension, true);
+                EntityUtil.teleportHome(player, defClan.getHome(), defClan.getHomeDim(), player.dimension, true);
         }
     }
 

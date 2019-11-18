@@ -96,7 +96,7 @@ public class TimerLogic {
                 Clan c = ClanCache.getClanById(entry.getValue().getValue2());
                 //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
                 if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
-                    EntityUtil.teleportHome(entry.getKey(), c, c.getHome(), entry.getKey().dimension, false);
+                    EntityUtil.teleportHome(entry.getKey(), c.getHome(), c.getHomeDim(), entry.getKey().dimension, false);
                 else
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
             }
