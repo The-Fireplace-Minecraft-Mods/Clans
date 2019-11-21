@@ -30,24 +30,28 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public int getMinArgs() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public int getMaxArgs() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan acceptClan = ClanCache.getInvite(sender.getUniqueID());
-		if(acceptClan != null){
-			acceptClan.addMember(sender.getUniqueID());
-			if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-				PlayerData.setDefaultClan(sender.getUniqueID(), acceptClan.getId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getName()).setStyle(TextStyles.GREEN));
-			acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getName());
+		Clan acceptClan = ClanCache.getClanByName(args[0]);
+		if(acceptClan != null) {
+			if(PlayerData.getInvites(sender.getUniqueID()).contains(acceptClan.getId())) {
+				acceptClan.addMember(sender.getUniqueID());
+				if (ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
+					PlayerData.setDefaultClan(sender.getUniqueID(), acceptClan.getId());
+				PlayerData.removeInvite(sender.getUniqueID(), acceptClan.getId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getName()).setStyle(TextStyles.GREEN));
+				acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getName());
+			} else
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_invited", args[0]).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.no_invites").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 	}
 }

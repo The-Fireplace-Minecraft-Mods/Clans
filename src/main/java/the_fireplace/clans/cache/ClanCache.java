@@ -26,7 +26,6 @@ public final class ClanCache {
 	private static Map<UUID, List<Clan>> playerClans = Maps.newHashMap();
 	private static Map<String, Clan> clanNames = Maps.newHashMap();
 	private static List<String> clanBanners = Lists.newArrayList();
-	private static Map<UUID, Clan> clanInvites = Maps.newHashMap();
 	private static Map<Clan, BlockPos> clanHomes = Maps.newHashMap();
 
 	private static List<UUID> buildAdmins = Lists.newArrayList();
@@ -118,14 +117,6 @@ public final class ClanCache {
 		clanNames.remove(TextStyles.stripFormatting(name.toLowerCase()));
 	}
 
-	public static boolean inviteToClan(UUID player, Clan clan) {
-		if(!clanInvites.containsKey(player)) {
-			clanInvites.put(player, clan);
-			return true;
-		}
-		return false;
-	}
-
 	public static void addPlayerClan(UUID player, Clan clan) {
 		getPlayerClans(player);
 		playerClans.get(player).add(clan);
@@ -134,16 +125,6 @@ public final class ClanCache {
 	public static void removePlayerClan(UUID player, Clan clan) {
 		getPlayerClans(player);
 		playerClans.get(player).remove(clan);
-	}
-
-	@Nullable
-	public static Clan getInvite(UUID player) {
-		return clanInvites.get(player);
-	}
-
-	@Nullable
-	public static Clan removeInvite(UUID player) {
-		return clanInvites.remove(player);
 	}
 
 	public static Map<Clan, BlockPos> getClanHomes() {
@@ -167,9 +148,6 @@ public final class ClanCache {
 
 	public static void removeClan(Clan c) {
 		clearClanHome(c);
-		for(Map.Entry<UUID, Clan> clanInvite: clanInvites.entrySet())
-			if(clanInvite.getValue().equals(c))
-				clanInvites.remove(clanInvite.getKey());
 		for(UUID player: playerClans.keySet())
 			removePlayerClan(player, c);
 		removeName(c.getName());

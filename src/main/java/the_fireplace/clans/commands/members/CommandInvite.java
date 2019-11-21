@@ -9,9 +9,11 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -21,7 +23,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,17 +50,24 @@ public class CommandInvite extends ClanSubCommand {
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		assert server != null;
-		GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
-		EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
+		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 		if(target != null) {
-			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getUniqueID()).isEmpty()) {
-				if (!ClanCache.getPlayerClans(target.getUniqueID()).contains(selectedClan)) {
-					if (ClanCache.inviteToClan(target.getUniqueID(), selectedClan)) {
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getDisplayNameString(), selectedClan.getName()).setStyle(TextStyles.GREEN));
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.invited", selectedClan.getName()).setStyle(TextStyles.GREEN));
+			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).isEmpty()) {
+				if (!ClanCache.getPlayerClans(target.getId()).contains(selectedClan)) {
+					if(PlayerData.getIsBlockingAllInvites(target.getId())) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking_all", target.getName()).setStyle(TextStyles.RED));
+					} else if(PlayerData.getBlockedClans(target.getId()).contains(selectedClan.getId())) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking", target.getName(), selectedClan.getName()).setStyle(TextStyles.RED));
+					} else if(PlayerData.getInvites(target.getId()).contains(selectedClan.getId())) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName(), selectedClan.getName()).setStyle(TextStyles.RED));
 					} else {
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName()).setStyle(TextStyles.RED));
-						target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.clan.invite.failedinvite", target.getName(), Objects.requireNonNull(ClanCache.getInvite(target.getUniqueID())).getName()).setStyle(TextStyles.YELLOW));
+						PlayerData.addInvite(target.getId(), selectedClan.getId());
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getName(), selectedClan.getName()).setStyle(TextStyles.GREEN));
+
+						if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target)) {
+							EntityPlayerMP targetEntity = server.getPlayerList().getPlayerByUUID(target.getId());
+							targetEntity.sendMessage(TranslationUtil.getTranslation(target.getId(), "commands.clan.invite.invited", selectedClan.getName()).setStyle(TextStyles.GREEN));
+						}
 					}
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), selectedClan.getName()).setStyle(TextStyles.RED));

@@ -216,10 +216,11 @@ commands.clan.invite.usage=/clan invite <玩家名称> （邀请玩家加入部�
 commands.clan.invite.description=Invite a player to your clan.
 commands.clan.invite.success=你已邀请 %s 加入 %s 部落
 commands.clan.invite.invited=您已被邀请加入 %1$s部落，同意输入 %1$s /clan accept 拒绝输入 /clan decline
-commands.clan.invite.pending=玩家 %s 已被邀请加入部落，等待该玩家同意或拒绝邀请。
-commands.clan.invite.failedinvite=%s 尝试邀请你加入部落,但你已经有 %2$s待处理的邀请，你在同意此条邀请之前，你必须先处理 %2$s 的邀请。
+commands.clan.invite.pending=The player %s has already been invited to join %s.
 commands.clan.invite.already_in_this=玩家 %s 已经在 %s 邀请中
 commands.clan.invite.already_in_any=玩家 %s 已经加入过部落
+commands.clan.invite.blocking=The player %s is not accepting invites from %s.
+commands.clan.invite.blocking_all=The player %s is not accepting invites.
 
 commands.clan.kick.usage=/clan kick <玩家> （从部落踢出玩家）
 commands.clan.kick.description=Kick a player out of your clan.
@@ -283,6 +284,7 @@ commands.clan.lock.failed=You cannot lock that. If you believe this is in error,
 commands.clan.lock.not_block=You are not looking at a block or are too far from the block to lock it.
 commands.clan.lock.wrong_owner=The block you are looking at is not claimed by %s.
 commands.clan.lock.success=You have successfully locked the block you are looking at.
+commands.clan.lock.permission=%s does not allow you to use lock type %s.
 
 commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
 commands.clan.lockchunk.description=Locks all unlocked lockable blocks in the chunk. Modes: private(default): private to the player who locked it; clan: accessible to the whole clan; open: accessible to anyone, even players who are not in the clan
@@ -379,6 +381,9 @@ commands.opclan.setoption.description=Set various options for a clan. Valid opti
 commands.opclan.setoption.success=You have successfully set the %s option for %s to %s.
 commands.opclan.setoption.failed=The option %s was not found.
 
+commands.opclan.tp.usage=/opclan tp <clan>
+commands.opclan.tp.description=Teleport to a clan's home.
+
 commands.raid.common.notinparty=你没有在一个突袭模式中
 commands.raid.common.not_raiding=You are not in an active raid.
 
@@ -474,3 +479,4 @@ clans.chat.prefix=<%s Chat>
 clans.chat.page.next=[Next]
 clans.chat.page.prev=[Previous]
 clans.chat.page.num=Page: %s/%s
+commands.clan.invite.failedinvite=%s 尝试邀请你加入部落,但你已经有 %2$s待处理的邀请，你在同意此条邀请之前，你必须先处理 %2$s 的邀请。

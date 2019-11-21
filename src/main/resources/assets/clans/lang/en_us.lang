@@ -195,13 +195,13 @@ commands.clan.map.description=View a small claim map color coded by what clans y
 commands.clan.seechunk.usage=/clan seechunk [on|off]
 commands.clan.seechunk.description=See the edges of the chunk you are currently standing in. On and off are for toggling if this happens as you walk around.
 
-commands.clan.accept.usage=/clan accept
+commands.clan.accept.usage=/clan accept <clan>
 commands.clan.accept.description=Accept an invitation to join a clan.
 commands.clan.accept.success=You joined %s.
 commands.clan.accept.accepted=%s joined %s.
-commands.clan.accept.no_invites=You don't have any pending invites.
+commands.clan.accept.not_invited=You haven't been invited to join %s.
 
-commands.clan.decline.usage=/clan decline
+commands.clan.decline.usage=/clan decline <clan> [block]
 commands.clan.decline.description=Decline an invitation to join a clan.
 commands.clan.decline.success=You declined the invitation to join %s.
 commands.clan.decline.declined=%s declined an invitation to join %s.
@@ -216,10 +216,11 @@ commands.clan.invite.usage=/clan invite <player>
 commands.clan.invite.description=Invite a player to your clan.
 commands.clan.invite.success=You have invited %s to join %s.
 commands.clan.invite.invited=You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.
-commands.clan.invite.pending=The player %s has already been invited to join a clan. They must accept or decline that invitation first.
-commands.clan.invite.failedinvite=%s attempted to invite you, but you already have a pending invite from %2$s. You must accept or decline the invitation from %2$s before you can receive another invitation.
+commands.clan.invite.pending=The player %s has already been invited to join %s.
 commands.clan.invite.already_in_this=The player %s is already in %s.
 commands.clan.invite.already_in_any=The player %s is already in a clan.
+commands.clan.invite.blocking=The player %s is not accepting invites from %s.
+commands.clan.invite.blocking_all=The player %s is not accepting invites.
 
 commands.clan.kick.usage=/clan kick <player>
 commands.clan.kick.description=Kick a player out of your clan.
