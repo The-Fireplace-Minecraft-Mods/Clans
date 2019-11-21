@@ -4,12 +4,17 @@ import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChatPageUtil;
@@ -21,11 +26,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CommandList extends ClanSubCommand {
-	@Override
+    @Override
 	public String getName() {
 		return "list";
 	}
@@ -53,6 +59,7 @@ public class CommandList extends ClanSubCommand {
 			if(args.length > 0)
 				switch (args[0]) {
 					case "money":
+					case "$":
 						clans.sort(Comparator.comparingLong(clan -> Clans.getPaymentHandler().getBalance(clan.getId())));
 						break;
 					case "land":
@@ -61,6 +68,15 @@ public class CommandList extends ClanSubCommand {
 						break;
 					case "members":
 						clans.sort(Comparator.comparingInt(Clan::getMemberCount));
+						break;
+					case "invites":
+					case "invite":
+					case "i":
+						if(sender instanceof EntityPlayerMP)
+							listInvites((EntityPlayerMP)sender, args.length == 2 ? parseInt(args[1]) : 1);
+						else
+							sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player").setStyle(TextStyles.RED));
+						return;
 				}
 			else
 				clans.sort(Comparator.comparing(Clan::getName));
@@ -91,5 +107,26 @@ public class CommandList extends ClanSubCommand {
 			for(int i = 1; i < ClanDatabase.getClans().size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
 				ret.add(String.valueOf(i));
 		return ret;
+	}
+
+	public static void listInvites(EntityPlayerMP sender, int page) {
+		if(!PlayerData.getInvites(sender.getUniqueID()).isEmpty()) {
+			boolean shown = false;
+			List<ITextComponent> texts = Lists.newArrayList();
+			for(UUID invite: PlayerData.getInvites(sender.getUniqueID())) {
+				Clan inviteClan = ClanCache.getClanById(invite);
+				if(inviteClan == null) {
+					PlayerData.removeInvite(sender.getUniqueID(), invite);
+					continue;
+				}
+				shown = true;
+				texts.add(new TextComponentString(inviteClan.getName()).setStyle(new Style().setColor(inviteClan.getTextColor())));
+			}
+			ChatPageUtil.showPaginatedChat(sender, "/clan list invites %s", texts, page);
+			//Deal with the edge case where all inviting clans have been disbanded
+			if(!shown)
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.no_invites").setStyle(TextStyles.RED));
+		} else
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.no_invites").setStyle(TextStyles.RED));
 	}
 }

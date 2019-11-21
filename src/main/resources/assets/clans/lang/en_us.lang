@@ -86,11 +86,12 @@ commands.clan.form.success=Clan formed.
 commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s %s.
 commands.clan.form.already_in_clan=You are already in a clan.
 
-commands.clan.list.usage=/clan list [sort] [page]
-commands.clan.list.description=View a list of clans. Sort by [money|land|members], anything else is alphabetical.
+commands.clan.list.usage=/clan list [sort|invites] [page]
+commands.clan.list.description=View a list of clans. Use 'invites' to see which clans have invited you to join, or sort by [money|land|members], any other sort is alphabetical.
 commands.clan.list.clans=Clans on this server:
 commands.clan.list.listitem=%s - %s
 commands.clan.list.noclans=There are no clans on this server.
+commands.clan.list.no_invites=You don't have any pending invites.
 
 commands.clan.playerinfo.usage=/clan playerinfo [player]
 commands.clan.playerinfo.description=View what clans a player is in.
@@ -212,8 +213,8 @@ commands.clan.demote.success=You have demoted %s to %s in %s.
 commands.clan.demote.demoted=You have been demoted in %s to %s by %s.
 commands.clan.demote.error=The player %s could not be demoted.
 
-commands.clan.invite.usage=/clan invite <player>
-commands.clan.invite.description=Invite a player to your clan.
+commands.clan.invite.usage=/clan invite <send|revoke> <player>
+commands.clan.invite.description=Invite a player to your clan, or revoke an invite.
 commands.clan.invite.success=You have invited %s to join %s.
 commands.clan.invite.invited=You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.
 commands.clan.invite.pending=The player %s has already been invited to join %s.
@@ -221,6 +222,8 @@ commands.clan.invite.already_in_this=The player %s is already in %s.
 commands.clan.invite.already_in_any=The player %s is already in a clan.
 commands.clan.invite.blocking=The player %s is not accepting invites from %s.
 commands.clan.invite.blocking_all=The player %s is not accepting invites.
+commands.clan.invite.revoked=The clan %s has revoked their invitation for you to join.
+commands.clan.invite.revoke_success=You have revoked the invite for %s to join %s.
 
 commands.clan.kick.usage=/clan kick <player>
 commands.clan.kick.description=Kick a player out of your clan.
