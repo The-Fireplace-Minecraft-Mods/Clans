@@ -9,7 +9,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -36,7 +35,7 @@ public class CommandAddFunds extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!selectedClan.isServer()) {
 			long amount;
 			try {

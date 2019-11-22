@@ -10,7 +10,6 @@ import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -32,7 +31,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {

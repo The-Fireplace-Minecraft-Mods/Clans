@@ -8,7 +8,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -35,7 +34,7 @@ public class CommandSetColor extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		try {
 			int color;
 			if(TextStyles.colorStrings.containsKey(args[0].toLowerCase()))

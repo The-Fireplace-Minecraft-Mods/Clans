@@ -36,7 +36,7 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {

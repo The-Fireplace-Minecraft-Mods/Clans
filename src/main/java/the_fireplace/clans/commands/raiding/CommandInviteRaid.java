@@ -44,11 +44,11 @@ public class CommandInviteRaid extends RaidSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
-				assert server != null;
+
 				GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
 				if(target != null) {

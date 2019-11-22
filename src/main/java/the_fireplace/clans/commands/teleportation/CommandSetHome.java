@@ -15,7 +15,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public class CommandSetHome extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
 		if(selectedClan.getId().equals(ClaimData.getChunkClanId(new ChunkPositionWithData(c)))) {
 			for(Map.Entry<Clan, BlockPos> pos: ClanCache.getClanHomes().entrySet())

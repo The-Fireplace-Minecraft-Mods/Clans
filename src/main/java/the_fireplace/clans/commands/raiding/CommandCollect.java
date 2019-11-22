@@ -13,7 +13,6 @@ import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class CommandCollect extends RaidSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID())) {
 				List<String> removeItems = Lists.newArrayList();

@@ -15,7 +15,6 @@ import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -42,7 +41,7 @@ public class CommandHome extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(Clans.getConfig().getClanHomeWarmupTime() <= -1)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
 		BlockPos home = selectedClan.getHome();

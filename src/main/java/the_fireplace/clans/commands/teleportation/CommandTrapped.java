@@ -17,7 +17,6 @@ import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -44,7 +43,7 @@ public class CommandTrapped extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP player, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP player, String[] args) {
 		Chunk origin = player.world.getChunk(player.getPosition());
 		Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
 		if(chunkOwner == null && Clans.getConfig().isProtectWilderness() && player.getPosition().getY() >= Clans.getConfig().getMinWildernessY()) {

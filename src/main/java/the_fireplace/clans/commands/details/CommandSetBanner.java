@@ -44,7 +44,7 @@ public class CommandSetBanner extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 1){
 			try {
 				if(new ItemStack(JsonToNBT.getTagFromJson(args[0])).isEmpty()) {

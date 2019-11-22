@@ -10,7 +10,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -37,7 +36,7 @@ public class CommandSetRent extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(Clans.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
 		if(!selectedClan.isServer()) {

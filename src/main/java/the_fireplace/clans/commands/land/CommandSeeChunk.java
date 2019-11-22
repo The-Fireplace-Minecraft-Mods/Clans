@@ -43,8 +43,8 @@ public class CommandSeeChunk extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		assert server != null;
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+
 		World w = sender.getEntityWorld();
 		Chunk c = w.getChunk(sender.getPosition());
 		if(args.length == 1)

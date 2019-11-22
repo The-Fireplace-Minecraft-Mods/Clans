@@ -10,7 +10,6 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -32,7 +31,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null)

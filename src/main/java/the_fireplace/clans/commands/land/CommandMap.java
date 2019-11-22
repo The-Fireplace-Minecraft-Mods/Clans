@@ -16,7 +16,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.UUID;
@@ -47,8 +46,8 @@ public class CommandMap extends ClanSubCommand {
 
 	@SuppressWarnings("Duplicates")
     @Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		assert server != null;
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+
 		World w = sender.getEntityWorld();
 		Chunk center = w.getChunk(sender.getPosition());
 

@@ -10,7 +10,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public class CommandLeave extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 		if(senderRank == EnumRank.LEADER && !selectedClan.isServer()) {
 			if(selectedClan.getMembers().size() == 1){

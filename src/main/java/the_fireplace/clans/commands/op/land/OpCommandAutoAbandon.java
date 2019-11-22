@@ -9,7 +9,6 @@ import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
@@ -31,7 +30,7 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
         if(!ClanCache.opAutoAbandonClaims.remove(sender.getUniqueID())) {
             ClanCache.opAutoAbandonClaims.add(sender.getUniqueID());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));

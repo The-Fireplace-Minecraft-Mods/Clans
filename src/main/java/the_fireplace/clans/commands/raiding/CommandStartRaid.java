@@ -11,7 +11,6 @@ import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 import java.util.Set;
@@ -35,11 +34,11 @@ public class CommandStartRaid extends RaidSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
-				assert server != null;
+
 				Set<Map.Entry<EntityPlayerMP, EnumRank>> clanPlayers = raid.getTarget().getOnlineSurvivalMembers();
 				if(clanPlayers.size() >= raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
