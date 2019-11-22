@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
@@ -209,7 +210,7 @@ public class ChunkUtils {
 		int zStart = c.getPos().getZStart();
 		int zEnd = c.getPos().getZEnd();
 
-		sendGlowStoneToPositions(conn, w,
+		sendGlowStoneToPositions(player, w,
 				//Corners
 				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart)),
 				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zStart)),
@@ -235,9 +236,14 @@ public class ChunkUtils {
 		);
 	}
 
-	private static void sendGlowStoneToPositions(NetHandlerPlayServer conn, World w, BlockPos... positions) {
-	    //TODO track positions so we can clear this when the player changes chunks?
+	public static void sendUpdatesToPositions(NetHandlerPlayServer conn, World w, Iterable<BlockPos> positions) {
 		for(BlockPos pos: positions)
-			conn.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, Blocks.GLOWSTONE.getDefaultState()));
+			conn.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, w.getBlockState(pos)));
+	}
+
+	private static void sendGlowStoneToPositions(EntityPlayerMP player, World w, BlockPos... positions) {
+		PlayerCache.updateBorderDisplayCache(player, positions);
+		for(BlockPos pos: positions)
+			player.connection.sendPacket(NetworkUtils.createFakeBlockChange(w, pos, Blocks.GLOWSTONE.getDefaultState()));
 	}
 }

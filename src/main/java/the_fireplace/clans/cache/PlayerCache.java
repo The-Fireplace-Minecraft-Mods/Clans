@@ -1,11 +1,16 @@
 package the_fireplace.clans.cache;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.model.OrderedPair;
+import the_fireplace.clans.util.ChunkUtils;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -68,6 +73,8 @@ public final class PlayerCache {
 
     public static void setIsShowingChunkBorders(UUID player, boolean isShowingChunkBorders) {
         getPlayerCache(player).isShowingChunkBorders = isShowingChunkBorders;
+        if(!isShowingChunkBorders)
+            updateBorderDisplayCache(Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(player), new BlockPos[0]);
     }
 
     public static void setClanHomeCheckX(UUID player, float prevX) {
@@ -92,6 +99,16 @@ public final class PlayerCache {
 
     public static void setPreviousChunkZ(UUID player, int prevChunkZ) {
         getPlayerCache(player).prevChunkZ = prevChunkZ;
+    }
+
+    public static void updateBorderDisplayCache(EntityPlayerMP player, BlockPos[] newPositions) {
+        List<BlockPos> oldPositions = getPlayerCache(player.getUniqueID()).chunkBorderDisplay;
+        ChunkUtils.sendUpdatesToPositions(player.connection, player.world, oldPositions);
+        getPlayerCache(player.getUniqueID()).chunkBorderDisplay = Lists.newArrayList(newPositions);
+    }
+
+    public static boolean isDisplayingGlowstone(UUID player) {
+        return !getPlayerCache(player).chunkBorderDisplay.isEmpty();
     }
 
     public static void setNeedsCleanup(UUID player, boolean isMarkedForCleanup) {
@@ -122,6 +139,7 @@ public final class PlayerCache {
         private boolean claimWarning, isInBorderland, isShowingChunkBorders;
         private int prevY, prevChunkX, prevChunkZ;
         private float clanHomeCheckX, clanHomeCheckY, clanHomeCheckZ;
+        private List<BlockPos> chunkBorderDisplay = Lists.newArrayList();
         //endregion
     }
 }
