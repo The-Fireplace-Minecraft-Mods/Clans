@@ -9,6 +9,8 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
@@ -16,15 +18,13 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.ChatPageUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -41,7 +41,7 @@ public class CommandInvite extends ClanSubCommand {
 
 	@Override
 	public int getMinArgs() {
-		return 2;
+		return 1;
 	}
 
 	@Override
@@ -50,21 +50,24 @@ public class CommandInvite extends ClanSubCommand {
 	}
 
 	@Override
-	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		assert server != null;
+	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		switch(args[0].toLowerCase()) {
+			case "list":
+			case "l":
+				listInvitedPlayers(server, sender, selectedClan.getId(), args.length == 1 ? 1 : parseInt(args[1]));
+				break;
 			case "revoke":
 			case "r":
-				revokeInvite(server, sender, args[1], selectedClan);
+				revokeInvite(server, sender, args.length == 1 ? "" : args[1], selectedClan);
 				break;
 			case "send":
 			case "s":
 			default:
-				invitePlayer(server, sender, args[1], selectedClan);
+				invitePlayer(server, sender, args.length == 1 ? "" : args[1], selectedClan);
 		}
 	}
 
-	public static void invitePlayer(@Nonnull MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan invitingClan) throws PlayerNotFoundException {
+	public static void invitePlayer(MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan invitingClan) throws PlayerNotFoundException {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		if(target != null) {
 			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).isEmpty()) {
@@ -92,7 +95,7 @@ public class CommandInvite extends ClanSubCommand {
 			throw new PlayerNotFoundException("commands.generic.player.notFound", inviteTarget);
 	}
 
-	public static void revokeInvite(@Nonnull MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan revokingClan) throws PlayerNotFoundException {
+	public static void revokeInvite(MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan revokingClan) throws PlayerNotFoundException {
 		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		if(target != null) {
 			if(!PlayerData.getInvites(target.getId()).contains(revokingClan.getId())) {
@@ -110,17 +113,34 @@ public class CommandInvite extends ClanSubCommand {
 			throw new PlayerNotFoundException("commands.generic.player.notFound", inviteTarget);
 	}
 
+	public static void listInvitedPlayers(MinecraftServer server, ICommandSender sender, UUID invitingClanId, int page) {
+		List<ITextComponent> playerNames = Lists.newArrayList();
+		for(UUID playerId: ClanCache.getInvitedPlayers(invitingClanId))
+			playerNames.add(new TextComponentString(Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(playerId)).getName()));
+		ChatPageUtil.showPaginatedChat(sender, "/c i l %s", playerNames, page);
+	}
+
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		if(args.length != 1)
-			return Collections.emptyList();
-		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-		if(!Clans.getConfig().isAllowMultiClanMembership())
-			players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
-		players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(selectedClan));
-		ArrayList<String> playerNames = Lists.newArrayList();
-		for(GameProfile profile: players)
-			playerNames.add(profile.getName());
-		return playerNames;
+		if(args.length == 1 && (args[0].equalsIgnoreCase("send") || args[0].equalsIgnoreCase("s"))) {
+			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
+			if (!Clans.getConfig().isAllowMultiClanMembership())
+				players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
+			players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(selectedClan));
+			ArrayList<String> playerNames = Lists.newArrayList();
+			for (GameProfile profile : players)
+				playerNames.add(profile.getName());
+			return playerNames;
+		} else if(args.length == 1 && (args[0].equalsIgnoreCase("revoke") || args[0].equalsIgnoreCase("r"))) {
+			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
+			players.removeIf(gameProfile -> !ClanCache.getInvitedPlayers(selectedClan.getId()).contains(gameProfile.getId()));
+			ArrayList<String> playerNames = Lists.newArrayList();
+			for (GameProfile profile : players)
+				playerNames.add(profile.getName());
+			return playerNames;
+		} else if(args.length == 0) {
+			return Lists.newArrayList("send", "revoke", "list");
+		}
+		return Collections.emptyList();
 	}
 }

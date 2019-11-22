@@ -9,12 +9,14 @@ import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.data.ClanDatabase;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,9 @@ public final class ClanCache {
 	public static Map<UUID, Clan> autoClaimLands = Maps.newHashMap();
 	public static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
 	public static Map<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
+
+	//Map of Clan ID -> List of invited players
+	public static Map<UUID, List<UUID>> invitedPlayers = Maps.newHashMap();
 
 	public static final List<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid", "null");
 	static {
@@ -173,5 +178,37 @@ public final class ClanCache {
 			clanChattingPlayers.remove(uuid);
 		else
 			clanChattingPlayers.put(uuid, clan);
+	}
+
+	public static List<UUID> getInvitedPlayers(UUID clanId) {
+		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+		return invitedPlayers.get(clanId);
+	}
+
+	/**
+	 * Load all player data on another thread. Only do this when the server is starting.
+	 */
+	public static void loadInvitedPlayers() {
+		new Thread(() -> {
+			File[] files = PlayerData.playerDataLocation.listFiles();
+			if(files != null)
+				for(File f: files) {
+					try {
+						UUID playerId = UUID.fromString(f.getName().replace(".json", ""));
+						for(UUID clanId: PlayerData.getInvites(playerId))
+							addInvite(clanId, playerId);
+					} catch(IllegalArgumentException ignored) {}
+				}
+		}).start();
+	}
+
+	public static void addInvite(UUID clanId, UUID playerId) {
+		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+		invitedPlayers.get(clanId).add(playerId);
+	}
+
+	public static void removeInvite(UUID clanId, UUID playerId) {
+		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+		invitedPlayers.get(clanId).remove(playerId);
 	}
 }

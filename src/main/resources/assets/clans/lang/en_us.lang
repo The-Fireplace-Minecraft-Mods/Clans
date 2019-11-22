@@ -213,7 +213,7 @@ commands.clan.demote.success=You have demoted %s to %s in %s.
 commands.clan.demote.demoted=You have been demoted in %s to %s by %s.
 commands.clan.demote.error=The player %s could not be demoted.
 
-commands.clan.invite.usage=/clan invite <send|revoke> <player>
+commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[page]
 commands.clan.invite.description=Invite a player to your clan, or revoke an invite.
 commands.clan.invite.success=You have invited %s to join %s.
 commands.clan.invite.invited=You have been invited to join %1$s. To join %1$s, type /clan accept. To decline, type /clan decline.

@@ -19,7 +19,7 @@ import java.util.*;
 
 public final class PlayerData {
     private static HashMap<UUID, PlayerStoredData> playerData = Maps.newHashMap();
-    private static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
+    public static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
 
     //region getters
     @Nullable
@@ -75,6 +75,7 @@ public final class PlayerData {
      * @return true if the player did not already have an invite pending from that clan, false otherwise.
      */
     public static boolean addInvite(UUID player, UUID clan) {
+        ClanCache.addInvite(clan, player);
         return getPlayerData(player).addInvite(clan);
     }
 
@@ -83,6 +84,7 @@ public final class PlayerData {
      * @return true if the invite was removed, or false if they didn't have a pending invite from the specified clan.
      */
     public static boolean removeInvite(UUID player, UUID clan) {
+        ClanCache.removeInvite(clan, player);
         return getPlayerData(player).removeInvite(clan);
     }
 
@@ -158,6 +160,10 @@ public final class PlayerData {
                 inviteBlock = false;
                 PlayerEventLogic.onFirstLogin(playerId);
             }
+            //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
+            //noinspection ConstantConditions
+            if(Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(playerId) == null)
+                shouldDisposeReferences = true;
         }
         //endregion
 
