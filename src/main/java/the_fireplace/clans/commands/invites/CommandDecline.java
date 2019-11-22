@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.members;
+package the_fireplace.clans.commands.invites;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,10 +17,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandAccept extends ClanSubCommand {
+public class CommandDecline extends ClanSubCommand {
 	@Override
 	public String getName() {
-		return "accept";
+		return "decline";
 	}
 
 	@Override
@@ -35,22 +35,22 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public int getMaxArgs() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public void run(@Nullable MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan acceptClan = ClanCache.getClanByName(args[0]);
-		if(acceptClan != null) {
-			if(PlayerData.getInvites(sender.getUniqueID()).contains(acceptClan.getId())) {
-				acceptClan.addMember(sender.getUniqueID());
-				if (ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
-					PlayerData.setDefaultClan(sender.getUniqueID(), acceptClan.getId());
-				PlayerData.removeInvite(sender.getUniqueID(), acceptClan.getId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getName()).setStyle(TextStyles.GREEN));
-				acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getName());
-			} else
+		Clan declineClan = ClanCache.getClanByName(args[0]);
+		if(declineClan != null) {
+			if(PlayerData.getInvites(sender.getUniqueID()).contains(declineClan.getId())) {
+				PlayerData.removeInvite(sender.getUniqueID(), declineClan.getId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getName()).setStyle(TextStyles.GREEN));
+				declineClan.messageAllOnline(EnumRank.ADMIN, TextStyles.YELLOW, "commands.clan.decline.declined", sender.getDisplayNameString(), declineClan.getName());
+			} else if(args.length < 2)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_invited", args[0]).setStyle(TextStyles.RED));
+			else if(args[1].equalsIgnoreCase("block")) {
+				//TODO block clan
+			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 	}
