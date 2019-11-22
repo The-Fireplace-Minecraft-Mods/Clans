@@ -4,6 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -19,6 +21,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.logic.RaidManagementLogic;
+import the_fireplace.clans.util.EntityUtil;
 
 @Mod.EventBusSubscriber(modid= Clans.MODID)
 public class LandProtectionEvents {
@@ -66,6 +69,12 @@ public class LandProtectionEvents {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
+	}
+
+	@SubscribeEvent
+	public static void onProjectileImpact(ProjectileImpactEvent event) {
+		if(event.getRayTraceResult().typeOfHit == RayTraceResult.Type.ENTITY)
+			event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, EntityUtil.tryFindSource(event.getEntity())));
 	}
 
 	@SubscribeEvent

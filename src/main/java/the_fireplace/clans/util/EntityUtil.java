@@ -3,6 +3,7 @@ package the_fireplace.clans.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -114,5 +115,24 @@ public class EntityUtil {
             x += dx;
             z += dz;
         }
+    }
+
+    /**
+     * Try to find the source entity for an entity. Intended to be run on projectiles to find out who launched/shot/threw them
+     * @return the source of the entity or null if a source was not found
+     */
+    @Nullable
+    public static Entity tryFindSource(Entity entity) {
+        if(entity instanceof EntityArrow)
+            return ((EntityArrow) entity).shootingEntity;
+        if(entity instanceof EntityThrowable)
+            return ((EntityThrowable) entity).getThrower();
+        if(entity instanceof EntityFireball)
+            return ((EntityFireball) entity).shootingEntity;
+        if(entity instanceof EntityLlamaSpit)
+            return ((EntityLlamaSpit) entity).owner;
+        if(entity instanceof EntityFishHook)
+            return ((EntityFishHook) entity).getAngler();
+        return null;
     }
 }
