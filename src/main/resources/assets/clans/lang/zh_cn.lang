@@ -91,6 +91,7 @@ commands.clan.list.description=View a list of clans. Sort by [money|land|members
 commands.clan.list.clans=此服务器部落有：
 commands.clan.list.listitem=%s - %s
 commands.clan.list.noclans=此服务器上还没有部落
+commands.clan.list.no_invites=您没有任何待处理的邀请
 
 commands.clan.playerinfo.usage=/clan playerinfo [玩家] （查看部落中的玩家信息）
 commands.clan.playerinfo.description=View what clans a player is in.
@@ -199,12 +200,19 @@ commands.clan.accept.usage=/clan accept （接受部落邀请）
 commands.clan.accept.description=Accept an invitation to join a clan.
 commands.clan.accept.success=你加入了 %s 部落
 commands.clan.accept.accepted=%s 加入了 %s 部落
-commands.clan.accept.no_invites=您没有任何待处理的邀请
+commands.clan.accept.not_invited=You haven't been invited to join %s.
 
 commands.clan.decline.usage=/clan decline （拒绝加入部落）
 commands.clan.decline.description=Decline an invitation to join a clan.
 commands.clan.decline.success=你拒绝了加入 %s 部落
 commands.clan.decline.declined=%s 拒绝加入 %s 的邀请
+
+commands.clan.autodecline.usage=/clan autodecline [clan]
+commands.clan.autodecline.description=Automatically decline invitations from any clan or a clan you specify.
+commands.clan.autodecline.on=You are now automatically declining all invitations.
+commands.clan.autodecline.on_clan=You are now automatically declining invitations from %s.
+commands.clan.autodecline.off=You are no longer automatically declining all invitations.
+commands.clan.autodecline.off_clan=You are no longer automatically declining invitations from %s.
 
 commands.clan.demote.usage=/clan demote <玩家名称> （降低玩家的职位）
 commands.clan.demote.description=Demote a player in your clan, Leader to Admin or Admin to Member.
@@ -221,6 +229,8 @@ commands.clan.invite.already_in_this=玩家 %s 已经在 %s 邀请中
 commands.clan.invite.already_in_any=玩家 %s 已经加入过部落
 commands.clan.invite.blocking=The player %s is not accepting invites from %s.
 commands.clan.invite.blocking_all=The player %s is not accepting invites.
+commands.clan.invite.revoked=The clan %s has revoked their invitation for you to join.
+commands.clan.invite.revoke_success=You have revoked the invite for %s to join %s.
 
 commands.clan.kick.usage=/clan kick <玩家> （从部落踢出玩家）
 commands.clan.kick.description=Kick a player out of your clan.
@@ -479,4 +489,3 @@ clans.chat.prefix=<%s Chat>
 clans.chat.page.next=[Next]
 clans.chat.page.prev=[Previous]
 clans.chat.page.num=Page: %s/%s
-commands.clan.invite.failedinvite=%s 尝试邀请你加入部落,但你已经有 %2$s待处理的邀请，你在同意此条邀请之前，你必须先处理 %2$s 的邀请。

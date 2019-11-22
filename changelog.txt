@@ -2,12 +2,13 @@ Additions:
 Added config option to set the default clan prefix in chat, replacing the option for if it should be shown.
 Added /opclan tp <clan>
 Added some new clan permissions: lock.private, lock.clan, lock.open, so clans can restrict their members from using certain lock types.
+New command: /clan autodecline [clan] - automatically decline invitations from a clan or all clans
 
 Changes:
 Redesigned the invite system:
 -You can now invite offline players to join your clan
 -Players can now have multiple pending invites at once.
--Players can now block invites from specific clans
+-Players can now block invites from specific clans or all clans
 -You can now revoke an invite to your clan
 -/clan invite, accept, and decline have been adjusted accordingly.
 -/clan list invites [page] shows pending invitations.
