@@ -75,6 +75,7 @@ public class LandProtectionEvents {
 	public static void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getRayTraceResult().typeOfHit == RayTraceResult.Type.ENTITY)
 			event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, EntityUtil.tryFindSource(event.getEntity())));
+		//TODO protect from block interaction as well?
 	}
 
 	@SubscribeEvent
