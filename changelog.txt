@@ -19,3 +19,4 @@ The clan home is automatically set when a chunk is claimed, a home is not set, a
 
 Fixes/Internal Changes:
 Fixed /opclan setcolor usage for Canadian/Australian/British English
+Fixed broken multiblocks (door, bed, etc) not properly rolling back after raids
