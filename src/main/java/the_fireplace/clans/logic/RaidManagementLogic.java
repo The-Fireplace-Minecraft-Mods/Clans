@@ -1,19 +1,23 @@
 package the_fireplace.clans.logic;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.BlockSlime;
+import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityPiston;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -27,7 +31,9 @@ import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
+import the_fireplace.clans.util.BlockSerializeUtil;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.MultiblockUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.List;
@@ -227,6 +233,42 @@ public class RaidManagementLogic {
             if(!confiscated.isEmpty())
                 for(String item: confiscated)
                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.raid.confiscated", item));
+        }
+    }
+
+    public static void onBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
+        if (!world.isRemote) {
+            Chunk c = world.getChunk(pos);
+            if (breaker instanceof EntityPlayerMP) {
+                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+                if (chunkClan != null) {
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
+                        IBlockState targetState = world.getBlockState(pos);
+                        RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
+                        for(BlockPos connected: MultiblockUtil.getDependentPositions(world, pos, targetState))
+                            RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), world.getChunk(connected), connected, BlockSerializeUtil.blockToString(world.getBlockState(connected)));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void onBlockPlaced(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand, Block placedBlock) {
+        if(!world.isRemote) {
+            Chunk c = world.getChunk(pos);
+            if (placer instanceof EntityPlayerMP) {
+                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+                if (chunkClan != null) {
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
+                        ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
+                        out.setCount(1);
+                        if (!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
+                            RaidCollectionDatabase.getInstance().addCollectItem(placer.getUniqueID(), out);
+                        RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
+                        //TODO After the block has been placed, something needs to check if a multiblock was created at that position and mark the dependent positions for removal as well.
+                    }
+                }
+            }
         }
     }
 }

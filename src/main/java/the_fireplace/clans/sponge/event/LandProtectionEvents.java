@@ -4,7 +4,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
@@ -14,6 +13,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.world.Location;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
+import the_fireplace.clans.logic.RaidManagementLogic;
 import the_fireplace.clans.sponge.SpongeHelper;
 
 public class LandProtectionEvents {
@@ -24,7 +24,7 @@ public class LandProtectionEvents {
         if(blockSnapshot == null || player == null)
             return;
         if(!LandProtectionEventLogic.shouldCancelBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer) player))
-            LandProtectionEventLogic.onBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer) player);
+            RaidManagementLogic.onBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer) player);
     }
 
     @Listener
@@ -48,6 +48,6 @@ public class LandProtectionEvents {
             return;
         event.setCancelled(LandProtectionEventLogic.shouldCancelBlockPlacement((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, ((IBlockState)blockSnapshot.getState()).getBlock()));
         if(!event.isCancelled())
-            LandProtectionEventLogic.onBlockPlaced((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, ((IBlockState)blockSnapshot.getState()).getBlock());
+            RaidManagementLogic.onBlockPlaced((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, ((IBlockState)blockSnapshot.getState()).getBlock());
     }
 }

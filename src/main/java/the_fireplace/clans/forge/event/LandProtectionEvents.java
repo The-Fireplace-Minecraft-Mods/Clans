@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
 import the_fireplace.clans.logic.PlayerEventLogic;
+import the_fireplace.clans.logic.RaidManagementLogic;
 
 @Mod.EventBusSubscriber(modid= Clans.MODID)
 public class LandProtectionEvents {
@@ -25,7 +26,7 @@ public class LandProtectionEvents {
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
 		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
 		if(!event.isCanceled())
-			LandProtectionEventLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer());
+			RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer());
 	}
 
 	@SubscribeEvent
@@ -37,7 +38,7 @@ public class LandProtectionEvents {
 	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock()));
 		if(!event.isCanceled())
-			LandProtectionEventLogic.onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
+			RaidManagementLogic.onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
 	}
 
 	@SubscribeEvent

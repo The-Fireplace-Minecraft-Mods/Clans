@@ -14,7 +14,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketEntityEquipment;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -22,7 +21,6 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimData;
-import the_fireplace.clans.data.RaidCollectionDatabase;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
@@ -88,21 +86,6 @@ public class LandProtectionEventLogic {
         return false;
     }
 
-    public static void onBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
-        if (!world.isRemote) {
-            Chunk c = world.getChunk(pos);
-            if (breaker instanceof EntityPlayerMP) {
-                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
-                if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
-                        IBlockState targetState = world.getBlockState(pos);
-                        RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-                    }
-                }
-            }
-        }
-    }
-
     public static boolean shouldCancelCropTrample(World world, BlockPos pos, @Nullable EntityPlayer breakingPlayer) {
         if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
@@ -155,24 +138,6 @@ public class LandProtectionEventLogic {
             }
         }
         return false;
-    }
-
-    public static void onBlockPlaced(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand, Block placedBlock) {
-        if(!world.isRemote) {
-            Chunk c = world.getChunk(pos);
-            if (placer instanceof EntityPlayerMP) {
-                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
-                if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
-                        ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
-                        out.setCount(1);
-                        if (!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
-                            RaidCollectionDatabase.getInstance().addCollectItem(placer.getUniqueID(), out);
-                        RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
-                    }
-                }
-            }
-        }
     }
 
     public static boolean shouldCancelFluidPlaceBlock(World world, BlockPos sourceLiquidPos, BlockPos fluidPlacingPos) {
