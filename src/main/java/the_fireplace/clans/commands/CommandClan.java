@@ -20,6 +20,7 @@ import the_fireplace.clans.commands.finance.CommandBalance;
 import the_fireplace.clans.commands.finance.CommandSetRent;
 import the_fireplace.clans.commands.finance.CommandTakeFunds;
 import the_fireplace.clans.commands.invites.CommandAccept;
+import the_fireplace.clans.commands.invites.CommandAutoDecline;
 import the_fireplace.clans.commands.invites.CommandDecline;
 import the_fireplace.clans.commands.invites.CommandInvite;
 import the_fireplace.clans.commands.land.*;
@@ -54,11 +55,13 @@ public class CommandClan extends CommandBase {
 	    put("map", new CommandMap());
         put("fancymap", new CommandFancyMap());
         put("seechunk", new CommandSeeChunk());
-        //managing members
+        //invites
         put("invite", new CommandInvite());
-        put("kick", new CommandKick());
         put("accept", new CommandAccept());
         put("decline", new CommandDecline());
+        put("autodecline", new CommandAutoDecline());
+        //managing members
+        put("kick", new CommandKick());
         put("leave", new CommandLeave());
         put("promote", new CommandPromote());
         put("demote", new CommandDemote());
@@ -118,6 +121,8 @@ public class CommandClan extends CommandBase {
         aliases.put("fm", "fancymap");
         aliases.put("sc", "seechunk");
         //members
+        aliases.put("ad", "autodecline");
+        aliases.put("block", "autodecline");
         aliases.put("i", "invite");
         aliases.put("inv", "invite");
         //clan constants/details/other

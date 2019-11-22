@@ -207,6 +207,13 @@ commands.clan.decline.description=Decline an invitation to join a clan.
 commands.clan.decline.success=You declined the invitation to join %s.
 commands.clan.decline.declined=%s declined an invitation to join %s.
 
+commands.clan.autodecline.usage=/clan autodecline [clan]
+commands.clan.autodecline.description=Automatically decline invitations from any clan or a clan you specify.
+commands.clan.autodecline.on=You are now automatically declining all invitations.
+commands.clan.autodecline.on_clan=You are now automatically declining invitations from %s.
+commands.clan.autodecline.off=You are no longer automatically declining all invitations.
+commands.clan.autodecline.off_clan=You are no longer automatically declining invitations from %s.
+
 commands.clan.demote.usage=/clan demote <player>
 commands.clan.demote.description=Demote a player in your clan, Leader to Admin or Admin to Member.
 commands.clan.demote.success=You have demoted %s to %s in %s.
