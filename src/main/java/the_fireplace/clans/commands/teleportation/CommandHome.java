@@ -48,11 +48,11 @@ public class CommandHome extends ClanSubCommand {
 		int playerDim = sender.dimension;
 
 		int cooldown = PlayerData.getCooldown(sender.getUniqueID());
-		if(cooldown <= 0) {
+		if(cooldown <= 0 || sender.isCreative()) {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getName()).setStyle(TextStyles.RED));
 			else {
-				if(Clans.getConfig().getClanHomeWarmupTime() > 0) {
+				if(Clans.getConfig().getClanHomeWarmupTime() > 0 && !sender.isCreative()) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
 					PlayerCache.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
 					PlayerCache.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);

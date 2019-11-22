@@ -12,6 +12,7 @@ Redesigned the invite system:
 -You can now revoke an invite to your clan
 -/clan invite, accept, and decline have been adjusted accordingly.
 -/clan list invites [page] shows pending invitations.
+Players in creative mode will now instantly teleport to their clan home
 Added Canadian/Australian/British English translations for /[op]clan setcolor's description
 /raid join has a new alias: /raid form
 The clan home is automatically set when a chunk is claimed, a home is not set, and the person claiming has permission to set the clan's home.
