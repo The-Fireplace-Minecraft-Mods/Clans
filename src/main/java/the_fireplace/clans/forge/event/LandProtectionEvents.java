@@ -29,7 +29,7 @@ public class LandProtectionEvents {
 	public static void onBreakBlock(BlockEvent.BreakEvent event){
 		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
 		if(!event.isCanceled())
-			RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getPlayer());
+			RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getState());
 	}
 
 	@SubscribeEvent
@@ -49,6 +49,8 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelFluidPlaceBlock(event.getWorld(), event.getLiquidPos(), event.getPos()));
+        if(!event.isCanceled())
+            RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getOriginalState());
 	}
 
 	@SubscribeEvent

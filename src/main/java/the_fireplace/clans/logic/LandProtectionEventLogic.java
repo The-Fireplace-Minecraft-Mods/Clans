@@ -103,13 +103,12 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand) {
-        if(!world.isRemote) {
+        if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             if (placer instanceof EntityPlayerMP) {
                 Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
                 if (chunkClan != null) {
-                    if (Clans.getConfig().allowBuildProtection()
-                            && !ClanCache.isClaimAdmin((EntityPlayerMP) placer)
+                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) placer)
                             && !chunkClan.hasPerm("build", placer.getUniqueID())
                             && !RaidingParties.isRaidedBy(chunkClan, placer)
                             && !RaidingParties.preparingRaidOnBorderland(placer, chunkClan, c)
@@ -122,8 +121,7 @@ public class LandProtectionEventLogic {
                     }
                     return false;
                 }
-                if (Clans.getConfig().allowBuildProtection()
-                        && !ClanCache.isClaimAdmin((EntityPlayerMP) placer)
+                if (!ClanCache.isClaimAdmin((EntityPlayerMP) placer)
                         && (!PermissionManager.permissionManagementExists()
                             || !PermissionManager.hasPermission((EntityPlayerMP)placer, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness"))
                         && Clans.getConfig().isProtectWilderness()

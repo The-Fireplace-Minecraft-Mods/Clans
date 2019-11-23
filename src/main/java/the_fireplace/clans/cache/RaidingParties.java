@@ -41,7 +41,7 @@ public final class RaidingParties {
 	}
 
 	@Nullable
-	public static Raid getRaid(Clan clan){
+	public static Raid getRaid(@Nullable Clan clan){
 		return raids.get(clan);
 	}
 

@@ -36,6 +36,7 @@ import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.MultiblockUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -236,18 +237,16 @@ public class RaidManagementLogic {
         }
     }
 
-    public static void onBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
+    public static void onBlockBroken(World world, BlockPos pos, @Nullable IBlockState state) {
         if (!world.isRemote) {
             Chunk c = world.getChunk(pos);
-            if (breaker instanceof EntityPlayerMP) {
-                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
-                if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
-                        IBlockState targetState = world.getBlockState(pos);
-                        RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-                        for(BlockPos connected: MultiblockUtil.getDependentPositions(world, pos, targetState))
-                            RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), world.getChunk(connected), connected, BlockSerializeUtil.blockToString(world.getBlockState(connected)));
-                    }
+            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            if (chunkClan != null) {
+                if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
+                    IBlockState targetState = state != null ? state : world.getBlockState(pos);
+                    RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
+                    for(BlockPos connected: MultiblockUtil.getDependentPositions(world, pos, targetState))
+                        RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), world.getChunk(connected), connected, BlockSerializeUtil.blockToString(world.getBlockState(connected)));
                 }
             }
         }
