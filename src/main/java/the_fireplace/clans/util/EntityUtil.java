@@ -33,19 +33,19 @@ public class EntityUtil {
 
     @Nullable
     public static BlockPos getSafeLocation(World worldIn, BlockPos pos, int maxTries) {
-        int i = pos.getX();
-        int j = pos.getY();
-        int k = pos.getZ();
+        int posX = pos.getX();
+        int posY = pos.getY();
+        int posZ = pos.getZ();
 
         for (int l = 0; l <= 1; ++l) {
-            int i1 = i - Integer.compare(pos.getX(), 0) * l - 1;
-            int j1 = k - Integer.compare(pos.getZ(), 0) * l - 1;
+            int i1 = posX - Integer.compare(pos.getX(), 0) * l - 1;
+            int j1 = posZ - Integer.compare(pos.getZ(), 0) * l - 1;
             int k1 = i1 + 2;
             int l1 = j1 + 2;
 
             for (int i2 = i1; i2 <= k1; ++i2) {
                 for (int j2 = j1; j2 <= l1; ++j2) {
-                    BlockPos blockpos = new BlockPos(i2, j, j2);
+                    BlockPos blockpos = new BlockPos(i2, posY+l, j2);
 
                     if (hasRoomForPlayer(worldIn, blockpos))
                         return blockpos;
@@ -63,7 +63,7 @@ public class EntityUtil {
     }
 
     public static void teleportHome(EntityPlayer player, BlockPos home, int homeDim, int playerDim, boolean noCooldown) {
-        home = getSafeLocation(Objects.requireNonNull(player.getServer()).getWorld(homeDim), home, 5);
+        home = getSafeLocation(Objects.requireNonNull(player.getServer()).getWorld(homeDim), home, 25);
         if (playerDim == homeDim) {
             completeTeleportHome(player, home, playerDim, noCooldown);
         } else {
