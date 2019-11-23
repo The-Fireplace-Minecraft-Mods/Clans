@@ -102,7 +102,7 @@ public class LandProtectionEventLogic {
         return false;
     }
 
-    public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand, Block placedBlock) {
+    public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand) {
         if(!world.isRemote) {
             Chunk c = world.getChunk(pos);
             if (placer instanceof EntityPlayerMP) {

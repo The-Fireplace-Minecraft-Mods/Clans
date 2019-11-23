@@ -38,10 +38,12 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onBlockPlace(BlockEvent.PlaceEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock()));
+	public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+		if(!(event.getEntity() instanceof EntityPlayer))
+			return;
+		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), (EntityPlayer) event.getEntity(), ((EntityPlayer) event.getEntity()).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND));
 		if(!event.isCanceled())
-			RaidManagementLogic.onBlockPlaced(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
+			RaidManagementLogic.onBlockPlaced(event.getWorld(), event.getPos(), (EntityPlayer) event.getEntity(), ((EntityPlayer) event.getEntity()).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
 	}
 
 	@SubscribeEvent

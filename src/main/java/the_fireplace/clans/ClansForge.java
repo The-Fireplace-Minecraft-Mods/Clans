@@ -22,7 +22,7 @@ import java.util.Objects;
 import static the_fireplace.clans.Clans.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi", certificateFingerprint = "51ac068a87f356c56dc733d0c049a9a68bc7245c")
+@Mod(modid = MODID, name = Clans.MODNAME, version = Clans.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi;required-after:forge@[14.23.5.2817,)", certificateFingerprint = "51ac068a87f356c56dc733d0c049a9a68bc7245c")
 public final class ClansForge {
     @Mod.Instance(MODID)
     public static ClansForge instance;
