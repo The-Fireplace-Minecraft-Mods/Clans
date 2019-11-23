@@ -88,7 +88,7 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
 }
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
+/*task signJar(type: SignJar, dependsOn: reobfJar) {
     if (project.hasProperty("alias") && project.hasProperty("storePass") && project.hasProperty("keyPass") && project.hasProperty("keyStore")) {
         alias = project.alias
         storePass = project.storePass
@@ -100,7 +100,7 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
     }
 }
 
-build.dependsOn signJar
+build.dependsOn signJar*/
 
 artifacts {
     archives jar
