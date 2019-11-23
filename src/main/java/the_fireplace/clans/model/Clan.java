@@ -105,7 +105,8 @@ public class Clan {
         Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
         ClanCache.addPlayerClan(leader, this);
         if(!Clans.getConfig().isAllowMultiClanMembership())
-            ClanCache.removeInvite(leader);
+            for(Clan clan: ClanDatabase.getClans())
+                PlayerData.removeInvite(leader, clan.getId());
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
@@ -476,8 +477,10 @@ public class Clan {
     public void addMember(UUID player) {
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
-        if(!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
-            ClanCache.removeInvite(player);
+        PlayerData.removeInvite(player, getId());
+        if(!Clans.getConfig().isAllowMultiClanMembership())
+            for(Clan clan: ClanDatabase.getClans())
+                PlayerData.removeInvite(player, clan.getId());
         Clans.getDynmapCompat().refreshTooltip(this);
         markChanged();
     }
@@ -487,8 +490,10 @@ public class Clan {
         this.members.put(player, rank);
         if(!prevHadMember) {
             ClanCache.addPlayerClan(player, this);
-            if (!Clans.getConfig().isAllowMultiClanMembership() || equals(ClanCache.getInvite(player)))
-                ClanCache.removeInvite(player);
+            PlayerData.removeInvite(player, getId());
+            if(!Clans.getConfig().isAllowMultiClanMembership())
+                for(Clan clan: ClanDatabase.getClans())
+                    PlayerData.removeInvite(player, clan.getId());
             Clans.getDynmapCompat().refreshTooltip(this);
         }
         markChanged();

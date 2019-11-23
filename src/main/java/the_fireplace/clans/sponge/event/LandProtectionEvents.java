@@ -24,7 +24,7 @@ public class LandProtectionEvents {
         if(blockSnapshot == null || player == null)
             return;
         if(!LandProtectionEventLogic.shouldCancelBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer) player))
-            RaidManagementLogic.onBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer) player);
+            RaidManagementLogic.onBlockBroken((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (IBlockState)blockSnapshot.getState());
     }
 
     @Listener
@@ -46,7 +46,7 @@ public class LandProtectionEvents {
         Location location = blockSnapshot.getLocation().orElse(null);
         if(player == null || location == null)
             return;
-        event.setCancelled(LandProtectionEventLogic.shouldCancelBlockPlacement((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, ((IBlockState)blockSnapshot.getState()).getBlock()));
+        event.setCancelled(LandProtectionEventLogic.shouldCancelBlockPlacement((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND));
         if(!event.isCancelled())
             RaidManagementLogic.onBlockPlaced((World)player.getWorld(), SpongeHelper.getPos(blockSnapshot.getPosition()), (EntityPlayer)player, ((EntityPlayer) player).getActiveHand().equals(EnumHand.MAIN_HAND) ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND, ((IBlockState)blockSnapshot.getState()).getBlock());
     }

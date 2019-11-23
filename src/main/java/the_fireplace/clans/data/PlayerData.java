@@ -75,7 +75,7 @@ public final class PlayerData {
      * @return true if the player did not already have an invite pending from that clan, false otherwise.
      */
     public static boolean addInvite(UUID player, UUID clan) {
-        ClanCache.addInvite(clan, player);
+        ClanCache.cacheInvite(clan, player);
         return getPlayerData(player).addInvite(clan);
     }
 
@@ -84,7 +84,7 @@ public final class PlayerData {
      * @return true if the invite was removed, or false if they didn't have a pending invite from the specified clan.
      */
     public static boolean removeInvite(UUID player, UUID clan) {
-        ClanCache.removeInvite(clan, player);
+        ClanCache.uncacheInvite(clan, player);
         return getPlayerData(player).removeInvite(clan);
     }
 

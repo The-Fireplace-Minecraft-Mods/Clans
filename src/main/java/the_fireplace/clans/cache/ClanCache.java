@@ -196,18 +196,24 @@ public final class ClanCache {
 					try {
 						UUID playerId = UUID.fromString(f.getName().replace(".json", ""));
 						for(UUID clanId: PlayerData.getInvites(playerId))
-							addInvite(clanId, playerId);
+							cacheInvite(clanId, playerId);
 					} catch(IllegalArgumentException ignored) {}
 				}
 		}).start();
 	}
 
-	public static void addInvite(UUID clanId, UUID playerId) {
+	/**
+	 * DO NOT USE. This will not actually add the invite, it just adds it to cache. PlayerData.addInvite takes care of actually adding it.
+	 */
+	public static void cacheInvite(UUID clanId, UUID playerId) {
 		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
 		invitedPlayers.get(clanId).add(playerId);
 	}
 
-	public static void removeInvite(UUID clanId, UUID playerId) {
+	/**
+	 * DO NOT USE. This will not actually revoke the invite, it just removes it from cache. PlayerData.removeInvite takes care of actually removing it.
+	 */
+	public static void uncacheInvite(UUID clanId, UUID playerId) {
 		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
 		invitedPlayers.get(clanId).remove(playerId);
 	}
