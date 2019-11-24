@@ -1,5 +1,6 @@
 package the_fireplace.clans.logic;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,10 +65,10 @@ public class TimerLogic {
                         upkeep *= clan.getClaimCount();
                     if(Clans.getConfig().isDisbandNoUpkeep() && upkeep > Clans.getPaymentHandler().getBalance(clan.getId()) && upkeep <= Clans.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
                         while(upkeep > Clans.getPaymentHandler().getBalance(clan.getId())) {
-                            ChunkPositionWithData[] chunks = (ChunkPositionWithData[]) ClaimData.getClaimedChunks(clan.getId()).toArray();
-                            if(chunks.length == 0)//This _should_ always be false, but just in case...
+                            ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
+                            if(chunks.isEmpty())//This _should_ always be false, but just in case...
                                 break;
-                            ChunkPositionWithData pos = chunks[new Random().nextInt(chunks.length)];
+                            ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
                             ClanManagementLogic.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                         }
                     }
