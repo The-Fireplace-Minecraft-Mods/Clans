@@ -12,8 +12,8 @@ import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
 import the_fireplace.clans.forge.compat.PaymentHandlerGE;
 import the_fireplace.clans.logic.ServerEventLogic;
+import the_fireplace.clans.sponge.PaymentHandlerSponge;
 import the_fireplace.clans.sponge.SpongePermissionHandler;
-import the_fireplace.clans.sponge.compat.PaymentHandlerSponge;
 
 import java.util.List;
 

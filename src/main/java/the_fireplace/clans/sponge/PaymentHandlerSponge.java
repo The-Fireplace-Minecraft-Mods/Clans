@@ -1,4 +1,4 @@
-package the_fireplace.clans.sponge.compat;
+package the_fireplace.clans.sponge;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
