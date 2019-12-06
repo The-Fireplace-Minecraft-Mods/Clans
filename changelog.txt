@@ -16,6 +16,7 @@ Players in creative mode will now instantly teleport to their clan home
 Added Canadian/Australian/British English translations for /[op]clan setcolor's description
 /raid join has a new alias: /raid form
 The clan home is automatically set when a chunk is claimed, a home is not set, and the person claiming has permission to set the clan's home.
+Updated zh_cn.lang (xiaoxixi)
 
 Fixes/Internal Changes:
 Fixed /opclan setcolor usage for Canadian/Australian/British English
