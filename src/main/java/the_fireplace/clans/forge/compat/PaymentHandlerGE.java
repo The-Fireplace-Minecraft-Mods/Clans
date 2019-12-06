@@ -12,9 +12,9 @@ public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
-		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, false);
-		if(ret && ClanCache.getClanById(account) != null && GrandEconomy.economy instanceof GrandEconomyEconHandler)
-			GrandEconomyApi.forceSave(account);
+		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, null);
+		if(ret && ClanCache.getClanById(account) != null && GrandEconomy.getEconomy() instanceof GrandEconomyEconHandler)
+			GrandEconomyApi.forceSave(account, null);
 		return ret;
 	}
 
@@ -32,20 +32,20 @@ public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
 	public boolean addAmount(long amount, UUID account) {
-		GrandEconomyApi.addToBalance(account, amount, false);
-		if(ClanCache.getClanById(account) != null && GrandEconomy.economy instanceof GrandEconomyEconHandler)
-			GrandEconomyApi.forceSave(account);
+		GrandEconomyApi.addToBalance(account, amount, null);
+		if(ClanCache.getClanById(account) != null && GrandEconomy.getEconomy() instanceof GrandEconomyEconHandler)
+			GrandEconomyApi.forceSave(account, null);
 		return true;
 	}
 
 	@Override
 	public void ensureAccountExists(UUID account) {
-		GrandEconomyApi.ensureAccountExists(account);
+		GrandEconomyApi.ensureAccountExists(account, null);
 	}
 
 	@Override
 	public long getBalance(UUID account) {
-		return GrandEconomyApi.getBalance(account);
+		return GrandEconomyApi.getBalance(account, null);
 	}
 
 	@Override
