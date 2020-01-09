@@ -11,3 +11,4 @@ Fixed NullPointerException printing to console when attempting a tab completion 
 Fixed tab completions not showing when using an alias of a subcommand
 Fixed tab completions for /opclan autoclaim, /opclan setrank
 Fixed clan name cache being empty in some cases where it shouldn't
+Fixed buckets being usable on foreign territory
