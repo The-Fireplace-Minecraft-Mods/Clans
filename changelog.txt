@@ -3,10 +3,10 @@ Added tab completions for /clan setcolor, /clan accept, /clan decline, /clan aut
 
 Changes:
 Updated the help description for /clan invite
-Updated tab completions for /opclan autoclaim, /opclan setrank
 Improved tab completions for /opclan kick, /opclan setserver
 
 Fixes/Internal Changes:
 Fixed the permission command.clans.clan.claim.radius not being registered with Sponge
 Fixed NullPointerException printing to console when attempting a tab completion for an invalid subcommand
 Fixed tab completions not showing when using an alias of a subcommand
+Fixed tab completions for /opclan autoclaim, /opclan setrank
