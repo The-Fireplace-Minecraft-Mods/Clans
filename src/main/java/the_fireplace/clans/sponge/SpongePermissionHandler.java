@@ -37,6 +37,8 @@ public class SpongePermissionHandler implements IPermissionHandler {
 
         registerPermission(PROTECTION_PREFIX+"break.protected_wilderness", "", "");
         registerPermission(PROTECTION_PREFIX+"build.protected_wilderness", "", "");
+
+        registerPermission(CLAN_COMMAND_PREFIX+"claim.radius", PermissionDescription.ROLE_USER, "");
     }
 
     @Override

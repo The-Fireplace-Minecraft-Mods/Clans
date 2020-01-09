@@ -1,28 +1,8 @@
 Additions:
-Added config option to set the default clan prefix in chat, replacing the option for if it should be shown.
-Added /opclan tp <clan>
-Added some new clan permissions: lock.private, lock.clan, lock.open, so clans can restrict their members from using certain lock types.
-New command: /clan autodecline [clan] - automatically decline invitations from a clan or all clans
+
 
 Changes:
-Redesigned the invite system:
--You can now invite offline players to join your clan
--Players can now have multiple pending invites at once.
--Players can now block invites from specific clans or all clans
--You can now revoke an invite to your clan
--/clan invite, accept, and decline have been adjusted accordingly.
--/clan list invites [page] shows pending invitations.
-Players in creative mode will now instantly teleport to their clan home
-Added Canadian/Australian/British English translations for /[op]clan setcolor's description
-/raid join has a new alias: /raid form
-The clan home is automatically set when a chunk is claimed, a home is not set, and the person claiming has permission to set the clan's home.
-Updated zh_cn.lang (xiaoxixi)
+
 
 Fixes/Internal Changes:
-Fixed /opclan setcolor usage for Canadian/Australian/British English
-Fixed broken multiblocks (door, bed, etc) not properly rolling back after raids
-Glowstone from /clan seechunk now gets cleared when walking to the next chunk or turning seechunk off
-Players and animals on claims are better protected from projectiles
-Clan home teleport is now more reliable
-Damage from liquids will now be rolled back after a raid
-Minor performance optimization when breaking blocks during a raid
+Fixed the permission command.clans.clan.claim.radius not being registered with Sponge
