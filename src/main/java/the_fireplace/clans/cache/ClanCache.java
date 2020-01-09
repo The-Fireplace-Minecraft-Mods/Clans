@@ -108,6 +108,9 @@ public final class ClanCache {
 	}
 
 	public static Map<String, Clan> getClanNames() {
+		if(clanNames.isEmpty())
+			for(Clan clan: ClanDatabase.getClans())
+				clanNames.put(clan.getName().toLowerCase(), clan);
 		return Collections.unmodifiableMap(clanNames);
 	}
 
