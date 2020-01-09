@@ -2,7 +2,7 @@ Additions:
 
 
 Changes:
-
+Updated the help description for /clan invite
 
 Fixes/Internal Changes:
 Fixed the permission command.clans.clan.claim.radius not being registered with Sponge
