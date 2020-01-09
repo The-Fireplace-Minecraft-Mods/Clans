@@ -1,7 +1,6 @@
 package the_fireplace.clans.commands.op.management;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -17,10 +16,8 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -57,21 +54,14 @@ public class OpCommandSetRank extends OpClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
-	@SuppressWarnings("Duplicates")
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return Lists.newArrayList();
-		Clan target = ClanCache.getClanByName(args[0]);
-		if(target != null && args.length == 2) {
-			ArrayList<String> playerNames = Lists.newArrayList();
-			for (UUID player : target.getMembers().keySet()) {
-				GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-				if (playerProf != null && !target.getMembers().get(player).equals(EnumRank.LEADER))
-					playerNames.add(playerProf.getName());
-			}
-			return playerNames;
-		}
+			return Lists.newArrayList(ClanCache.getClanNames().keySet());
+		else if(args.length == 2)
+			return Lists.newArrayList("member", "admin", "leader");
+		else if(args.length == 3)
+			return Lists.newArrayList(server.getPlayerProfileCache().getUsernames());
 		return Collections.emptyList();
 	}
 }

@@ -50,6 +50,10 @@ public class OpCommandSetServer extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(ClanCache.getClanNames().keySet()) : Collections.emptyList();
+		if(args.length == 1)
+			return Lists.newArrayList(ClanCache.getClanNames().keySet());
+		else if(args.length == 2)
+			return Lists.newArrayList("true", "false");
+		return Collections.emptyList();
 	}
 }

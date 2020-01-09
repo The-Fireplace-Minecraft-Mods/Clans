@@ -14,7 +14,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.List;
 
 @MethodsReturnNonnullByDefault
@@ -66,6 +65,11 @@ public class OpCommandSetOption extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(ClanCache.getClanNames().keySet()) : Collections.emptyList();
+		List<String> ret = Lists.newArrayList();
+		if(args.length == 1)
+			return Lists.newArrayList(ClanCache.getClanNames().keySet());
+		else if(args.length == 2)
+			return Lists.newArrayList(Clan.defaultOptions.keySet());
+		return ret;
 	}
 }

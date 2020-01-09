@@ -1,21 +1,29 @@
 package the_fireplace.clans.commands.lock;
 
+import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.ChunkUtils;
 import the_fireplace.clans.util.MultiblockUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -76,5 +84,20 @@ public class CommandUnlockChunk extends ClanSubCommand {
 					}
 				}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unlockchunk.success").setStyle(TextStyles.GREEN));
+	}
+
+	@Override
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		if(args.length == 1){
+			List<String> completions = Lists.newArrayList("all");
+			if(sender instanceof EntityPlayerMP) {
+				Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(sender.getEntityWorld().getChunk(sender.getPosition())));
+				if(chunkClan != null)
+					for (UUID member : chunkClan.getMembers().keySet())
+						completions.add(Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(member)).getName());
+			}
+			return completions;
+		}
+		return Collections.emptyList();
 	}
 }
