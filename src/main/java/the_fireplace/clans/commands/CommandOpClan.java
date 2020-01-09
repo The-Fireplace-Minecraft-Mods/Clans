@@ -120,6 +120,6 @@ public class CommandOpClan extends CommandBase {
             args2 = Arrays.copyOfRange(args, 1, args.length);
         else
             args2 = new String[]{};
-        return args.length >= 1 ? args.length == 1 ? Lists.newArrayList(commands.keySet()) : commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
+        return args.length >= 1 && commands.containsKey(processAlias(args[0])) ? args.length == 1 ? Lists.newArrayList(commands.keySet()) : commands.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
     }
 }

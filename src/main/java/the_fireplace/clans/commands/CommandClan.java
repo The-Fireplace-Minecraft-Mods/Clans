@@ -242,8 +242,8 @@ public class CommandClan extends CommandBase {
                     for (Clan c : ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID()))
                         arg1List.add(c.getName());
                 return arg1List;
-            } else if(commands.get(args[0]) != null) {
-                return commands.get(args[0]).getTabCompletions(server, sender, args2, targetPos);
+            } else if(commands.containsKey(processAlias(args[0]))) {
+                return commands.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos);
             } else if(ClanCache.getClanNames().containsKey(args[0])) {
                 if(args.length == 2)
                     return Lists.newArrayList(commands.keySet());
