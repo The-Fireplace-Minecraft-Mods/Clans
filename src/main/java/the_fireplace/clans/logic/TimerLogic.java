@@ -40,7 +40,7 @@ public class TimerLogic {
             for (Clan clan : ClanDatabase.getClans()) {
                 if (Clans.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
-                    for (Map.Entry<UUID, EnumRank> member : clan.getMembers().entrySet()) {
+                    for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
                         if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
                             Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
                         else if (Clans.getConfig().isEvictNonpayers())
