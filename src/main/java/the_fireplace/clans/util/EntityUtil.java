@@ -67,12 +67,19 @@ public class EntityUtil {
         if (playerDim == homeDim) {
             completeTeleportHome(player, home, playerDim, noCooldown);
         } else {
-            player.setPortal(player.getPosition());
-            if (player.changeDimension(homeDim) != null) {
-                completeTeleportHome(player, home, playerDim, noCooldown);
-            } else {
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.dim_error").setStyle(TextStyles.RED));
+            if(home != null)
+                player.setPortal(home);
+            else
+                player.setPortal(player.getPosition());
+            try {//Use try/catch because the teleporter occasionally throws a NPE when going to/from dimensions without a portal. If this becomes too frequent, try to make a custom teleporter that won't throw NPEs.
+                if (player.changeDimension(homeDim) != null) {
+                    completeTeleportHome(player, home, playerDim, noCooldown);
+                    return;
+                }
+            } catch(NullPointerException e) {
+                e.printStackTrace();
             }
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.dim_error").setStyle(TextStyles.RED));
         }
     }
 
