@@ -3,5 +3,4 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fixed crash when a clan member gets kicked for not having rent
-Bandaid fix for occasional crash when teleporting to clan homes in a different dimension
+Fixed rare crash when forming a clan

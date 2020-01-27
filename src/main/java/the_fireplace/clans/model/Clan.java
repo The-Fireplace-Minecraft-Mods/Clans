@@ -92,28 +92,28 @@ public class Clan {
         this.clanName = TextStyles.stripFormatting(clanName);
         this.members = Maps.newHashMap();
         this.members.put(leader, EnumRank.LEADER);
-        do{
-            this.clanId = UUID.randomUUID();
-        } while(!ClanDatabase.addClan(this.clanId, this));
-        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
-        Clans.getPaymentHandler().ensureAccountExists(clanId);
-    
-        // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
-        if (Clans.getPaymentHandler().getBalance(clanId) > 0)
-            Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
-        
-        Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
-        ClanCache.addPlayerClan(leader, this);
-        if(!Clans.getConfig().isAllowMultiClanMembership())
-            for(Clan clan: ClanDatabase.getClans())
-                PlayerData.removeInvite(leader, clan.getId());
-        ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
             permissionOverrides.put(perm.getKey(), Maps.newHashMap());
         }
         for(Map.Entry<String, Integer> opt: defaultOptions.entrySet())
             options.put(opt.getKey(), opt.getValue());
+        do{
+            this.clanId = UUID.randomUUID();
+        } while(!ClanDatabase.addClan(this.clanId, this));
+        clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
+        Clans.getPaymentHandler().ensureAccountExists(clanId);
+
+        // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
+        if (Clans.getPaymentHandler().getBalance(clanId) > 0)
+            Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
+
+        Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
+        ClanCache.addPlayerClan(leader, this);
+        if(!Clans.getConfig().isAllowMultiClanMembership())
+            for(Clan clan: ClanDatabase.getClans())
+                PlayerData.removeInvite(leader, clan.getId());
+        ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         isChanged = true;
     }
 
