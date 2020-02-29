@@ -45,7 +45,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
+		if(RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 
