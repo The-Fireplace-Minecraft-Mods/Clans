@@ -63,12 +63,15 @@ public class CommandInvite extends ClanSubCommand {
 			case "send":
 			case "s":
 			default:
-				invitePlayer(server, sender, args.length == 1 ? "" : args[1], selectedClan);
+				invitePlayer(server, sender, args.length == 1 ? args[0] : args[1], selectedClan);
 		}
 	}
 
 	public static void invitePlayer(MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan invitingClan) throws PlayerNotFoundException {
-		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
+		GameProfile target = null;
+		try {
+			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
+		} catch(IllegalArgumentException ignored) {}
 		if(target != null) {
 			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (!ClanCache.getPlayerClans(target.getId()).contains(invitingClan)) {
