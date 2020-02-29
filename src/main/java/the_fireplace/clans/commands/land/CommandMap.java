@@ -63,7 +63,7 @@ public class CommandMap extends ClanSubCommand {
 					if (pos == null || clan == null)
 						row.append(wildernessColor).append('-');
 					else if(pos.isBorderland())
-						row.append(clan.getMembers().containsKey(sender.getUniqueID()) ? "§a" : "§c").append('-');
+						row.append(center.z == z && center.x == x ? "§9" : (clan.getMembers().containsKey(sender.getUniqueID()) ? "§a" : "§c")).append('-');
 					else {
 						if (!symbolMap.containsKey(clan.getId()))
 							symbolMap.put(clan.getId(), mapchars[symbolMap.size() % mapchars.length]);
