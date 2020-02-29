@@ -10,7 +10,6 @@ import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class CommandStartRaid extends RaidSubCommand {
 								RaidingParties.initRaid(raid.getTarget());
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), GrandEconomyApi.toString(raidCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), Clans.getPaymentHandler().getCurrencyString(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible

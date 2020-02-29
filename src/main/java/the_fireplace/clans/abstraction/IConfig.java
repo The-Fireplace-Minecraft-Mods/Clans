@@ -19,6 +19,7 @@ public interface IConfig {
     boolean isMultiplyMaxClaimsByPlayers();
     String getDefaultClanPrefix();
     String getServerDefaultClan();
+    String getDisbandFeeFormula();
 
     //General mod configuration
     String getLocale();

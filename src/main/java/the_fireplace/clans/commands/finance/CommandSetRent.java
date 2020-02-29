@@ -9,7 +9,6 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -50,7 +49,7 @@ public class CommandSetRent extends ClanSubCommand {
 					selectedClan.setRent(newRent);
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getName(), GrandEconomyApi.toString(maxRent)).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getName(), Clans.getPaymentHandler().getCurrencyString(maxRent)).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 		} else

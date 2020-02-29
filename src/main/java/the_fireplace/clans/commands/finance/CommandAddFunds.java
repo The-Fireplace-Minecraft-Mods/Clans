@@ -8,7 +8,6 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -49,8 +48,8 @@ public class CommandAddFunds extends ClanSubCommand {
 			}
 			if(Clans.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 				if(Clans.getPaymentHandler().addAmount(amount, selectedClan.getId())) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", GrandEconomyApi.toString(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
-					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), GrandEconomyApi.toString(amount), selectedClan.getName());
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", Clans.getPaymentHandler().getCurrencyString(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
+					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), Clans.getPaymentHandler().getCurrencyString(amount), selectedClan.getName());
 				} else {
 					Clans.getPaymentHandler().addAmount(amount, sender.getUniqueID());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));

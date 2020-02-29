@@ -1,12 +1,10 @@
 Additions:
-Track player KDR during raids
-Config options to allow increasing rewards from repeatedly defeating a clan
+Config option for disband fee formula
 
 Changes:
-Allowed /clan invite [player] to act as /clan invite send [player]
-New alias for /clan accept: /clan join
+Formulas in config now support using ()
+Formulas in the config now use f for the clan's current bank account balance
+The game now shows the formula error in the chat
 
 Fixes/Internal Changes:
-Updated localizations to only use one %s for currency names
-Fixed player chunk not showing up blue on clan map
-Fixed raid invite saying the player is not in a raiding party.
+Fixed the mod requiring Grand Economy

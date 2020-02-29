@@ -79,6 +79,7 @@ commands.clan.disband.description=Disband your clan.
 commands.clan.disband.success=You have disbanded %s.
 commands.clan.disband.disbanded=%s has been disbanded by %s.
 commands.clan.disband.server=You cannot disband %1$s using /clan disband because it is a server clan. Use /opclan disband %1$s to disband it.
+commands.clan.disband.insufficient_funds=%s does not have enough funds to disband. Current requirement: %s.
 
 commands.clan.form.usage=/clan form <name>
 commands.clan.form.description=Form a new clan.

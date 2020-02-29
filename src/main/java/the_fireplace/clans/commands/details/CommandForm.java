@@ -11,7 +11,6 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -53,7 +52,7 @@ public class CommandForm extends ClanSubCommand {
 						PlayerData.setDefaultClan(sender.getUniqueID(), c.getId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", GrandEconomyApi.toString(Clans.getConfig().getFormClanCost())).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", Clans.getPaymentHandler().getCurrencyString(Clans.getConfig().getFormClanCost())).setStyle(TextStyles.RED));
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.already_in_clan").setStyle(TextStyles.RED));

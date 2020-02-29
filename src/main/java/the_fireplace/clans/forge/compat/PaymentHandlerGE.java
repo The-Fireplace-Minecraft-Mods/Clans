@@ -52,4 +52,9 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	public String getCurrencyName(long amount) {
 		return GrandEconomyApi.getCurrencyName(amount);
 	}
+
+	@Override
+	public String getCurrencyString(long amount) {
+		return GrandEconomyApi.toString(amount);
+	}
 }

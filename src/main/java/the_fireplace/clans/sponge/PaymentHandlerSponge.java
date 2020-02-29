@@ -63,6 +63,11 @@ public class PaymentHandlerSponge implements IPaymentHandler {
     }
 
     @Override
+    public String getCurrencyString(long amount) {
+        return getEcon() == null ? "" : getEcon().getDefaultCurrency().format(BigDecimal.valueOf(amount)).toPlain();
+    }
+
+    @Override
     public void ensureAccountExists(UUID uuid) {
         if(getEcon() != null)
             getEcon().getOrCreateAccount(uuid);

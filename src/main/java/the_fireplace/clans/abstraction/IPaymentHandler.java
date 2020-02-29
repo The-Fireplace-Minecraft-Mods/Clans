@@ -53,4 +53,6 @@ public interface IPaymentHandler {
 	long getBalance(UUID account);
 
 	String getCurrencyName(long amount);
+
+	String getCurrencyString(long amount);
 }
