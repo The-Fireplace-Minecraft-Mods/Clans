@@ -43,6 +43,18 @@ public final class PlayerData {
         return getPlayerData(player).inviteBlock;
     }
 
+    public static int getRaidKills(UUID player) {
+        return getPlayerData(player).raidKills;
+    }
+
+    public static int getRaidDeaths(UUID player) {
+        return getPlayerData(player).raidDeaths;
+    }
+
+    public static double getRaidKDR(UUID player) {
+        return ((double)getRaidKills(player))/((double)getRaidDeaths(player));
+    }
+
     //endregion
 
     //region saved data setters
@@ -110,6 +122,14 @@ public final class PlayerData {
     public static void setGlobalInviteBlock(UUID player, boolean block) {
         getPlayerData(player).setGlobalInviteBlock(block);
     }
+
+    public static void incrementRaidDeaths(UUID player) {
+        getPlayerData(player).incrementRaidDeaths();
+    }
+
+    public static void incrementRaidKills(UUID player) {
+        getPlayerData(player).incrementRaidKills();
+    }
     //endregion
 
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
@@ -144,7 +164,7 @@ public final class PlayerData {
         //region Saved variables
         @Nullable
         private UUID defaultClan;
-        private int cooldown;
+        private int cooldown, raidKills, raidDeaths;
         private boolean inviteBlock;
         private List<UUID> invites, blockedClans;
 
@@ -158,6 +178,7 @@ public final class PlayerData {
                 invites = Lists.newArrayList();
                 blockedClans = Lists.newArrayList();
                 inviteBlock = false;
+                raidKills = raidDeaths = 0;
                 PlayerEventLogic.onFirstLogin(playerId);
             }
             //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
@@ -188,6 +209,8 @@ public final class PlayerData {
                     invites = jsonObject.has("invites") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("invites")) : Lists.newArrayList();
                     blockedClans = jsonObject.has("blockedClans") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("blockedClans")) : Lists.newArrayList();
                     inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
+                    raidKills = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
+                    raidDeaths = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -212,6 +235,8 @@ public final class PlayerData {
                 obj.add("invites", JsonHelper.toJsonArray(invites));
                 obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
                 obj.addProperty("inviteBlock", inviteBlock);
+                obj.addProperty("raidKills", raidKills);
+                obj.addProperty("raidDeaths", raidDeaths);
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -274,6 +299,16 @@ public final class PlayerData {
                 this.inviteBlock = inviteBlock;
                 isChanged = true;
             }
+        }
+
+        public void incrementRaidKills() {
+            raidKills++;
+            isChanged = true;
+        }
+
+        public void incrementRaidDeaths() {
+            raidDeaths++;
+            isChanged = true;
         }
 
         //region Addon Data

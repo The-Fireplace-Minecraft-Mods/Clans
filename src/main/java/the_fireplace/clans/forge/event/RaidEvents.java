@@ -25,7 +25,7 @@ public class RaidEvents {
 	@SubscribeEvent
 	public static void onPlayerDeath(LivingDeathEvent event) {
 		if(event.getEntity() instanceof EntityPlayerMP)
-			RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity());
+			RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity(), event.getSource());
 	}
 
 	@SubscribeEvent

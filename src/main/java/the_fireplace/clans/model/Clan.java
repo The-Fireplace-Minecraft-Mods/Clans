@@ -25,6 +25,9 @@ import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -50,6 +53,7 @@ public class Clan {
     private long rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     private int color = new Random().nextInt(0xffffff);
     private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+    private double multiplier = 1.0;
 
     public static final Map<String, EnumRank> defaultPermissions = Maps.newHashMap();
     public static final Map<String, Integer> defaultOptions = Maps.newHashMap();
@@ -630,14 +634,55 @@ public class Clan {
         return losses;
     }
 
-    public void addWin() {
+    public void addWin(Set<UUID> raiders) {
         wins++;
+        if(Clans.getConfig().isIncreasingRewards()) {
+            double avgKdr = 0;
+            for(UUID raider: raiders)
+                avgKdr += PlayerData.getRaidKDR(raider);
+            avgKdr /= raiders.size();
+            if(avgKdr >= Clans.getConfig().getKDRThreshold())
+                decreaseMultiplier();
+        }
         markChanged();
     }
 
     public void addLoss() {
         losses++;
+        if(Clans.getConfig().isIncreasingRewards())
+            increaseMultiplier();
         markChanged();
+    }
+
+    private void decreaseMultiplier() {
+        setMultiplier(Clans.getConfig().getDecreasedMultiplierFormula());
+    }
+
+    private void increaseMultiplier() {
+        setMultiplier(Clans.getConfig().getIncreasedMultiplierFormula());
+    }
+
+    private void setMultiplier(String formula) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        formula = getFilteredFormula(formula);
+        try {
+            multiplier = Math.max(1.0, (double) engine.eval(formula));
+        } catch(ScriptException e) {
+            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {}", formula);
+            e.printStackTrace();
+        } catch(ClassCastException e) {
+            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {} - does not evaluate to a decimal value", formula);
+            e.printStackTrace();
+        }
+    }
+
+    private String getFilteredFormula(String formula) {
+        formula = formula.replaceAll("[^cdm\\.\\+\\-\\*\\/0-9]", "");
+        formula = formula.replaceAll("c", String.valueOf(getClaimCount()));
+        formula = formula.replaceAll("d", String.valueOf(getOnlineMembers().size()));
+        formula = formula.replaceAll("m", String.valueOf(multiplier));
+        return formula;
     }
 
     public int getColor() {
@@ -648,6 +693,10 @@ public class Clan {
         this.color = color;
         this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         markChanged();
+    }
+
+    public double getRaidRewardMultiplier() {
+        return multiplier;
     }
 
     public TextFormatting getTextColor() {

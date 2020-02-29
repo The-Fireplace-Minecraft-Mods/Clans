@@ -276,6 +276,14 @@ public final class ClansForge {
         public static boolean multiplyUpkeepMembers = false;
         @Config.Comment("Disband the clan when it can't afford upkeep. This requires a compatible economy to be installed.")
         public static boolean disbandNoUpkeep = false;
+        @Config.Comment("If enabled, rewards will increase as a clan gets repeatedly defeated. This requires a compatible economy to be installed.")
+        public static boolean increasingRewards = true;
+        @Config.Comment("KDR threshold for decreasing the reward multiplier - Helps prevent rich clans from hiring people to purposely fail a raid and reduce their reward multiplier. This requires a compatible economy to be installed.")
+        public static double kdrThreshold = 0.66;
+        @Config.Comment("Formula to increase the reward multiplier to after a clan loses to raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything.")
+        public static String multiplierIncreaseFormula = "m**1.05";
+        @Config.Comment("Formula to decrease the reward multiplier to after a clan wins against raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything.")
+        public static String multiplierDecreaseFormula = "m**0.95";
         //Clan finance management
         @Config.Comment("Allow the clan leader to withdraw funds from the clan bank account. This requires a compatible economy to be installed.")
         public static boolean leaderWithdrawFunds = false;
@@ -557,6 +565,26 @@ public final class ClansForge {
         @Override
         public boolean isDisbandNoUpkeep() {
             return disbandNoUpkeep;
+        }
+
+        @Override
+        public boolean isIncreasingRewards() {
+            return increasingRewards;
+        }
+
+        @Override
+        public double getKDRThreshold() {
+            return kdrThreshold;
+        }
+
+        @Override
+        public String getIncreasedMultiplierFormula() {
+            return multiplierIncreaseFormula;
+        }
+
+        @Override
+        public String getDecreasedMultiplierFormula() {
+            return multiplierDecreaseFormula;
         }
 
         @Override

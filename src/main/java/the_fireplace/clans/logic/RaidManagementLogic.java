@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityPiston;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -25,10 +26,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
-import the_fireplace.clans.data.ChunkRestoreData;
-import the_fireplace.clans.data.ClaimData;
-import the_fireplace.clans.data.RaidCollectionDatabase;
-import the_fireplace.clans.data.RaidRestoreDatabase;
+import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.BlockSerializeUtil;
@@ -61,13 +59,25 @@ public class RaidManagementLogic {
         return false;
     }
 
-    public static void onPlayerDeath(EntityPlayerMP player) {
+    public static void onPlayerDeath(EntityPlayerMP player, DamageSource source) {
         if(!player.getEntityWorld().isRemote) {
+            boolean involvedInRaid = false;
             for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
-                if (clan != null && RaidingParties.hasActiveRaid(clan))
+                if (clan != null && RaidingParties.hasActiveRaid(clan)) {
                     RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
-                if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
+                    if(!involvedInRaid)
+                        involvedInRaid = true;
+                }
+                if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive()) {
                     RaidingParties.getRaid(player).removeAttacker(player.getUniqueID());
+                    if(!involvedInRaid)
+                        involvedInRaid = true;
+                }
+            }
+            if(involvedInRaid) {
+                PlayerData.incrementRaidDeaths(player.getUniqueID());
+                if(source.getTrueSource() instanceof EntityPlayer)
+                    PlayerData.incrementRaidKills(source.getTrueSource().getUniqueID());
             }
         }
     }

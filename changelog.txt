@@ -1,6 +1,7 @@
 Additions:
+Track player KDR during raids
+Config options to allow increasing rewards from repeatedly defeating a clan
 
 Changes:
 
 Fixes/Internal Changes:
-Fixed rare crash when forming a clan

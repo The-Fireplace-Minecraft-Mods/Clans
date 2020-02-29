@@ -41,6 +41,8 @@ public class Raid {
 			reward *= target.getClaimCount();
 		if(Clans.getConfig().isWinRaidMultiplierPlayers())
 			reward *= defenders.size();
+		if(Clans.getConfig().isIncreasingRewards())
+			reward *= target.getRaidRewardMultiplier();
 		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getId());
 		long remainder = reward % initAttackers.size();
 		reward /= initAttackers.size();
@@ -59,7 +61,7 @@ public class Raid {
 		//Reward the defenders the cost of the raid
 		Clans.getPaymentHandler().addAmount(cost, target.getId());
 		target.addShield(Clans.getConfig().getDefenseShield() * 60);
-		target.addWin();
+		target.addWin(initAttackers);
 	}
 
 	public Set<UUID> getAttackers() {

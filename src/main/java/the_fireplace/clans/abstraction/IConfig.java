@@ -77,6 +77,10 @@ public interface IConfig {
     boolean isMultiplyUpkeepClaims();
     boolean isMultiplyUpkeepMembers();
     boolean isDisbandNoUpkeep();
+    boolean isIncreasingRewards();
+    double getKDRThreshold();
+    String getIncreasedMultiplierFormula();
+    String getDecreasedMultiplierFormula();
 
     //Clan finance management
     boolean isLeaderWithdrawFunds();
