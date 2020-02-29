@@ -59,10 +59,10 @@ commands.clan.details.members=成员:
 commands.clan.details.leader=族长 %s
 commands.clan.details.admin=长老 %s
 commands.clan.details.no_members=错误： %s 没有成员
-commands.clan.details.upkeep=维护（费用）为 %s %s 每 %s 一天
-commands.clan.details.rent=赋税 (收入) 是 %s %s 每 %s 一天
-commands.clan.details.rent_individual=个人租金为 %s %s 每 %s 一天。
-commands.clan.details.trend=预估收入 %s %s 每天
+commands.clan.details.upkeep=维护（费用）为 %s 每 %s 一天
+commands.clan.details.rent=赋税 (收入) 是 %s 每 %s 一天
+commands.clan.details.rent_individual=个人租金为 %s 每 %s 一天。
+commands.clan.details.trend=预估收入 %s 每天
 commands.clan.details.increase_rent=您可能需要将赋税增加到 %s 或者找到减少维护费的方法
 commands.clan.details.reduce_upkeep=你可能需要找到一种减少维护费的方法
 commands.clan.details.breaking_even=%s 是没有盈利或负债的。
@@ -83,7 +83,7 @@ commands.clan.disband.server=你无法用常规命令/clan disband解散 %1$s �
 commands.clan.form.usage=/clan form <名称> [图腾] （创建一个部落）
 commands.clan.form.description=组件一个新的部落。
 commands.clan.form.success=部落创建成功。
-commands.clan.form.insufficient_funds=你没有足够的资金来组建一个部落。创建成本为 %s %s。
+commands.clan.form.insufficient_funds=你没有足够的资金来组建一个部落。创建成本为 %s。
 commands.clan.form.already_in_clan=你已经在一个部落里。
 
 commands.clan.list.usage=/clan list [种类]  （查看部落列表）
@@ -133,25 +133,25 @@ commands.clan.setname.success=你已经将 %s 重命名为 %s
 commands.clan.addfunds.usage=/clan addfunds <金额> （增加部落资金）
 commands.clan.addfunds.description=从你的账户中添加资金到部落的公共账户中。
 commands.clan.addfunds.format=资金格式不正确
-commands.clan.addfunds.success=你将 %s %s 添加到 %s部落的账户中
-commands.clan.addfunds.added=%s 将 %s %s 添加到 %s部落的账户中
+commands.clan.addfunds.success=你将 %s 添加到 %s部落的账户中
+commands.clan.addfunds.added=%s 将 %s 添加到 %s部落的账户中
 
 commands.clan.balance.usage=/clan balance 查看部落余额
 commands.clan.balance.description=查看部落账户余额
-commands.clan.balance.balance=%s 的部落资金: %s %s
+commands.clan.balance.balance=%s 的部落资金: %s
 
 commands.clan.setrent.usage=/clan setrent <赋税金额> （设置部落赋税，默认真实一天的赋税标准）
 commands.clan.setrent.description=设定赋税收取金额
 commands.clan.setrent.success=%s 将部落的赋税标准设置为 %s
-commands.clan.setrent.overmax=无法将赋税设置为高于 %s的当前最大值(%s %s)
+commands.clan.setrent.overmax=无法将赋税设置为高于 %s的当前最大值(%s)
 commands.clan.setrent.negative=无法设置负赋税
 commands.clan.setrent.disabled=/clan setrent 赋税设置被此服务禁用
 
 commands.clan.takefunds.usage=/clan takefunds <数量> 领取津贴
 commands.clan.takefunds.description=从部落账户中领取津贴
 commands.clan.takefunds.disabled=/clan takefunds 此服务器禁用职位津贴奖励
-commands.clan.takefunds.success=你将获取 %s %s 津贴从 %s部落的余额中
-commands.clan.takefunds.taken=%s 获取 %s %s 职位津贴从 %s部落余额中
+commands.clan.takefunds.success=你将获取 %s 津贴从 %s部落的余额中
+commands.clan.takefunds.taken=%s 获取 %s 职位津贴从 %s部落余额中
 
 commands.clan.abandonclaim.usage=/clan abandonclaim （放弃土地）
 commands.clan.abandonclaim.description=放弃你现在所站的16x16块土地。
@@ -174,7 +174,7 @@ commands.clan.claim.disconnected=您不能申请这块土地，因为它不在�
 commands.clan.claim.disconnected_r=你不能占领这块领土，因为它不会连接到 %s 的领土。
 commands.clan.claim.success=为 %s 占领土地
 commands.clan.claim.insufficient_funds=%s部落中的资金不足，无法占领土地。它需要%s%s
-commands.clan.claim.insufficient_funds_r= %s 的部落资金不足，无法申请 %s 个方块，需要花费 %s %s.
+commands.clan.claim.insufficient_funds_r= %s 的部落资金不足，无法申请 %s 个方块，需要花费 %s.
 commands.clan.claim.start_r=开始占领半径范围内的一切方块，请稍后。。。
 
 commands.clan.autoabandon.usage=/clan autoabandon 自动放弃领土
@@ -428,7 +428,7 @@ commands.raid.leave.success=你成功离开了针对 %s 部落的突袭行动
 commands.raid.start.usage=/raid start （开始突袭行动）
 commands.raid.start.description=开始突袭，将收取突袭费用
 commands.raid.start.success=你成功启动了针对 %s 部落的突袭行动
-commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落发动突袭，它需要 %s %s
+commands.raid.start.insufficient_funds=你没有足够的资金来对 %s 部落发动突袭，它需要 %s
 commands.raid.start.raiding=突袭行动已经启动
 commands.raid.start.error=内部错误：另一个突袭行动正在袭击这个部落。请在 %s 小时内重试。请将此情况报告给服务器管理员
 

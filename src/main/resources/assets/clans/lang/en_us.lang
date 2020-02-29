@@ -59,10 +59,10 @@ commands.clan.details.members=Members:
 commands.clan.details.leader=Leader %s
 commands.clan.details.admin=Admin %s
 commands.clan.details.no_members=%s has no members.
-commands.clan.details.upkeep=Clan Upkeep (expenses) is %s %s every %s days.
-commands.clan.details.rent=Clan Rent (income) is %s %s every %s days.
-commands.clan.details.rent_individual=Individual rent is %s %s every %s days.
-commands.clan.details.trend=Approximate financial trend is %s %s every day.
+commands.clan.details.upkeep=Clan Upkeep (expenses) is %s every %s days.
+commands.clan.details.rent=Clan Rent (income) is %s every %s days.
+commands.clan.details.rent_individual=Individual rent is %s every %s days.
+commands.clan.details.trend=Approximate financial trend is %s every day.
 commands.clan.details.increase_rent=You may want to increase rent to %s and/or find a way to reduce upkeep.
 commands.clan.details.reduce_upkeep=You may want to find a way to reduce upkeep.
 commands.clan.details.breaking_even=%s is not earning or losing money.
@@ -83,7 +83,7 @@ commands.clan.disband.server=You cannot disband %1$s using /clan disband because
 commands.clan.form.usage=/clan form <name>
 commands.clan.form.description=Form a new clan.
 commands.clan.form.success=Clan formed.
-commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s %s.
+commands.clan.form.insufficient_funds=You have insufficient funds to form a clan. It costs %s.
 commands.clan.form.already_in_clan=You are already in a clan.
 
 commands.clan.list.usage=/clan list [sort|invites] [page]
@@ -133,25 +133,25 @@ commands.clan.setname.success=You have renamed %s to %s.
 commands.clan.addfunds.usage=/clan addfunds <amount>
 commands.clan.addfunds.description=Adds funds from your economy account to the clan's economy account.
 commands.clan.addfunds.format=Improperly formatted amount.
-commands.clan.addfunds.success=You added %s %s to %s's balance.
-commands.clan.addfunds.added=%s added %s %s to %s's balance.
+commands.clan.addfunds.success=You added %s to %s's balance.
+commands.clan.addfunds.added=%s added %s to %s's balance.
 
 commands.clan.balance.usage=/clan balance
 commands.clan.balance.description=View the clan's account balance.
-commands.clan.balance.balance=%s's clan balance: %s %s.
+commands.clan.balance.balance=%s's clan balance: %s.
 
 commands.clan.setrent.usage=/clan setrent <amount>
 commands.clan.setrent.description=Set how much rent your clan members get charged.
 commands.clan.setrent.success=Clan rent for %s set to %s.
-commands.clan.setrent.overmax=Cannot set rent above %s's current maximum(%s %s).
+commands.clan.setrent.overmax=Cannot set rent above %s's current maximum(%s).
 commands.clan.setrent.negative=Cannot set negative rent.
 commands.clan.setrent.disabled=/clan setrent is disabled on this server.
 
 commands.clan.takefunds.usage=/clan takefunds <amount>
 commands.clan.takefunds.description=Take funds out of the clan's economy account.
 commands.clan.takefunds.disabled=/clan takefunds is disabled on this server.
-commands.clan.takefunds.success=You took %s %s from %s's balance.
-commands.clan.takefunds.taken=%s took %s %s from %s's balance.
+commands.clan.takefunds.success=You took %s from %s's balance.
+commands.clan.takefunds.taken=%s took %s from %s's balance.
 
 commands.clan.abandonclaim.usage=/clan abandonclaim
 commands.clan.abandonclaim.description=Abandon the 16x16 chunk of land you are currently standing in.
@@ -173,8 +173,8 @@ commands.clan.claim.maxed_r=Claiming %s chunks would put %s above its max claim 
 commands.clan.claim.disconnected=You cannot claim this chunk of land because it is not next to another of %s's claims.
 commands.clan.claim.disconnected_r=You cannot claim this land because it would not connect to another of %s's claims.
 commands.clan.claim.success=Land claimed for %s.
-commands.clan.claim.insufficient_funds=Insufficient funds in %s's account to claim chunk. It costs %s %s.
-commands.clan.claim.insufficient_funds_r=Insufficient funds in %s's account to claim %s chunks. It costs %s %s.
+commands.clan.claim.insufficient_funds=Insufficient funds in %s's account to claim chunk. It costs %s.
+commands.clan.claim.insufficient_funds_r=Insufficient funds in %s's account to claim %s chunks. It costs %s.
 commands.clan.claim.start_r=Starting to claim everything within the radius you requested, please wait...
 
 commands.clan.autoabandon.usage=/clan autoabandon
@@ -428,7 +428,7 @@ commands.raid.leave.success=You successfully left the raiding party against %s.
 commands.raid.start.usage=/raid start
 commands.raid.start.description=Start the raid. You will be charged the fee to do so, if there is one.
 commands.raid.start.success=You successfully started the raid against %s.
-commands.raid.start.insufficient_funds=You have insufficient funds to start the raid against %s. It costs %s %s.
+commands.raid.start.insufficient_funds=You have insufficient funds to start the raid against %s. It costs %s.
 commands.raid.start.raiding=The raid has already been started.
 commands.raid.start.error=Internal Error: Another raiding party is raiding this clan right now. Try again in %s hours. Server owners, please report this.
 

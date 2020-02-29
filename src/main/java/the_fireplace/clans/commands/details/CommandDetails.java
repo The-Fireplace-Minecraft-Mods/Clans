@@ -16,6 +16,7 @@ import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
+import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -136,24 +137,24 @@ public class CommandDetails extends ClanSubCommand {
                     upkeep *= selectedClan.getMemberCount();
                     upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.times_members", selectedClan.getMemberCount());
                 }
-				upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.equals_total", upkeep);
+				upkeepStr += TranslationUtil.getStringTranslation("commands.clan.details.equals_total", GrandEconomyApi.toString(upkeep));
 				if(upkeep > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", upkeep != Clans.getConfig().getClanUpkeepCost() ? upkeepStr : upkeep, Clans.getPaymentHandler().getCurrencyName(upkeep), Clans.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", upkeep != Clans.getConfig().getClanUpkeepCost() ? upkeepStr : GrandEconomyApi.toString(upkeep), Clans.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(Clans.getConfig().getChargeRentDays() > 0) {
 				rent += selectedClan.getRent();
 				if(rent > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", rent*selectedClan.getMemberCount(), Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
-                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", rent, Clans.getPaymentHandler().getCurrencyName(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", GrandEconomyApi.toString(rent*selectedClan.getMemberCount()), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", GrandEconomyApi.toString(rent), Clans.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (selectedClan.getNextRentTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(upkeep > 0 && rent > 0 && leaders.contains(senderId)) {
 				upkeep /= Clans.getConfig().getClanUpkeepDays();
 				rent /= Clans.getConfig().getChargeRentDays();
-				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? (rent-upkeep) : '+'+(rent-upkeep), Clans.getPaymentHandler().getCurrencyName(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? GrandEconomyApi.toString(rent-upkeep) : '+'+GrandEconomyApi.toString(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
 				if(upkeep > rent) {
 					long maxRent = Clans.getConfig().getMaxRent();
 					if(Clans.getConfig().isMultiplyMaxRentClaims())

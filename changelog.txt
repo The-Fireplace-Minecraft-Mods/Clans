@@ -5,3 +5,4 @@ Config options to allow increasing rewards from repeatedly defeating a clan
 Changes:
 
 Fixes/Internal Changes:
+Updated localizations to only use one %s for currency names

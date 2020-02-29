@@ -27,6 +27,7 @@ import the_fireplace.clans.util.ClansEventManager;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
+import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class ClanManagementLogic {
                     cost = Clans.getConfig().getClaimChunkCost() * chunkCount;
 
                 if (cost > 0 && Clans.getPaymentHandler().getBalance(claimingClan.getId()) < cost) {
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", claimingClan.getName(), chunkCount, cost, Clans.getPaymentHandler().getCurrencyName(cost)));
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", claimingClan.getName(), chunkCount, GrandEconomyApi.toString(cost)));
                     return false;
                 }
             }
@@ -207,7 +208,7 @@ public class ClanManagementLogic {
                 return false;
             }
         } else
-            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", claimingClan.getName(), Clans.getConfig().getClaimChunkCost(), Clans.getPaymentHandler().getCurrencyName(Clans.getConfig().getClaimChunkCost())).setStyle(TextStyles.RED));
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", claimingClan.getName(), GrandEconomyApi.toString(Clans.getConfig().getClaimChunkCost())).setStyle(TextStyles.RED));
         return false;
     }
 
