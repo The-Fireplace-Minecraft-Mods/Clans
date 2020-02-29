@@ -282,7 +282,7 @@ public final class ClansForge {
         public static double kdrThreshold = 0.66;
         @Config.Comment("Formula to increase the reward multiplier to after a clan loses to raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything.")
         public static String multiplierIncreaseFormula = "m**1.05";
-        @Config.Comment("Formula to decrease the reward multiplier to after a clan wins against raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything.")
+        @Config.Comment("Formula to decrease the reward multiplier to after a clan wins against raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything. This formula will not make the multiplier go below 1.")
         public static String multiplierDecreaseFormula = "m**0.95";
         //Clan finance management
         @Config.Comment("Allow the clan leader to withdraw funds from the clan bank account. This requires a compatible economy to be installed.")

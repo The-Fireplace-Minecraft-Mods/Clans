@@ -149,6 +149,7 @@ public class Clan {
         ret.addProperty("rentTimestamp", rentTimestamp);
         ret.addProperty("upkeepTimestamp", upkeepTimestamp);
         ret.addProperty("color", color);
+        ret.addProperty("multiplier", multiplier);
 
         JsonArray permissions = new JsonArray();
         for(Map.Entry<String, EnumRank> entry: this.permissions.entrySet()) {
@@ -222,6 +223,7 @@ public class Clan {
         this.shield = obj.get("shield").getAsLong();
         this.rentTimestamp = obj.get("rentTimestamp").getAsLong();
         this.upkeepTimestamp = obj.get("upkeepTimestamp").getAsLong();
+        this.multiplier = obj.has("multiplier") ? obj.get("multiplier").getAsDouble() : 1;
         if(obj.has("color")) {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
@@ -261,7 +263,7 @@ public class Clan {
                 options.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
             }
         }
-        //TODO remove this legacy compat in 1.5
+        //TODO remove this legacy compat in the 1.15.2 port and Clans 1.6
         if(obj.has("isOpclan") || obj.has("isLimitless") || obj.has("isServer"))
             this.options.put("server", (obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean()) ? 1 : 0);
 
