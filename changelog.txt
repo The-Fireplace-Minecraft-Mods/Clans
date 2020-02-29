@@ -1,10 +1,12 @@
 Additions:
 Config option for disband fee formula
+Added the ability to sort the clan list by the reward multiplier
 
 Changes:
 Formulas in config now support using ()
 Formulas in the config now use f for the clan's current bank account balance
 The game now shows the formula error in the chat
+/clan list now shows the value you're sorting by if you have selected one
 
 Fixes/Internal Changes:
 Fixed the mod requiring Grand Economy

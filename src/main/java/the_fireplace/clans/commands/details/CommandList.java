@@ -23,6 +23,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -56,18 +57,31 @@ public class CommandList extends ClanSubCommand {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.clans").setStyle(TextStyles.GREEN));
 		if(!ClanDatabase.getClans().isEmpty()) {
 			ArrayList<Clan> clans = Lists.newArrayList(ClanDatabase.getClans());
+			ArrayList<ITextComponent> listItems = Lists.newArrayList();
 			if(args.length > 0)
 				switch (args[0]) {
 					case "money":
 					case "$":
 						clans.sort(Comparator.comparingLong(clan -> Clans.getPaymentHandler().getBalance(clan.getId())));
+						for (Clan clan : clans)
+							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", Clans.getPaymentHandler().getBalance(clan.getId()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 						break;
 					case "land":
 					case "claims":
 						clans.sort(Comparator.comparingInt(Clan::getClaimCount));
+						for (Clan clan : clans)
+							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClaimCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 						break;
 					case "members":
 						clans.sort(Comparator.comparingInt(Clan::getMemberCount));
+						for (Clan clan : clans)
+							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getMemberCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+						break;
+					case "rewardmult":
+						clans.sort(Comparator.comparingDouble(Clan::getRaidRewardMultiplier));
+						DecimalFormat df = new DecimalFormat("#.00");
+						for (Clan clan : clans)
+							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(clan.getRaidRewardMultiplier()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 						break;
 					case "invites":
 					case "invite":
@@ -78,11 +92,11 @@ public class CommandList extends ClanSubCommand {
 							sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player").setStyle(TextStyles.RED));
 						return;
 				}
-			else
+			else {
 				clans.sort(Comparator.comparing(Clan::getName));
-			ArrayList<ITextComponent> listItems = Lists.newArrayList();
-			for (Clan clan : clans)
-				listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+				for (Clan clan : clans)
+					listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+			}
 			int page;
 			if(args.length > 1)
 				page = parseInt(args[1]);

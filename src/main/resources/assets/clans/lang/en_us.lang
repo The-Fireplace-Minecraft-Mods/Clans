@@ -88,9 +88,10 @@ commands.clan.form.insufficient_funds=You have insufficient funds to form a clan
 commands.clan.form.already_in_clan=You are already in a clan.
 
 commands.clan.list.usage=/clan list [sort|invites] [page]
-commands.clan.list.description=View a list of clans. Use 'invites' to see which clans have invited you to join, or sort by [money|land|members], any other sort is alphabetical.
+commands.clan.list.description=View a list of clans. Use 'invites' to see which clans have invited you to join, or sort by [money|land|members|rewardmult], any other sort is alphabetical.
 commands.clan.list.clans=Clans on this server:
-commands.clan.list.listitem=%s - %s
+commands.clan.list.listitem=(%s) %s - %s
+commands.clan.list.listitem_alphabetical=%s - %s
 commands.clan.list.noclans=There are no clans on this server.
 commands.clan.list.no_invites=You don't have any pending invites.
 
