@@ -4,6 +4,9 @@ Config options to allow increasing rewards from repeatedly defeating a clan
 
 Changes:
 Allowed /clan invite [player] to act as /clan invite send [player]
+New alias for /clan accept: /clan join
 
 Fixes/Internal Changes:
 Updated localizations to only use one %s for currency names
+Fixed player chunk not showing up blue on clan map
+Fixed raid invite saying the player is not in a raiding party.

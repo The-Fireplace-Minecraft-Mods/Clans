@@ -125,6 +125,7 @@ public class CommandClan extends CommandBase {
         aliases.put("block", "autodecline");
         aliases.put("i", "invite");
         aliases.put("inv", "invite");
+        aliases.put("join", "accept");
         //clan constants/details/other
         aliases.put("create", "form");
         aliases.put("b", "banner");
