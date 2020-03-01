@@ -73,6 +73,7 @@ commands.clan.details.times_members=*%s(members)
 commands.clan.details.times_claims=*%s(claims)
 commands.clan.details.equals_total==%s
 commands.clan.details.server=This clan is a server clan.
+commands.clan.details.multiplier=Raid Rewards Multiplier: %s
 
 commands.clan.disband.usage=/clan disband
 commands.clan.disband.description=Disband your clan.

@@ -82,6 +82,8 @@ public class CommandDetails extends ClanSubCommand {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", clan.getDescription()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", clan.getClaimCount()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", clan.getMemberCount()).setStyle(TextStyles.GREEN));
+		if(Clans.getConfig().isIncreasingRewards() && !clan.isServer())
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.multiplier", clan.getRaidRewardMultiplier()).setStyle(TextStyles.GREEN));
 		if(clan.isServer())
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.server").setStyle(TextStyles.GREEN));
 		List<UUID> leaders = Lists.newArrayList();
