@@ -34,4 +34,9 @@ public class PaymentHandlerDummy implements IPaymentHandler {
 	public String getCurrencyName(long amount) {
 		return "";
 	}
+
+	@Override
+	public String getCurrencyString(long amount) {
+		return "";
+	}
 }
