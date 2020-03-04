@@ -87,6 +87,10 @@ public final class RaidingParties {
 	public static void removeRaid(Raid raid) {
 		raids.remove(raid.getTarget());
 		raidedClans.remove(raid.getTarget());
+		if(bufferTimes.remove(raid.getTarget()) != null) {
+			//Defenders win. This scenario is reached when in the buffer period and all the raiders log out.
+			raid.defenderVictory();
+		}
 	}
 
 	public static void addRaider(EntityPlayer raider, Raid raid){
@@ -149,12 +153,13 @@ public final class RaidingParties {
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), startingRaid);
 		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.activate", raidTarget.getName());
-		for(UUID attacker: getActiveRaid(raidTarget).getAttackers()) {
+		for(UUID attacker: startingRaid.getAttackers()) {
 			EntityPlayer attackerEntity = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attacker);
 			//noinspection ConstantConditions
 			if(attackerEntity != null)
 				attackerEntity.sendStatusMessage(TranslationUtil.getTranslation(attacker, "clans.raid.activate", raidTarget.getName()).setStyle(TextStyles.GREEN), true);
 		}
+		//Smite dean for talking trash about game developers
 		if(startingRaid.getDefenders().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556")) || startingRaid.getAttackers().contains(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"))) {
 			EntityPlayerMP dean = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(UUID.fromString("2698e171-9c8c-4fa5-9469-993d099c3556"));
 			dean.sendMessage(new TextComponentString(">I don’t care about game devs >Devs can suck a dick >Game devs are fucking scum").setStyle(TextStyles.DARK_GREEN).appendSibling(new TextComponentString(" - you, 9/2/2019 10:50-10:51 AM CDT").setStyle(TextStyles.RESET)));
