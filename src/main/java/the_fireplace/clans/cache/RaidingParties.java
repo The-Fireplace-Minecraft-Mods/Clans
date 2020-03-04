@@ -85,12 +85,12 @@ public final class RaidingParties {
 	}
 
 	public static void removeRaid(Raid raid) {
-		raids.remove(raid.getTarget());
-		raidedClans.remove(raid.getTarget());
 		if(bufferTimes.remove(raid.getTarget()) != null) {
 			//Defenders win. This scenario is reached when in the buffer period and all the raiders log out.
 			raid.defenderVictory();
 		}
+		raids.remove(raid.getTarget());
+		raidedClans.remove(raid.getTarget());
 	}
 
 	public static void addRaider(EntityPlayer raider, Raid raid){
@@ -177,21 +177,25 @@ public final class RaidingParties {
 			defender.sendStatusMessage(defenderMessage, true);
 		}
 
-		for(UUID attackerId: getActiveRaid(targetClan).getInitAttackers()) {
-			EntityPlayerMP attacker = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attackerId);
-			//noinspection ConstantConditions
-			if(attacker != null) {
-				ITextComponent raiderMessage = TranslationUtil.getTranslation(attackerId, "clans.raid.end", targetClan.getName());
-				raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan", targetClan.getName()))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
+		Raid r = activeraids.remove(targetClan);
+		if(r == null)
+			r = raids.remove(targetClan);
+		if(r != null) {
+			for (UUID attackerId : r.getInitAttackers()) {
+				EntityPlayerMP attacker = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attackerId);
+				//noinspection ConstantConditions
+				if (attacker != null) {
+					ITextComponent raiderMessage = TranslationUtil.getTranslation(attackerId, "clans.raid.end", targetClan.getName());
+					raiderMessage.appendSibling(new TextComponentString(" ").appendSibling(TranslationUtil.getTranslation(attackerId, raiderVictory ? "clans.raid.victory.raider" : "clans.raid.victory.clan", targetClan.getName()))).setStyle(raiderVictory ? TextStyles.GREEN : TextStyles.YELLOW);
 
-				attacker.sendMessage(raiderMessage);
-				attacker.sendStatusMessage(raiderMessage, true);
+					attacker.sendMessage(raiderMessage);
+					attacker.sendStatusMessage(raiderMessage, true);
+				}
 			}
-		}
 
-		Raid raid = activeraids.remove(targetClan);
-		for(UUID player: raid.getAttackers())
-			removeRaider(player);
+			for (UUID player : r.getAttackers())
+				removeRaider(player);
+		}
 		raidedClans.remove(targetClan);
 		for(int id: Clans.getMinecraftHelper().getDimensionIds())
 			for(Chunk c: Clans.getMinecraftHelper().getServer().getWorld(id).getChunkProvider().getLoadedChunks()) {
