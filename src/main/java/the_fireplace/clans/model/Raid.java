@@ -64,14 +64,28 @@ public class Raid {
 		target.addWin(initAttackers);
 	}
 
+	/**
+	 * Returns the current set of raiders.
+	 * This does not include raiders who have died or deserted during the raid.
+	 */
 	public Set<UUID> getAttackers() {
 		return Collections.unmodifiableSet(attackers.keySet());
 	}
 
+	/**
+	 * Returns the set of people currently defending against the raid.
+	 * Clan members who have died or deserted while defending against the raid are not included in this set.
+	 * This will be empty if called before the raid starts, because it is not yet certain who will be defending against the raid.
+	 * If you want to make a guess at who will be defending, use {@link Clan#getOnlineSurvivalMembers()}
+	 */
 	public Set<UUID> getDefenders() {
 		return Collections.unmodifiableSet(defenders.keySet());
 	}
 
+	/**
+	 * Returns the initial set of raiders.
+	 * This includes raiders who have died or deserted during the raid.
+	 */
 	public Set<UUID> getInitAttackers() {
 		return Collections.unmodifiableSet(initAttackers);
 	}
