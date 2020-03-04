@@ -5,3 +5,4 @@ Changes:
 Fixes/Internal Changes:
 Added documentation to some raid methods for developers.
 Fixed a crash when all raiders log out during the buffer period
+Fixed chunk data potentially being restored in the middle of a raid when another clan's raid ends

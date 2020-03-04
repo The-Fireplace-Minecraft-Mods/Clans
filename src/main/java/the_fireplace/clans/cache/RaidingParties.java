@@ -199,9 +199,11 @@ public final class RaidingParties {
 		raidedClans.remove(targetClan);
 		for(int id: Clans.getMinecraftHelper().getDimensionIds())
 			for(Chunk c: Clans.getMinecraftHelper().getServer().getWorld(id).getChunkProvider().getLoadedChunks()) {
-				ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
-				if(data != null)
-					data.restore(c);
+				if(targetClan.getId().equals(ChunkUtils.getChunkOwner(c))) {
+					ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(id, c);
+					if (data != null)
+						data.restore(c);
+				}
 			}
 	}
 
