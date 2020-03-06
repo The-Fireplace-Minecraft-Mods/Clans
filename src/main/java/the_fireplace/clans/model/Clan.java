@@ -23,7 +23,6 @@ import the_fireplace.clans.util.ClansEventManager;
 import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
-import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import javax.annotation.Nullable;
 import javax.script.ScriptEngine;
@@ -701,7 +700,7 @@ public class Clan {
         formula = formula.replaceAll("c", String.valueOf(getClaimCount()));
         formula = formula.replaceAll("d", String.valueOf(getOnlineMembers().size()));
         formula = formula.replaceAll("m", String.valueOf(multiplier));
-        formula = formula.replaceAll("f", String.valueOf(GrandEconomyApi.getBalance(getId(), false)));
+        formula = formula.replaceAll("f", String.valueOf(Clans.getPaymentHandler().getBalance(getId())));
         return formula;
     }
 
