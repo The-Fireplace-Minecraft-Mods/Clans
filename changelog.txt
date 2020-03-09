@@ -4,4 +4,4 @@ Added a config option to allow disabling the clan home acting as a fallback spaw
 Changes:
 
 Fixes/Internal Changes:
-
+Fix the error when attempting to access a locked block which doesn't have any overrides set

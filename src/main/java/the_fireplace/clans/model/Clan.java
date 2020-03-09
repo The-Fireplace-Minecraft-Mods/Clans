@@ -762,7 +762,7 @@ public class Clan {
             return false;
         if(hasPerm("lockadmin", playerId))
             return true;
-        if(lockOverrides.get(pos).containsKey(playerId))
+        if(lockOverrides.containsKey(pos) && lockOverrides.get(pos).containsKey(playerId))
             return lockOverrides.get(pos).get(playerId);
         else if(locks.containsKey(pos)) {
             switch(locks.get(pos).getValue1()) {
