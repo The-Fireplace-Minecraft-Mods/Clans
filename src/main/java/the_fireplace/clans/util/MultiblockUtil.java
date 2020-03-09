@@ -37,7 +37,7 @@ public class MultiblockUtil {
         if(state.getBlock() instanceof BlockChest)
             for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL) {
                 BlockPos offPos = pos.offset(enumfacing);
-                if (world.getBlockState(offPos).getBlock() == state) {
+                if (world.getBlockState(offPos).getBlock() == state.getBlock()) {
                     connected.add(offPos);
                     break;
                 }

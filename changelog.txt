@@ -6,3 +6,4 @@ Players who are dead and sitting on the respawn screen will now receive a chat m
 
 Fixes/Internal Changes:
 Fix the error when attempting to access a locked block which doesn't have any overrides set
+Fixed the other half of a double chest not getting locked
