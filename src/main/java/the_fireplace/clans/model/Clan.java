@@ -927,7 +927,7 @@ public class Clan {
         Map<EntityPlayerMP, EnumRank> online = getOnlineMembers();
         for(EntityPlayerMP member : online.keySet())
             if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
-                member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar);
+                member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar && member.isEntityAlive());
     }
     //endregion
 
