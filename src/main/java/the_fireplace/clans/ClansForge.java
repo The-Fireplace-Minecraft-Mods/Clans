@@ -106,6 +106,8 @@ public final class ClansForge {
         public static String serverDefaultClan = "";
         @Config.Comment("Formula for the cost of disbanding a clan. m gets replaced with current raid reward multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This formula will not make the multiplier go below 1.")
         public static String disbandFeeFormula = "2**(m-0.25)";
+        @Config.Comment("Should the player spawn at the clan home if they don't have a bed?")
+        public static boolean clanHomeFallbackSpawn = true;
         //General mod configuration
         @Config.Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public static String locale = "en_us";
@@ -353,6 +355,11 @@ public final class ClansForge {
         @Override
         public String getDisbandFeeFormula() {
             return disbandFeeFormula;
+        }
+
+        @Override
+        public boolean isClanHomeFallbackSpawnpoint() {
+            return clanHomeFallbackSpawn;
         }
 
         @Override

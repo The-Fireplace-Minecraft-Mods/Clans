@@ -20,6 +20,7 @@ public interface IConfig {
     String getDefaultClanPrefix();
     String getServerDefaultClan();
     String getDisbandFeeFormula();
+    boolean isClanHomeFallbackSpawnpoint();
 
     //General mod configuration
     String getLocale();

@@ -1,6 +1,7 @@
 Additions:
+Added a config option to allow disabling the clan home acting as a fallback spawnpoint for players without a bed
 
 Changes:
 
 Fixes/Internal Changes:
-Fixed crash when using Clans without Grand Economy
+

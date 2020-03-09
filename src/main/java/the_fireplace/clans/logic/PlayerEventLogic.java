@@ -82,7 +82,7 @@ public class PlayerEventLogic {
     }
 
     public static void onPlayerRespawn(EntityPlayer player) {
-        if(!player.world.isRemote) {
+        if(!player.world.isRemote && Clans.getConfig().isClanHomeFallbackSpawnpoint() && player.bedLocation == null) {
             Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
             if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
                 EntityUtil.teleportHome(player, defClan.getHome(), defClan.getHomeDim(), player.dimension, true);

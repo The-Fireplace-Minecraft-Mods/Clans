@@ -18,8 +18,7 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         PlayerEventLogic.checkUpdateDefaultClan(event.player);
-        if(event.player.bedLocation == null)
-            PlayerEventLogic.onPlayerRespawn(event.player);
+        PlayerEventLogic.onPlayerRespawn(event.player);
     }
 
     @SubscribeEvent
