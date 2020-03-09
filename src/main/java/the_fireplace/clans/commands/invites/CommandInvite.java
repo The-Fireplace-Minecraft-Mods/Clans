@@ -71,7 +71,7 @@ public class CommandInvite extends ClanSubCommand {
 		GameProfile target = null;
 		try {
 			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
-		} catch(IllegalArgumentException ignored) {}
+		} catch(Exception ignored) {}
 		if(target != null) {
 			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 				if (!ClanCache.getPlayerClans(target.getId()).contains(invitingClan)) {
@@ -99,7 +99,10 @@ public class CommandInvite extends ClanSubCommand {
 	}
 
 	public static void revokeInvite(MinecraftServer server, EntityPlayerMP sender, String inviteTarget, Clan revokingClan) throws PlayerNotFoundException {
-		GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
+		GameProfile target = null;
+		try {
+			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
+		} catch(Exception ignored) {}
 		if(target != null) {
 			if(!PlayerData.getInvites(target.getId()).contains(revokingClan.getId())) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_pending", target.getName(), revokingClan.getName()).setStyle(TextStyles.RED));
