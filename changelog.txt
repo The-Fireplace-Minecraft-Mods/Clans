@@ -3,10 +3,11 @@ Added a config option to allow disabling the clan home acting as a fallback spaw
 
 Changes:
 Players who are dead and sitting on the respawn screen will now receive a chat message(instead of action bar notification) informing them if a raid is being prepared/starting
-Updated zh_cn (mcqwy)
+Updated zh_cn translation (mcqwy)
 
 Fixes/Internal Changes:
 Fix the error when attempting to access a locked block which doesn't have any overrides set
 Fixed the other half of a double chest not getting locked
 Fixed /clan invite [invalidname] and /clan invite <send|revoke> [invalidname] not giving a proper error message
 Fixed players being invincible on their claims when not being raided
+Fixed borderlands being capable of overwriting claims

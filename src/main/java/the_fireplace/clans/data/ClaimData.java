@@ -196,6 +196,10 @@ public final class ClaimData {
         addChunk(newOwner, new ChunkPositionWithData(pos));
     }
 
+    public static Set<ChunkPositionWithData> getAllClaimedChunks() {
+        return Collections.unmodifiableSet(claimDataMap.keySet());
+    }
+
     /**
      * Use a timer so in the future, when mass claiming and abandoning chunks is possible, it isn't regenerating every single time a claim or abandon is done.
      */
@@ -363,7 +367,7 @@ public final class ClaimData {
         public void genBorderlands() {
             if(Clans.getConfig().isEnableBorderlands()) {
                 for (int d : Clans.getMinecraftHelper().getDimensionIds())
-                    for (ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos)).collect(Collectors.toSet()))
+                    for (ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos) && !ClaimData.getAllClaimedChunks().contains(pos)).collect(Collectors.toSet()))
                         ClaimData.addChunk(clan, pos);
                 hasBorderlands = true;
                 markChanged();
