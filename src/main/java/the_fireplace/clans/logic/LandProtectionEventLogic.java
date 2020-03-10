@@ -14,6 +14,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketEntityEquipment;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -254,15 +255,30 @@ public class LandProtectionEventLogic {
         }
     }
 
-    public static boolean shouldCancelEntityDamage(Entity target, @Nullable Entity attacker) {
+    /**
+     * @param target
+     * The target of the damage
+     * @param source
+     * The damage source should be provided if possible, try to avoid making this null because it can result in invinvibility
+     * @param attacker
+     * The attacker, if there is one
+     * @return
+     * If the damage should be cancelled
+     */
+    public static boolean shouldCancelEntityDamage(Entity target, @Nullable DamageSource source, @Nullable Entity attacker) {
         if(!target.getEntityWorld().isRemote && Clans.getConfig().allowInjuryProtection()) {
             Chunk c = target.getEntityWorld().getChunk(target.getPosition());
             Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
+            if(attacker == null && source != null)
+                attacker = source.getTrueSource();
             //Do not cancel if the attacker is in admin mode or the chunk is not a claim
             if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(c))
                 return false;
             if(!chunkClan.isMobDamageAllowed() && attacker instanceof IMob)
                 return true;
+            //Do not cancel if it would be able to harm in creative or doesn't come from being attacked
+            if(source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
+                return false;
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : attacker instanceof EntityTameable && ((EntityTameable) attacker).getOwner() instanceof EntityPlayer ? (EntityPlayer) ((EntityTameable) attacker).getOwner() : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if(target instanceof EntityPlayer || (target instanceof EntityTameable && ((EntityTameable) target).getOwnerId() != null)) {

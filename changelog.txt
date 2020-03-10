@@ -8,3 +8,4 @@ Fixes/Internal Changes:
 Fix the error when attempting to access a locked block which doesn't have any overrides set
 Fixed the other half of a double chest not getting locked
 Fixed /clan invite [invalidname] and /clan invite <send|revoke> [invalidname] not giving a proper error message
+Fixed players being invincible on their claims when not being raided

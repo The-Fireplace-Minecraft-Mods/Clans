@@ -83,7 +83,7 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void onLivingDamage(LivingHurtEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource().getTrueSource()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource(), event.getSource().getTrueSource()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
 			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
 	}
@@ -91,18 +91,18 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getRayTraceResult().typeOfHit == RayTraceResult.Type.ENTITY)
-			event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, EntityUtil.tryFindSource(event.getEntity())));
+			event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, null, EntityUtil.tryFindSource(event.getEntity())));
 		//TODO protect from block interaction as well?
 	}
 
 	@SubscribeEvent
 	public static void onAttackEntity(AttackEntityEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getTarget(), event.getEntityPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getTarget(), null, event.getEntityPlayer()));
 	}
 
 	@SubscribeEvent
 	public static void onKnockback(LivingKnockBackEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntityLiving(), event.getAttacker()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntityLiving(), null, event.getAttacker()));
 	}
 
 	@SubscribeEvent
