@@ -5,9 +5,13 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.util.BlockSerializeUtil;
+import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.JsonHelper;
 
 import java.util.List;
@@ -44,7 +48,13 @@ public final class ChunkRestoreData {
 	}
 
 	public void restore(Chunk c) {
-		//TODO teleport all players out of the chunk
+		List<EntityPlayerMP> players = Lists.newArrayList();
+		c.getEntitiesOfTypeWithinAABB(EntityPlayerMP.class,
+			new AxisAlignedBB(new BlockPos(c.getPos().getXStart(), 0, c.getPos().getZStart()), new BlockPos(c.getPos().getXEnd(), (c.getTopFilledSegment()+1) * 16, c.getPos().getZEnd())),
+			players, p -> true);
+		//Teleport players out of the chunk before restoring the data, to help prevent them from suffocating
+		for(EntityPlayerMP p: players)
+			EntityUtil.teleportSafelyToChunk(p, EntityUtil.findSafeChunkFor(p, new ChunkPosition(c), true));
 		for(BlockPos entry: removeBlocks)
 			c.getWorld().setBlockToAir(new BlockPos(entry.getX(), entry.getY(), entry.getZ()));
 		for(Map.Entry<BlockPos, String> entry: replaceBlocks.entrySet())

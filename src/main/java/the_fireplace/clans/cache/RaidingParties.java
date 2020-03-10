@@ -197,6 +197,10 @@ public final class RaidingParties {
 				removeRaider(player);
 		}
 		raidedClans.remove(targetClan);
+		rollbackChunks(targetClan);
+	}
+
+	public static void rollbackChunks(Clan targetClan) {
 		for(int id: Clans.getMinecraftHelper().getDimensionIds())
 			for(Chunk c: Clans.getMinecraftHelper().getServer().getWorld(id).getChunkProvider().getLoadedChunks()) {
 				if(targetClan.getId().equals(ChunkUtils.getChunkOwner(c))) {

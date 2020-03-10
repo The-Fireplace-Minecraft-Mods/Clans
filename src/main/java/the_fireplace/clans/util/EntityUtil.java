@@ -106,14 +106,13 @@ public class EntityUtil {
         return player.attemptTeleport(center.getX(), center.getY(), center.getZ());
     }
 
-    public static Chunk findSafeChunkFor(EntityPlayerMP player, ChunkPosition origin) {
+    public static Chunk findSafeChunkFor(EntityPlayerMP player, ChunkPosition origin, boolean excludeOrigin) {
         int x = 0, z = 0, tmp, dx = 0, dz = -1;
         while(true) {//Spiral out until a player friendly chunk is found
             ChunkPosition test = new ChunkPosition(origin.getPosX() + x, origin.getPosZ() + z, origin.getDim());
             Clan testChunkOwner = ClanCache.getClanById(ClaimData.getChunkClanId(test));
-            if(testChunkOwner == null || testChunkOwner.getMembers().containsKey(player.getUniqueID())) {
+            if((testChunkOwner == null || testChunkOwner.getMembers().containsKey(player.getUniqueID())) && (!excludeOrigin || !test.equals(origin)))
                 return Clans.getMinecraftHelper().getServer().getWorld(origin.getDim()).getChunk(test.getPosX(), test.getPosZ());
-            }
             if(x == z || (x < 0 && x == -z) || (x > 0 && x == 1-z)) {
                 tmp = dx;
                 dx = -dz;
@@ -122,6 +121,10 @@ public class EntityUtil {
             x += dx;
             z += dz;
         }
+    }
+
+    public static Chunk findSafeChunkFor(EntityPlayerMP player, ChunkPosition origin) {
+        return findSafeChunkFor(player, origin, false);
     }
 
     /**
