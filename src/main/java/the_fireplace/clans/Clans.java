@@ -1,8 +1,13 @@
 package the_fireplace.clans;
 
+import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import the_fireplace.clans.abstraction.*;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
+
+import java.util.List;
 
 public final class Clans {
     public static final String MODID = "clans";
@@ -14,6 +19,24 @@ public final class Clans {
     private static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
     private static IConfig config;
     private static IPermissionHandler permissionManager;
+    private static List<IProtectionCompat> protectionCompats = Lists.newArrayList();
+    private static IProtectionCompat protectionCompatManager = new IProtectionCompat() {
+        @Override
+        public boolean isMob(Entity entity) {
+            for(IProtectionCompat compat: protectionCompats)
+                if(compat.isMob(entity))
+                    return true;
+            return false;
+        }
+
+        @Override
+        public boolean isContainer(Block block) {
+            for(IProtectionCompat compat: protectionCompats)
+                if(compat.isContainer(block))
+                    return true;
+            return false;
+        }
+    };
 
     public static IMinecraftHelper getMinecraftHelper() {
         return minecraftHelper;
@@ -21,6 +44,14 @@ public final class Clans {
 
     public static IConfig getConfig() {
         return config;
+    }
+
+    public static IProtectionCompat getProtectionCompat() {
+        return protectionCompatManager;
+    }
+
+    public static void addProtectionCompat(IProtectionCompat compat) {
+        protectionCompats.add(compat);
     }
 
     public static IPaymentHandler getPaymentHandler(){
