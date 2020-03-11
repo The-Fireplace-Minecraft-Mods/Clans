@@ -160,7 +160,7 @@ public class LandProtectionEventLogic {
                 if (player instanceof EntityPlayerMP) {
                     IBlockState targetState = world.getBlockState(pos);
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
-                    if(chunkClan.isLocked(pos)) {
+                    if(chunkClan.isLocked(pos) && (!isRaidedBy || !Clans.getConfig().isEnableStealing())) {
                         if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "interact")) {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
                             return true;

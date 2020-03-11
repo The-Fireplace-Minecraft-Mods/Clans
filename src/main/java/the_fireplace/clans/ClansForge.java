@@ -234,7 +234,7 @@ public final class ClansForge {
         public static double raidBreakSpeedMultiplier = 1.0;
         @Config.Comment("This option disables rollback of raids.")
         public static boolean disableRaidRollback = false;
-        @Config.Comment("Controls if stealing from containers is allowed during raids. This theft does not get rolled back at the end of the raid.")
+        @Config.Comment("Controls if stealing from containers(even locked ones) is allowed during raids. This theft does not get rolled back at the end of the raid.")
         public static boolean enableStealing = false;
         @Config.Comment("A list of items allowed in a raid. If it contains a *, this list is a blacklist, so everything except bedrock is allowed by default. Otherwise, it is a whitelist.")
         public static String[] raidItemList = {"*", "minecraft:bedrock"};

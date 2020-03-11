@@ -2,5 +2,6 @@ Additions:
 
 Changes:
 Raid Kill-Death Ratio has been replaced with Win-Loss ratio because it results in a better balanced game
+The config option to enable stealing during raids also enables stealing from otherwise locked containers
 
 Fixes/Internal Changes:
