@@ -11,9 +11,11 @@ import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketEntityEquipment;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -67,7 +69,7 @@ public class LandProtectionEventLogic {
                                 breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
                             return true;
                         }
-                    } else if(chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "build")) {
+                    } else if(chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), isContainer(world, pos, targetState, null) ? "access" : "build")) {
                         breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked").setStyle(TextStyles.RED));
                         return true;
                     }
@@ -159,10 +161,12 @@ public class LandProtectionEventLogic {
             if (chunkClan != null) {
                 if (player instanceof EntityPlayerMP) {
                     IBlockState targetState = world.getBlockState(pos);
+                    TileEntity targetTe = world.getTileEntity(pos);
+                    boolean isContainer = isContainer(world, pos, targetState, targetTe);
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
                     //Only bypass lock if there is an active raid, stealing is enabled, and the thief is either a raider or a member of the clan (It doesn't make sense to allow raiders to bypass the lock but not the clan members)
                     if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !Clans.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
-                        if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "interact")) {
+                        if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), isContainer ? "access" : "interact")) {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
                             return true;
                         } else
@@ -170,16 +174,16 @@ public class LandProtectionEventLogic {
                     }
                     if (!ClanCache.isClaimAdmin((EntityPlayerMP) player)
                             && !chunkClan.hasPerm("interact", player.getUniqueID())
-                            && !(targetState.getBlock() instanceof BlockContainer && chunkClan.hasPerm("access", player.getUniqueID()))
+                            && !(isContainer && chunkClan.hasPerm("access", player.getUniqueID()))
                             && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
                             && (!isRaidedBy
-                                || !Clans.getConfig().isEnableStealing() && targetState.getBlock() instanceof BlockContainer
+                                || !Clans.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg)) {
                         if (!(heldItem.getItem() instanceof ItemBlock)) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
                         } else if (!isRaidedBy
-                                || !Clans.getConfig().isEnableStealing() && targetState.getBlock() instanceof BlockContainer
+                                || !Clans.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
@@ -189,6 +193,14 @@ public class LandProtectionEventLogic {
             }
         }
         return false;
+    }
+
+    public static boolean isContainer(World world, BlockPos pos, @Nullable IBlockState state, @Nullable TileEntity tileEntity) {
+        if(state == null)
+            state = world.getBlockState(pos);
+        if(tileEntity == null)
+            tileEntity = world.getTileEntity(pos);
+        return state.getBlock() instanceof BlockContainer || tileEntity instanceof IInventory || Clans.getProtectionCompat().isContainer(world, pos, state, tileEntity);
     }
 
     public static boolean shouldCancelMinecartInteract(EntityMinecart minecart, EntityPlayer player) {

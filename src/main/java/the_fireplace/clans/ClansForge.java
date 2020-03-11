@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.compat.StorageDrawersCompat;
 import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
@@ -40,6 +41,9 @@ public final class ClansForge {
 
         if(Clans.getMinecraftHelper().isPluginLoaded("dynmap"))
             Clans.setDynmapCompat(new DynmapCompat());
+
+        if(Clans.getMinecraftHelper().isPluginLoaded("storagedrawers"))
+            Clans.addProtectionCompat(new StorageDrawersCompat());
         //if(!validJar)
         //    Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
     }

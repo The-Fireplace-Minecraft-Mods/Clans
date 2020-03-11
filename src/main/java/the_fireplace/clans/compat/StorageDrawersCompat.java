@@ -1,15 +1,18 @@
 package the_fireplace.clans.compat;
 
+import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityItemRepository;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import the_fireplace.clans.abstraction.IProtectionCompat;
 
 import javax.annotation.Nullable;
 
-public class IC2ProtectionCompat implements IProtectionCompat {
+public class StorageDrawersCompat implements IProtectionCompat {
     @Override
     public void init() {
 
@@ -26,6 +29,7 @@ public class IC2ProtectionCompat implements IProtectionCompat {
             state = world.getBlockState(pos);
         if(tileEntity == null)
             tileEntity = world.getTileEntity(pos);
-        return false;
+        EnumFacing facing = state.getPropertyKeys().contains(BlockHorizontal.FACING) ? state.getValue(BlockHorizontal.FACING) : null;
+        return tileEntity != null && tileEntity.hasCapability(CapabilityItemRepository.ITEM_REPOSITORY_CAPABILITY, facing);
     }
 }

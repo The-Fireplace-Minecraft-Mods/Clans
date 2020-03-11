@@ -5,3 +5,5 @@ Raid Kill-Death Ratio has been replaced with Win-Loss ratio because it results i
 The config option to enable stealing during raids also enables stealing from otherwise locked containers
 
 Fixes/Internal Changes:
+Greatly improved container checking, should prevent access to more mods' containers such as IC2
+Additional container checks are now done for Storage Drawers drawers.
