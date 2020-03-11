@@ -1,14 +1,6 @@
 Additions:
-Added a config option to allow disabling the clan home acting as a fallback spawnpoint for players without a bed
 
 Changes:
-Players who are dead and sitting on the respawn screen will now receive a chat message(instead of action bar notification) informing them if a raid is being prepared/starting
-Players are now teleported out of the chunk before it gets restored, to help prevent them from suffocating in regenerated blocks
-Updated zh_cn translation (mcqwy)
+Raid Kill-Death Ratio has been replaced with Win-Loss ratio because it results in a better balanced game
 
 Fixes/Internal Changes:
-Fix the error when attempting to access a locked block which doesn't have any overrides set
-Fixed the other half of a double chest not getting locked
-Fixed /clan invite [invalidname] and /clan invite <send|revoke> [invalidname] not giving a proper error message
-Fixed players being invincible on their claims when not being raided
-Fixed borderlands being capable of overwriting claims

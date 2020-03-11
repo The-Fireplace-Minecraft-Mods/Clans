@@ -80,7 +80,7 @@ public interface IConfig {
     boolean isMultiplyUpkeepMembers();
     boolean isDisbandNoUpkeep();
     boolean isIncreasingRewards();
-    double getKDRThreshold();
+    double getWLRThreshold();
     String getIncreasedMultiplierFormula();
     String getDecreasedMultiplierFormula();
 

@@ -639,11 +639,11 @@ public class Clan {
     public void addWin(Set<UUID> raiders) {
         wins++;
         if(Clans.getConfig().isIncreasingRewards()) {
-            double avgKdr = 0;
+            double avgWlr = 0;
             for(UUID raider: raiders)
-                avgKdr += PlayerData.getRaidKDR(raider);
-            avgKdr /= raiders.size();
-            if(avgKdr >= Clans.getConfig().getKDRThreshold())
+                avgWlr += PlayerData.getRaidWLR(raider);
+            avgWlr /= raiders.size();
+            if(avgWlr >= Clans.getConfig().getWLRThreshold())
                 decreaseMultiplier();
         }
         markChanged();

@@ -26,7 +26,10 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
-import the_fireplace.clans.data.*;
+import the_fireplace.clans.data.ChunkRestoreData;
+import the_fireplace.clans.data.ClaimData;
+import the_fireplace.clans.data.RaidCollectionDatabase;
+import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.BlockSerializeUtil;
@@ -61,23 +64,11 @@ public class RaidManagementLogic {
 
     public static void onPlayerDeath(EntityPlayerMP player, DamageSource source) {
         if(!player.getEntityWorld().isRemote) {
-            boolean involvedInRaid = false;
             for(Clan clan: ClanCache.getPlayerClans(player.getUniqueID())) {
-                if (clan != null && RaidingParties.hasActiveRaid(clan)) {
+                if (clan != null && RaidingParties.hasActiveRaid(clan))
                     RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
-                    if(!involvedInRaid)
-                        involvedInRaid = true;
-                }
-                if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive()) {
+                if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
                     RaidingParties.getRaid(player).removeAttacker(player.getUniqueID());
-                    if(!involvedInRaid)
-                        involvedInRaid = true;
-                }
-            }
-            if(involvedInRaid) {
-                PlayerData.incrementRaidDeaths(player.getUniqueID());
-                if(source.getTrueSource() instanceof EntityPlayer)
-                    PlayerData.incrementRaidKills(source.getTrueSource().getUniqueID());
             }
         }
     }

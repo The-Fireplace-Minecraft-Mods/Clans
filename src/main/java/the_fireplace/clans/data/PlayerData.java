@@ -43,16 +43,16 @@ public final class PlayerData {
         return getPlayerData(player).inviteBlock;
     }
 
-    public static int getRaidKills(UUID player) {
+    public static int getRaidWins(UUID player) {
         return getPlayerData(player).raidKills;
     }
 
-    public static int getRaidDeaths(UUID player) {
+    public static int getRaidLosses(UUID player) {
         return getPlayerData(player).raidDeaths;
     }
 
-    public static double getRaidKDR(UUID player) {
-        return ((double)getRaidKills(player))/((double)getRaidDeaths(player));
+    public static double getRaidWLR(UUID player) {
+        return ((double) getRaidWins(player))/((double) getRaidLosses(player));
     }
 
     //endregion
@@ -123,12 +123,12 @@ public final class PlayerData {
         getPlayerData(player).setGlobalInviteBlock(block);
     }
 
-    public static void incrementRaidDeaths(UUID player) {
-        getPlayerData(player).incrementRaidDeaths();
+    public static void incrementRaidLosses(UUID player) {
+        getPlayerData(player).incrementRaidLosses();
     }
 
-    public static void incrementRaidKills(UUID player) {
-        getPlayerData(player).incrementRaidKills();
+    public static void incrementRaidWins(UUID player) {
+        getPlayerData(player).incrementRaidWins();
     }
     //endregion
 
@@ -301,12 +301,12 @@ public final class PlayerData {
             }
         }
 
-        public void incrementRaidKills() {
+        public void incrementRaidWins() {
             raidKills++;
             isChanged = true;
         }
 
-        public void incrementRaidDeaths() {
+        public void incrementRaidLosses() {
             raidDeaths++;
             isChanged = true;
         }

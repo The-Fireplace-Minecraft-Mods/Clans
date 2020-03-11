@@ -8,6 +8,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.RaidingParties;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Raid {
-	private Set<UUID> initAttackers;
+	private Set<UUID> initAttackers, initDefenders;
 	private Map<UUID, Integer> attackers, defenders;
 	private Clan target;
 	private int remainingSeconds = Clans.getConfig().getMaxRaidDuration() * 60;
@@ -54,6 +55,11 @@ public class Raid {
 		}
 		target.addShield(Clans.getConfig().getDefenseShield() * 60);
 		target.addLoss();
+
+		for(UUID attacker: initAttackers)
+			PlayerData.incrementRaidWins(attacker);
+		for(UUID defender: initDefenders)
+			PlayerData.incrementRaidLosses(defender);
 	}
 
 	public void defenderVictory() {
@@ -62,6 +68,11 @@ public class Raid {
 		Clans.getPaymentHandler().addAmount(cost, target.getId());
 		target.addShield(Clans.getConfig().getDefenseShield() * 60);
 		target.addWin(initAttackers);
+
+		for(UUID attacker: initAttackers)
+			PlayerData.incrementRaidLosses(attacker);
+		for(UUID defender: initDefenders)
+			PlayerData.incrementRaidWins(defender);
 	}
 
 	/**
@@ -206,6 +217,7 @@ public class Raid {
 		isActive = true;
 		setDefenders(target.getOnlineMembers().keySet());
 		initAttackers = Collections.unmodifiableSet(initAttackers);
+		initDefenders = Collections.unmodifiableSet(defenders.keySet());
 	}
 
 	public void setCost(long cost) {
