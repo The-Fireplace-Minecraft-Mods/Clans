@@ -1,12 +1,16 @@
 package the_fireplace.clans;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import the_fireplace.clans.abstraction.*;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public final class Clans {
@@ -22,6 +26,12 @@ public final class Clans {
     private static List<IProtectionCompat> protectionCompats = Lists.newArrayList();
     private static IProtectionCompat protectionCompatManager = new IProtectionCompat() {
         @Override
+        public void init() {
+            for(IProtectionCompat compat: protectionCompats)
+                compat.init();
+        }
+
+        @Override
         public boolean isMob(Entity entity) {
             for(IProtectionCompat compat: protectionCompats)
                 if(compat.isMob(entity))
@@ -30,9 +40,9 @@ public final class Clans {
         }
 
         @Override
-        public boolean isContainer(Block block) {
+        public boolean isContainer(World world, BlockPos pos, @Nullable IBlockState state, @Nullable TileEntity tileEntity) {
             for(IProtectionCompat compat: protectionCompats)
-                if(compat.isContainer(block))
+                if(compat.isContainer(world, pos, state, tileEntity))
                     return true;
             return false;
         }

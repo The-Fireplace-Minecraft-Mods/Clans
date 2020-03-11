@@ -44,6 +44,8 @@ public final class ClansForge {
 
         if(Clans.getMinecraftHelper().isPluginLoaded("storagedrawers"))
             Clans.addProtectionCompat(new StorageDrawersCompat());
+
+        Clans.getProtectionCompat().init();
         //if(!validJar)
         //    Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
     }
