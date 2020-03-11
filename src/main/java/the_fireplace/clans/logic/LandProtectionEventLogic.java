@@ -160,7 +160,8 @@ public class LandProtectionEventLogic {
                 if (player instanceof EntityPlayerMP) {
                     IBlockState targetState = world.getBlockState(pos);
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
-                    if(chunkClan.isLocked(pos) && (!isRaidedBy || !Clans.getConfig().isEnableStealing())) {
+                    //Only bypass lock if there is an active raid, stealing is enabled, and the thief is either a raider or a member of the clan (It doesn't make sense to allow raiders to bypass the lock but not the clan members)
+                    if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !Clans.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
                         if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), targetState.getBlock() instanceof BlockContainer ? "access" : "interact")) {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
                             return true;
