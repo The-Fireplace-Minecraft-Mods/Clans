@@ -20,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.ClansHelper;
@@ -264,11 +265,11 @@ public class LandProtectionEventLogic {
             if(ClansHelper.getConfig().allowInjuryProtection()) {
                 ArrayList<Entity> removeEntities = Lists.newArrayList();
                 for (Entity entity : affectedEntities) {
-                    if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
+                    if (entity instanceof EntityPlayer || (isOwnable(entity) && getOwnerId(entity) != null)) {
                         Chunk c = world.getChunk(entity.getPosition());
                         UUID chunkOwner = ChunkUtils.getChunkOwner(c);
                         Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                        List<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(((EntityTameable) entity).getOwnerId());
+                        List<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(getOwnerId(entity));
                         if (chunkClan != null && !ChunkUtils.isBorderland(c) && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
                             removeEntities.add(entity);
                     }
@@ -297,15 +298,15 @@ public class LandProtectionEventLogic {
             //Do not cancel if the attacker is in admin mode or the chunk is not a claim
             if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(c))
                 return false;
-            if(!chunkClan.isMobDamageAllowed() && attacker instanceof IMob)
+            if(!chunkClan.isMobDamageAllowed() && isMob(attacker))
                 return true;
             //Do not cancel if it would be able to harm in creative or doesn't come from being attacked
             if(source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
                 return false;
-            EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : attacker instanceof EntityTameable && ((EntityTameable) attacker).getOwner() instanceof EntityPlayer ? (EntityPlayer) ((EntityTameable) attacker).getOwner() : null;
+            EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
-            if(target instanceof EntityPlayer || (target instanceof EntityTameable && ((EntityTameable) target).getOwnerId() != null)) {
-                UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : ((EntityTameable) target).getOwnerId();
+            if(target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
+                UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : getOwnerId((EntityTameable) target);
                 List<Clan> targetEntityClans = ClanCache.getPlayerClans(targetPlayerId);
                 //Cancel if the target player/tameable is in its home territory, not being raided, and not getting hit by their own machines
                 if (!targetEntityClans.isEmpty()
@@ -316,7 +317,7 @@ public class LandProtectionEventLogic {
                     return true;
                 //Cancel if the attacker is not a raider or a raider's tameable
                 else if(RaidingParties.hasActiveRaid(chunkClan)
-                        && (attacker instanceof EntityPlayer || attacker instanceof EntityTameable && ((EntityTameable) attacker).getOwnerId() != null)
+                        && (attacker instanceof EntityPlayer || isOwnable(attacker) && getOwnerId(attacker) != null)
                         && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false)) {
                     //Cycle through all the player's clans because we don't want a player to run and hide on a neighboring clan's territory to avoid damage
                     for (Clan targetEntityClan : targetEntityClans)
@@ -338,7 +339,7 @@ public class LandProtectionEventLogic {
                     //Attacker is not a raider and not in the clan. Check if the clan has given them permission to harm whatever
                     return !hasPermissionToHarm(target, chunkClan, attackingPlayerId)
                             //Allow anyone to kill mobs on server clan land
-                            && (!chunkClan.isServer() || !(target instanceof IMob))
+                            && (!chunkClan.isServer() || !(isMob(target)))
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
                 }
             }
@@ -346,8 +347,40 @@ public class LandProtectionEventLogic {
         return false;
     }
 
+    @Nullable
+    public static UUID getOwnerId(@Nullable Entity entity) {
+        if(entity instanceof EntityTameable)
+            return ((EntityTameable) entity).getOwnerId();
+        else if(entity != null)
+            return Clans.getProtectionCompat().getOwnerId(entity);
+        return null;
+    }
+
+    @Nullable
+    public static Entity getOwner(@Nullable Entity entity) {
+        if(entity instanceof EntityTameable)
+            return ((EntityTameable) entity).getOwner();
+        else if(entity != null)
+            try
+            {
+                UUID uuid = getOwnerId(entity);
+                //Typically the entity will be a player but at least make an attempt to find other entities that may be the owner just in case (mods can do some crazy things)
+                return uuid == null ? null : (entity.world instanceof WorldServer ? ((WorldServer) entity.world).getEntityFromUuid(uuid) : entity.world.getPlayerEntityByUUID(uuid));
+            }
+            catch (IllegalArgumentException ignored) {}
+        return null;
+    }
+
+    public static boolean isOwnable(@Nullable Entity entity) {
+        return entity instanceof EntityTameable || (entity != null && Clans.getProtectionCompat().isOwnable(entity));
+    }
+
+    public static boolean isMob(@Nullable Entity entity) {
+        return entity instanceof IMob || (entity != null && Clans.getProtectionCompat().isMob(entity));
+    }
+
     public static boolean hasPermissionToHarm(Entity targetEntity, Clan permissionClan, UUID attackingPlayerId) {
-        return targetEntity instanceof IMob
+        return isMob(targetEntity)
                 ? permissionClan.hasPerm("harmmob", attackingPlayerId)
                 : targetEntity instanceof IAnimals
                 && permissionClan.hasPerm("harmanimal", attackingPlayerId);
@@ -357,7 +390,7 @@ public class LandProtectionEventLogic {
         ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
         Clan c = ClaimData.getChunkClan(spawnChunkPosition);
         return !world.isRemote
-                && entity instanceof IMob
+                && isMob(entity)
                 && c != null
                 && (ClansHelper.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
                 && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));

@@ -25,6 +25,7 @@ import the_fireplace.clans.sponge.SpongePermissionHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 import static the_fireplace.clans.ClansHelper.MODID;
 
@@ -43,6 +44,23 @@ public final class Clans {
         public void init() {
             for(IProtectionCompat compat: protectionCompats)
                 compat.init();
+        }
+
+        @Override
+        public boolean isOwnable(Entity entity) {
+            for(IProtectionCompat compat: protectionCompats)
+                if(compat.isOwnable(entity))
+                    return true;
+            return false;
+        }
+
+        @Nullable
+        @Override
+        public UUID getOwnerId(Entity entity) {
+            for(IProtectionCompat compat: protectionCompats)
+                if(compat.getOwnerId(entity) != null)
+                    return compat.getOwnerId(entity);
+            return null;
         }
 
         @Override
