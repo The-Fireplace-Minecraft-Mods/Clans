@@ -57,18 +57,18 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack(), event.getHand()));
 	}
 
 	@SubscribeEvent
 	public static void fillBucket(FillBucketEvent event) {
 		if(event.getTarget() != null)
-			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getTarget().typeOfHit == RayTraceResult.Type.ENTITY ? event.getTarget().entityHit.getPosition() : event.getTarget().getBlockPos(), event.getEntityPlayer(), event.getEmptyBucket()));
+			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getTarget().typeOfHit == RayTraceResult.Type.ENTITY ? event.getTarget().entityHit.getPosition() : event.getTarget().getBlockPos(), event.getEntityPlayer(), event.getEmptyBucket(), event.getEntityPlayer().getActiveHand()));
 	}
 
 	@SubscribeEvent
 	public static void useHoe(UseHoeEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getCurrent()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getCurrent(), event.getEntityPlayer().getActiveHand()));
 	}
 
 	@SubscribeEvent

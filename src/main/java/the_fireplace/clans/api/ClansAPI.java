@@ -2,7 +2,6 @@ package the_fireplace.clans.api;
 
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.abstraction.IMinecraftHelper;
 import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.api.event.IClansEventHandler;
 import the_fireplace.clans.data.ClaimData;

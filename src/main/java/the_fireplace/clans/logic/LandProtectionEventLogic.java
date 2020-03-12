@@ -17,11 +17,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketEntityEquipment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimData;
@@ -155,7 +156,7 @@ public class LandProtectionEventLogic {
         return false;
     }
 
-    public static boolean shouldCancelRightClickBlock(World world, BlockPos pos, EntityPlayer player, ItemStack heldItem) {
+    public static boolean shouldCancelRightClickBlock(World world, BlockPos pos, EntityPlayer player, ItemStack heldItem, EnumHand hand) {
         if(!world.isRemote && ClansHelper.getConfig().allowInteractionProtection()) {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
@@ -169,6 +170,7 @@ public class LandProtectionEventLogic {
                     if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !ClansHelper.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
                         if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), isContainer ? "access" : "interact")) {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
+                            notifyClientOfCancelledInteract(world, pos, player, targetState, hand);
                             return true;
                         } else
                             return false;
@@ -181,12 +183,12 @@ public class LandProtectionEventLogic {
                                 || !ClansHelper.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg)) {
                         if (!(heldItem.getItem() instanceof ItemBlock)) {
-                            cancelBlockInteraction(world, pos, player, targetState);
+                            cancelBlockInteraction(world, pos, player, targetState, hand);
                             return true;
                         } else if (!isRaidedBy
                                 || !ClansHelper.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg) {
-                            cancelBlockInteraction(world, pos, player, targetState);
+                            cancelBlockInteraction(world, pos, player, targetState, hand);
                             return true;
                         }
                     }
@@ -222,8 +224,12 @@ public class LandProtectionEventLogic {
         return false;
     }
 
-    private static void cancelBlockInteraction(World world, BlockPos pos, EntityPlayer interactingPlayer, IBlockState targetState) {
+    private static void cancelBlockInteraction(World world, BlockPos pos, EntityPlayer interactingPlayer, IBlockState targetState, EnumHand hand) {
         interactingPlayer.sendMessage(TranslationUtil.getTranslation(interactingPlayer.getUniqueID(), "clans.protection.interact.territory").setStyle(TextStyles.RED));
+        notifyClientOfCancelledInteract(world, pos, interactingPlayer, targetState, hand);
+    }
+
+    private static void notifyClientOfCancelledInteract(World world, BlockPos pos, EntityPlayer interactingPlayer, IBlockState targetState, EnumHand hand) {
         //Update the client informing it the interaction did not happen. Go in all directions in case surrounding blocks would have been affected.
         world.notifyBlockUpdate(pos, targetState, targetState, 2);
         world.notifyBlockUpdate(pos.up(), targetState, targetState, 2);
@@ -232,6 +238,9 @@ public class LandProtectionEventLogic {
         world.notifyBlockUpdate(pos.west(), targetState, targetState, 2);
         world.notifyBlockUpdate(pos.north(), targetState, targetState, 2);
         world.notifyBlockUpdate(pos.south(), targetState, targetState, 2);
+        //Notify the client that the item hasn't been used.
+        if(interactingPlayer instanceof EntityPlayerMP)
+            ((EntityPlayerMP) interactingPlayer).connection.sendPacket(new SPacketEntityEquipment(interactingPlayer.getEntityId(), hand.equals(EnumHand.OFF_HAND) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND, interactingPlayer.getHeldItem(hand)));
     }
 
     public static void onDetonate(World world, List<BlockPos> affectedBlocks, List<Entity> affectedEntities) {

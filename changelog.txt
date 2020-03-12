@@ -8,3 +8,4 @@ Fixes/Internal Changes:
 Greatly improved container checking, should prevent access to more mods' containers such as IC2
 Additional container checks are now done for Storage Drawers drawers.
 Removed a layer of abstraction that is no longer helpful
+Ensure that the client is notified of the held item when their block interaction was cancelled
