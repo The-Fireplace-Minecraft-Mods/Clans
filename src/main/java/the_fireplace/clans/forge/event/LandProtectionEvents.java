@@ -61,6 +61,14 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
+	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		//Don't cancel all left click blocks in case player is allowed to build/destroy but not interact
+		//This prevents unauthorized interaction with Storage Drawers
+		if(LandProtectionEventLogic.isContainer(event.getWorld(), event.getPos(), null, null))
+			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack(), event.getHand()));
+	}
+
+	@SubscribeEvent
 	public static void fillBucket(FillBucketEvent event) {
 		if(event.getTarget() != null)
 			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getTarget().typeOfHit == RayTraceResult.Type.ENTITY ? event.getTarget().entityHit.getPosition() : event.getTarget().getBlockPos(), event.getEntityPlayer(), event.getEmptyBucket(), event.getEntityPlayer().getActiveHand()));

@@ -15,7 +15,6 @@ import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.abstraction.IProtectionCompat;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
-import the_fireplace.clans.compat.StorageDrawersCompat;
 import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
@@ -68,25 +67,26 @@ public final class Clans {
         return LOGGER;
     }
 
+    static void setDynmapCompat(IDynmapCompat dynmapCompat) {
+        Clans.dynmapCompat = dynmapCompat;
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ClansHelper.setConfig(new cfg());
         LOGGER = event.getModLog();
 
         if(getMinecraftHelper().isPluginLoaded("dynmap"))
-            ClansHelper.setDynmapCompat(new DynmapCompat());
+            setDynmapCompat(new DynmapCompat());
 
-        if(getMinecraftHelper().isPluginLoaded("storagedrawers"))
-            addProtectionCompat(new StorageDrawersCompat());
-
-        getProtectionCompat().init();
         //if(!validJar)
         //    Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
-        ClansHelper.initialize();
+        getDynmapCompat().init();
+        getProtectionCompat().init();
     }
 
     @Mod.EventHandler

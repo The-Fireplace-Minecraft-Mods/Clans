@@ -1,6 +1,8 @@
 package the_fireplace.clans;
 
-import the_fireplace.clans.abstraction.*;
+import the_fireplace.clans.abstraction.IConfig;
+import the_fireplace.clans.abstraction.IPaymentHandler;
+import the_fireplace.clans.abstraction.IPermissionHandler;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 
 @SuppressWarnings("WeakerAccess")
@@ -16,24 +18,16 @@ public final class ClansHelper {
         return config;
     }
 
+    static void setConfig(IConfig config) {
+        ClansHelper.config = config;
+    }
+
     public static IPaymentHandler getPaymentHandler(){
         return paymentHandler;
     }
 
     static void setPaymentHandler(IPaymentHandler paymentHandler) {
         ClansHelper.paymentHandler = paymentHandler;
-    }
-
-    static void setConfig(IConfig config) {
-        ClansHelper.config = config;
-    }
-
-    static void setDynmapCompat(IDynmapCompat dynmapCompat) {
-        Clans.dynmapCompat = dynmapCompat;
-    }
-
-    static void initialize() {
-        Clans.getDynmapCompat().init();
     }
 
     public static IPermissionHandler getPermissionManager() {
