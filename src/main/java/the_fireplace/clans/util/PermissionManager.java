@@ -2,7 +2,7 @@ package the_fireplace.clans.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 
 public final class PermissionManager {
 
@@ -12,8 +12,8 @@ public final class PermissionManager {
     public static final String PROTECTION_PREFIX = "clans.protection.";
 
     public static boolean hasPermission(EntityPlayerMP player, String permissionKey) {
-        if(Clans.getPermissionManager() != null)
-            return Clans.getPermissionManager().hasPermission(player, permissionKey);
+        if(ClansHelper.getPermissionManager() != null)
+            return ClansHelper.getPermissionManager().hasPermission(player, permissionKey);
         else
             return true;
     }
@@ -25,6 +25,6 @@ public final class PermissionManager {
     }
 
     public static boolean permissionManagementExists() {
-        return Clans.getPermissionManager().permissionManagementExists();
+        return ClansHelper.getPermissionManager().permissionManagementExists();
     }
 }

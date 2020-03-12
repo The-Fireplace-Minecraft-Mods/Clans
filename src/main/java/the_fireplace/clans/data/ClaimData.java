@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.entity.Entity;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.*;
@@ -206,7 +207,7 @@ public final class ClaimData {
     public static void decrementBorderlandsRegenTimers() {
         if(!isLoaded)
             load();
-        if(Clans.getConfig().isEnableBorderlands())
+        if(ClansHelper.getConfig().isEnableBorderlands())
             for(Map.Entry<UUID, Integer> entry: Sets.newHashSet(regenBordersTimer.entrySet())) {
                 if(entry.getValue() <= 0) {
                     regenBordersTimer.remove(entry.getKey());
@@ -244,9 +245,9 @@ public final class ClaimData {
             }
         isLoaded = true;
         for(Map.Entry<UUID, ClaimStoredData> entry : claimedChunks.entrySet()) {
-            if(Clans.getConfig().isEnableBorderlands() && !entry.getValue().hasBorderlands)
+            if(ClansHelper.getConfig().isEnableBorderlands() && !entry.getValue().hasBorderlands)
                 entry.getValue().genBorderlands();
-            else if(!Clans.getConfig().isEnableBorderlands() && entry.getValue().hasBorderlands)
+            else if(!ClansHelper.getConfig().isEnableBorderlands() && entry.getValue().hasBorderlands)
                 entry.getValue().clearBorderlands();
         }
     }
@@ -365,7 +366,7 @@ public final class ClaimData {
         }
 
         public void genBorderlands() {
-            if(Clans.getConfig().isEnableBorderlands()) {
+            if(ClansHelper.getConfig().isEnableBorderlands()) {
                 for (int d : Clans.getMinecraftHelper().getDimensionIds())
                     for (ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos) && !ClaimData.getAllClaimedChunks().contains(pos)).collect(Collectors.toSet()))
                         ClaimData.addChunk(clan, pos);

@@ -6,7 +6,7 @@ import org.spongepowered.api.service.permission.PermissionDescription;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
-import the_fireplace.clans.ClansForge;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IPermissionHandler;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
@@ -51,7 +51,7 @@ public class SpongePermissionHandler implements IPermissionHandler {
     @Override
     public void registerPermission(String permissionName, Object permissionLevel, String permissionDescription) {
         permissionService
-                .newDescriptionBuilder(ClansForge.instance)
+                .newDescriptionBuilder(Clans.instance)
                 .id(permissionName)
                 .description(Text.of(permissionDescription))
                 .assign(((String)permissionLevel).isEmpty() ? PermissionDescription.ROLE_USER : (String)permissionLevel, !((String) permissionLevel).isEmpty())

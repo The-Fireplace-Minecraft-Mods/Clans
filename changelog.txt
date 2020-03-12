@@ -7,3 +7,4 @@ The config option to enable stealing during raids also enables stealing from oth
 Fixes/Internal Changes:
 Greatly improved container checking, should prevent access to more mods' containers such as IC2
 Additional container checks are now done for Storage Drawers drawers.
+Removed a layer of abstraction that is no longer helpful

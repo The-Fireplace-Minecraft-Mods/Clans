@@ -5,12 +5,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid= Clans.MODID)
+@Mod.EventBusSubscriber(modid= ClansHelper.MODID)
 public class NetworkEvents {
 
     @SubscribeEvent

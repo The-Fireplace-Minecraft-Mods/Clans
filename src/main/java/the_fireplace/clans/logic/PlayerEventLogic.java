@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
@@ -25,7 +25,7 @@ public class PlayerEventLogic {
     }
 
     public static void onFirstLogin(UUID playerId) {
-        Clan serverDefault = ClanCache.getClanByName(Clans.getConfig().getServerDefaultClan());
+        Clan serverDefault = ClanCache.getClanByName(ClansHelper.getConfig().getServerDefaultClan());
         if(serverDefault != null)
             serverDefault.addMember(playerId);
     }
@@ -73,7 +73,7 @@ public class PlayerEventLogic {
             if (defaultClanId != null) {
                 Clan playerDefaultClan = ClanCache.getClanById(defaultClanId);
                 if (playerDefaultClan != null)
-                    return TranslationUtil.getTranslation(Clans.getConfig().getDefaultClanPrefix(), playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
+                    return TranslationUtil.getTranslation(ClansHelper.getConfig().getDefaultClanPrefix(), playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
                 else
                     PlayerData.updateDefaultClan(player.getUniqueID(), null);
             }
@@ -82,7 +82,7 @@ public class PlayerEventLogic {
     }
 
     public static void onPlayerRespawn(EntityPlayer player) {
-        if(!player.world.isRemote && Clans.getConfig().isClanHomeFallbackSpawnpoint() && player.bedLocation == null) {
+        if(!player.world.isRemote && ClansHelper.getConfig().isClanHomeFallbackSpawnpoint() && player.bedLocation == null) {
             Clan defClan = ClanCache.getClanById(PlayerData.getDefaultClan(player.getUniqueID()));
             if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
                 EntityUtil.teleportHome(player, defClan.getHome(), defClan.getHomeDim(), player.dimension, true);
@@ -99,7 +99,7 @@ public class PlayerEventLogic {
 
     public static float breakSpeed(EntityPlayer player, float oldSpeed) {//TODO should borderlands be impacted by this?
         if(!player.world.isRemote && RaidingParties.isRaidedBy(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
-            return oldSpeed * (float)Clans.getConfig().getRaidBreakSpeedMultiplier();
+            return oldSpeed * (float) ClansHelper.getConfig().getRaidBreakSpeedMultiplier();
         }
         return oldSpeed;
     }

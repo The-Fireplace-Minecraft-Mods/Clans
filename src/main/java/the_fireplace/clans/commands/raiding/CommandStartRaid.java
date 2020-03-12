@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.raiding;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -40,24 +41,24 @@ public class CommandStartRaid extends RaidSubCommand {
 			if (raid != null) {
 
 				Set<Map.Entry<EntityPlayerMP, EnumRank>> clanPlayers = raid.getTarget().getOnlineSurvivalMembers();
-				if(clanPlayers.size() >= raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
+				if(clanPlayers.size() >= raid.getAttackerCount() - ClansHelper.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
-							long raidCost = Clans.getConfig().getStartRaidCost();
-							if (Clans.getConfig().isStartRaidMultiplier())
+							long raidCost = ClansHelper.getConfig().getStartRaidCost();
+							if (ClansHelper.getConfig().isStartRaidMultiplier())
 								raidCost *= raid.getTarget().getClaimCount();
 							raid.setCost(raidCost);
-							if (Clans.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
+							if (ClansHelper.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
 								RaidingParties.initRaid(raid.getTarget());
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), Clans.getPaymentHandler().getCurrencyString(raidCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), ClansHelper.getPaymentHandler().getCurrencyString(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.error", Math.round(100f*(Clans.getConfig().getDefenseShield() *60f*60f+raid.getRemainingSeconds())/60f/60f)/100f).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.error", Math.round(100f*(ClansHelper.getConfig().getDefenseShield() *60f*60f+raid.getRemainingSeconds())/60f/60f)/100f).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + ClansHelper.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				Clans.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");

@@ -1,6 +1,6 @@
 package the_fireplace.clans.api;
 
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IMinecraftHelper;
 import the_fireplace.clans.abstraction.IPaymentHandler;
@@ -16,16 +16,12 @@ import the_fireplace.clans.util.ClansEventManager;
  * {@link ClaimData}
  */
 public final class ClansAPI {
-    public static IMinecraftHelper getMinecraftHelper() {
-        return Clans.getMinecraftHelper();
-    }
-
     public static IConfig getConfig() {
-        return Clans.getConfig();
+        return ClansHelper.getConfig();
     }
 
     public static IPaymentHandler getPaymentHandler(){
-        return Clans.getPaymentHandler();
+        return ClansHelper.getPaymentHandler();
     }
 
     public static boolean isClaimed(int chunkX, int chunkZ, int dimension) {

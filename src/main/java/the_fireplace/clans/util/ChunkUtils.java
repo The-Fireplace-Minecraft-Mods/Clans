@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.data.ClaimData;
@@ -70,7 +70,7 @@ public class ChunkUtils {
 		if(checkOwner == null)
 			return false;
 		ChunkPos cPos = c.getPos();
-		switch (Clans.getConfig().getConnectedClaimCheck().toLowerCase()) {
+		switch (ClansHelper.getConfig().getConnectedClaimCheck().toLowerCase()) {
 			case "quicker":
 				ArrayList<Chunk> conn = getConnectedClaimChunks(c, checkOwner);
 				for(Chunk chunk: conn) {

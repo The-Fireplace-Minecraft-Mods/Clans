@@ -9,40 +9,33 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
-import the_fireplace.clans.ClansForge;
-import the_fireplace.clans.abstraction.IMinecraftHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.forge.FakePlayerUtil;
 
 import javax.annotation.Nullable;
 
-public class ForgeMinecraftHelper implements IMinecraftHelper {
-    @Override
+public class ForgeMinecraftHelper {
     public MinecraftServer getServer() {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 
-    @Override
     public boolean isPluginLoaded(String id) {
         return Loader.isModLoaded(id);
     }
 
-    @Override
     public Logger getLogger() {
-        return ClansForge.getLogger();
+        return Clans.getLogger();
     }
 
-    @Override
     public Integer[] getDimensionIds() {
         return DimensionManager.getIDs();
     }
 
     @Nullable
-    @Override
     public Block getBlock(ResourceLocation res) {
         return ForgeRegistries.BLOCKS.getValue(res);
     }
 
-    @Override
     public boolean isAllowedNonPlayerEntity(@Nullable Entity entity, boolean ifNotFakePlayer) {
         return FakePlayerUtil.isAllowedFakePlayer(entity, ifNotFakePlayer);
     }

@@ -5,7 +5,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.model.Clan;
@@ -50,8 +50,8 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 					return;
 				}
-				if (Clans.getPaymentHandler().addAmount(amount, c.getId()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, Clans.getPaymentHandler().getCurrencyName(amount), c.getName()).setStyle(TextStyles.GREEN));
+				if (ClansHelper.getPaymentHandler().addAmount(amount, c.getId()))
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, ClansHelper.getPaymentHandler().getCurrencyName(amount), c.getName()).setStyle(TextStyles.GREEN));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else

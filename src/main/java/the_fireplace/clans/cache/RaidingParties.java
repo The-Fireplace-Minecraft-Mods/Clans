@@ -10,6 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.data.ChunkRestoreData;
 import the_fireplace.clans.data.RaidRestoreDatabase;
 import the_fireplace.clans.logic.RaidManagementLogic;
@@ -135,12 +136,12 @@ public final class RaidingParties {
     }
 
 	public static void initRaid(Clan raidTarget){
-		bufferTimes.put(raidTarget, Clans.getConfig().getRaidBufferTime());
-		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), Clans.getConfig().getRaidBufferTime());
+		bufferTimes.put(raidTarget, ClansHelper.getConfig().getRaidBufferTime());
+		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime());
 		for(UUID raiderId: getRaids().get(raidTarget).getAttackers()) {
 			EntityPlayerMP raiderEntity = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(raiderId);
-			raiderEntity.sendStatusMessage(TranslationUtil.getTranslation(raiderId, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), Clans.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
-			if(Clans.getConfig().isTeleportToRaidStart() && raidTarget.hasHome() && raidTarget.getHome() != null) {
+			raiderEntity.sendStatusMessage(TranslationUtil.getTranslation(raiderId, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
+			if(ClansHelper.getConfig().isTeleportToRaidStart() && raidTarget.hasHome() && raidTarget.getHome() != null) {
 				ChunkPos targetHomeChunkPos = new ChunkPos(raidTarget.getHome());
 				EntityUtil.teleportSafelyToChunk(raiderEntity, EntityUtil.findSafeChunkFor(raiderEntity, new ChunkPosition(targetHomeChunkPos.x, targetHomeChunkPos.z, raidTarget.getHomeDim())));
 			}

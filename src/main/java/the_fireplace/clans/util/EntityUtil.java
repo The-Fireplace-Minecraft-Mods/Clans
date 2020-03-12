@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.PlayerData;
@@ -89,7 +90,7 @@ public class EntityUtil {
             if (originDim != player.dimension && player.changeDimension(originDim) == null)
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.return_dim").setStyle(TextStyles.RED));
         } else if(!noCooldown)
-            PlayerData.setCooldown(player.getUniqueID(), Clans.getConfig().getClanHomeCooldownTime());
+            PlayerData.setCooldown(player.getUniqueID(), ClansHelper.getConfig().getClanHomeCooldownTime());
     }
 
     public static boolean teleportSafelyToChunk(EntityPlayer player, Chunk chunk) {

@@ -20,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
@@ -43,7 +44,7 @@ import java.util.UUID;
  */
 public class LandProtectionEventLogic {
     public static boolean shouldCancelBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
-        if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
+        if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null) {
@@ -76,8 +77,8 @@ public class LandProtectionEventLogic {
                 }
                 return false;
             }
-            if (Clans.getConfig().isProtectWilderness()
-                    && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY())
+            if (ClansHelper.getConfig().isProtectWilderness()
+                    && (ClansHelper.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= ClansHelper.getConfig().getMinWildernessY())
                     && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(breaker, false)
                     && (!(breaker instanceof EntityPlayerMP)
                         || (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker)
@@ -90,7 +91,7 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelCropTrample(World world, BlockPos pos, @Nullable EntityPlayer breakingPlayer) {
-        if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
+        if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null) {
@@ -106,7 +107,7 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand) {
-        if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
+        if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             if (placer instanceof EntityPlayerMP) {
                 Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
@@ -127,8 +128,8 @@ public class LandProtectionEventLogic {
                 if (!ClanCache.isClaimAdmin((EntityPlayerMP) placer)
                         && (!PermissionManager.permissionManagementExists()
                             || !PermissionManager.hasPermission((EntityPlayerMP)placer, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness"))
-                        && Clans.getConfig().isProtectWilderness()
-                        && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY())
+                        && ClansHelper.getConfig().isProtectWilderness()
+                        && (ClansHelper.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= ClansHelper.getConfig().getMinWildernessY())
                         && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer, false)) {
                     if(((EntityPlayerMP) placer).connection != null)
                         ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
@@ -142,7 +143,7 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelFluidPlaceBlock(World world, BlockPos sourceLiquidPos, BlockPos fluidPlacingPos) {
-        if(!world.isRemote && Clans.getConfig().allowBuildProtection()) {
+        if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(fluidPlacingPos);
             UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (chunkOwner != null) {
@@ -155,7 +156,7 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelRightClickBlock(World world, BlockPos pos, EntityPlayer player, ItemStack heldItem) {
-        if(!world.isRemote && Clans.getConfig().allowInteractionProtection()) {
+        if(!world.isRemote && ClansHelper.getConfig().allowInteractionProtection()) {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null) {
@@ -165,7 +166,7 @@ public class LandProtectionEventLogic {
                     boolean isContainer = isContainer(world, pos, targetState, targetTe);
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
                     //Only bypass lock if there is an active raid, stealing is enabled, and the thief is either a raider or a member of the clan (It doesn't make sense to allow raiders to bypass the lock but not the clan members)
-                    if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !Clans.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
+                    if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !ClansHelper.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
                         if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), isContainer ? "access" : "interact")) {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
                             return true;
@@ -177,13 +178,13 @@ public class LandProtectionEventLogic {
                             && !(isContainer && chunkClan.hasPerm("access", player.getUniqueID()))
                             && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
                             && (!isRaidedBy
-                                || !Clans.getConfig().isEnableStealing() && isContainer
+                                || !ClansHelper.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg)) {
                         if (!(heldItem.getItem() instanceof ItemBlock)) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
                         } else if (!isRaidedBy
-                                || !Clans.getConfig().isEnableStealing() && isContainer
+                                || !ClansHelper.getConfig().isEnableStealing() && isContainer
                                 || targetState.getBlock() instanceof BlockDragonEgg) {
                             cancelBlockInteraction(world, pos, player, targetState);
                             return true;
@@ -204,7 +205,7 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean shouldCancelMinecartInteract(EntityMinecart minecart, EntityPlayer player) {
-        if(!minecart.world.isRemote && Clans.getConfig().allowInteractionProtection()) {
+        if(!minecart.world.isRemote && ClansHelper.getConfig().allowInteractionProtection()) {
             Chunk c = minecart.world.getChunk(minecart.getPosition());
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null && !ChunkUtils.isBorderland(c)) {
@@ -242,16 +243,16 @@ public class LandProtectionEventLogic {
                 Clan chunkClan = ClanCache.getClanById(chunkOwner);
                 IBlockState targetState = world.getBlockState(pos);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback() && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !ClansHelper.getConfig().isDisableRaidRollback() && !ChunkUtils.isBorderland(c) && !targetState.getBlock().hasTileEntity(targetState) && !(targetState.getBlock() instanceof BlockAir) && !(targetState.getBlock() instanceof BlockLiquid))
                         RaidRestoreDatabase.addRestoreBlock(c.getWorld().provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
-                    else if (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
+                    else if (!ClansHelper.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT))
                         removeBlocks.add(pos);
-                } else if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= Clans.getConfig().getMinWildernessY()) && (!Clans.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT)))
+                } else if (ClansHelper.getConfig().isProtectWilderness() && (ClansHelper.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= ClansHelper.getConfig().getMinWildernessY()) && (!ClansHelper.getConfig().isChainTNT() || !(targetState.getBlock() instanceof BlockTNT)))
                     removeBlocks.add(pos);
             }
-            if(Clans.getConfig().allowBuildProtection())
+            if(ClansHelper.getConfig().allowBuildProtection())
                 affectedBlocks.removeAll(removeBlocks);
-            if(Clans.getConfig().allowInjuryProtection()) {
+            if(ClansHelper.getConfig().allowInjuryProtection()) {
                 ArrayList<Entity> removeEntities = Lists.newArrayList();
                 for (Entity entity : affectedEntities) {
                     if (entity instanceof EntityPlayer || (entity instanceof EntityTameable && ((EntityTameable) entity).getOwnerId() != null)) {
@@ -279,7 +280,7 @@ public class LandProtectionEventLogic {
      * If the damage should be cancelled
      */
     public static boolean shouldCancelEntityDamage(Entity target, @Nullable DamageSource source, @Nullable Entity attacker) {
-        if(!target.getEntityWorld().isRemote && Clans.getConfig().allowInjuryProtection()) {
+        if(!target.getEntityWorld().isRemote && ClansHelper.getConfig().allowInjuryProtection()) {
             Chunk c = target.getEntityWorld().getChunk(target.getPosition());
             Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
             if(attacker == null && source != null)
@@ -349,7 +350,7 @@ public class LandProtectionEventLogic {
         return !world.isRemote
                 && entity instanceof IMob
                 && c != null
-                && (Clans.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
-                && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
+                && (ClansHelper.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
+                && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
     }
 }

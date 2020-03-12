@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumLockType;
 import the_fireplace.clans.model.EnumRank;
@@ -70,7 +70,7 @@ public class CommandLock extends ClanSubCommand {
 			return;
 		}
 		IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
-		if(Clans.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
+		if(ClansHelper.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
 			selectedClan.addLock(targetBlockPos, mode, sender.getUniqueID());
 			for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
 				selectedClan.addLock(pos, mode, sender.getUniqueID());

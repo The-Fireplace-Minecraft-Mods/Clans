@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -38,7 +38,7 @@ public class CommandDisband extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
 			if(!selectedClan.isServer()) {
-				if(Clans.getConfig().getDisbandFeeFormula().isEmpty() || Clans.getPaymentHandler().deductAmount(selectedClan.getDisbandCost(), selectedClan.getId())) {
+				if(ClansHelper.getConfig().getDisbandFeeFormula().isEmpty() || ClansHelper.getPaymentHandler().deductAmount(selectedClan.getDisbandCost(), selectedClan.getId())) {
 					selectedClan.disband(server, sender, "commands.clan.disband.disbanded", selectedClan.getName(), sender.getName());
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 				} else

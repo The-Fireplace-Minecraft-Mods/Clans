@@ -13,6 +13,7 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.data.ClaimData;
@@ -223,9 +224,9 @@ public class DynmapCompat implements IDynmapCompat {
 
             // Configure the marker style
             if (marker != null) {
-                int nStrokeWeight = Clans.getConfig().getDynmapBorderWeight();
-                double dStrokeOpacity = Clans.getConfig().getDynmapBorderOpacity();
-                double dFillOpacity = Clans.getConfig().getDynmapFillOpacity();
+                int nStrokeWeight = ClansHelper.getConfig().getDynmapBorderWeight();
+                double dStrokeOpacity = ClansHelper.getConfig().getDynmapBorderOpacity();
+                double dFillOpacity = ClansHelper.getConfig().getDynmapFillOpacity();
                 int nFillColor = clanDimInfo.getTeamColor();
 
                 marker.setLineStyle(nStrokeWeight, dStrokeOpacity, nFillColor);
