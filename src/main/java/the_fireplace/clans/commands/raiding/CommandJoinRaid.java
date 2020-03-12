@@ -44,8 +44,8 @@ public class CommandJoinRaid extends RaidSubCommand {
 		Clan target = ClanCache.getClanByName(args[0]);
 		if(target == null)
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
-		else if(target.isServer())
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_on_server", "raid", args[0]).setStyle(TextStyles.RED));
+		else if(target.isUnraidable())
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.unraidable",  args[0]).setStyle(TextStyles.RED));
 		else {
 			if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
 				if(!target.getMembers().containsKey(sender.getUniqueID())) {

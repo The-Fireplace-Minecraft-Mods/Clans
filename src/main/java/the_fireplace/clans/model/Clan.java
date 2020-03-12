@@ -10,8 +10,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.api.event.ClanFormedEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
@@ -82,6 +82,7 @@ public class Clan {
         defaultOptions.put("upkeepexemption", 0);
         defaultOptions.put("dynmapvisible", 1);
         defaultOptions.put("server", 0);
+        defaultOptions.put("pvp", -1);
     }
 
     private Map<String, Integer> options = Maps.newHashMap();
@@ -436,6 +437,18 @@ public class Clan {
         markChanged();
     }
 
+    /**
+     * Get if PVP is allowed on this clan's land
+     * @return
+     * null for default PVP behavior (protect clan members and their entities, server clans' default is to disallow PVP)
+     * FALSE for no PVP at all
+     * TRUE for all PVP allowed
+     */
+    @Nullable
+    public Boolean pvpAllowed() {
+        return options.get("pvp") < 0 || options.get("pvp") > 1 ? (isServer() ? Boolean.FALSE : null) : (options.get("pvp") == 1 ? Boolean.TRUE : Boolean.FALSE);
+    }
+
     @Nullable
     public Boolean getMobSpawnOverride() {
         return options.get("mobspawning") < 0 ? null : options.get("mobspawning") == 1;
@@ -590,6 +603,10 @@ public class Clan {
     public void updateNextUpkeepTimeStamp() {
         this.upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
         markChanged();
+    }
+
+    public boolean isUnraidable() {
+        return isServer() || Boolean.FALSE.equals(pvpAllowed());
     }
 
     //region shield

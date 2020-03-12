@@ -1,11 +1,7 @@
 Additions:
+Added the clan option for if PVP is allowed: -1 is default behavior (protect clan members if they aren't being raided, or disable PVP for server clans). 0 is PVP disabled (also disables raids on that clan). 1 is all PVP allowed.
 
 Changes:
-Raid Kill-Death Ratio has been replaced with Win-Loss ratio because it results in a better balanced game
-The config option to enable stealing during raids also enables stealing from otherwise locked containers
+PVP is now disabled on server clans' land by default
 
 Fixes/Internal Changes:
-Greatly improved container checking, should prevent access to more mods' containers such as IC2
-Fixed being able to access storage drawers on others' claimed land
-Removed a layer of abstraction that is no longer helpful
-Fixed items appearing to disappear when failing to interact with blocks on others' claimed land

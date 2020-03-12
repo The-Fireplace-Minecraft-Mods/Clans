@@ -306,25 +306,11 @@ public class LandProtectionEventLogic {
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if(target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : getOwnerId((EntityTameable) target);
-                List<Clan> targetEntityClans = ClanCache.getPlayerClans(targetPlayerId);
-                //Cancel if the target player/tameable is in its home territory, not being raided, and not getting hit by their own machines
-                if (!targetEntityClans.isEmpty()
-                        && targetEntityClans.contains(chunkClan)
-                        && !RaidingParties.hasActiveRaid(chunkClan)
-                        && targetPlayerId != null
-                        && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false))
-                    return true;
-                //Cancel if the attacker is not a raider or a raider's tameable
-                else if(RaidingParties.hasActiveRaid(chunkClan)
-                        && (attacker instanceof EntityPlayer || isOwnable(attacker) && getOwnerId(attacker) != null)
-                        && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false)) {
-                    //Cycle through all the player's clans because we don't want a player to run and hide on a neighboring clan's territory to avoid damage
-                    for (Clan targetEntityClan : targetEntityClans)
-                        if (RaidingParties.isRaidedBy(targetEntityClan, attackingPlayer))
-                            return false;
-                    return true;
-                }
+                Boolean pvpAllowed = chunkClan.pvpAllowed();
+                if(pvpAllowed == null)
+                    return shouldCancelPVPDefault(target, attacker, chunkClan, attackingPlayer);
+                else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
+                    return !pvpAllowed;
             } else {//Target is not a player and not owned by a player
                 if(attackingPlayer != null) {
                     UUID attackingPlayerId = attackingPlayer.getUniqueID();
@@ -343,6 +329,29 @@ public class LandProtectionEventLogic {
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
                 }
             }
+        }
+        return false;
+    }
+
+    private static boolean shouldCancelPVPDefault(Entity target, @Nullable Entity attacker, Clan chunkClan, @Nullable EntityPlayer attackingPlayer) {
+        UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : getOwnerId(target);
+        List<Clan> targetEntityClans = ClanCache.getPlayerClans(targetPlayerId);
+        //Cancel if the target player/tameable is in its home territory, not being raided, and not getting hit by their own machines
+        if (!targetEntityClans.isEmpty()
+                && targetEntityClans.contains(chunkClan)
+                && !RaidingParties.hasActiveRaid(chunkClan)
+                && targetPlayerId != null
+                && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false))
+            return true;
+        //Cancel if the attacker is not a raider or a raider's tameable
+        else if(RaidingParties.hasActiveRaid(chunkClan)
+                && (attacker instanceof EntityPlayer || isOwnable(attacker) && getOwnerId(attacker) != null)
+                && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false)) {
+            //Cycle through all the player's clans because we don't want a player to run and hide on a neighboring clan's territory to avoid damage
+            for (Clan targetEntityClan : targetEntityClans)
+                if (RaidingParties.isRaidedBy(targetEntityClan, attackingPlayer))
+                    return false;
+            return true;
         }
         return false;
     }

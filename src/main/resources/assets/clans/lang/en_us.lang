@@ -390,7 +390,7 @@ commands.opclan.setserver.success_t=You have made %s a server clan.
 commands.opclan.setserver.success_f=You have removed the server status from %s.
 
 commands.opclan.setoption.usage=/opclan set <clan> <option> <value>
-commands.opclan.setoption.description=Set various options for a clan. Valid options are maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server.
+commands.opclan.setoption.description=Set various options for a clan. Valid options are maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server, pvp.
 commands.opclan.setoption.success=You have successfully set the %s option for %s to %s.
 commands.opclan.setoption.failed=The option %s was not found.
 
@@ -423,6 +423,7 @@ commands.raid.join.success=You successfully joined the raiding party against %s.
 commands.raid.join.limit=The raiding party against %s cannot hold any more people. It has %s raiders and the limit is currently %s.
 commands.raid.join.inclan=You cannot raid a clan you are in.
 commands.raid.join.inparty=You are already in a raiding party, and cannot join another unless you leave the one you are currently in.
+commands.raid.join.unraidable=A server administrator has prevented %s from being raided.
 
 commands.raid.leave.usage=/raid leave
 commands.raid.leave.description=Leave the raiding party you are in.
