@@ -45,7 +45,11 @@ import java.util.UUID;
  * Logic for land protection events goes here.
  */
 public class LandProtectionEventLogic {
-    public static boolean shouldCancelBlockBroken(World world, BlockPos pos, EntityPlayer breaker) {
+    public static boolean shouldCancelBlockBroken(World world, BlockPos pos, @Nullable EntityPlayer breaker) {
+        return shouldCancelBlockBroken(world, pos, breaker, true);
+    }
+
+    public static boolean shouldCancelBlockBroken(World world, BlockPos pos, @Nullable EntityPlayer breaker, boolean showMessage) {
         if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
@@ -54,7 +58,8 @@ public class LandProtectionEventLogic {
                     boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
                     IBlockState targetState = world.getBlockState(pos);
                     if(chunkClan.isLocked(pos) && !chunkClan.isLockOwner(pos, breaker.getUniqueID()) && !chunkClan.hasPerm("lockadmin", breaker.getUniqueID())) {
-                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", chunkClan.getLockOwner(pos)).setStyle(TextStyles.RED));
+                        if(showMessage)
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", chunkClan.getLockOwner(pos)).setStyle(TextStyles.RED));
                         return true;
                     }
                     if (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker)
@@ -62,18 +67,22 @@ public class LandProtectionEventLogic {
                             && !isRaided
                             && !RaidingParties.preparingRaidOnBorderland(breaker, chunkClan, c)
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(breaker, false)) {
-                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.break.borderland" : "clans.protection.break.claimed").setStyle(TextStyles.RED));
+                        if(showMessage)
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.break.borderland" : "clans.protection.break.claimed").setStyle(TextStyles.RED));
                         return true;
                     } else if (isRaided && !ChunkUtils.isBorderland(c)) {
                         if (targetState.getBlock().hasTileEntity(targetState)) {
-                            if(ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
-                                breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
-                            else
-                                breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
+                            if(showMessage) {
+                                if (ClanCache.isClaimAdmin((EntityPlayerMP) breaker))
+                                    breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.raid").setStyle(TextStyles.RED));
+                                else
+                                    breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.claimed_raid").setStyle(TextStyles.RED));
+                            }
                             return true;
                         }
                     } else if(chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), isContainer(world, pos, targetState, null) ? "access" : "build")) {
-                        breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked").setStyle(TextStyles.RED));
+                        if(showMessage)
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked").setStyle(TextStyles.RED));
                         return true;
                     }
                 }
@@ -85,7 +94,8 @@ public class LandProtectionEventLogic {
                     && (!(breaker instanceof EntityPlayerMP)
                         || (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker)
                             && !PermissionManager.hasPermission((EntityPlayerMP)breaker, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness")))) {
-                breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
+                if(breaker != null && showMessage)
+                    breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.wilderness").setStyle(TextStyles.RED));
                 return true;
             }
         }
@@ -108,7 +118,11 @@ public class LandProtectionEventLogic {
         return false;
     }
 
-    public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, EntityPlayer placer, EntityEquipmentSlot hand) {
+    public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, @Nullable EntityPlayer placer, @Nullable EntityEquipmentSlot hand) {
+        return shouldCancelBlockPlacement(world, pos, placer, hand, true);
+    }
+
+    public static boolean shouldCancelBlockPlacement(World world, BlockPos pos, @Nullable EntityPlayer placer, @Nullable EntityEquipmentSlot hand, boolean showMessage) {
         if(!world.isRemote && ClansHelper.getConfig().allowBuildProtection()) {
             Chunk c = world.getChunk(pos);
             if (placer instanceof EntityPlayerMP) {
@@ -120,9 +134,10 @@ public class LandProtectionEventLogic {
                             && !RaidingParties.preparingRaidOnBorderland(placer, chunkClan, c)
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer, false)) {
                         //Notify the player that the block wasn't placed
-                        if(((EntityPlayerMP) placer).connection != null)
+                        if(((EntityPlayerMP) placer).connection != null && hand != null)
                             ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
-                        placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.place.borderland" : "clans.protection.place.territory").setStyle(TextStyles.RED));
+                        if(showMessage)
+                            placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.place.borderland" : "clans.protection.place.territory").setStyle(TextStyles.RED));
                         return true;
                     }
                     return false;
@@ -133,10 +148,11 @@ public class LandProtectionEventLogic {
                         && ClansHelper.getConfig().isProtectWilderness()
                         && (ClansHelper.getConfig().getMinWildernessY() < 0 ? pos.getY() >= world.getSeaLevel() : pos.getY() >= ClansHelper.getConfig().getMinWildernessY())
                         && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(placer, false)) {
-                    if(((EntityPlayerMP) placer).connection != null)
+                    if(((EntityPlayerMP) placer).connection != null && hand != null)
                         ((EntityPlayerMP) placer).connection.sendPacket(new SPacketEntityEquipment(placer.getEntityId(), hand, placer.getItemStackFromSlot(hand)));
                     placer.inventory.markDirty();
-                    placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), "clans.protection.place.wilderness").setStyle(TextStyles.RED));
+                    if(showMessage)
+                        placer.sendMessage(TranslationUtil.getTranslation(placer.getUniqueID(), "clans.protection.place.wilderness").setStyle(TextStyles.RED));
                     return true;
                 }
             }

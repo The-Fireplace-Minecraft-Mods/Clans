@@ -5,3 +5,4 @@ Changes:
 PVP is now disabled on server clans' land by default
 
 Fixes/Internal Changes:
+Attempt to protect against Ice and Fire creatures. It isn't perfect, but it should help reduce the amount of damage they can do on claimed land.

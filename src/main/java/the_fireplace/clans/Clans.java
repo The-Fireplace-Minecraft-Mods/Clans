@@ -15,6 +15,7 @@ import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.abstraction.IProtectionCompat;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
+import the_fireplace.clans.compat.IceAndFireCompat;
 import the_fireplace.clans.forge.ForgePermissionHandler;
 import the_fireplace.clans.forge.compat.DynmapCompat;
 import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
@@ -96,6 +97,8 @@ public final class Clans {
 
         if(getMinecraftHelper().isPluginLoaded("dynmap"))
             setDynmapCompat(new DynmapCompat());
+        if(getMinecraftHelper().isPluginLoaded("iceandfire"))
+            addProtectionCompat(new IceAndFireCompat());
 
         //if(!validJar)
         //    Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
