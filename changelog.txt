@@ -1,8 +1,6 @@
 Additions:
-Added the clan option for if PVP is allowed: -1 is default behavior (protect clan members if they aren't being raided, or disable PVP for server clans). 0 is PVP disabled (also disables raids on that clan). 1 is all PVP allowed.
 
 Changes:
-PVP is now disabled on server clans' land by default
 
 Fixes/Internal Changes:
-Attempt to protect against Ice and Fire creatures. It isn't perfect, but it should help reduce the amount of damage they can do on claimed land.
+Fixed crash when attempting to place lily pad
