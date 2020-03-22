@@ -57,17 +57,17 @@ public class CommandMap extends ClanSubCommand {
 			for (int z = center.z - 5; z <= center.z + 5; z++) {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
-					String wildernessColor = center.z == z && center.x == x ? "§9" : "§e";
+					String wildernessColor = center.z == z && center.x == x ? "\u00A79" : "\u00A7e";
 					ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, z, sender.getServerWorld().provider.getDimension());
 					Clan clan = ClaimData.getChunkClan(pos);
 					if (pos == null || clan == null)
 						row.append(wildernessColor).append('-');
 					else if(pos.isBorderland())
-						row.append(center.z == z && center.x == x ? "§9" : (clan.getMembers().containsKey(sender.getUniqueID()) ? "§a" : "§c")).append('-');
+						row.append(center.z == z && center.x == x ? "\u00A79" : (clan.getMembers().containsKey(sender.getUniqueID()) ? "\u00A7a" : "\u00A7c")).append('-');
 					else {
 						if (!symbolMap.containsKey(clan.getId()))
 							symbolMap.put(clan.getId(), mapchars[symbolMap.size() % mapchars.length]);
-						row.append(center.z == z && center.x == x ? "§9" : clan.getMembers().containsKey(sender.getUniqueID()) ? "§a" : "§c").append(symbolMap.get(clan.getId()));
+						row.append(center.z == z && center.x == x ? "\u00A79" : clan.getMembers().containsKey(sender.getUniqueID()) ? "\u00A7a" : "\u00A7c").append(symbolMap.get(clan.getId()));
 					}
 				}
 				sender.sendMessage(new TextComponentString(row.toString()));

@@ -60,17 +60,17 @@ public class CommandFancyMap extends ClanSubCommand {
 			for(int z=center.z-26; z <= center.z + 26; z++) {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
-					String wildernessColor = center.z == z && center.x == x ? "§9" : ClansHelper.getConfig().isProtectWilderness() ? "§e" : "§2";
+					String wildernessColor = center.z == z && center.x == x ? "\u00A79" : ClansHelper.getConfig().isProtectWilderness() ? "\u00A7e" : "\u00A72";
 					ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, z, sender.getServerWorld().provider.getDimension());
 					Clan clan = ClaimData.getChunkClan(pos);
 					if(pos == null || clan == null)
 						row.append(wildernessColor).append('-');
 					else if(pos.isBorderland())
-						row.append('§').append(Integer.toHexString(clan.getTextColor().getColorIndex())).append('-');
+						row.append('\u00A7').append(Integer.toHexString(clan.getTextColor().getColorIndex())).append('-');
 					else {
 						if (!symbolMap.containsKey(clan.getId()))
 							symbolMap.put(clan.getId(), mapchars[symbolMap.size() % mapchars.length]);
-						row.append(center.z == z && center.x == x ? "§9": '§'+Integer.toHexString(clan.getTextColor().getColorIndex())).append(symbolMap.get(clan.getId()));
+						row.append(center.z == z && center.x == x ? "\u00A79": '\u00A7'+Integer.toHexString(clan.getTextColor().getColorIndex())).append(symbolMap.get(clan.getId()));
 					}
 				}
 				sender.sendMessage(new TextComponentString(row.toString()));
