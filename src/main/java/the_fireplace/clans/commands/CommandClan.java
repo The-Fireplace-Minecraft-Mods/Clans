@@ -34,6 +34,7 @@ import the_fireplace.clans.commands.permissions.CommandSet;
 import the_fireplace.clans.commands.teleportation.CommandHome;
 import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
+import the_fireplace.clans.commands.teleportation.CommandUnsetHome;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.PermissionManager;
@@ -70,6 +71,7 @@ public class CommandClan extends CommandBase {
         put("form", new CommandForm());
 	    put("disband", new CommandDisband());
         put("sethome", new CommandSetHome());
+        put("unsethome", new CommandUnsetHome());
         put("setbanner", new CommandSetBanner());
         put("banner", new CommandBanner());
         put("setname", new CommandSetName());

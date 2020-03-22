@@ -1,8 +1,10 @@
 Additions:
 Added /clan abandonall - A command to abandon all of your clan's land
+Added /clan unsethome - A command to remove your clan's home
 
 Changes:
 Configs for Raid Start Cost, Raid Rewards, Clan Upkeep, and Claim Cost are now formula-based to allow more flexible configurations
+Improved feedback from /clan sethome
 
 Fixes/Internal Changes:
 Fixed crash when attempting to place lily pad

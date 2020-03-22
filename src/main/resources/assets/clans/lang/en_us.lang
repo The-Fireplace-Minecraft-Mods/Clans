@@ -273,8 +273,13 @@ commands.clan.home.disabled=/clan home is disabled on this server.
 commands.clan.sethome.usage=/clan sethome
 commands.clan.sethome.description=Set your clan's home.
 commands.clan.sethome.proximity=You are too close to another clan's home. You must be at least %s blocks away from other clans' homes to set your clan home. Use /clan fancymap to see where nearby clans are.
-commands.clan.sethome.success=Clan home set.
+commands.clan.sethome.success=%s home set.
 commands.clan.sethome.territory=Clan home can only be set in clan territory.
+
+commands.clan.unsethome.usage=/clan unsethome
+commands.clan.unsethome.description=Remove your clan's home.
+commands.clan.unsethome.success=%s home removed.
+commands.clan.unsethome.failed=%s does not have a home.
 
 commands.clan.trapped.usage=/clan trapped
 commands.clan.trapped.description=Teleport out of another clan's territory if you are stuck.
