@@ -38,12 +38,13 @@ public final class FormulaParser {
 
     private static String getFilteredFormula(String formula, Clan clan, @Nullable Raid raid) {
         //noinspection RegExpRedundantEscape
-        formula = formula.replaceAll("[^cdmfp\\.\\+\\-\\*\\/\\(\\)0-9]", "");
+        formula = formula.replaceAll("[^cdmfpw\\.\\+\\-\\*\\/\\(\\)0-9]", "");
         formula = formula.replaceAll("c", String.valueOf(clan.getClaimCount()));
         formula = formula.replaceAll("m", String.valueOf(ClansHelper.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
         formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(clan.getId())));
         formula = formula.replaceAll("p", String.valueOf(clan.getMemberCount()));
         formula = formula.replaceAll("d", String.valueOf(raid != null ? raid.getInitDefenders().size() : clan.getOnlineSurvivalMembers().size()));
+        formula = formula.replaceAll("w", String.valueOf(raid != null ? raid.getPartyWlr() : 1));
         return formula;
     }
 }

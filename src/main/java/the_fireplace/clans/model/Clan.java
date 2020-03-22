@@ -652,14 +652,10 @@ public class Clan {
         return losses;
     }
 
-    public void addWin(Set<UUID> raiders) {
+    public void addWin(Raid raid) {
         wins++;
         if(ClansHelper.getConfig().isIncreasingRewards()) {
-            double avgWlr = 0;
-            for(UUID raider: raiders)
-                avgWlr += PlayerData.getRaidWLR(raider);
-            avgWlr /= raiders.size();
-            if(avgWlr >= ClansHelper.getConfig().getWLRThreshold())
+            if(raid.getPartyWlr() >= ClansHelper.getConfig().getWLRThreshold())
                 decreaseMultiplier();
         }
         markChanged();

@@ -63,7 +63,7 @@ public class Raid {
 		//Reward the defenders the cost of the raid
 		ClansHelper.getPaymentHandler().addAmount(cost, target.getId());
 		target.addShield(ClansHelper.getConfig().getDefenseShield() * 60);
-		target.addWin(initAttackers);
+		target.addWin(this);
 
 		for(UUID attacker: initAttackers)
 			PlayerData.incrementRaidLosses(attacker);
@@ -226,5 +226,16 @@ public class Raid {
 
 	public void setCost(long cost) {
 		this.cost = cost;
+	}
+
+	/**
+	 * Get the average Win-Loss Ratio for the initial set of attackers in the party
+	 */
+	public double getPartyWlr() {
+		double avgWlr = 0;
+		for(UUID raider: initAttackers)
+			avgWlr += PlayerData.getRaidWLR(raider);
+		avgWlr /= initAttackers.size();
+		return avgWlr;
 	}
 }
