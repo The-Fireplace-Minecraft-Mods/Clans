@@ -10,6 +10,7 @@ import the_fireplace.clans.Clans;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.PlayerData;
+import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -38,13 +39,7 @@ public class Raid {
 
 	public void raiderVictory() {
 		RaidingParties.endRaid(target, true);
-		long reward = ClansHelper.getConfig().getWinRaidAmount();
-		if(ClansHelper.getConfig().isWinRaidMultiplierClaims())
-			reward *= target.getClaimCount();
-		if(ClansHelper.getConfig().isWinRaidMultiplierPlayers())
-			reward *= defenders.size();
-		if(ClansHelper.getConfig().isIncreasingRewards())
-			reward *= target.getRaidRewardMultiplier();
+		long reward = (long)FormulaParser.eval(ClansHelper.getConfig().getWinRaidAmountFormula(), target, this, 0);
 		reward -= ClansHelper.getPaymentHandler().deductPartialAmount(reward, target.getId());
 		long remainder = reward % initAttackers.size();
 		reward /= initAttackers.size();
@@ -100,6 +95,14 @@ public class Raid {
 	 */
 	public Set<UUID> getInitAttackers() {
 		return Collections.unmodifiableSet(initAttackers);
+	}
+
+	/**
+	 * Returns the initial set of defenders.
+	 * This includes defenders who have died or deserted during the raid.
+	 */
+	public Set<UUID> getInitDefenders() {
+		return Collections.unmodifiableSet(initDefenders);
 	}
 
 	public int getAttackerCount(){

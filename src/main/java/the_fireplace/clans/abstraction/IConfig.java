@@ -66,18 +66,14 @@ public interface IConfig {
     //Costs, rewards, and multipliers
     int getFormClanCost();
     int getFormClanBankAmount();
-    int getClaimChunkCost();
+    String getClaimChunkCostFormula();
     int getReducedChunkClaimCost();
     int getReducedCostClaimCount();
     int getStartRaidCost();
     boolean isStartRaidMultiplier();
-    int getWinRaidAmount();
-    boolean isWinRaidMultiplierClaims();
-    boolean isWinRaidMultiplierPlayers();
+    String getWinRaidAmountFormula();
     int getClanUpkeepDays();
-    int getClanUpkeepCost();
-    boolean isMultiplyUpkeepClaims();
-    boolean isMultiplyUpkeepMembers();
+    String getClanUpkeepCostFormula();
     boolean isDisbandNoUpkeep();
     boolean isIncreasingRewards();
     double getWLRThreshold();
@@ -90,8 +86,7 @@ public interface IConfig {
     int getChargeRentDays();
     boolean isEvictNonpayers();
     boolean isEvictNonpayerAdmins();
-    int getMaxRent();
-    boolean isMultiplyMaxRentClaims();
+    String getMaxRentFormula();
 
     //Dynmap
     int getDynmapBorderWeight();

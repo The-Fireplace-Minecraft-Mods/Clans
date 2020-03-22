@@ -1,6 +1,7 @@
 Additions:
 
 Changes:
+Configs for Raid Start Cost, Raid Rewards, Clan Upkeep, and Claim Cost are now formula-based to allow more flexible configurations
 
 Fixes/Internal Changes:
 Fixed crash when attempting to place lily pad

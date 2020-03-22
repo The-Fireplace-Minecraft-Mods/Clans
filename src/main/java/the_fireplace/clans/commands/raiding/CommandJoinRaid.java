@@ -59,7 +59,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getName(), Math.round(100f*target.getShield()/60)/100f).setStyle(TextStyles.RED));
 					} else { //Join an existing raid
-						Raid raid = RaidingParties.getRaid(target);
+						Raid raid = RaidingParties.getInactiveRaid(target);
 						if(target.getOnlineSurvivalMembers().size() + ClansHelper.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
 							raid.addAttacker(sender);
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getName()).setStyle(TextStyles.GREEN));

@@ -22,10 +22,7 @@ import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.ClansEventManager;
-import the_fireplace.clans.util.PermissionManager;
-import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -42,16 +39,16 @@ public class ClanManagementLogic {
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", chunkCount, claimingClan.getName(), claimingClan.getMaxClaimCount(), initClaimCount));
                     return false;
                 }
-                int cost;
+                long cost;
                 int reducedCostCount = ClansHelper.getConfig().getReducedCostClaimCount() - initClaimCount;
-                int customCost = claimingClan.hasCustomClaimCost() ? claimingClan.getClaimCost() : -1;
+                long customCost = claimingClan.hasCustomClaimCost() ? claimingClan.getClaimCost() : -1;
 
                 if(customCost >= 0)
                     cost = customCost;
                 else if (reducedCostCount > 0)
-                    cost = ClansHelper.getConfig().getReducedChunkClaimCost() * reducedCostCount + ClansHelper.getConfig().getClaimChunkCost() * (chunkCount - reducedCostCount);
+                    cost = (long)(ClansHelper.getConfig().getReducedChunkClaimCost() * reducedCostCount + FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * (chunkCount - reducedCostCount));
                 else
-                    cost = ClansHelper.getConfig().getClaimChunkCost() * chunkCount;
+                    cost = (long)(FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * chunkCount);
 
                 if (cost > 0 && ClansHelper.getPaymentHandler().getBalance(claimingClan.getId()) < cost) {
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", claimingClan.getName(), chunkCount, ClansHelper.getPaymentHandler().getCurrencyString(cost)));
@@ -207,7 +204,7 @@ public class ClanManagementLogic {
                 return false;
             }
         } else
-            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", claimingClan.getName(), ClansHelper.getPaymentHandler().getCurrencyString(ClansHelper.getConfig().getClaimChunkCost())).setStyle(TextStyles.RED));
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", claimingClan.getName(), ClansHelper.getPaymentHandler().getCurrencyString((long)FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), claimingClan, 0))).setStyle(TextStyles.RED));
         return false;
     }
 

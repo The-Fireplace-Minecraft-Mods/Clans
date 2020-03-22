@@ -26,24 +26,24 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public final class RaidingParties {
-	private static Map<Clan, Raid> raids = Maps.newHashMap();
+	private static Map<Clan, Raid> inactiveRaids = Maps.newHashMap();
 	private static Map<UUID, Raid> raidingPlayers = Maps.newHashMap();
 	private static List<Clan> raidedClans = Lists.newArrayList();
 	private static Map<Clan, Raid> activeraids = Maps.newHashMap();
 	private static Map<Clan, Integer> bufferTimes = Maps.newHashMap();
 
-	public static Map<Clan, Raid> getRaids() {
-		return Collections.unmodifiableMap(raids);
+	public static Map<Clan, Raid> getInactiveRaids() {
+		return Collections.unmodifiableMap(inactiveRaids);
 	}
 
 	@Nullable
-	public static Raid getRaid(String clanname){
-		return raids.get(ClanCache.getClanByName(clanname));
+	public static Raid getInactiveRaid(String clanname){
+		return inactiveRaids.get(ClanCache.getClanByName(clanname));
 	}
 
 	@Nullable
-	public static Raid getRaid(@Nullable Clan clan){
-		return raids.get(clan);
+	public static Raid getInactiveRaid(@Nullable Clan clan){
+		return inactiveRaids.get(clan);
 	}
 
 	@Nullable
@@ -71,7 +71,7 @@ public final class RaidingParties {
 	public static boolean aboutToBeRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
 		if(player == null || c == null)
 			return false;
-		return isPreparingRaid(c) && raids.get(c).getAttackers().contains(player.getUniqueID());
+		return isPreparingRaid(c) && inactiveRaids.get(c).getAttackers().contains(player.getUniqueID());
 	}
 
 	public static boolean isRaidedBy(@Nullable Clan c, @Nullable EntityPlayer player) {
@@ -81,7 +81,7 @@ public final class RaidingParties {
 	}
 
 	public static void addRaid(Clan clan, Raid raid){
-		raids.put(clan, raid);
+		inactiveRaids.put(clan, raid);
 		raidedClans.add(raid.getTarget());
 	}
 
@@ -90,7 +90,7 @@ public final class RaidingParties {
 			//Defenders win. This scenario is reached when in the buffer period and all the raiders log out.
 			raid.defenderVictory();
 		}
-		raids.remove(raid.getTarget());
+		inactiveRaids.remove(raid.getTarget());
 		raidedClans.remove(raid.getTarget());
 	}
 
@@ -99,7 +99,7 @@ public final class RaidingParties {
 	}
 
 	public static void playerLoggedOut(UUID player) {
-		for(Raid raid: raids.values()) {
+		for(Raid raid: inactiveRaids.values()) {
 			raid.removeAttacker(player);
 			raid.removeDefender(player);
 		}
@@ -137,10 +137,10 @@ public final class RaidingParties {
 
 	public static void initRaid(Clan raidTarget){
 		bufferTimes.put(raidTarget, ClansHelper.getConfig().getRaidBufferTime());
-		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime());
-		for(UUID raiderId: getRaids().get(raidTarget).getAttackers()) {
+		raidTarget.messageAllOnline(true, TextStyles.GREEN, "clans.raid.init.defender", inactiveRaids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime());
+		for(UUID raiderId: getInactiveRaids().get(raidTarget).getAttackers()) {
 			EntityPlayerMP raiderEntity = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(raiderId);
-			raiderEntity.sendStatusMessage(TranslationUtil.getTranslation(raiderId, "clans.raid.init.attacker", raids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
+			raiderEntity.sendStatusMessage(TranslationUtil.getTranslation(raiderId, "clans.raid.init.attacker", inactiveRaids.get(raidTarget).getAttackerCount(), raidTarget.getName(), ClansHelper.getConfig().getRaidBufferTime()).setStyle(TextStyles.GREEN), true);
 			if(ClansHelper.getConfig().isTeleportToRaidStart() && raidTarget.hasHome() && raidTarget.getHome() != null) {
 				ChunkPos targetHomeChunkPos = new ChunkPos(raidTarget.getHome());
 				EntityUtil.teleportSafelyToChunk(raiderEntity, EntityUtil.findSafeChunkFor(raiderEntity, new ChunkPosition(targetHomeChunkPos.x, targetHomeChunkPos.z, raidTarget.getHomeDim())));
@@ -149,7 +149,7 @@ public final class RaidingParties {
 	}
 
 	private static void activateRaid(Clan raidTarget) {
-		Raid startingRaid = raids.remove(raidTarget);
+		Raid startingRaid = inactiveRaids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);
 		RaidManagementLogic.checkAndRemoveForbiddenItems(Clans.getMinecraftHelper().getServer(), startingRaid);
@@ -180,7 +180,7 @@ public final class RaidingParties {
 
 		Raid r = activeraids.remove(targetClan);
 		if(r == null)
-			r = raids.remove(targetClan);
+			r = inactiveRaids.remove(targetClan);
 		if(r != null) {
 			for (UUID attackerId : r.getInitAttackers()) {
 				EntityPlayerMP attacker = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(attackerId);

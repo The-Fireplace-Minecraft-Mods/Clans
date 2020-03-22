@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
+import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -42,9 +43,7 @@ public class CommandSetRent extends ClanSubCommand {
 		if(!selectedClan.isServer()) {
 			int newRent = Integer.parseInt(args[0]);
 			if (newRent >= 0) {
-				long maxRent = ClansHelper.getConfig().getMaxRent();
-				if (ClansHelper.getConfig().isMultiplyMaxRentClaims())
-					maxRent *= selectedClan.getClaimCount();
+				long maxRent = (long) FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), selectedClan, 0);
 				if (maxRent <= 0 || newRent <= maxRent) {
 					selectedClan.setRent(newRent);
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));

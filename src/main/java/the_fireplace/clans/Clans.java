@@ -324,9 +324,8 @@ public final class Clans {
         @Config.Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int formClanBankAmount = 0;
-        @Config.Comment("Cost of claiming a chunk. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int claimChunkCost = 0;
+        @Config.Comment("Formula for cost of claiming a chunk. This requires a compatible economy to be installed.")
+        public static String claimChunkCostFormula = "0";
         @Config.Comment("Reduced cost of claiming a chunk for the first x claims. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int reducedClaimChunkCost = 0;
@@ -338,23 +337,13 @@ public final class Clans {
         public static int startRaidCost = 0;
         @Config.Comment("Multiply the cost of starting a raid by the number of enemy claims. This requires a compatible economy to be installed.")
         public static boolean startRaidMultiplier = true;
-        @Config.Comment("Reward for winning a raid. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int winRaidAmount = 0;
-        @Config.Comment("Multiply the reward for winning a raid by the number of enemy claims. This requires a compatible economy to be installed.")
-        public static boolean winRaidMultiplierClaims = true;
-        @Config.Comment("Multiply the reward for winning a raid by the number of online enemy players. This requires a compatible economy to be installed.")
-        public static boolean winRaidMultiplierPlayers = false;
+        @Config.Comment("Formula for reward for winning a raid. This requires a compatible economy to be installed.")
+        public static String winRaidAmountFormula = "0*m";
         @Config.Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int clanUpkeepDays = 0;
-        @Config.Comment("Amount to charge a clan for upkeep. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int clanUpkeepCost = 0;
-        @Config.Comment("Multiply the clan upkeep by the number of claims. This requires a compatible economy to be installed.")
-        public static boolean multiplyUpkeepClaims = true;
-        @Config.Comment("Multiply the clan upkeep by the number of members. This requires a compatible economy to be installed.")
-        public static boolean multiplyUpkeepMembers = false;
+        @Config.Comment("Formula for amount to charge a clan for upkeep. This requires a compatible economy to be installed.")
+        public static String clanUpkeepCostFormula = "0*c";
         @Config.Comment("Disband the clan when it can't afford upkeep. This requires a compatible economy to be installed.")
         public static boolean disbandNoUpkeep = false;
         @Config.Comment("If enabled, rewards will increase as a clan gets repeatedly defeated. This requires a compatible economy to be installed.")
@@ -378,11 +367,8 @@ public final class Clans {
         public static boolean evictNonpayers = false;
         @Config.Comment("Kick clan admins out who can't afford rent. This will not kick out leaders. This requires a compatible economy to be installed.")
         public static boolean evictNonpayerAdmins = false;
-        @Config.Comment("Maximum amount of rent a clan can charge. Set to 0 for no maximum. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int maxRent = 0;
-        @Config.Comment("Multiply the max rent by the number of claims. This requires a compatible economy to be installed.")
-        public static boolean multiplyMaxRentClaims = true;
+        @Config.Comment("Formula for maximum amount of rent a clan can charge. Set to 0 for no maximum. This requires a compatible economy to be installed.")
+        public static String maxRentFormula = "0*c";
         //Dynmap settings
         @Config.Comment("The weight of the dynmap border for claims. This requires Dynmap to be installed.")
         @Config.RangeInt(min=0)
@@ -585,8 +571,8 @@ public final class Clans {
         }
 
         @Override
-        public int getClaimChunkCost() {
-            return claimChunkCost;
+        public String getClaimChunkCostFormula() {
+            return claimChunkCostFormula;
         }
 
         @Override
@@ -610,18 +596,8 @@ public final class Clans {
         }
 
         @Override
-        public int getWinRaidAmount() {
-            return winRaidAmount;
-        }
-
-        @Override
-        public boolean isWinRaidMultiplierClaims() {
-            return winRaidMultiplierClaims;
-        }
-
-        @Override
-        public boolean isWinRaidMultiplierPlayers() {
-            return winRaidMultiplierPlayers;
+        public String getWinRaidAmountFormula() {
+            return winRaidAmountFormula;
         }
 
         @Override
@@ -640,18 +616,8 @@ public final class Clans {
         }
 
         @Override
-        public int getClanUpkeepCost() {
-            return clanUpkeepCost;
-        }
-
-        @Override
-        public boolean isMultiplyUpkeepClaims() {
-            return multiplyUpkeepClaims;
-        }
-
-        @Override
-        public boolean isMultiplyUpkeepMembers() {
-            return multiplyUpkeepMembers;
+        public String getClanUpkeepCostFormula() {
+            return clanUpkeepCostFormula;
         }
 
         @Override
@@ -705,13 +671,8 @@ public final class Clans {
         }
 
         @Override
-        public int getMaxRent() {
-            return maxRent;
-        }
-
-        @Override
-        public boolean isMultiplyMaxRentClaims() {
-            return multiplyMaxRentClaims;
+        public String getMaxRentFormula() {
+            return maxRentFormula;
         }
 
         @Override

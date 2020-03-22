@@ -14,10 +14,7 @@ import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.*;
-import the_fireplace.clans.util.ChunkUtils;
-import the_fireplace.clans.util.EntityUtil;
-import the_fireplace.clans.util.PermissionManager;
-import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -59,11 +56,7 @@ public class TimerLogic {
                 }
                 if (ClansHelper.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
-                    int upkeep = ClansHelper.getConfig().getClanUpkeepCost();
-                    if (ClansHelper.getConfig().isMultiplyUpkeepMembers())
-                        upkeep *= clan.getMemberCount();
-                    if (ClansHelper.getConfig().isMultiplyUpkeepClaims())
-                        upkeep *= clan.getClaimCount();
+                    long upkeep = (long)FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
                     if(ClansHelper.getConfig().isDisbandNoUpkeep() && upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId()) && upkeep <= ClansHelper.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
                         while(upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId())) {
                             ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
@@ -118,7 +111,7 @@ public class TimerLogic {
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
         Clan c = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
-        if(c != null && (ClansHelper.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride())) && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension).isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride())))
+        if(c != null && (ClansHelper.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride())) && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride())))
             mob.setDead();
     }
 
@@ -237,6 +230,7 @@ public class TimerLogic {
         for(Clan pc: playerClans)
             if (RaidingParties.hasActiveRaid(pc)) {
                 Raid r = RaidingParties.getActiveRaid(pc);
+                assert r != null;
                 if(r.getDefenders().contains(player.getUniqueID()))
                     if (pc.getId().equals(chunkClan))
                         r.resetDefenderAbandonmentTime(player);
@@ -245,6 +239,7 @@ public class TimerLogic {
             }
         if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID())) {
             Raid r = RaidingParties.getRaid(player);
+            assert r != null;
             if (r.isActive()) {
                 if(r.getAttackers().contains(player.getUniqueID()))
                     if (r.getTarget().getId().equals(chunkClan))

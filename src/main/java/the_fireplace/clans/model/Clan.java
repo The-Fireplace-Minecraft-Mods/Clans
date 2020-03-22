@@ -21,14 +21,12 @@ import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.util.ClansEventManager;
+import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.JsonHelper;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -458,15 +456,15 @@ public class Clan {
         return options.get("mobdamage") == 1;
     }
 
-    public int getClaimCost() {
+    public long getClaimCost() {
         return getClaimCost(getClaimCount());
     }
 
     /**
      * Gets the cost of one claim when the clan has a certain number of claims
      */
-    public int getClaimCost(int currentClaimCount) {
-        return options.get("claimcost") < 0 ? (currentClaimCount < ClansHelper.getConfig().getReducedCostClaimCount() ? ClansHelper.getConfig().getReducedChunkClaimCost() : ClansHelper.getConfig().getClaimChunkCost()) : options.get("claimcost");
+    public long getClaimCost(int currentClaimCount) {
+        return options.get("claimcost") < 0 ? (currentClaimCount < ClansHelper.getConfig().getReducedCostClaimCount() ? ClansHelper.getConfig().getReducedChunkClaimCost() : (long)FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
     }
 
     public boolean hasCustomClaimCost() {
@@ -683,43 +681,13 @@ public class Clan {
     }
 
     private void setMultiplier(String formula) {
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("JavaScript");
-        formula = getFilteredFormula(formula);
-        try {
-            multiplier = Math.max(1.0, (double) engine.eval(formula));
-        } catch(ScriptException e) {
-            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {}: {}", formula, e.getMessage());
-            e.printStackTrace();
-        } catch(ClassCastException e) {
-            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {} - does not evaluate to a decimal value", formula);
-            e.printStackTrace();
-        }
+        double eval = FormulaParser.eval(formula, this, 1.0);
+        if(eval > 0.99)
+            multiplier = eval;
     }
 
     public long getDisbandCost() {
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("JavaScript");
-        String formula = getFilteredFormula(ClansHelper.getConfig().getDisbandFeeFormula());
-        try {
-            return (long)Math.max(1.0, (double) engine.eval(formula));
-        } catch(ScriptException e) {
-            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {}: {}", formula, e.getMessage());
-            e.printStackTrace();
-        } catch(ClassCastException e) {
-            Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {} - does not evaluate to a decimal value", formula);
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    private String getFilteredFormula(String formula) {
-        formula = formula.replaceAll("[^cdmf\\.\\+\\-\\*\\/\\(\\)0-9]", "");
-        formula = formula.replaceAll("c", String.valueOf(getClaimCount()));
-        formula = formula.replaceAll("d", String.valueOf(getOnlineMembers().size()));
-        formula = formula.replaceAll("m", String.valueOf(multiplier));
-        formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(getId())));
-        return formula;
+        return (long)FormulaParser.eval(ClansHelper.getConfig().getDisbandFeeFormula(), this, 1.0);
     }
 
     public int getColor() {
@@ -879,7 +847,7 @@ public class Clan {
         if(RaidingParties.hasActiveRaid(this))
             RaidingParties.getActiveRaid(this).raiderVictory();
         if(RaidingParties.isPreparingRaid(this))
-            RaidingParties.removeRaid(RaidingParties.getRaid(this));
+            RaidingParties.removeRaid(RaidingParties.getInactiveRaid(this));
         Clans.getDynmapCompat().clearAllTeamMarkers(this);
         ClanDatabase.removeClan(getId());
         if(isServer())
@@ -887,7 +855,7 @@ public class Clan {
 
         long distFunds = ClansHelper.getPaymentHandler().getBalance(this.getId());
         long rem;
-        distFunds += ClansHelper.getConfig().getClaimChunkCost() * this.getClaimCount();
+        distFunds += FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0) * this.getClaimCount();
         if (ClansHelper.getConfig().isLeaderRecieveDisbandFunds()) {
             distFunds = this.payLeaders(distFunds);
             rem = distFunds % this.getMemberCount();
