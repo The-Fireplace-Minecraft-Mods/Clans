@@ -50,6 +50,7 @@ public class CommandClan extends CommandBase {
         //land claiming
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonClaim());
+        put("abandonall", new CommandAbandonAll());
         put("autoclaim", new CommandAutoClaim());
         put("autoabandon", new CommandAutoAbandon());
 	    put("map", new CommandMap());
