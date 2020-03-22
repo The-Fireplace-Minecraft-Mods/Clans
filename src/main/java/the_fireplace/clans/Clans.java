@@ -181,7 +181,7 @@ public final class Clans {
         public static String defaultClanPrefix = "<%s>";
         @Config.Comment("Default clan to put players in when they first join the server. Leave empty for no clan.")
         public static String serverDefaultClan = "";
-        @Config.Comment("Formula for the cost of disbanding a clan. m gets replaced with current raid reward multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This formula will not make the multiplier go below 1.")
+        @Config.Comment("Formula for the cost of disbanding a clan. This formula will not make the multiplier go below 1. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String disbandFeeFormula = "2**(m-0.25)";
         @Config.Comment("Should the player spawn at the clan home if they don't have a bed?")
         public static boolean clanHomeFallbackSpawn = true;
@@ -324,7 +324,7 @@ public final class Clans {
         @Config.Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int formClanBankAmount = 0;
-        @Config.Comment("Formula for cost of claiming a chunk. This requires a compatible economy to be installed.")
+        @Config.Comment("Formula for cost of claiming a chunk. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String claimChunkCostFormula = "0";
         @Config.Comment("Reduced cost of claiming a chunk for the first x claims. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
@@ -337,12 +337,12 @@ public final class Clans {
         public static int startRaidCost = 0;
         @Config.Comment("Multiply the cost of starting a raid by the number of enemy claims. This requires a compatible economy to be installed.")
         public static boolean startRaidMultiplier = true;
-        @Config.Comment("Formula for reward for winning a raid. This requires a compatible economy to be installed.")
+        @Config.Comment("Formula for reward for winning a raid. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String winRaidAmountFormula = "0*m";
         @Config.Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int clanUpkeepDays = 0;
-        @Config.Comment("Formula for amount to charge a clan for upkeep. This requires a compatible economy to be installed.")
+        @Config.Comment("Formula for amount to charge a clan for upkeep. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String clanUpkeepCostFormula = "0*c";
         @Config.Comment("Disband the clan when it can't afford upkeep. This requires a compatible economy to be installed.")
         public static boolean disbandNoUpkeep = false;
@@ -351,9 +351,9 @@ public final class Clans {
         @Config.Comment("Win-Loss Ratio threshold for decreasing the reward multiplier - Helps prevent rich clans from hiring people to purposely fail a raid and reduce their reward multiplier. This requires a compatible economy to be installed.")
         @Config.RangeDouble(min=0)
         public static double wlrThreshold = 0.66;
-        @Config.Comment("Formula to increase the reward multiplier to after a clan loses to raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything.")
+        @Config.Comment("Formula to increase the reward multiplier to after a clan loses to raiders. This requires increasingRewards to do anything. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String multiplierIncreaseFormula = "m**1.05";
-        @Config.Comment("Formula to decrease the reward multiplier to after a clan wins against raiders. m gets replaced with current multiplier. Supports operators + - * / **(exponent). WARNING: due to how this is evaluated, 2m =/= 2*m. With a previous multiplier of 5.5, 2m evaluates to 25.5. This requires increasingRewards to do anything. This formula will not make the multiplier go below 1.")
+        @Config.Comment("Formula to decrease the reward multiplier to after a clan wins against raiders. This requires increasingRewards to do anything. This formula will not make the multiplier go below 1. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String multiplierDecreaseFormula = "m**0.95";
         //Clan finance management
         @Config.Comment("Allow the clan leader to withdraw funds from the clan bank account. This requires a compatible economy to be installed.")
@@ -367,7 +367,7 @@ public final class Clans {
         public static boolean evictNonpayers = false;
         @Config.Comment("Kick clan admins out who can't afford rent. This will not kick out leaders. This requires a compatible economy to be installed.")
         public static boolean evictNonpayerAdmins = false;
-        @Config.Comment("Formula for maximum amount of rent a clan can charge. Set to 0 for no maximum. This requires a compatible economy to be installed.")
+        @Config.Comment("Formula for maximum amount of rent a clan can charge. Set to 0 for no maximum. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String maxRentFormula = "0*c";
         //Dynmap settings
         @Config.Comment("The weight of the dynmap border for claims. This requires Dynmap to be installed.")
