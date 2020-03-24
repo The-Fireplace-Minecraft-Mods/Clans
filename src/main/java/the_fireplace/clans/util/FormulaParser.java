@@ -21,11 +21,11 @@ public final class FormulaParser {
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
         formula = getFilteredFormula(formula, clan, raid);
         try {
-            return Math.max(min, (double) engine.eval(formula));
+            return Math.max(min, Double.parseDouble(String.valueOf(engine.eval(formula))));
         } catch(ScriptException e) {
             Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {}: {}", formula, e.getMessage());
             e.printStackTrace();
-        } catch(ClassCastException e) {
+        } catch(ClassCastException|NullPointerException|NumberFormatException e) {
             Clans.getMinecraftHelper().getLogger().error("Problem with the configured formula: {} - does not evaluate to a decimal value", formula);
             e.printStackTrace();
         }
