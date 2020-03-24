@@ -41,7 +41,7 @@ public class TextStyles {
         colorMap.put(new Color(0xFFFFFF), TextFormatting.WHITE);
 
         for(Map.Entry<Color, TextFormatting> entry : colorMap.entrySet())
-            colorStrings.put(entry.getValue().toString().toLowerCase(), entry.getKey().getRGB());
+            colorStrings.put(entry.getValue().name().toLowerCase(), entry.getKey().getRGB());
     }
 
     public static TextFormatting getNearestTextColor(int exactColor) {

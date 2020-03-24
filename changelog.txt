@@ -4,3 +4,4 @@ Changes:
 
 Fixes/Internal Changes:
 Fixed missing commands.clan.abandonclaim.disconnected translation
+Fixed setcolor commands not acceepting minecraft color names
