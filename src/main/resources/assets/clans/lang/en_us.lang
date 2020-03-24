@@ -158,6 +158,7 @@ commands.clan.abandonclaim.description=Abandon the 16x16 chunk of land you are c
 commands.clan.abandonclaim.success=Claim abandoned from %s.
 commands.clan.abandonclaim.wrongclan=This land does not belong to %s.
 commands.clan.abandonclaim.notclaimed=This land is not claimed.
+commands.clan.abandonclaim.disconnected=You cannot abandon this chunk of land because it would create a disconnected claim.
 
 commands.clan.abandonall.usage=/clan abandonall
 commands.clan.abandonall.description=Abandon all of your clan's claimed land.

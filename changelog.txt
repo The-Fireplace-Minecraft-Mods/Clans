@@ -3,4 +3,4 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Attempted to fix another formula parsing crash
+Fixed missing commands.clan.abandonclaim.disconnected translation

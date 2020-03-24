@@ -269,7 +269,7 @@ public class ClanManagementLogic {
         if (allowed) {
             return finishClaimAbandonment(abandoningPlayer, c, chunkOwner);
         } else
-            abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.opclan.abandonclaim.disconnected").setStyle(TextStyles.RED));
+            abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.clan.abandonclaim.disconnected").setStyle(TextStyles.RED));
         return false;
     }
 
