@@ -1,6 +1,7 @@
 Additions:
 
 Changes:
+Wilderness is no longer protected by default. This will not change existing configs.
 
 Fixes/Internal Changes:
 Fixed /opclan addfunds saying you added money to the currency name's balance

@@ -277,7 +277,7 @@ public final class Clans {
         };
         //Wilderness guard
         @Config.Comment("Protect the wilderness from damage above a specific Y level")
-        public static boolean protectWilderness = true;
+        public static boolean protectWilderness = false;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
         //Raid configuration
