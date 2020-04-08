@@ -6,4 +6,5 @@ Wilderness is no longer protected by default. This will not change existing conf
 Fixes/Internal Changes:
 Fixed /opclan addfunds saying you added money to the currency name's balance
 Fixed players being able to put out fires in other clans' territory
+Fixed players being unable to defend their base from attackers during raids
 Begin logging if script engine was not found to help debug why some people are having problems

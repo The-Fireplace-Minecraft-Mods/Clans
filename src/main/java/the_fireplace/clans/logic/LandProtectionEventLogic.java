@@ -359,10 +359,14 @@ public class LandProtectionEventLogic {
                 && targetPlayerId != null
                 && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false))
             return true;
-        //Cancel if the attacker is not a raider or a raider's tameable
+        //The attacker is a player (or is owned by a player) and is in a chunk that is being raided and is not an allowed fake player
         else if(RaidingParties.hasActiveRaid(chunkClan)
-                && (attacker instanceof EntityPlayer || isOwnable(attacker) && getOwnerId(attacker) != null)
+                && attackingPlayer != null
                 && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false)) {
+            //Do not cancel if the attacker is in their home territory.
+            if(ClanCache.getPlayerClans(attackingPlayer.getUniqueID()).contains(chunkClan))
+                return false;
+            //Cancel if the attacker is not a raider or a raider's tameable
             //Cycle through all the player's clans because we don't want a player to run and hide on a neighboring clan's territory to avoid damage
             for (Clan targetEntityClan : targetEntityClans)
                 if (RaidingParties.isRaidedBy(targetEntityClan, attackingPlayer))
