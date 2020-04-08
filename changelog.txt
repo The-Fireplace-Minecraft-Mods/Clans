@@ -3,5 +3,4 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fixed missing commands.clan.abandonclaim.disconnected translation
-Fixed setcolor commands not acceepting minecraft color names
+Fixed /opclan addfunds saying you added money to the currency name's balance

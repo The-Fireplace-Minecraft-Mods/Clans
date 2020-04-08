@@ -51,7 +51,7 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 					return;
 				}
 				if (ClansHelper.getPaymentHandler().addAmount(amount, c.getId()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", amount, ClansHelper.getPaymentHandler().getCurrencyName(amount), c.getName()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", ClansHelper.getPaymentHandler().getCurrencyString(amount), c.getName()).setStyle(TextStyles.GREEN));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else
