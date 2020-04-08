@@ -20,6 +20,10 @@ public final class FormulaParser {
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine engine = mgr.getEngineByName("JavaScript");
         formula = getFilteredFormula(formula, clan, raid);
+        if(engine == null) {
+            Clans.getMinecraftHelper().getLogger().error("Script engine was not found! Formula-based options will be 0!");
+            return 0;
+        }
         try {
             return Math.max(min, Double.parseDouble(String.valueOf(engine.eval(formula))));
         } catch(ScriptException e) {
@@ -36,6 +40,10 @@ public final class FormulaParser {
         return getFilteredFormula(formula, clan, RaidingParties.getActiveRaid(clan));
     }
 
+    /*
+     * Don't forget to update this link when updating the formula parser
+     * https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505
+     */
     private static String getFilteredFormula(String formula, Clan clan, @Nullable Raid raid) {
         //noinspection RegExpRedundantEscape
         formula = formula.replaceAll("[^cdmfpw\\.\\+\\-\\*\\/\\(\\)0-9]", "");
