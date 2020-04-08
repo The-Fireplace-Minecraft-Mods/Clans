@@ -1,5 +1,6 @@
 package the_fireplace.clans.forge.event;
 
+import net.minecraft.block.BlockFire;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
@@ -24,6 +25,8 @@ import the_fireplace.clans.logic.LandProtectionEventLogic;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.logic.RaidManagementLogic;
 import the_fireplace.clans.util.EntityUtil;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid= ClansHelper.MODID)
 public class LandProtectionEvents {
@@ -63,9 +66,11 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 		//Don't cancel all left click blocks in case player is allowed to build/destroy but not interact
-		//This prevents unauthorized interaction with Storage Drawers
+		//This prevents unauthorized interaction with Storage Drawers and stops players from putting out fires in others' territory
 		if(LandProtectionEventLogic.isContainer(event.getWorld(), event.getPos(), null, null))
 			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), event.getEntityPlayer(), event.getItemStack(), event.getHand()));
+		else if(event.getWorld().getBlockState(event.getPos().offset(Objects.requireNonNull(event.getFace()))).getBlock() instanceof BlockFire)
+			event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), event.getEntityPlayer()));
 	}
 
 	@SubscribeEvent

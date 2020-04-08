@@ -4,3 +4,4 @@ Changes:
 
 Fixes/Internal Changes:
 Fixed /opclan addfunds saying you added money to the currency name's balance
+Fixed players being able to put out fires in other clans' territory
