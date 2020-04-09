@@ -39,6 +39,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -256,8 +257,8 @@ public class LandProtectionEventLogic {
         world.notifyBlockUpdate(pos.north(), targetState, targetState, 2);
         world.notifyBlockUpdate(pos.south(), targetState, targetState, 2);
         //Notify the client that the item hasn't been used.
-        if(interactingPlayer instanceof EntityPlayerMP)
-            ((EntityPlayerMP) interactingPlayer).connection.sendPacket(new SPacketEntityEquipment(interactingPlayer.getEntityId(), hand.equals(EnumHand.OFF_HAND) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND, interactingPlayer.getHeldItem(hand)));
+        if(interactingPlayer instanceof EntityPlayerMP && ((EntityPlayerMP) interactingPlayer).connection != null)
+            ((EntityPlayerMP) interactingPlayer).connection.sendPacket(new SPacketEntityEquipment(interactingPlayer.getEntityId(), Objects.equals(hand, EnumHand.OFF_HAND) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND, interactingPlayer.getHeldItem(hand)));
     }
 
     public static void onDetonate(World world, List<BlockPos> affectedBlocks, List<Entity> affectedEntities) {
