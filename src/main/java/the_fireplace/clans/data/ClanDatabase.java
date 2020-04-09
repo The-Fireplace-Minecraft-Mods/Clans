@@ -36,7 +36,7 @@ public final class ClanDatabase {
     }
 
     public static Collection<Clan> getClans(){
-        return Collections.unmodifiableCollection(getInstance().clans.values());
+        return Collections.unmodifiableCollection(Lists.newArrayList(getInstance().clans.values()));
     }
 
     public static boolean addClan(UUID clanId, Clan clan){

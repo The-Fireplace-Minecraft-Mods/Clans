@@ -1,9 +1,6 @@
 Additions:
 
 Changes:
-Formula based config now treats 2x the same as 2*x
-Formula based config now uses ^ for exponentiation instead of **
-Clarified the descriptions of several config options
 
 Fixes/Internal Changes:
-Fixed errors parsing formulas with some Java versions
+Fixed ConcurrentModificationException crash when clan gets disbanded due to inability to afford upkeep
