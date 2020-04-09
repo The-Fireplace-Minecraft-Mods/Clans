@@ -18,7 +18,7 @@ public final class FormulaParser {
 
     public static double eval(String formula, Clan clan, @Nullable Raid raid, double min) {
         ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        ScriptEngine engine = mgr.getEngineByExtension("js");
         formula = getFilteredFormula(formula, clan, raid);
         if(engine == null) {
             Clans.getMinecraftHelper().getLogger().error("Script engine was not found! Formula-based options will be 0!");
@@ -47,6 +47,8 @@ public final class FormulaParser {
     private static String getFilteredFormula(String formula, Clan clan, @Nullable Raid raid) {
         //noinspection RegExpRedundantEscape
         formula = formula.replaceAll("[^cdmfpw\\.\\+\\-\\*\\/\\(\\)0-9]", "");
+        //Deal with multiplication that doesn't use a sign
+        formula = formula.replaceAll("([0-9cdmfpw])([cdmfpw])|([cdmfpw])([0-9cdmfpw])", "\\1*\\2");
         formula = formula.replaceAll("c", String.valueOf(clan.getClaimCount()));
         formula = formula.replaceAll("m", String.valueOf(ClansHelper.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
         formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(clan.getId())));
