@@ -1,6 +1,6 @@
 Additions:
+Added ru_ru.lang (Kashwar)
 
 Changes:
 
 Fixes/Internal Changes:
-Fixed crash when fake players interact with blocks on claimed land

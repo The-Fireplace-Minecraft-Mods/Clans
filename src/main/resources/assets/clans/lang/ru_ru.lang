@@ -1,0 +1,501 @@
+clan.default_description=Это новый клан.
+
+clans.error.no_clan_econ_acct=Внутренняя ошибка: аккаунт экономики клана не найден. Владельцы серверов, пожалуйста, сообщите об этом.
+clans.error.no_player_econ_acct=Внутренняя ошибка: аккаунт экономики игрока не найден. Владельцы серверов, пожалуйста, сообщите об этом.
+clans.error.nullserver=Internal Error: The server was null! Server owners, please report this.
+
+commands.clan.usage=/clan [клан] <команда> [параметры]
+
+commands.opclan.usage=/opclan <команда> [параметры]
+
+commands.raid.usage=/raid <команда> [параметры]
+commands.raid.disabled=Рейды отключены на этом сервере.
+
+commands.clan.help.usage=/clan help [страница|подкоманда]
+commands.clan.help.description=Команда помощи по командам.
+
+commands.opclan.help.usage=/opclan help [страница|подкоманда]
+commands.opclan.help.description=Команда помощи по командам серверного клана.
+
+commands.raid.help.usage=/raid help [страница|подкоманда]
+commands.raid.help.description=Помощь по командам рейда.
+
+commands.clan.common.player=Вы должны быть игроком, чтобы использовать эту команду.
+commands.clan.common.not_in_clan=Вы не находитесь в %s.
+commands.clan.common.notfound=Клан %s не найден. 
+commands.clan.common.playernotfound=Игрок %s не найден.
+commands.clan.common.insufficient_funds=У вас недостаточно средств, чтобы сделать это.
+commands.clan.common.insufficient_clan_funds=У %s недостаточно средств, чтобы сделать это.
+commands.clan.common.not_leader=Вы не являетесь лидером клана %s.
+commands.clan.common.not_admin=Вы не являетесь админом клана %s.
+commands.clan.common.player_not_in_clan=Игрок %s не в %s.
+commands.clan.common.not_on_server=Вы не можете использовать %s на %s потому что это клан сервера.
+commands.clan.common.not_boolean=%s не может быть идентифицирован как логическое значение.
+commands.clan.common.not_locked=Блок, на который вы смотрите, не заблокирован.
+commands.clan.common.invalid_lock_type=Тип блока '%s' не корректен.
+commands.clan.common.not_claimed_by=Чанк, на котором вы стоите, не имеет притязаний со стороны %s.
+
+commands.clan.common.help_format=%s: %s
+commands.clan.common.invalid_help=Неправильный параметр: %s. Введите подкоманду или страницу.
+
+commands.clan.banner.usage=/clan banner
+commands.clan.banner.description=Превратить баннер, который вы держите, в клановый баннер. 
+commands.clan.banner.clan_nobanner=%s не имеет баннера.
+commands.clan.banner.player_nobanner=Вы не держите баннер.
+
+commands.clan.clanchat.usage=/clan clanchat
+commands.clan.clanchat.description=Команда, чтобы говорить в клановый чат.
+
+commands.clan.details.usage=/clan details [клан]
+commands.clan.details.description=Больше информации о клане.
+commands.clan.details.noclan=Вы не состоите в клане. Введите %s, чтобы узнать информацию о другом клане. 
+commands.clan.details.console=Вы должны указать клан при просмотре деталей из консоли. Используйте %s, чтобы получить информацию о клане.
+commands.clan.details.notfound=Выбранный клан %s не найден.
+commands.clan.details.name=Имя клана: %s
+commands.clan.details.desc=Описание клана: %s
+commands.clan.details.claimcount=Количество притязаний: %s
+commands.clan.details.membercount=Количество участников: %s
+commands.clan.details.members=Участники:
+commands.clan.details.leader=Лидеры %s
+commands.clan.details.admin=Админы %s
+commands.clan.details.no_members=В клане %s нет участников. 
+commands.clan.details.upkeep=Содержание клана (расходы) составляет %s каждые %s дней.
+commands.clan.details.rent=Аренда клана (доход) составляет %s каждые %s дней.
+commands.clan.details.rent_individual=Индивидуальный налог составлят %s каждый %s дней.
+commands.clan.details.trend=Примерный финансовый тренд -%s каждый день.
+commands.clan.details.increase_rent=Возможно, вы захотите увеличить арендную плату до %s и/или найти способ уменьшить содержание.
+commands.clan.details.reduce_upkeep=Возможно, вы захотите найти способ уменьшить содержание.
+commands.clan.details.breaking_even=%s не зарабатывает и не теряет деньги.
+commands.clan.details.rentdue=Rent is due in %s hours.
+commands.clan.details.upkeepdue=Содержание клана должно взыматься в %s часа.
+comamnds.clan.details.upkeep_formula=%s = %s
+commands.clan.details.server=Это серверный клан.
+commands.clan.details.multiplier=Множитель награды за рейд.: %s
+
+commands.clan.disband.usage=/clan disband
+commands.clan.disband.description=Распустить ваш клан.
+commands.clan.disband.success=Вы распустили %s.
+commands.clan.disband.disbanded=%s распущен %s.
+commands.clan.disband.server=Вы не можете распустить %1$s, это клан сервера. Используйте /opclan disband %1$s
+commands.clan.disband.insufficient_funds=%s недостаточно денег для роспуска клана. Требуется: %s.
+
+commands.clan.form.usage=/clan form <name>
+commands.clan.form.description=Сформировать новый клан.
+commands.clan.form.success=Клан создан.
+commands.clan.form.insufficient_funds=Недостаточно средств для формирования клана. Создание стоит %s.
+commands.clan.form.already_in_clan=Вы уже в клане.
+
+commands.clan.list.usage=/clan list [sort|invite] [pages]
+commands.clan.list.description=Посмотреть список кланов. Используйте «invite», чтобы увидеть, какие кланы пригласили вас присоединиться, или отсортируйте по [money | land | members | rewardmult], любой другой тип сортировки по алфавиту.
+commands.clan.list.clans=Кланы на сервере:
+commands.clan.list.listitem=(%s) %s - %s
+commands.clan.list.listitem_alphabetical=%s - %s
+commands.clan.list.noclans=На сервере нет кланов.
+commands.clan.list.no_invites=У вас нет ожидающих приглашений.
+
+commands.clan.playerinfo.usage=/clan playerinfo [player]
+commands.clan.playerinfo.description=Показывает клан игрока.
+commands.clan.playerinfo.console=Вы должны указать игрока при просмотре деталей из консоли. Используйте %s, чтобы получить информацию о нём.
+commands.clan.playerinfo.notfound=Игрок %s не найден.
+commands.clan.playerinfo.name=Имя игрока: %s
+commands.clan.playerinfo.clans=Кланы:
+commands.clan.playerinfo.leader=Лидер клана %s:
+commands.clan.playerinfo.admin=Админ клана %s:
+commands.clan.playerinfo.member=Участник клана %s:
+commands.clan.playerinfo.noclans=%s больше не находится в кланах.
+
+commands.clan.setbanner.usage=/clan setbanner [banner]
+commands.clan.setbanner.description=Установите баннер своего клана на тот, который вы держите, или введите NBT баннера.
+commands.clan.setbanner.invalid=Указанный баннер не подходит.
+commands.clan.setbanner.taken=Указанный баннер уже занят.
+commands.clan.setbanner.success=Баннер для %s установлен.
+commands.clan.setbanner.notheld=Вы не лержите баннер.
+
+commands.clan.setcolor.usage=/clan setcolor <color>
+commands.clan.setcolor.description=Задайте цвет клана для чата клана, fancymap, Dynmap и т. Д. Поддерживаются основные имена цветов, шестнадцатеричные цвета (0x ######) и RGB Ints
+commands.clan.setcolor.success=%s цвет установлен.
+commands.clan.setcolor.invalid=Цвет %s не корректен.
+
+commands.clan.setdefault.usage=/clan setdefault <clan>
+commands.clan.setdefault.description=Установить клан по умолчанию для команд /clan [clanname] <subcommand> [args...].
+commands.clan.setdefault.success=Клан по умолчанию установлен как %s.
+
+commands.clan.setdescription.usage=/clan setdescription <new description>
+commands.clan.setdescription.description=Установить описание клана.
+commands.clan.setdescription.success=Описание для клана %s установлено.
+
+commands.clan.setname.usage=/clan setname <newname>
+commands.clan.setname.description=Установить имя вашего клана.
+commands.clan.setname.toolong=Это имя %s слишком длинное. Максимальное количество символов - %s.
+commands.clan.setname.taken=Имя клана %s установлено.
+commands.clan.setname.success=Вы переименовали %s в %s.
+
+commands.clan.addfunds.usage=/clan addfunds <amount>
+commands.clan.addfunds.description=Переводит средства с аккаунта экономики (игрока) на аккаунт клана.
+commands.clan.addfunds.format=Неправильный формат суммы.
+commands.clan.addfunds.success=Вы положили %s в казну %s.
+commands.clan.addfunds.added=%s положил(а) %s в казну %s.
+
+commands.clan.balance.usage=/clan balance
+commands.clan.balance.description=Показать баланс клана.
+commands.clan.balance.balance=Баланс клана %s: %s.
+
+commands.clan.setrent.usage=/clan setrent <amount>
+commands.clan.setrent.description=Установите, сколько арендной платы будут получать ваши члены клана.
+commands.clan.setrent.success=Клановая рента для %s установлена на %s.
+commands.clan.setrent.overmax=Нельзя установить ренту %s, максимальная планка (%s).
+commands.clan.setrent.negative=Нельзя установить отрицательную ренту.
+commands.clan.setrent.disabled=/clan setrent отключена на этом сервере.
+
+commands.clan.takefunds.usage=/clan takefunds <amount>
+commands.clan.takefunds.description=Забрать деньги со счёта клана.
+commands.clan.takefunds.disabled=/clan takefunds отключена на этом сервере.
+commands.clan.takefunds.success=Вы взяли %s с баланса %s.
+commands.clan.takefunds.taken=% взял %s с баланса %s.
+
+commands.clan.abandonclaim.usage=/clan abandonclaim
+commands.clan.abandonclaim.description=Отказаться от притязаний на землю, на которйо вы стоите.
+commands.clan.abandonclaim.success=%s отказался от притязаний на эту землю.
+commands.clan.abandonclaim.wrongclan=Эта зелмя не принадлежит %s.
+commands.clan.abandonclaim.notclaimed=На эту землю у кланов нет притязаний.
+commands.clan.abandonclaim.disconnected=Вы не можете отказаться от притязаний на этот чанк, потому что это создаст разрыв в привате.
+
+commands.clan.abandonall.usage=/clan abandonall
+commands.clan.abandonall.description=Отказ от всех земель клана.
+
+commands.clan.claim.usage=/clan claim [radius]
+commands.clan.claim.description=Оформить притязание (приват) чанка, на котором вы стоите. По умолчанию - один чанк.
+commands.clan.claim.taken=%s уже оформил претензии на этот чанк.
+commands.clan.claim.taken_other=Другой клан (%s) уже забрал эту территорию.
+commands.clan.claim.taken_other_r=Другой клан (%s) уже забрал территорию в радиусе, который вы выделили.
+commands.clan.claim.proximity_error=Вы не можете претендовать на этот кусок земли, потому что он находится слишком близко к дому другого клана. Убедитесь, что вы находитесь на расстоянии не менее %s блоков от домов других кланов, прежде чем пытаться снова. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
+commands.clan.claim.proximity_error_r=Вы не можете претендовать на эту землю, потому что были бы слишком близко к дому другого клана. Убедитесь, что вся земля в радиусе не менее %s блоков от домов других кланов, прежде чем пытаться снова. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
+commands.clan.claim.proximity_warning=Рекомендуется не требовать этот кусок земли, потому что он находится в пределах %s блоков от дома другого клана. Напечатайте /сlan claim снова, чтобы оформить притязания. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
+commands.clan.claim.proximity_warning_r=Рекомендуется не претендовать на эту землю, потому что она будет находиться в пределах %s блоков от дома другого клана. Напечатайте /clan claim снова, чтобы оформить притязания. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
+commands.clan.claim.maxed=%s уже превышает максимальное число притязаний %s.
+commands.clan.claim.maxed_r=Захват %s чанков превисит число %s выше максимального количества %s. В настоящее время захвачено %s чанков.
+commands.clan.claim.disconnected=Вы не можете оформить права на этот участок, так как он не связан с другими чанками клана %s.
+commands.clan.claim.disconnected_r=Вы не можете заявить права на эти чанки, так как они не связаны с остальной землёй клана %s.
+commands.clan.claim.success=Клан %s оформил права на эту землю.
+commands.clan.claim.insufficient_funds=На счету %s недостаточно средств для запроса чанка. Это будет стоить %s.
+commands.clan.claim.insufficient_funds_r=Недостаточно средств на счету %s, чтобы требовать чанки %s. Это будет стоить %s.
+commands.clan.claim.start_r=Начинаем зазхват в указанном радиусе. Пожалуйста, подождите.
+
+commands.clan.autoabandon.usage=/clan autoabandon
+commands.clan.autoabandon.description=Автоматический отказ от территориальных притязаний клана, в которые заходит игрок (авторасприват).
+commands.clan.autoabandon.start=Вы автоматически отказываетесь от чанков, в которые заходите %s.
+commands.clan.autoabandon.stop=Вы больше не отказываетесь от притязаний клана %s.
+
+commands.clan.autoclaim.usage=/clan autoclaim
+commands.clan.autoclaim.description=Автоматический захват земли (кланом), по которой вы идёте.
+commands.clan.autoclaim.start=Вы оформляете автоматические притязания для %s.
+commands.clan.autoclaim.stop=Вы больше не оформляете автоматические притязания для %s.
+
+commands.clan.fancymap.usage=/clan fancymap
+commands.clan.fancymap.description=Просмотр большой карты претензий, закодированных цветами клана.
+
+commands.clan.map.usage=/clan map
+commands.clan.map.description=Просматривайте небольшую карту клановых притязаний, обозначенную цветом ваших кланов.
+
+commands.clan.seechunk.usage=/clan seechunk [on|off]
+commands.clan.seechunk.description=Показать края чанка, в котором вы сейчас находитесь.
+
+commands.clan.accept.usage=/clan accept <clan>
+commands.clan.accept.description=Отправить приглашение в клан.
+commands.clan.accept.success=Вы присоединилсь к %s.
+commands.clan.accept.accepted=%s присоединился к %s.
+commands.clan.accept.not_invited=Вы не были приглашены присоединиться %s.
+
+commands.clan.decline.usage=/clan decline <clan> [block]
+commands.clan.decline.description=Отклонить приглашение клана.
+commands.clan.decline.success=Вы отклонили приглашение %s.
+commands.clan.decline.declined=%s отклонил приглашение присоединится к %s.
+
+commands.clan.autodecline.usage=/clan autodecline [clan]
+commands.clan.autodecline.description=Автоматически отклонять приглашения от любого клана или клана, который вы укажете.
+commands.clan.autodecline.on=Теперь вы автоматически отклоняете все приглашения.
+commands.clan.autodecline.on_clan=Теперь вы автоматически отклоняете приглашения от %s.
+commands.clan.autodecline.off=Вы больше не отклоняете все приглашения автоматически.
+commands.clan.autodecline.off_clan=Вы больше не отклоняете приглашения от %s автоматически.
+
+commands.clan.demote.usage=/clan demote <player>
+commands.clan.demote.description=Понизить игрока в клане. Понижает лидера до админа, а админа до рядового.
+commands.clan.demote.success=Вы понизили %s с %s до %s.
+commands.clan.demote.demoted=Игрок понижен %s с %s до %s.
+commands.clan.demote.error=Игрок %s не может быть понижен.
+
+commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[page]
+commands.clan.invite.description=Пригласите игрока в свой клан, отмените приглашение для игрока или выведите всех игроков, которых пригласил ваш клан.
+commands.clan.invite.success=Вы пригласили %s в клан %s.
+commands.clan.invite.invited=Вы приглашены в клан %1$s. Чтобы присоединиться, %1$s, введите /clan accept <клан>. Чтобы отклонить введите /clan decline <клан>
+commands.clan.invite.pending=Игрок %s уже приглашён присоединится к клану %s.
+commands.clan.invite.already_in_this=Игрок %s уже в клане %s.
+commands.clan.invite.already_in_any=Игрок %s уже в клане.
+commands.clan.invite.blocking=Игрок %s не принял приглашение от %s.
+commands.clan.invite.blocking_all=Игрок %s не принимает приглашения.
+commands.clan.invite.revoked=Клан %s отозвал приглашение присоединения.
+commands.clan.invite.revoke_success=Вы отозвали приглашение для %s присоединится к %s.
+
+commands.clan.kick.usage=/clan kick <player>
+commands.clan.kick.description=Исключить игрока.
+commands.clan.kick.leave=Чтобы выйти из клана, используйте /clan leave.
+commands.clan.kick.authority=Вы не имеете прав выгонять %s.
+commands.clan.kick.success=Вы выгнали %s из %s.
+commands.clan.kick.kicked=Вы исключены из %s игроком %s.
+commands.clan.kick.kicked_other=%s исключен из %s игроком %s.
+commands.clan.kick.fail=Игрок %s не может быть исключён из %s. Если %1$s - единственный лидер %2$s, другой лидер должен быть установлен до исключения игрока %1$s.
+
+commands.clan.leave.usage=/clan leave
+commands.clan.leave.description=Покинуть клан.
+commands.clan.leave.disband=Вы не можете выйти из %s. Используйте /clan disband.
+commands.clan.leave.promote=Вы не можете выйти из %s без лидера. Повысьте кого-либо до лидера.
+commands.clan.leave.success=Вы вышли из %s.
+commands.clan.leave.left=%s вышел из %s.
+commands.clan.leave.error=Вам не удалось удалиться из%s. Владельцы серверов, сообщите об ошибке.
+
+commands.clan.promote.usage=/clan promote <player>
+commands.clan.promote.description=Повысить игрока от рядового до админа или от админа до лидера.
+commands.clan.promote.success=Вы повысили %s до %s в %s.
+commands.clan.promote.notify=%s повысил %s до %s в %s.
+commands.clan.promote.promoted=Повышен %s до %s в %s.
+commands.clan.promote.error=Игрок %s не может быть повышен.
+
+commands.clan.home.usage=/clan home
+commands.clan.home.description=Телепорт на клановый дом.
+commands.clan.home.nohome=%s не имеет дома. Лидер должен использовать /clan sethome, чтобы установить его.
+commands.clan.home.warmup=Готовимся телепортировать вас на %s дом клана. Не двигвайтесь и не получайте урон %s секунд.
+commands.clan.home.cancelled=Your clan home teleport was cancelled.
+commands.clan.home.cooldown=Вы не можете использовать эту команду, пока ваше время восстановления не истечет через %s секунд.
+commands.clan.home.blocked=Ошибка телепортации домой. Убедитесь, что клановый дом не заблокирован.
+commands.clan.home.return_dim=Ошибка телепортации в измерение.
+commands.clan.home.dim_error=Ошибка телепортации в измерение кланового дома.
+commands.clan.home.disabled=/clan home отключен на сервере.
+
+commands.clan.sethome.usage=/clan sethome
+commands.clan.sethome.description=Устанавливает дом клана.
+commands.clan.sethome.proximity=Вы слишком близко к дому другого клана. Вы должны быть на расстоянии не менее %s от домов других кланов, чтобы установить свой. Используйте /clan fancymap, чтобы увидеть, где находятся близкие кланы.
+commands.clan.sethome.success=%s дом установлен.
+commands.clan.sethome.territory=Клановый дом может быть установлен только на земле клана.
+
+commands.clan.unsethome.usage=/clan unsethome
+commands.clan.unsethome.description=Удаляет клановый дом.
+commands.clan.unsethome.success=%s клановый дом удалён.
+commands.clan.unsethome.failed=У клана %s нет дома.
+
+commands.clan.trapped.usage=/clan trapped
+commands.clan.trapped.description=Телепортирует вас, если вы оказались заперты в чужих землях.
+commands.clan.trapped.fail=Вы не заперты в чужих землях.
+
+commands.clan.permissions.usage=/clan permissions [page]
+commands.clan.permissions.description=Посмотрите, какие разрешения вашего клана в настоящее время установлены.
+commands.clan.permissions.format=%s: %s
+commands.clan.permissions.override=Переопределение игрока: %s: %s
+
+commands.clan.set.usage=/clan set <permission> [player] <value>
+commands.clan.set.description=Установите значения для разрешений вашего клана. У игрока значение равно true или false. В противном случае вы устанавливаете ранг, который имеет доступ, и вы можете выбрать MEMBER, ADMIN, LEADER или ANY. Обратите внимание, что каждый ранг включает в себя более высокие ранги, и ЛЮБОЙ позволяет игрокам, которых нет в клане. Чтобы увидеть ваши текущие разрешения, используйте /clan permissions
+commands.clan.set.invalid_perm=Неверное разрешение: %s
+commands.clan.set.success=Разрешение установлено успешно!
+
+commands.clan.lock.usage=/clan lock [private|clan|open]
+commands.clan.lock.description=Блокирует блок, на который вы смотрите. Режимы: приватный (по умолчанию): приватный для игрока, который его заблокировал; клан: доступен для всего клана; открыто: доступно любому, даже игрокам, не входящим в клан
+commands.clan.lock.locked=Этот блок уже заблокирован %s.
+commands.clan.lock.failed=Вы не можете заблокировать этот блок. Если это ошибка, обратитесь к администратору.
+commands.clan.lock.not_block=Вы не смотрите на блок или слишком далеко.
+commands.clan.lock.wrong_owner=У клана %s нет притязаний на этот блок.
+commands.clan.lock.success=Вы успешно заблокировали блок, на который смотрите.
+commands.clan.lock.permission=%s не позволяет вам использовать блокировку %s.
+
+commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
+commands.clan.lockchunk.description=Блокирует все разблокированные блокируемые блоки в чанке. Режимы: приватный (по умолчанию): приватный для игрока, который его заблокировал; клан: доступен для всего клана; открыто: доступно любому, даже игрокам, не входящим в клан
+commands.clan.lockchunk.success=Вы заблокировали все доступные блоки в чанке.
+
+commands.clan.unlock.usage=/clan unlock
+commands.clan.unlock.description=Разблокирует блок, на который вы смотрите. Только игрок, заблокировавший игру, или игроки с разрешением клана "lockadmin" могут это сделать.
+commands.clan.unlock.locked=Вы не можете разблокировать блок, он заблокирован игроком %s.
+commands.clan.unlock.not_block=Вы не смотрите на блок или слишком далеко от блока, чтобы разблокировать его.
+commands.clan.unlock.success=Вы успешно разблокировали блок, на который смотрите.
+
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|all]
+commands.clan.unlockchunk.description=Разблокирует все заблокированные блоки в чанке. Только игроки с разрешением клана «lockadmin» могут использовать опцию player | all, если игрок удаляет блокировки указанного игрока. All очищает все блокировки.
+commands.clan.unlockchunk.success=Вы успешно разблокировали все свои заблокированные блоки в чанке.
+commands.clan.unlockchunk.success_player=Вы успешно разблокировали все заблокированные блоки %s в чанке.
+commands.clan.unlockchunk.success_all=Вы успешно разблокировали все блоки в чанке.
+commands.clan.unlockchunk.failed=У вас нет разрешения разблокировать блоки других игроков в этом клане.
+
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Предоставляет игроку доступ к заблокированному блоку, на который вы смотрите. Вы можете предоставить доступ к блокам, только если вы являетесь игроком, который заблокировал его или у вас есть разрешение клана «lockadmin».
+commands.clan.grantaccess.locked=Вы не можете дать доступ, блок заблокирован %s.
+commands.clan.grantaccess.not_block=Вы не смотрите на блок или слишком далеко от него.
+commands.clan.grantaccess.success=Вы успешно дали доступ к данному блоку игроку %s. 
+
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Запрещает игроку доступ к заблокированному блоку, на который вы смотрите. Вы можете запретить доступ к блокам только в том случае, если вы заблокировали его или у вас есть разрешение клана «lockadmin».
+commands.clan.denyaccess.locked=Вы не можете запретить доступ к этому блоку, потому что он заблокирован %s.
+commands.clan.denyaccess.not_block=Вы не смотрите на блок или слишком далеко от него, чтобы запретить доступ к нему.
+commands.clan.denyaccess.success=Вы успешно отказали %s в доступе к блоку, на которой смотрите.
+
+commands.clan.lockinfo.usage=/clan lockinfo
+commands.clan.lockinfo.description=Просмотр информации о блокировке блока, который вы просматриваете.
+commands.clan.lockinfo.locked_by=Владелец: %s
+commands.clan.lockinfo.type=Тип: %s
+commands.clan.lockinfo.overrides=Переопределение:
+commands.clan.lockinfo.allowed=%s: разрешено.
+commands.clan.lockinfo.denied=%s: отказано.
+commands.clan.lockinfo.not_block=Вы не смотрите на блок или слишком далек от него.
+
+commands.opclan.abandonclaim.usage=/opclan abandonclaim
+commands.opclan.abandonclaim.description=Отзывает притязание на чанк, вне зависимости от того, чей он.
+
+commands.opclan.addfunds.usage=/opclan addfunds <клан> <счёт>
+commands.opclan.addfunds.description=Добавляет деньги на баланс кого-либо клана.
+
+commands.opclan.autoabandon.usage=/opclan autoabandon
+commands.opclan.autoabandon.description=Automatically abandon claims as you walk around, regardless of who owns them.
+commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
+commands.opclan.autoabandon.stop=Вы больше не отказываетесь от земли.
+
+commands.opclan.autoclaim.usage=/opclan autoclaim <клан>
+commands.opclan.autoclaim.description=Автоматически оформляет притязяние на землю, вне зависимости от того есть ли на ней приват другого клана.
+
+commands.opclan.buildadmin.usage=/opclan buildadmin
+commands.opclan.buildadmin.description=Позволяет взаимодействовать с чужим приватом.
+commands.opclan.buildadmin.on=Вы в моде билдадмина.
+commands.opclan.buildadmin.off=Вы больше не в моде билдадмина.
+
+commands.opclan.claim.usage=/opclan claim <клан>
+commands.opclan.claim.description=Получите кусок земли размером 16x16 для серверного клана, независимо от того, кто в данный момент владеет им.
+
+commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <player>
+commands.opclan.setrank.description=Установить ранг игрока в клане.
+commands.opclan.setrank.success=Вы повысили игрока %s с %s до %s.
+commands.opclan.setrank.set=Вы повысили игрока %s с %s до %s.
+
+commands.opclan.disband.usage=/opclan disband <клан>
+commands.opclan.disband.description=Распустить клан.
+
+commands.opclan.kick.usage=/opclan kick <клан> <игрок>
+commands.opclan.kick.description=Выгнать игрока из клана.
+
+commands.opclan.setcolor.usage=/opclan setcolor <клан> <цвет>
+commands.opclan.setcolor.description=Поменять цвет клана.
+
+commands.opclan.setdescription.usage=/opclan setdescription <клан> <описание>
+commands.opclan.setdescription.description=Установить клану описание.
+
+commands.opclan.setname.usage=/opclan setname <клан> <имя>
+commands.opclan.setname.description=Поменять имя клану.
+
+commands.opclan.setshield.usage=/opclan setshield <клан> <продолжительность>
+commands.opclan.setshield.description=Установите время защиты для клана в минутах.
+commands.opclan.setshield.format=Неверная продолжительность защиты.
+commands.opclan.setshield.success=Защита для клана %s установлена на %s минут.
+
+commands.opclan.setserver.usage=/opclan setserver <клан> <true|1|false|0>
+commands.opclan.setserver.description=Установить клан сервера. Клан сервера защищён от рейдов.
+commands.opclan.setserver.success_t=Вы сделали %s кланом сервера. 
+commands.opclan.setserver.success_f=Вы убрали у %s статус клана сервера.
+
+commands.opclan.setoption.usage=/opclan set <клан> <параметр> <значение>
+commands.opclan.setoption.description=Установите различные параметры для клана. Допустимые параметры: количество притязаний, спавн мобов, стоимость притязаний, урон мобам, upkeepexemption, видимость карты, сервер, pvp.
+commands.opclan.setoption.success=Вы успешно установили параметр %s для %s как %s.
+commands.opclan.setoption.failed=Параметр %s не найден.
+
+commands.opclan.tp.usage=/opclan tp <клан>
+commands.opclan.tp.description=Телепортация к дому клана.
+
+commands.raid.common.notinparty=Вы не в рейдерском отряде.
+commands.raid.common.not_raiding=Вы не в активном рейде.
+
+commands.raid.collect.usage=/raid collect
+commands.raid.collect.description=Собрать блоки, потерянные во время рейда.
+commands.raid.collect.makespace=Интвентарь заполнен. Освободите место!
+commands.raid.collect.success=Сбор прошёл успешно.
+commands.raid.collect.empty=Нет предметов для сбора.
+commands.raid.collect.raiding=Вы не можете собрать предметы во время рейда.
+
+commands.raid.invite.usage=/raid invite <игрок>
+commands.raid.invite.description=Пригласить игрока в рейдерский отряд
+commands.raid.invite.invited=Вы приглашены в рейд против клана %1$s. Для вступления в рейд введите /raid join %1$s.
+commands.raid.invite.success=Вы успешно пригласили %s в рейд.
+commands.raid.invite.inclan=Вы не можете пригласить игроков на рейд их клана.
+commands.raid.invite.limit=Ваш рейдерский отряд переполнен. Количество рейдеров - %s, лимит - %s.
+
+commands.raid.join.usage=/raid join <имя клана>
+commands.raid.join.description=Присоединиться к рейду против выбранного клана. Если отряд ещё не создан, то будет сформирован вами.
+commands.raid.join.created=Вы успешно создали рейд против клана %s.
+commands.raid.join.create_fail=У клана %s слишком мало игроков онлайн для начала рейда. 
+commands.raid.join.shield=Клан %s защищён. Попробуйте снова через %s часов.
+commands.raid.join.success=Вы вошли в рейд против клана %s.
+commands.raid.join.limit=Рейд против клана %s не может принять больше людей. Количество людей в отряде - %s, лимит рейдеров %s.
+commands.raid.join.inclan=Вы не можете рейдить свой клан.
+commands.raid.join.inparty=Вы уже участвуете в рейдерской группе и не можете присоединиться к другой, если не выйдете.
+commands.raid.join.unraidable=Администратор сервера не допустил рейда на клан %s.
+
+commands.raid.leave.usage=/raid leave
+commands.raid.leave.description=Покинуть рейд, в котором вы находитесь.
+commands.raid.leave.success=Вы успешно покинули рейд против клана %s.
+
+commands.raid.start.usage=/raid start
+commands.raid.start.description=Начать рейд, с вас взымется плата, если таковая имеется.
+commands.raid.start.success=Вы успешно начали рейд против клана %s.
+commands.raid.start.insufficient_funds=У вас недостаточно средств, чтобы начать рейд против клана %s. Это стоит %s.
+commands.raid.start.raiding=Рейд уже начат.
+commands.raid.start.error=Ошибка: друго клан уже рейдит этот клан! Попробуйте через %s часов. Владельцы серверов, сообщите об этой ошибке.
+
+commands.raid.thru.usage=/raid thru
+commands.raid.thru.description=Пройти сквозь защищённые блоки.
+commands.raid.thru.not_block=Вы не смотрите на блок или находитесь слишком далеко от блока, чтобы просмотреть информацию о блокировке.
+commands.raid.thru.wrong_pos_owner=Блок, на который вы смотрите, не находится на территории %s.
+commands.raid.thru.failed=По другую сторону от вас нет безопасного телепорта.
+
+clans.protection.break.claimed=Вы не можете ломать блоки. Это не ваша территория.
+clans.protection.break.borderland=Вы не можете ломать блоки. Это территория находится слишком близко к территории другого клана.
+clans.protection.break.raid=Вы не можете сломать этот блок во время рейда. Дождитесь окончания.
+clans.protection.break.claimed_raid=Вы не можете ломать этот блока, пока находитесь на чужой территории.
+clans.protection.break.wilderness=Вы не можете ломать блоки в дикой местности.
+clans.protection.break.locked=Вы не можете сломать этот блок. Он заблокирован игроком %s.
+
+clans.protection.place.territory=Вы можете ставить здесь блоки. Это не ваша территория.
+clans.protection.place.borderland=Вы не можете ставить блоки неподалёку от территории другого клана.
+clans.protection.place.wilderness=Вы не можете ставить блоки в дикой местности.
+
+clans.protection.interact.territory=Вы можете ставить здесь блоки. Это не ваша территория.
+clans.protection.interact.borderland=Эти блоки находятся слишком близко к территории другого клана.
+clans.protection.interact.locked=Этот блок заблокирован игроком %s.
+
+clans.rent.kicked=Вы исключены из клана %s, потому что не смогли оплатить налог.
+
+clans.upkeep.disbanded=%s был расформирован, так как не смог оплатить свои расходы.
+
+clans.wilderness=Дикая местность
+clans.underground=Под землёй
+
+clans.territory.entry=Вы входите на территорию клана %s.
+clans.territory.entrydesc=~%s
+clans.territory.unclaimed=Это территория свободная от притязяний.
+clans.territory.protected=Это территория свободная от притязаний, но он защищена.
+clans.territory.clanterritory=Территория клана %s.
+clans.territory.borderland=Границы клана %s.
+
+clans.raid.glowing.defender=Рейд против %s начнётся через %s минут. Вы начнёте светится перед окончанием рейда. Количество живых рейдеров - %s 
+clans.raid.glowing.attacker=Рейд против %s начнётся через %s минут. Защитники в количестве %s начнут светиться перед окончанием рейда.
+
+clans.raid.rmtimer.rm_attacker=Вы исключены из рейда, потому что вышли за территорию клана %s.
+clans.raid.rmtimer.rm_defender=Теперь вы считаетесь мёртвым для рейда. Вы вышли за территорию клана %s.
+clans.raid.rmtimer.warn_attacker=Вы находитесь за пределами территории %s. Вам дано %s секунд для возвращения. Успейте до исключения из рейда.
+clans.raid.rmtimer.warn_defender=Вы находитесь за пределами территории %s. Вам дано %s секунд для возвращения, иначе рейдеры одержат победу.
+
+clans.raid.confiscated=У вас были конфискованы предметы, которые запрещены во время рейда: %s. Вы сможете забрать их после рейда командой /raid collect.
+
+clans.raid.init.defender=Отряд, состоящий из %s участников, готовится к штурму клана %s. Рейд начнётся через %s секунд.
+clans.raid.init.attacker=Ваш отряд, состоящий из %s участников, готовится к штурму клана %s. Рейд начнётся через %s секунд.
+
+clans.raid.activate=Рейд против %s начался!
+clans.raid.end=Рейд против %s закончен!
+clans.raid.victory.raider=Рейдеры одержали победу на кланом %s!
+clans.raid.victory.clan=клан %s одержал победу на рейдерами!
+
+clans.chat.prefix=<%s Чат>
+clans.chat.page.next=[Далее]
+clans.chat.page.prev=[Назад]
+clans.chat.page.num=page: %s/%s
