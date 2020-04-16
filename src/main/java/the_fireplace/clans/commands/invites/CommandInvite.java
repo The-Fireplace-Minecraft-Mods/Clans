@@ -73,7 +73,7 @@ public class CommandInvite extends ClanSubCommand {
 			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		} catch(Exception ignored) {}
 		if(target != null) {
-			if (ClansHelper.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).isEmpty()) {
+			if (ClansHelper.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).stream().allMatch(Clan::isServer)) {
 				if (!ClanCache.getPlayerClans(target.getId()).contains(invitingClan)) {
 					if(PlayerData.getIsBlockingAllInvites(target.getId())) {
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking_all", target.getName()).setStyle(TextStyles.RED));
@@ -131,7 +131,7 @@ public class CommandInvite extends ClanSubCommand {
 		if(args.length == 1 && (args[0].equalsIgnoreCase("send") || args[0].equalsIgnoreCase("s"))) {
 			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 			if (!ClansHelper.getConfig().isAllowMultiClanMembership())
-				players.removeIf(s -> !ClanCache.getPlayerClans(s.getId()).isEmpty());
+				players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).stream().anyMatch(c -> !c.isServer()));
 			players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(selectedClan));
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (GameProfile profile : players)

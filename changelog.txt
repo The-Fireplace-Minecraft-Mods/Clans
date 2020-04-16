@@ -2,5 +2,7 @@ Additions:
 Added ru_ru.lang (Kashwar)
 
 Changes:
+Players can now be in a normal clan and server clans if multi-clan membership is disabled.
 
 Fixes/Internal Changes:
+Fixed players being unable to leave a server clan if they are the last member.

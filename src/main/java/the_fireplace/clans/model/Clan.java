@@ -37,11 +37,11 @@ import java.util.stream.Collectors;
 
 public class Clan {
     private boolean isChanged = false;
-    private File clanDataFile;
+    private final File clanDataFile;
 
     private String clanName, clanBanner;
     private String description = TranslationUtil.getStringTranslation("clan.default_description");
-    private Map<UUID, EnumRank> members;
+    private final Map<UUID, EnumRank> members;
     private UUID clanId;
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
@@ -83,12 +83,12 @@ public class Clan {
         defaultOptions.put("pvp", -1);
     }
 
-    private Map<String, Integer> options = Maps.newHashMap();
-    private Map<String, EnumRank> permissions = Maps.newHashMap();
-    private Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
+    private final Map<String, Integer> options = Maps.newHashMap();
+    private final Map<String, EnumRank> permissions = Maps.newHashMap();
+    private final Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
     
-    private Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = Maps.newHashMap();
-    private Map<BlockPos, Map<UUID, Boolean>> lockOverrides = Maps.newHashMap();
+    private final Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = Maps.newHashMap();
+    private final Map<BlockPos, Map<UUID, Boolean>> lockOverrides = Maps.newHashMap();
 
     private Map<String, Object> addonData = Maps.newHashMap();
 
@@ -263,7 +263,7 @@ public class Clan {
                 options.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
             }
         }
-        //TODO remove this legacy compat in the 1.15.2 port and Clans 1.6
+        //TODO remove this legacy compat in the 1.15.2 port and Clans 1.7
         if(obj.has("isOpclan") || obj.has("isLimitless") || obj.has("isServer"))
             this.options.put("server", (obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean()) ? 1 : 0);
 
@@ -444,7 +444,11 @@ public class Clan {
      */
     @Nullable
     public Boolean pvpAllowed() {
-        return options.get("pvp") < 0 || options.get("pvp") > 1 ? (isServer() ? Boolean.FALSE : null) : (options.get("pvp") == 1 ? Boolean.TRUE : Boolean.FALSE);
+        return options.get("pvp") < 0 || options.get("pvp") > 1
+            //the PVP option is outside the Boolean range, so we want null for default behavior unless it is a server clan
+            ? (isServer() ? Boolean.FALSE : null)
+            //Otherwise, the pvp option has been set to 0 or 1 which means we should return the appropriate Boolean
+            : (options.get("pvp") == 1 ? Boolean.TRUE : Boolean.FALSE);
     }
 
     @Nullable
@@ -496,7 +500,7 @@ public class Clan {
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
         PlayerData.removeInvite(player, getId());
-        if(!ClansHelper.getConfig().isAllowMultiClanMembership())
+        if(!ClansHelper.getConfig().isAllowMultiClanMembership() && !isServer())
             for(Clan clan: ClanDatabase.getClans())
                 PlayerData.removeInvite(player, clan.getId());
         Clans.getDynmapCompat().refreshTooltip(this);
@@ -509,7 +513,7 @@ public class Clan {
         if(!prevHadMember) {
             ClanCache.addPlayerClan(player, this);
             PlayerData.removeInvite(player, getId());
-            if(!ClansHelper.getConfig().isAllowMultiClanMembership())
+            if(!ClansHelper.getConfig().isAllowMultiClanMembership() && !isServer())
                 for(Clan clan: ClanDatabase.getClans())
                     PlayerData.removeInvite(player, clan.getId());
             Clans.getDynmapCompat().refreshTooltip(this);
@@ -518,7 +522,7 @@ public class Clan {
     }
 
     public boolean removeMember(UUID player) {
-        if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
+        if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1 && !isServer())
             return false;
         boolean removed = this.members.remove(player) != null;
         if(removed) {
@@ -550,9 +554,7 @@ public class Clan {
     }
 
     public boolean promoteMember(UUID player) {
-        if(!members.containsKey(player))
-            return false;
-        else {
+        if (members.containsKey(player)) {
             if(members.get(player) == EnumRank.ADMIN) {
                 if(!ClansHelper.getConfig().isMultipleClanLeaders()) {
                     UUID leader = null;
@@ -572,8 +574,9 @@ public class Clan {
                 members.put(player, EnumRank.ADMIN);
                 markChanged();
                 return true;
-            } return false;
+            }
         }
+        return false;
     }
 
     public long getRent() {
