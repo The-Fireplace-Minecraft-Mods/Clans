@@ -4,3 +4,4 @@ Changes:
 
 Fixes/Internal Changes:
 Fixed llama spit crashing some servers
+Fixed potential issue with clan balance saving

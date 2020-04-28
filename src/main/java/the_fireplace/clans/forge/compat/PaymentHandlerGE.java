@@ -1,10 +1,9 @@
 package the_fireplace.clans.forge.compat;
 
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IPaymentHandler;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.grandeconomy.GrandEconomy;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;
-import the_fireplace.grandeconomy.econhandlers.ge.GrandEconomyEconHandler;
 
 import java.util.UUID;
 
@@ -13,8 +12,9 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	@Override
 	public boolean deductAmount(long amount, UUID account) {
 		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, null);
-		if(ret && ClanCache.getClanById(account) != null && GrandEconomy.getEconomy() instanceof GrandEconomyEconHandler)
-			GrandEconomyApi.forceSave(account, null);
+		if(ret && ClanCache.getClanById(account) != null)
+			if(Boolean.FALSE.equals(GrandEconomyApi.forceSave(account, false)))
+				Clans.getLogger().warn("Unable to save clan account for clan with ID: {}", account.toString());
 		return ret;
 	}
 
@@ -33,8 +33,9 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	@Override
 	public boolean addAmount(long amount, UUID account) {
 		GrandEconomyApi.addToBalance(account, amount, null);
-		if(ClanCache.getClanById(account) != null && GrandEconomy.getEconomy() instanceof GrandEconomyEconHandler)
-			GrandEconomyApi.forceSave(account, null);
+		if(ClanCache.getClanById(account) != null)
+			if(Boolean.FALSE.equals(GrandEconomyApi.forceSave(account, false)))
+				Clans.getLogger().warn("Unable to save clan account for clan with ID: {}", account.toString());
 		return true;
 	}
 
