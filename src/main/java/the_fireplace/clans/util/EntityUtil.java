@@ -10,6 +10,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
@@ -140,8 +141,16 @@ public class EntityUtil {
             return ((EntityThrowable) entity).getThrower();
         if(entity instanceof EntityFireball)
             return ((EntityFireball) entity).shootingEntity;
-        if(entity instanceof EntityLlamaSpit)
-            return ((EntityLlamaSpit) entity).owner;
+        if(entity instanceof EntityLlamaSpit) {
+            try {
+                return ((EntityLlamaSpit) entity).owner;
+            } catch(NoSuchFieldError e) {//Work around the field being missing sometimes, which appears to be caused by Mohist and Magma.
+                Clans.getLogger().error("Llama spit owner field missing! EntityLlamaSpit's fields:");
+                Clans.getLogger().error(ArrayUtils.toString(EntityLlamaSpit.class.getFields()));
+                Clans.getLogger().error(e.getMessage());
+                return null;
+            }
+        }
         if(entity instanceof EntityFishHook)
             return ((EntityFishHook) entity).getAngler();
         return null;
