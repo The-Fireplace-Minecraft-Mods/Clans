@@ -37,6 +37,8 @@ public final class FormulaParser {
         formula = formula.replaceAll("[^cdmfpw\\.\\+\\-\\*\\/\\(\\)\\^0-9]", "");
         //Deal with multiplication that doesn't use a sign
         formula = formula.replaceAll("([0-9cdmfpw])([cdmfpw])|([cdmfpw])([0-9cdmfpw])", "\\1*\\2");
+        //Deal with the old method of exponentiation
+        formula = formula.replaceAll("\\*\\*", "\\^");
         formula = formula.replaceAll("c", String.valueOf(clan.getClaimCount()));
         formula = formula.replaceAll("m", String.valueOf(ClansHelper.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
         formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(clan.getId())));

@@ -3,5 +3,4 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fixed llama spit crashing some servers
-Fixed potential issue with clan balance saving
+Added handling for the old method of exponentiation in formula config values
