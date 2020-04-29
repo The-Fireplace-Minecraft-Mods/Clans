@@ -4,3 +4,4 @@ Changes:
 
 Fixes/Internal Changes:
 Added handling for the old method of exponentiation in formula config values
+Fixed the Russian translation

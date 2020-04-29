@@ -1,501 +1,501 @@
-clan.default_description=Это новый клан.
+clan.default_description=Р­С‚Рѕ РЅРѕРІС‹Р№ РєР»Р°РЅ.
 
-clans.error.no_clan_econ_acct=Внутренняя ошибка: аккаунт экономики клана не найден. Владельцы серверов, пожалуйста, сообщите об этом.
-clans.error.no_player_econ_acct=Внутренняя ошибка: аккаунт экономики игрока не найден. Владельцы серверов, пожалуйста, сообщите об этом.
+clans.error.no_clan_econ_acct=Р’РЅСѓС‚СЂРµРЅРЅСЏСЏ РѕС€РёР±РєР°: Р°РєРєР°СѓРЅС‚ СЌРєРѕРЅРѕРјРёРєРё РєР»Р°РЅР° РЅРµ РЅР°Р№РґРµРЅ. Р’Р»Р°РґРµР»СЊС†С‹ СЃРµСЂРІРµСЂРѕРІ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, СЃРѕРѕР±С‰РёС‚Рµ РѕР± СЌС‚РѕРј.
+clans.error.no_player_econ_acct=Р’РЅСѓС‚СЂРµРЅРЅСЏСЏ РѕС€РёР±РєР°: Р°РєРєР°СѓРЅС‚ СЌРєРѕРЅРѕРјРёРєРё РёРіСЂРѕРєР° РЅРµ РЅР°Р№РґРµРЅ. Р’Р»Р°РґРµР»СЊС†С‹ СЃРµСЂРІРµСЂРѕРІ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, СЃРѕРѕР±С‰РёС‚Рµ РѕР± СЌС‚РѕРј.
 clans.error.nullserver=Internal Error: The server was null! Server owners, please report this.
 
-commands.clan.usage=/clan [клан] <команда> [параметры]
+commands.clan.usage=/clan [РєР»Р°РЅ] <РєРѕРјР°РЅРґР°> [РїР°СЂР°РјРµС‚СЂС‹]
 
-commands.opclan.usage=/opclan <команда> [параметры]
+commands.opclan.usage=/opclan <РєРѕРјР°РЅРґР°> [РїР°СЂР°РјРµС‚СЂС‹]
 
-commands.raid.usage=/raid <команда> [параметры]
-commands.raid.disabled=Рейды отключены на этом сервере.
+commands.raid.usage=/raid <РєРѕРјР°РЅРґР°> [РїР°СЂР°РјРµС‚СЂС‹]
+commands.raid.disabled=Р РµР№РґС‹ РѕС‚РєР»СЋС‡РµРЅС‹ РЅР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ.
 
-commands.clan.help.usage=/clan help [страница|подкоманда]
-commands.clan.help.description=Команда помощи по командам.
+commands.clan.help.usage=/clan help [СЃС‚СЂР°РЅРёС†Р°|РїРѕРґРєРѕРјР°РЅРґР°]
+commands.clan.help.description=РљРѕРјР°РЅРґР° РїРѕРјРѕС‰Рё РїРѕ РєРѕРјР°РЅРґР°Рј.
 
-commands.opclan.help.usage=/opclan help [страница|подкоманда]
-commands.opclan.help.description=Команда помощи по командам серверного клана.
+commands.opclan.help.usage=/opclan help [СЃС‚СЂР°РЅРёС†Р°|РїРѕРґРєРѕРјР°РЅРґР°]
+commands.opclan.help.description=РљРѕРјР°РЅРґР° РїРѕРјРѕС‰Рё РїРѕ РєРѕРјР°РЅРґР°Рј СЃРµСЂРІРµСЂРЅРѕРіРѕ РєР»Р°РЅР°.
 
-commands.raid.help.usage=/raid help [страница|подкоманда]
-commands.raid.help.description=Помощь по командам рейда.
+commands.raid.help.usage=/raid help [СЃС‚СЂР°РЅРёС†Р°|РїРѕРґРєРѕРјР°РЅРґР°]
+commands.raid.help.description=РџРѕРјРѕС‰СЊ РїРѕ РєРѕРјР°РЅРґР°Рј СЂРµР№РґР°.
 
-commands.clan.common.player=Вы должны быть игроком, чтобы использовать эту команду.
-commands.clan.common.not_in_clan=Вы не находитесь в %s.
-commands.clan.common.notfound=Клан %s не найден. 
-commands.clan.common.playernotfound=Игрок %s не найден.
-commands.clan.common.insufficient_funds=У вас недостаточно средств, чтобы сделать это.
-commands.clan.common.insufficient_clan_funds=У %s недостаточно средств, чтобы сделать это.
-commands.clan.common.not_leader=Вы не являетесь лидером клана %s.
-commands.clan.common.not_admin=Вы не являетесь админом клана %s.
-commands.clan.common.player_not_in_clan=Игрок %s не в %s.
-commands.clan.common.not_on_server=Вы не можете использовать %s на %s потому что это клан сервера.
-commands.clan.common.not_boolean=%s не может быть идентифицирован как логическое значение.
-commands.clan.common.not_locked=Блок, на который вы смотрите, не заблокирован.
-commands.clan.common.invalid_lock_type=Тип блока '%s' не корректен.
-commands.clan.common.not_claimed_by=Чанк, на котором вы стоите, не имеет притязаний со стороны %s.
+commands.clan.common.player=Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РёРіСЂРѕРєРѕРј, С‡С‚РѕР±С‹ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ.
+commands.clan.common.not_in_clan=Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ %s.
+commands.clan.common.notfound=РљР»Р°РЅ %s РЅРµ РЅР°Р№РґРµРЅ.
+commands.clan.common.playernotfound=РРіСЂРѕРє %s РЅРµ РЅР°Р№РґРµРЅ.
+commands.clan.common.insufficient_funds=РЈ РІР°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ, С‡С‚РѕР±С‹ СЃРґРµР»Р°С‚СЊ СЌС‚Рѕ.
+commands.clan.common.insufficient_clan_funds=РЈ %s РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ, С‡С‚РѕР±С‹ СЃРґРµР»Р°С‚СЊ СЌС‚Рѕ.
+commands.clan.common.not_leader=Р’С‹ РЅРµ СЏРІР»СЏРµС‚РµСЃСЊ Р»РёРґРµСЂРѕРј РєР»Р°РЅР° %s.
+commands.clan.common.not_admin=Р’С‹ РЅРµ СЏРІР»СЏРµС‚РµСЃСЊ Р°РґРјРёРЅРѕРј РєР»Р°РЅР° %s.
+commands.clan.common.player_not_in_clan=РРіСЂРѕРє %s РЅРµ РІ %s.
+commands.clan.common.not_on_server=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ %s РЅР° %s РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЌС‚Рѕ РєР»Р°РЅ СЃРµСЂРІРµСЂР°.
+commands.clan.common.not_boolean=%s РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РёРґРµРЅС‚РёС„РёС†РёСЂРѕРІР°РЅ РєР°Рє Р»РѕРіРёС‡РµСЃРєРѕРµ Р·РЅР°С‡РµРЅРёРµ.
+commands.clan.common.not_locked=Р‘Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ, РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ.
+commands.clan.common.invalid_lock_type=РўРёРї Р±Р»РѕРєР° '%s' РЅРµ РєРѕСЂСЂРµРєС‚РµРЅ.
+commands.clan.common.not_claimed_by=Р§Р°РЅРє, РЅР° РєРѕС‚РѕСЂРѕРј РІС‹ СЃС‚РѕРёС‚Рµ, РЅРµ РёРјРµРµС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ СЃРѕ СЃС‚РѕСЂРѕРЅС‹ %s.
 
 commands.clan.common.help_format=%s: %s
-commands.clan.common.invalid_help=Неправильный параметр: %s. Введите подкоманду или страницу.
+commands.clan.common.invalid_help=РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ: %s. Р’РІРµРґРёС‚Рµ РїРѕРґРєРѕРјР°РЅРґСѓ РёР»Рё СЃС‚СЂР°РЅРёС†Сѓ.
 
 commands.clan.banner.usage=/clan banner
-commands.clan.banner.description=Превратить баннер, который вы держите, в клановый баннер. 
-commands.clan.banner.clan_nobanner=%s не имеет баннера.
-commands.clan.banner.player_nobanner=Вы не держите баннер.
+commands.clan.banner.description=РџСЂРµРІСЂР°С‚РёС‚СЊ Р±Р°РЅРЅРµСЂ, РєРѕС‚РѕСЂС‹Р№ РІС‹ РґРµСЂР¶РёС‚Рµ, РІ РєР»Р°РЅРѕРІС‹Р№ Р±Р°РЅРЅРµСЂ.
+commands.clan.banner.clan_nobanner=%s РЅРµ РёРјРµРµС‚ Р±Р°РЅРЅРµСЂР°.
+commands.clan.banner.player_nobanner=Р’С‹ РЅРµ РґРµСЂР¶РёС‚Рµ Р±Р°РЅРЅРµСЂ.
 
 commands.clan.clanchat.usage=/clan clanchat
-commands.clan.clanchat.description=Команда, чтобы говорить в клановый чат.
+commands.clan.clanchat.description=РљРѕРјР°РЅРґР°, С‡С‚РѕР±С‹ РіРѕРІРѕСЂРёС‚СЊ РІ РєР»Р°РЅРѕРІС‹Р№ С‡Р°С‚.
 
-commands.clan.details.usage=/clan details [клан]
-commands.clan.details.description=Больше информации о клане.
-commands.clan.details.noclan=Вы не состоите в клане. Введите %s, чтобы узнать информацию о другом клане. 
-commands.clan.details.console=Вы должны указать клан при просмотре деталей из консоли. Используйте %s, чтобы получить информацию о клане.
-commands.clan.details.notfound=Выбранный клан %s не найден.
-commands.clan.details.name=Имя клана: %s
-commands.clan.details.desc=Описание клана: %s
-commands.clan.details.claimcount=Количество притязаний: %s
-commands.clan.details.membercount=Количество участников: %s
-commands.clan.details.members=Участники:
-commands.clan.details.leader=Лидеры %s
-commands.clan.details.admin=Админы %s
-commands.clan.details.no_members=В клане %s нет участников. 
-commands.clan.details.upkeep=Содержание клана (расходы) составляет %s каждые %s дней.
-commands.clan.details.rent=Аренда клана (доход) составляет %s каждые %s дней.
-commands.clan.details.rent_individual=Индивидуальный налог составлят %s каждый %s дней.
-commands.clan.details.trend=Примерный финансовый тренд -%s каждый день.
-commands.clan.details.increase_rent=Возможно, вы захотите увеличить арендную плату до %s и/или найти способ уменьшить содержание.
-commands.clan.details.reduce_upkeep=Возможно, вы захотите найти способ уменьшить содержание.
-commands.clan.details.breaking_even=%s не зарабатывает и не теряет деньги.
+commands.clan.details.usage=/clan details [РєР»Р°РЅ]
+commands.clan.details.description=Р‘РѕР»СЊС€Рµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РєР»Р°РЅРµ.
+commands.clan.details.noclan=Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РєР»Р°РЅРµ. Р’РІРµРґРёС‚Рµ %s, С‡С‚РѕР±С‹ СѓР·РЅР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РґСЂСѓРіРѕРј РєР»Р°РЅРµ.
+commands.clan.details.console=Р’С‹ РґРѕР»Р¶РЅС‹ СѓРєР°Р·Р°С‚СЊ РєР»Р°РЅ РїСЂРё РїСЂРѕСЃРјРѕС‚СЂРµ РґРµС‚Р°Р»РµР№ РёР· РєРѕРЅСЃРѕР»Рё. РСЃРїРѕР»СЊР·СѓР№С‚Рµ %s, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєР»Р°РЅРµ.
+commands.clan.details.notfound=Р’С‹Р±СЂР°РЅРЅС‹Р№ РєР»Р°РЅ %s РЅРµ РЅР°Р№РґРµРЅ.
+commands.clan.details.name=РРјСЏ РєР»Р°РЅР°: %s
+commands.clan.details.desc=РћРїРёСЃР°РЅРёРµ РєР»Р°РЅР°: %s
+commands.clan.details.claimcount=РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёС‚СЏР·Р°РЅРёР№: %s
+commands.clan.details.membercount=РљРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ: %s
+commands.clan.details.members=РЈС‡Р°СЃС‚РЅРёРєРё:
+commands.clan.details.leader=Р›РёРґРµСЂС‹ %s
+commands.clan.details.admin=РђРґРјРёРЅС‹ %s
+commands.clan.details.no_members=Р’ РєР»Р°РЅРµ %s РЅРµС‚ СѓС‡Р°СЃС‚РЅРёРєРѕРІ.
+commands.clan.details.upkeep=РЎРѕРґРµСЂР¶Р°РЅРёРµ РєР»Р°РЅР° (СЂР°СЃС…РѕРґС‹) СЃРѕСЃС‚Р°РІР»СЏРµС‚ %s РєР°Р¶РґС‹Рµ %s РґРЅРµР№.
+commands.clan.details.rent=РђСЂРµРЅРґР° РєР»Р°РЅР° (РґРѕС…РѕРґ) СЃРѕСЃС‚Р°РІР»СЏРµС‚ %s РєР°Р¶РґС‹Рµ %s РґРЅРµР№.
+commands.clan.details.rent_individual=РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РЅР°Р»РѕРі СЃРѕСЃС‚Р°РІР»СЏС‚ %s РєР°Р¶РґС‹Р№ %s РґРЅРµР№.
+commands.clan.details.trend=РџСЂРёРјРµСЂРЅС‹Р№ С„РёРЅР°РЅСЃРѕРІС‹Р№ С‚СЂРµРЅРґ -%s РєР°Р¶РґС‹Р№ РґРµРЅСЊ.
+commands.clan.details.increase_rent=Р’РѕР·РјРѕР¶РЅРѕ, РІС‹ Р·Р°С…РѕС‚РёС‚Рµ СѓРІРµР»РёС‡РёС‚СЊ Р°СЂРµРЅРґРЅСѓСЋ РїР»Р°С‚Сѓ РґРѕ %s Рё/РёР»Рё РЅР°Р№С‚Рё СЃРїРѕСЃРѕР± СѓРјРµРЅСЊС€РёС‚СЊ СЃРѕРґРµСЂР¶Р°РЅРёРµ.
+commands.clan.details.reduce_upkeep=Р’РѕР·РјРѕР¶РЅРѕ, РІС‹ Р·Р°С…РѕС‚РёС‚Рµ РЅР°Р№С‚Рё СЃРїРѕСЃРѕР± СѓРјРµРЅСЊС€РёС‚СЊ СЃРѕРґРµСЂР¶Р°РЅРёРµ.
+commands.clan.details.breaking_even=%s РЅРµ Р·Р°СЂР°Р±Р°С‚С‹РІР°РµС‚ Рё РЅРµ С‚РµСЂСЏРµС‚ РґРµРЅСЊРіРё.
 commands.clan.details.rentdue=Rent is due in %s hours.
-commands.clan.details.upkeepdue=Содержание клана должно взыматься в %s часа.
+commands.clan.details.upkeepdue=РЎРѕРґРµСЂР¶Р°РЅРёРµ РєР»Р°РЅР° РґРѕР»Р¶РЅРѕ РІР·С‹РјР°С‚СЊСЃСЏ РІ %s С‡Р°СЃР°.
 comamnds.clan.details.upkeep_formula=%s = %s
-commands.clan.details.server=Это серверный клан.
-commands.clan.details.multiplier=Множитель награды за рейд.: %s
+commands.clan.details.server=Р­С‚Рѕ СЃРµСЂРІРµСЂРЅС‹Р№ РєР»Р°РЅ.
+commands.clan.details.multiplier=РњРЅРѕР¶РёС‚РµР»СЊ РЅР°РіСЂР°РґС‹ Р·Р° СЂРµР№Рґ.: %s
 
 commands.clan.disband.usage=/clan disband
-commands.clan.disband.description=Распустить ваш клан.
-commands.clan.disband.success=Вы распустили %s.
-commands.clan.disband.disbanded=%s распущен %s.
-commands.clan.disband.server=Вы не можете распустить %1$s, это клан сервера. Используйте /opclan disband %1$s
-commands.clan.disband.insufficient_funds=%s недостаточно денег для роспуска клана. Требуется: %s.
+commands.clan.disband.description=Р Р°СЃРїСѓСЃС‚РёС‚СЊ РІР°С€ РєР»Р°РЅ.
+commands.clan.disband.success=Р’С‹ СЂР°СЃРїСѓСЃС‚РёР»Рё %s.
+commands.clan.disband.disbanded=%s СЂР°СЃРїСѓС‰РµРЅ %s.
+commands.clan.disband.server=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЂР°СЃРїСѓСЃС‚РёС‚СЊ %1$s, СЌС‚Рѕ РєР»Р°РЅ СЃРµСЂРІРµСЂР°. РСЃРїРѕР»СЊР·СѓР№С‚Рµ /opclan disband %1$s
+commands.clan.disband.insufficient_funds=%s РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РґРµРЅРµРі РґР»СЏ СЂРѕСЃРїСѓСЃРєР° РєР»Р°РЅР°. РўСЂРµР±СѓРµС‚СЃСЏ: %s.
 
 commands.clan.form.usage=/clan form <name>
-commands.clan.form.description=Сформировать новый клан.
-commands.clan.form.success=Клан создан.
-commands.clan.form.insufficient_funds=Недостаточно средств для формирования клана. Создание стоит %s.
-commands.clan.form.already_in_clan=Вы уже в клане.
+commands.clan.form.description=РЎС„РѕСЂРјРёСЂРѕРІР°С‚СЊ РЅРѕРІС‹Р№ РєР»Р°РЅ.
+commands.clan.form.success=РљР»Р°РЅ СЃРѕР·РґР°РЅ.
+commands.clan.form.insufficient_funds=РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ РґР»СЏ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ РєР»Р°РЅР°. РЎРѕР·РґР°РЅРёРµ СЃС‚РѕРёС‚ %s.
+commands.clan.form.already_in_clan=Р’С‹ СѓР¶Рµ РІ РєР»Р°РЅРµ.
 
 commands.clan.list.usage=/clan list [sort|invite] [pages]
-commands.clan.list.description=Посмотреть список кланов. Используйте «invite», чтобы увидеть, какие кланы пригласили вас присоединиться, или отсортируйте по [money | land | members | rewardmult], любой другой тип сортировки по алфавиту.
-commands.clan.list.clans=Кланы на сервере:
+commands.clan.list.description=РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃРїРёСЃРѕРє РєР»Р°РЅРѕРІ. РСЃРїРѕР»СЊР·СѓР№С‚Рµ В«inviteВ», С‡С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ, РєР°РєРёРµ РєР»Р°РЅС‹ РїСЂРёРіР»Р°СЃРёР»Рё РІР°СЃ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ, РёР»Рё РѕС‚СЃРѕСЂС‚РёСЂСѓР№С‚Рµ РїРѕ [money | land | members | rewardmult], Р»СЋР±РѕР№ РґСЂСѓРіРѕР№ С‚РёРї СЃРѕСЂС‚РёСЂРѕРІРєРё РїРѕ Р°Р»С„Р°РІРёС‚Сѓ.
+commands.clan.list.clans=РљР»Р°РЅС‹ РЅР° СЃРµСЂРІРµСЂРµ:
 commands.clan.list.listitem=(%s) %s - %s
 commands.clan.list.listitem_alphabetical=%s - %s
-commands.clan.list.noclans=На сервере нет кланов.
-commands.clan.list.no_invites=У вас нет ожидающих приглашений.
+commands.clan.list.noclans=РќР° СЃРµСЂРІРµСЂРµ РЅРµС‚ РєР»Р°РЅРѕРІ.
+commands.clan.list.no_invites=РЈ РІР°СЃ РЅРµС‚ РѕР¶РёРґР°СЋС‰РёС… РїСЂРёРіР»Р°С€РµРЅРёР№.
 
 commands.clan.playerinfo.usage=/clan playerinfo [player]
-commands.clan.playerinfo.description=Показывает клан игрока.
-commands.clan.playerinfo.console=Вы должны указать игрока при просмотре деталей из консоли. Используйте %s, чтобы получить информацию о нём.
-commands.clan.playerinfo.notfound=Игрок %s не найден.
-commands.clan.playerinfo.name=Имя игрока: %s
-commands.clan.playerinfo.clans=Кланы:
-commands.clan.playerinfo.leader=Лидер клана %s:
-commands.clan.playerinfo.admin=Админ клана %s:
-commands.clan.playerinfo.member=Участник клана %s:
-commands.clan.playerinfo.noclans=%s больше не находится в кланах.
+commands.clan.playerinfo.description=РџРѕРєР°Р·С‹РІР°РµС‚ РєР»Р°РЅ РёРіСЂРѕРєР°.
+commands.clan.playerinfo.console=Р’С‹ РґРѕР»Р¶РЅС‹ СѓРєР°Р·Р°С‚СЊ РёРіСЂРѕРєР° РїСЂРё РїСЂРѕСЃРјРѕС‚СЂРµ РґРµС‚Р°Р»РµР№ РёР· РєРѕРЅСЃРѕР»Рё. РСЃРїРѕР»СЊР·СѓР№С‚Рµ %s, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РЅС‘Рј.
+commands.clan.playerinfo.notfound=РРіСЂРѕРє %s РЅРµ РЅР°Р№РґРµРЅ.
+commands.clan.playerinfo.name=РРјСЏ РёРіСЂРѕРєР°: %s
+commands.clan.playerinfo.clans=РљР»Р°РЅС‹:
+commands.clan.playerinfo.leader=Р›РёРґРµСЂ РєР»Р°РЅР° %s:
+commands.clan.playerinfo.admin=РђРґРјРёРЅ РєР»Р°РЅР° %s:
+commands.clan.playerinfo.member=РЈС‡Р°СЃС‚РЅРёРє РєР»Р°РЅР° %s:
+commands.clan.playerinfo.noclans=%s Р±РѕР»СЊС€Рµ РЅРµ РЅР°С…РѕРґРёС‚СЃСЏ РІ РєР»Р°РЅР°С….
 
 commands.clan.setbanner.usage=/clan setbanner [banner]
-commands.clan.setbanner.description=Установите баннер своего клана на тот, который вы держите, или введите NBT баннера.
-commands.clan.setbanner.invalid=Указанный баннер не подходит.
-commands.clan.setbanner.taken=Указанный баннер уже занят.
-commands.clan.setbanner.success=Баннер для %s установлен.
-commands.clan.setbanner.notheld=Вы не лержите баннер.
+commands.clan.setbanner.description=РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р±Р°РЅРЅРµСЂ СЃРІРѕРµРіРѕ РєР»Р°РЅР° РЅР° С‚РѕС‚, РєРѕС‚РѕСЂС‹Р№ РІС‹ РґРµСЂР¶РёС‚Рµ, РёР»Рё РІРІРµРґРёС‚Рµ NBT Р±Р°РЅРЅРµСЂР°.
+commands.clan.setbanner.invalid=РЈРєР°Р·Р°РЅРЅС‹Р№ Р±Р°РЅРЅРµСЂ РЅРµ РїРѕРґС…РѕРґРёС‚.
+commands.clan.setbanner.taken=РЈРєР°Р·Р°РЅРЅС‹Р№ Р±Р°РЅРЅРµСЂ СѓР¶Рµ Р·Р°РЅСЏС‚.
+commands.clan.setbanner.success=Р‘Р°РЅРЅРµСЂ РґР»СЏ %s СѓСЃС‚Р°РЅРѕРІР»РµРЅ.
+commands.clan.setbanner.notheld=Р’С‹ РЅРµ Р»РµСЂР¶РёС‚Рµ Р±Р°РЅРЅРµСЂ.
 
 commands.clan.setcolor.usage=/clan setcolor <color>
-commands.clan.setcolor.description=Задайте цвет клана для чата клана, fancymap, Dynmap и т. Д. Поддерживаются основные имена цветов, шестнадцатеричные цвета (0x ######) и RGB Ints
-commands.clan.setcolor.success=%s цвет установлен.
-commands.clan.setcolor.invalid=Цвет %s не корректен.
+commands.clan.setcolor.description=Р—Р°РґР°Р№С‚Рµ С†РІРµС‚ РєР»Р°РЅР° РґР»СЏ С‡Р°С‚Р° РєР»Р°РЅР°, fancymap, Dynmap Рё С‚. Р”. РџРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ РѕСЃРЅРѕРІРЅС‹Рµ РёРјРµРЅР° С†РІРµС‚РѕРІ, С€РµСЃС‚РЅР°РґС†Р°С‚РµСЂРёС‡РЅС‹Рµ С†РІРµС‚Р° (0x ######) Рё RGB Ints
+commands.clan.setcolor.success=%s С†РІРµС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅ.
+commands.clan.setcolor.invalid=Р¦РІРµС‚ %s РЅРµ РєРѕСЂСЂРµРєС‚РµРЅ.
 
 commands.clan.setdefault.usage=/clan setdefault <clan>
-commands.clan.setdefault.description=Установить клан по умолчанию для команд /clan [clanname] <subcommand> [args...].
-commands.clan.setdefault.success=Клан по умолчанию установлен как %s.
+commands.clan.setdefault.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РєР»Р°РЅ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РєРѕРјР°РЅРґ /clan [clanname] <subcommand> [args...].
+commands.clan.setdefault.success=РљР»Р°РЅ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РєР°Рє %s.
 
 commands.clan.setdescription.usage=/clan setdescription <new description>
-commands.clan.setdescription.description=Установить описание клана.
-commands.clan.setdescription.success=Описание для клана %s установлено.
+commands.clan.setdescription.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РѕРїРёСЃР°РЅРёРµ РєР»Р°РЅР°.
+commands.clan.setdescription.success=РћРїРёСЃР°РЅРёРµ РґР»СЏ РєР»Р°РЅР° %s СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ.
 
 commands.clan.setname.usage=/clan setname <newname>
-commands.clan.setname.description=Установить имя вашего клана.
-commands.clan.setname.toolong=Это имя %s слишком длинное. Максимальное количество символов - %s.
-commands.clan.setname.taken=Имя клана %s установлено.
-commands.clan.setname.success=Вы переименовали %s в %s.
+commands.clan.setname.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РёРјСЏ РІР°С€РµРіРѕ РєР»Р°РЅР°.
+commands.clan.setname.toolong=Р­С‚Рѕ РёРјСЏ %s СЃР»РёС€РєРѕРј РґР»РёРЅРЅРѕРµ. РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ - %s.
+commands.clan.setname.taken=РРјСЏ РєР»Р°РЅР° %s СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ.
+commands.clan.setname.success=Р’С‹ РїРµСЂРµРёРјРµРЅРѕРІР°Р»Рё %s РІ %s.
 
 commands.clan.addfunds.usage=/clan addfunds <amount>
-commands.clan.addfunds.description=Переводит средства с аккаунта экономики (игрока) на аккаунт клана.
-commands.clan.addfunds.format=Неправильный формат суммы.
-commands.clan.addfunds.success=Вы положили %s в казну %s.
-commands.clan.addfunds.added=%s положил(а) %s в казну %s.
+commands.clan.addfunds.description=РџРµСЂРµРІРѕРґРёС‚ СЃСЂРµРґСЃС‚РІР° СЃ Р°РєРєР°СѓРЅС‚Р° СЌРєРѕРЅРѕРјРёРєРё (РёРіСЂРѕРєР°) РЅР° Р°РєРєР°СѓРЅС‚ РєР»Р°РЅР°.
+commands.clan.addfunds.format=РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ С„РѕСЂРјР°С‚ СЃСѓРјРјС‹.
+commands.clan.addfunds.success=Р’С‹ РїРѕР»РѕР¶РёР»Рё %s РІ РєР°Р·РЅСѓ %s.
+commands.clan.addfunds.added=%s РїРѕР»РѕР¶РёР»(Р°) %s РІ РєР°Р·РЅСѓ %s.
 
 commands.clan.balance.usage=/clan balance
-commands.clan.balance.description=Показать баланс клана.
-commands.clan.balance.balance=Баланс клана %s: %s.
+commands.clan.balance.description=РџРѕРєР°Р·Р°С‚СЊ Р±Р°Р»Р°РЅСЃ РєР»Р°РЅР°.
+commands.clan.balance.balance=Р‘Р°Р»Р°РЅСЃ РєР»Р°РЅР° %s: %s.
 
 commands.clan.setrent.usage=/clan setrent <amount>
-commands.clan.setrent.description=Установите, сколько арендной платы будут получать ваши члены клана.
-commands.clan.setrent.success=Клановая рента для %s установлена на %s.
-commands.clan.setrent.overmax=Нельзя установить ренту %s, максимальная планка (%s).
-commands.clan.setrent.negative=Нельзя установить отрицательную ренту.
-commands.clan.setrent.disabled=/clan setrent отключена на этом сервере.
+commands.clan.setrent.description=РЈСЃС‚Р°РЅРѕРІРёС‚Рµ, СЃРєРѕР»СЊРєРѕ Р°СЂРµРЅРґРЅРѕР№ РїР»Р°С‚С‹ Р±СѓРґСѓС‚ РїРѕР»СѓС‡Р°С‚СЊ РІР°С€Рё С‡Р»РµРЅС‹ РєР»Р°РЅР°.
+commands.clan.setrent.success=РљР»Р°РЅРѕРІР°СЏ СЂРµРЅС‚Р° РґР»СЏ %s СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РЅР° %s.
+commands.clan.setrent.overmax=РќРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЂРµРЅС‚Сѓ %s, РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ РїР»Р°РЅРєР° (%s).
+commands.clan.setrent.negative=РќРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅСѓСЋ СЂРµРЅС‚Сѓ.
+commands.clan.setrent.disabled=/clan setrent РѕС‚РєР»СЋС‡РµРЅР° РЅР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ.
 
 commands.clan.takefunds.usage=/clan takefunds <amount>
-commands.clan.takefunds.description=Забрать деньги со счёта клана.
-commands.clan.takefunds.disabled=/clan takefunds отключена на этом сервере.
-commands.clan.takefunds.success=Вы взяли %s с баланса %s.
-commands.clan.takefunds.taken=% взял %s с баланса %s.
+commands.clan.takefunds.description=Р—Р°Р±СЂР°С‚СЊ РґРµРЅСЊРіРё СЃРѕ СЃС‡С‘С‚Р° РєР»Р°РЅР°.
+commands.clan.takefunds.disabled=/clan takefunds РѕС‚РєР»СЋС‡РµРЅР° РЅР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ.
+commands.clan.takefunds.success=Р’С‹ РІР·СЏР»Рё %s СЃ Р±Р°Р»Р°РЅСЃР° %s.
+commands.clan.takefunds.taken=% РІР·СЏР» %s СЃ Р±Р°Р»Р°РЅСЃР° %s.
 
 commands.clan.abandonclaim.usage=/clan abandonclaim
-commands.clan.abandonclaim.description=Отказаться от притязаний на землю, на которйо вы стоите.
-commands.clan.abandonclaim.success=%s отказался от притязаний на эту землю.
-commands.clan.abandonclaim.wrongclan=Эта зелмя не принадлежит %s.
-commands.clan.abandonclaim.notclaimed=На эту землю у кланов нет притязаний.
-commands.clan.abandonclaim.disconnected=Вы не можете отказаться от притязаний на этот чанк, потому что это создаст разрыв в привате.
+commands.clan.abandonclaim.description=РћС‚РєР°Р·Р°С‚СЊСЃСЏ РѕС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ РЅР° Р·РµРјР»СЋ, РЅР° РєРѕС‚РѕСЂР№Рѕ РІС‹ СЃС‚РѕРёС‚Рµ.
+commands.clan.abandonclaim.success=%s РѕС‚РєР°Р·Р°Р»СЃСЏ РѕС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ РЅР° СЌС‚Сѓ Р·РµРјР»СЋ.
+commands.clan.abandonclaim.wrongclan=Р­С‚Р° Р·РµР»РјСЏ РЅРµ РїСЂРёРЅР°РґР»РµР¶РёС‚ %s.
+commands.clan.abandonclaim.notclaimed=РќР° СЌС‚Сѓ Р·РµРјР»СЋ Сѓ РєР»Р°РЅРѕРІ РЅРµС‚ РїСЂРёС‚СЏР·Р°РЅРёР№.
+commands.clan.abandonclaim.disconnected=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РѕС‚РєР°Р·Р°С‚СЊСЃСЏ РѕС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ РЅР° СЌС‚РѕС‚ С‡Р°РЅРє, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЌС‚Рѕ СЃРѕР·РґР°СЃС‚ СЂР°Р·СЂС‹РІ РІ РїСЂРёРІР°С‚Рµ.
 
 commands.clan.abandonall.usage=/clan abandonall
-commands.clan.abandonall.description=Отказ от всех земель клана.
+commands.clan.abandonall.description=РћС‚РєР°Р· РѕС‚ РІСЃРµС… Р·РµРјРµР»СЊ РєР»Р°РЅР°.
 
 commands.clan.claim.usage=/clan claim [radius]
-commands.clan.claim.description=Оформить притязание (приват) чанка, на котором вы стоите. По умолчанию - один чанк.
-commands.clan.claim.taken=%s уже оформил претензии на этот чанк.
-commands.clan.claim.taken_other=Другой клан (%s) уже забрал эту территорию.
-commands.clan.claim.taken_other_r=Другой клан (%s) уже забрал территорию в радиусе, который вы выделили.
-commands.clan.claim.proximity_error=Вы не можете претендовать на этот кусок земли, потому что он находится слишком близко к дому другого клана. Убедитесь, что вы находитесь на расстоянии не менее %s блоков от домов других кланов, прежде чем пытаться снова. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
-commands.clan.claim.proximity_error_r=Вы не можете претендовать на эту землю, потому что были бы слишком близко к дому другого клана. Убедитесь, что вся земля в радиусе не менее %s блоков от домов других кланов, прежде чем пытаться снова. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
-commands.clan.claim.proximity_warning=Рекомендуется не требовать этот кусок земли, потому что он находится в пределах %s блоков от дома другого клана. Напечатайте /сlan claim снова, чтобы оформить притязания. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
-commands.clan.claim.proximity_warning_r=Рекомендуется не претендовать на эту землю, потому что она будет находиться в пределах %s блоков от дома другого клана. Напечатайте /clan claim снова, чтобы оформить притязания. Попробуйте использовать /clan fancymap, чтобы определить, где находятся другие кланы.
-commands.clan.claim.maxed=%s уже превышает максимальное число притязаний %s.
-commands.clan.claim.maxed_r=Захват %s чанков превисит число %s выше максимального количества %s. В настоящее время захвачено %s чанков.
-commands.clan.claim.disconnected=Вы не можете оформить права на этот участок, так как он не связан с другими чанками клана %s.
-commands.clan.claim.disconnected_r=Вы не можете заявить права на эти чанки, так как они не связаны с остальной землёй клана %s.
-commands.clan.claim.success=Клан %s оформил права на эту землю.
-commands.clan.claim.insufficient_funds=На счету %s недостаточно средств для запроса чанка. Это будет стоить %s.
-commands.clan.claim.insufficient_funds_r=Недостаточно средств на счету %s, чтобы требовать чанки %s. Это будет стоить %s.
-commands.clan.claim.start_r=Начинаем зазхват в указанном радиусе. Пожалуйста, подождите.
+commands.clan.claim.description=РћС„РѕСЂРјРёС‚СЊ РїСЂРёС‚СЏР·Р°РЅРёРµ (РїСЂРёРІР°С‚) С‡Р°РЅРєР°, РЅР° РєРѕС‚РѕСЂРѕРј РІС‹ СЃС‚РѕРёС‚Рµ. РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ - РѕРґРёРЅ С‡Р°РЅРє.
+commands.clan.claim.taken=%s СѓР¶Рµ РѕС„РѕСЂРјРёР» РїСЂРµС‚РµРЅР·РёРё РЅР° СЌС‚РѕС‚ С‡Р°РЅРє.
+commands.clan.claim.taken_other=Р”СЂСѓРіРѕР№ РєР»Р°РЅ (%s) СѓР¶Рµ Р·Р°Р±СЂР°Р» СЌС‚Сѓ С‚РµСЂСЂРёС‚РѕСЂРёСЋ.
+commands.clan.claim.taken_other_r=Р”СЂСѓРіРѕР№ РєР»Р°РЅ (%s) СѓР¶Рµ Р·Р°Р±СЂР°Р» С‚РµСЂСЂРёС‚РѕСЂРёСЋ РІ СЂР°РґРёСѓСЃРµ, РєРѕС‚РѕСЂС‹Р№ РІС‹ РІС‹РґРµР»РёР»Рё.
+commands.clan.claim.proximity_error=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРµС‚РµРЅРґРѕРІР°С‚СЊ РЅР° СЌС‚РѕС‚ РєСѓСЃРѕРє Р·РµРјР»Рё, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕРЅ РЅР°С…РѕРґРёС‚СЃСЏ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґРѕРјСѓ РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°. РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ РІС‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РЅР° СЂР°СЃСЃС‚РѕСЏРЅРёРё РЅРµ РјРµРЅРµРµ %s Р±Р»РѕРєРѕРІ РѕС‚ РґРѕРјРѕРІ РґСЂСѓРіРёС… РєР»Р°РЅРѕРІ, РїСЂРµР¶РґРµ С‡РµРј РїС‹С‚Р°С‚СЊСЃСЏ СЃРЅРѕРІР°. РџРѕРїСЂРѕР±СѓР№С‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ /clan fancymap, С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ, РіРґРµ РЅР°С…РѕРґСЏС‚СЃСЏ РґСЂСѓРіРёРµ РєР»Р°РЅС‹.
+commands.clan.claim.proximity_error_r=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРµС‚РµРЅРґРѕРІР°С‚СЊ РЅР° СЌС‚Сѓ Р·РµРјР»СЋ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ Р±С‹Р»Рё Р±С‹ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґРѕРјСѓ РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°. РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ РІСЃСЏ Р·РµРјР»СЏ РІ СЂР°РґРёСѓСЃРµ РЅРµ РјРµРЅРµРµ %s Р±Р»РѕРєРѕРІ РѕС‚ РґРѕРјРѕРІ РґСЂСѓРіРёС… РєР»Р°РЅРѕРІ, РїСЂРµР¶РґРµ С‡РµРј РїС‹С‚Р°С‚СЊСЃСЏ СЃРЅРѕРІР°. РџРѕРїСЂРѕР±СѓР№С‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ /clan fancymap, С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ, РіРґРµ РЅР°С…РѕРґСЏС‚СЃСЏ РґСЂСѓРіРёРµ РєР»Р°РЅС‹.
+commands.clan.claim.proximity_warning=Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РЅРµ С‚СЂРµР±РѕРІР°С‚СЊ СЌС‚РѕС‚ РєСѓСЃРѕРє Р·РµРјР»Рё, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕРЅ РЅР°С…РѕРґРёС‚СЃСЏ РІ РїСЂРµРґРµР»Р°С… %s Р±Р»РѕРєРѕРІ РѕС‚ РґРѕРјР° РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°. РќР°РїРµС‡Р°С‚Р°Р№С‚Рµ /СЃlan claim СЃРЅРѕРІР°, С‡С‚РѕР±С‹ РѕС„РѕСЂРјРёС‚СЊ РїСЂРёС‚СЏР·Р°РЅРёСЏ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ /clan fancymap, С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ, РіРґРµ РЅР°С…РѕРґСЏС‚СЃСЏ РґСЂСѓРіРёРµ РєР»Р°РЅС‹.
+commands.clan.claim.proximity_warning_r=Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РЅРµ РїСЂРµС‚РµРЅРґРѕРІР°С‚СЊ РЅР° СЌС‚Сѓ Р·РµРјР»СЋ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РЅР°С…РѕРґРёС‚СЊСЃСЏ РІ РїСЂРµРґРµР»Р°С… %s Р±Р»РѕРєРѕРІ РѕС‚ РґРѕРјР° РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°. РќР°РїРµС‡Р°С‚Р°Р№С‚Рµ /clan claim СЃРЅРѕРІР°, С‡С‚РѕР±С‹ РѕС„РѕСЂРјРёС‚СЊ РїСЂРёС‚СЏР·Р°РЅРёСЏ. РџРѕРїСЂРѕР±СѓР№С‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ /clan fancymap, С‡С‚РѕР±С‹ РѕРїСЂРµРґРµР»РёС‚СЊ, РіРґРµ РЅР°С…РѕРґСЏС‚СЃСЏ РґСЂСѓРіРёРµ РєР»Р°РЅС‹.
+commands.clan.claim.maxed=%s СѓР¶Рµ РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ С‡РёСЃР»Рѕ РїСЂРёС‚СЏР·Р°РЅРёР№ %s.
+commands.clan.claim.maxed_r=Р—Р°С…РІР°С‚ %s С‡Р°РЅРєРѕРІ РїСЂРµРІРёСЃРёС‚ С‡РёСЃР»Рѕ %s РІС‹С€Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° %s. Р’ РЅР°СЃС‚РѕСЏС‰РµРµ РІСЂРµРјСЏ Р·Р°С…РІР°С‡РµРЅРѕ %s С‡Р°РЅРєРѕРІ.
+commands.clan.claim.disconnected=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РѕС„РѕСЂРјРёС‚СЊ РїСЂР°РІР° РЅР° СЌС‚РѕС‚ СѓС‡Р°СЃС‚РѕРє, С‚Р°Рє РєР°Рє РѕРЅ РЅРµ СЃРІСЏР·Р°РЅ СЃ РґСЂСѓРіРёРјРё С‡Р°РЅРєР°РјРё РєР»Р°РЅР° %s.
+commands.clan.claim.disconnected_r=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°СЏРІРёС‚СЊ РїСЂР°РІР° РЅР° СЌС‚Рё С‡Р°РЅРєРё, С‚Р°Рє РєР°Рє РѕРЅРё РЅРµ СЃРІСЏР·Р°РЅС‹ СЃ РѕСЃС‚Р°Р»СЊРЅРѕР№ Р·РµРјР»С‘Р№ РєР»Р°РЅР° %s.
+commands.clan.claim.success=РљР»Р°РЅ %s РѕС„РѕСЂРјРёР» РїСЂР°РІР° РЅР° СЌС‚Сѓ Р·РµРјР»СЋ.
+commands.clan.claim.insufficient_funds=РќР° СЃС‡РµС‚Сѓ %s РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ РґР»СЏ Р·Р°РїСЂРѕСЃР° С‡Р°РЅРєР°. Р­С‚Рѕ Р±СѓРґРµС‚ СЃС‚РѕРёС‚СЊ %s.
+commands.clan.claim.insufficient_funds_r=РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ РЅР° СЃС‡РµС‚Сѓ %s, С‡С‚РѕР±С‹ С‚СЂРµР±РѕРІР°С‚СЊ С‡Р°РЅРєРё %s. Р­С‚Рѕ Р±СѓРґРµС‚ СЃС‚РѕРёС‚СЊ %s.
+commands.clan.claim.start_r=РќР°С‡РёРЅР°РµРј Р·Р°Р·С…РІР°С‚ РІ СѓРєР°Р·Р°РЅРЅРѕРј СЂР°РґРёСѓСЃРµ. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ.
 
 commands.clan.autoabandon.usage=/clan autoabandon
-commands.clan.autoabandon.description=Автоматический отказ от территориальных притязаний клана, в которые заходит игрок (авторасприват).
-commands.clan.autoabandon.start=Вы автоматически отказываетесь от чанков, в которые заходите %s.
-commands.clan.autoabandon.stop=Вы больше не отказываетесь от притязаний клана %s.
+commands.clan.autoabandon.description=РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РѕС‚РєР°Р· РѕС‚ С‚РµСЂСЂРёС‚РѕСЂРёР°Р»СЊРЅС‹С… РїСЂРёС‚СЏР·Р°РЅРёР№ РєР»Р°РЅР°, РІ РєРѕС‚РѕСЂС‹Рµ Р·Р°С…РѕРґРёС‚ РёРіСЂРѕРє (Р°РІС‚РѕСЂР°СЃРїСЂРёРІР°С‚).
+commands.clan.autoabandon.start=Р’С‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РєР°Р·С‹РІР°РµС‚РµСЃСЊ РѕС‚ С‡Р°РЅРєРѕРІ, РІ РєРѕС‚РѕСЂС‹Рµ Р·Р°С…РѕРґРёС‚Рµ %s.
+commands.clan.autoabandon.stop=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РѕС‚РєР°Р·С‹РІР°РµС‚РµСЃСЊ РѕС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ РєР»Р°РЅР° %s.
 
 commands.clan.autoclaim.usage=/clan autoclaim
-commands.clan.autoclaim.description=Автоматический захват земли (кланом), по которой вы идёте.
-commands.clan.autoclaim.start=Вы оформляете автоматические притязания для %s.
-commands.clan.autoclaim.stop=Вы больше не оформляете автоматические притязания для %s.
+commands.clan.autoclaim.description=РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ Р·Р°С…РІР°С‚ Р·РµРјР»Рё (РєР»Р°РЅРѕРј), РїРѕ РєРѕС‚РѕСЂРѕР№ РІС‹ РёРґС‘С‚Рµ.
+commands.clan.autoclaim.start=Р’С‹ РѕС„РѕСЂРјР»СЏРµС‚Рµ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёРµ РїСЂРёС‚СЏР·Р°РЅРёСЏ РґР»СЏ %s.
+commands.clan.autoclaim.stop=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РѕС„РѕСЂРјР»СЏРµС‚Рµ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёРµ РїСЂРёС‚СЏР·Р°РЅРёСЏ РґР»СЏ %s.
 
 commands.clan.fancymap.usage=/clan fancymap
-commands.clan.fancymap.description=Просмотр большой карты претензий, закодированных цветами клана.
+commands.clan.fancymap.description=РџСЂРѕСЃРјРѕС‚СЂ Р±РѕР»СЊС€РѕР№ РєР°СЂС‚С‹ РїСЂРµС‚РµРЅР·РёР№, Р·Р°РєРѕРґРёСЂРѕРІР°РЅРЅС‹С… С†РІРµС‚Р°РјРё РєР»Р°РЅР°.
 
 commands.clan.map.usage=/clan map
-commands.clan.map.description=Просматривайте небольшую карту клановых притязаний, обозначенную цветом ваших кланов.
+commands.clan.map.description=РџСЂРѕСЃРјР°С‚СЂРёРІР°Р№С‚Рµ РЅРµР±РѕР»СЊС€СѓСЋ РєР°СЂС‚Сѓ РєР»Р°РЅРѕРІС‹С… РїСЂРёС‚СЏР·Р°РЅРёР№, РѕР±РѕР·РЅР°С‡РµРЅРЅСѓСЋ С†РІРµС‚РѕРј РІР°С€РёС… РєР»Р°РЅРѕРІ.
 
 commands.clan.seechunk.usage=/clan seechunk [on|off]
-commands.clan.seechunk.description=Показать края чанка, в котором вы сейчас находитесь.
+commands.clan.seechunk.description=РџРѕРєР°Р·Р°С‚СЊ РєСЂР°СЏ С‡Р°РЅРєР°, РІ РєРѕС‚РѕСЂРѕРј РІС‹ СЃРµР№С‡Р°СЃ РЅР°С…РѕРґРёС‚РµСЃСЊ.
 
 commands.clan.accept.usage=/clan accept <clan>
-commands.clan.accept.description=Отправить приглашение в клан.
-commands.clan.accept.success=Вы присоединилсь к %s.
-commands.clan.accept.accepted=%s присоединился к %s.
-commands.clan.accept.not_invited=Вы не были приглашены присоединиться %s.
+commands.clan.accept.description=РћС‚РїСЂР°РІРёС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ РІ РєР»Р°РЅ.
+commands.clan.accept.success=Р’С‹ РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЊ Рє %s.
+commands.clan.accept.accepted=%s РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ Рє %s.
+commands.clan.accept.not_invited=Р’С‹ РЅРµ Р±С‹Р»Рё РїСЂРёРіР»Р°С€РµРЅС‹ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ %s.
 
 commands.clan.decline.usage=/clan decline <clan> [block]
-commands.clan.decline.description=Отклонить приглашение клана.
-commands.clan.decline.success=Вы отклонили приглашение %s.
-commands.clan.decline.declined=%s отклонил приглашение присоединится к %s.
+commands.clan.decline.description=РћС‚РєР»РѕРЅРёС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёРµ РєР»Р°РЅР°.
+commands.clan.decline.success=Р’С‹ РѕС‚РєР»РѕРЅРёР»Рё РїСЂРёРіР»Р°С€РµРЅРёРµ %s.
+commands.clan.decline.declined=%s РѕС‚РєР»РѕРЅРёР» РїСЂРёРіР»Р°С€РµРЅРёРµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЃСЏ Рє %s.
 
 commands.clan.autodecline.usage=/clan autodecline [clan]
-commands.clan.autodecline.description=Автоматически отклонять приглашения от любого клана или клана, который вы укажете.
-commands.clan.autodecline.on=Теперь вы автоматически отклоняете все приглашения.
-commands.clan.autodecline.on_clan=Теперь вы автоматически отклоняете приглашения от %s.
-commands.clan.autodecline.off=Вы больше не отклоняете все приглашения автоматически.
-commands.clan.autodecline.off_clan=Вы больше не отклоняете приглашения от %s автоматически.
+commands.clan.autodecline.description=РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РєР»РѕРЅСЏС‚СЊ РїСЂРёРіР»Р°С€РµРЅРёСЏ РѕС‚ Р»СЋР±РѕРіРѕ РєР»Р°РЅР° РёР»Рё РєР»Р°РЅР°, РєРѕС‚РѕСЂС‹Р№ РІС‹ СѓРєР°Р¶РµС‚Рµ.
+commands.clan.autodecline.on=РўРµРїРµСЂСЊ РІС‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РєР»РѕРЅСЏРµС‚Рµ РІСЃРµ РїСЂРёРіР»Р°С€РµРЅРёСЏ.
+commands.clan.autodecline.on_clan=РўРµРїРµСЂСЊ РІС‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РєР»РѕРЅСЏРµС‚Рµ РїСЂРёРіР»Р°С€РµРЅРёСЏ РѕС‚ %s.
+commands.clan.autodecline.off=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РѕС‚РєР»РѕРЅСЏРµС‚Рµ РІСЃРµ РїСЂРёРіР»Р°С€РµРЅРёСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.
+commands.clan.autodecline.off_clan=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РѕС‚РєР»РѕРЅСЏРµС‚Рµ РїСЂРёРіР»Р°С€РµРЅРёСЏ РѕС‚ %s Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.
 
 commands.clan.demote.usage=/clan demote <player>
-commands.clan.demote.description=Понизить игрока в клане. Понижает лидера до админа, а админа до рядового.
-commands.clan.demote.success=Вы понизили %s с %s до %s.
-commands.clan.demote.demoted=Игрок понижен %s с %s до %s.
-commands.clan.demote.error=Игрок %s не может быть понижен.
+commands.clan.demote.description=РџРѕРЅРёР·РёС‚СЊ РёРіСЂРѕРєР° РІ РєР»Р°РЅРµ. РџРѕРЅРёР¶Р°РµС‚ Р»РёРґРµСЂР° РґРѕ Р°РґРјРёРЅР°, Р° Р°РґРјРёРЅР° РґРѕ СЂСЏРґРѕРІРѕРіРѕ.
+commands.clan.demote.success=Р’С‹ РїРѕРЅРёР·РёР»Рё %s СЃ %s РґРѕ %s.
+commands.clan.demote.demoted=РРіСЂРѕРє РїРѕРЅРёР¶РµРЅ %s СЃ %s РґРѕ %s.
+commands.clan.demote.error=РРіСЂРѕРє %s РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРѕРЅРёР¶РµРЅ.
 
 commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[page]
-commands.clan.invite.description=Пригласите игрока в свой клан, отмените приглашение для игрока или выведите всех игроков, которых пригласил ваш клан.
-commands.clan.invite.success=Вы пригласили %s в клан %s.
-commands.clan.invite.invited=Вы приглашены в клан %1$s. Чтобы присоединиться, %1$s, введите /clan accept <клан>. Чтобы отклонить введите /clan decline <клан>
-commands.clan.invite.pending=Игрок %s уже приглашён присоединится к клану %s.
-commands.clan.invite.already_in_this=Игрок %s уже в клане %s.
-commands.clan.invite.already_in_any=Игрок %s уже в клане.
-commands.clan.invite.blocking=Игрок %s не принял приглашение от %s.
-commands.clan.invite.blocking_all=Игрок %s не принимает приглашения.
-commands.clan.invite.revoked=Клан %s отозвал приглашение присоединения.
-commands.clan.invite.revoke_success=Вы отозвали приглашение для %s присоединится к %s.
+commands.clan.invite.description=РџСЂРёРіР»Р°СЃРёС‚Рµ РёРіСЂРѕРєР° РІ СЃРІРѕР№ РєР»Р°РЅ, РѕС‚РјРµРЅРёС‚Рµ РїСЂРёРіР»Р°С€РµРЅРёРµ РґР»СЏ РёРіСЂРѕРєР° РёР»Рё РІС‹РІРµРґРёС‚Рµ РІСЃРµС… РёРіСЂРѕРєРѕРІ, РєРѕС‚РѕСЂС‹С… РїСЂРёРіР»Р°СЃРёР» РІР°С€ РєР»Р°РЅ.
+commands.clan.invite.success=Р’С‹ РїСЂРёРіР»Р°СЃРёР»Рё %s РІ РєР»Р°РЅ %s.
+commands.clan.invite.invited=Р’С‹ РїСЂРёРіР»Р°С€РµРЅС‹ РІ РєР»Р°РЅ %1$s. Р§С‚РѕР±С‹ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ, %1$s, РІРІРµРґРёС‚Рµ /clan accept <РєР»Р°РЅ>. Р§С‚РѕР±С‹ РѕС‚РєР»РѕРЅРёС‚СЊ РІРІРµРґРёС‚Рµ /clan decline <РєР»Р°РЅ>
+commands.clan.invite.pending=РРіСЂРѕРє %s СѓР¶Рµ РїСЂРёРіР»Р°С€С‘РЅ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЃСЏ Рє РєР»Р°РЅСѓ %s.
+commands.clan.invite.already_in_this=РРіСЂРѕРє %s СѓР¶Рµ РІ РєР»Р°РЅРµ %s.
+commands.clan.invite.already_in_any=РРіСЂРѕРє %s СѓР¶Рµ РІ РєР»Р°РЅРµ.
+commands.clan.invite.blocking=РРіСЂРѕРє %s РЅРµ РїСЂРёРЅСЏР» РїСЂРёРіР»Р°С€РµРЅРёРµ РѕС‚ %s.
+commands.clan.invite.blocking_all=РРіСЂРѕРє %s РЅРµ РїСЂРёРЅРёРјР°РµС‚ РїСЂРёРіР»Р°С€РµРЅРёСЏ.
+commands.clan.invite.revoked=РљР»Р°РЅ %s РѕС‚РѕР·РІР°Р» РїСЂРёРіР»Р°С€РµРЅРёРµ РїСЂРёСЃРѕРµРґРёРЅРµРЅРёСЏ.
+commands.clan.invite.revoke_success=Р’С‹ РѕС‚РѕР·РІР°Р»Рё РїСЂРёРіР»Р°С€РµРЅРёРµ РґР»СЏ %s РїСЂРёСЃРѕРµРґРёРЅРёС‚СЃСЏ Рє %s.
 
 commands.clan.kick.usage=/clan kick <player>
-commands.clan.kick.description=Исключить игрока.
-commands.clan.kick.leave=Чтобы выйти из клана, используйте /clan leave.
-commands.clan.kick.authority=Вы не имеете прав выгонять %s.
-commands.clan.kick.success=Вы выгнали %s из %s.
-commands.clan.kick.kicked=Вы исключены из %s игроком %s.
-commands.clan.kick.kicked_other=%s исключен из %s игроком %s.
-commands.clan.kick.fail=Игрок %s не может быть исключён из %s. Если %1$s - единственный лидер %2$s, другой лидер должен быть установлен до исключения игрока %1$s.
+commands.clan.kick.description=РСЃРєР»СЋС‡РёС‚СЊ РёРіСЂРѕРєР°.
+commands.clan.kick.leave=Р§С‚РѕР±С‹ РІС‹Р№С‚Рё РёР· РєР»Р°РЅР°, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ /clan leave.
+commands.clan.kick.authority=Р’С‹ РЅРµ РёРјРµРµС‚Рµ РїСЂР°РІ РІС‹РіРѕРЅСЏС‚СЊ %s.
+commands.clan.kick.success=Р’С‹ РІС‹РіРЅР°Р»Рё %s РёР· %s.
+commands.clan.kick.kicked=Р’С‹ РёСЃРєР»СЋС‡РµРЅС‹ РёР· %s РёРіСЂРѕРєРѕРј %s.
+commands.clan.kick.kicked_other=%s РёСЃРєР»СЋС‡РµРЅ РёР· %s РёРіСЂРѕРєРѕРј %s.
+commands.clan.kick.fail=РРіСЂРѕРє %s РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РёСЃРєР»СЋС‡С‘РЅ РёР· %s. Р•СЃР»Рё %1$s - РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ Р»РёРґРµСЂ %2$s, РґСЂСѓРіРѕР№ Р»РёРґРµСЂ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РґРѕ РёСЃРєР»СЋС‡РµРЅРёСЏ РёРіСЂРѕРєР° %1$s.
 
 commands.clan.leave.usage=/clan leave
-commands.clan.leave.description=Покинуть клан.
-commands.clan.leave.disband=Вы не можете выйти из %s. Используйте /clan disband.
-commands.clan.leave.promote=Вы не можете выйти из %s без лидера. Повысьте кого-либо до лидера.
-commands.clan.leave.success=Вы вышли из %s.
-commands.clan.leave.left=%s вышел из %s.
-commands.clan.leave.error=Вам не удалось удалиться из%s. Владельцы серверов, сообщите об ошибке.
+commands.clan.leave.description=РџРѕРєРёРЅСѓС‚СЊ РєР»Р°РЅ.
+commands.clan.leave.disband=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РІС‹Р№С‚Рё РёР· %s. РСЃРїРѕР»СЊР·СѓР№С‚Рµ /clan disband.
+commands.clan.leave.promote=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РІС‹Р№С‚Рё РёР· %s Р±РµР· Р»РёРґРµСЂР°. РџРѕРІС‹СЃСЊС‚Рµ РєРѕРіРѕ-Р»РёР±Рѕ РґРѕ Р»РёРґРµСЂР°.
+commands.clan.leave.success=Р’С‹ РІС‹С€Р»Рё РёР· %s.
+commands.clan.leave.left=%s РІС‹С€РµР» РёР· %s.
+commands.clan.leave.error=Р’Р°Рј РЅРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊСЃСЏ РёР·%s. Р’Р»Р°РґРµР»СЊС†С‹ СЃРµСЂРІРµСЂРѕРІ, СЃРѕРѕР±С‰РёС‚Рµ РѕР± РѕС€РёР±РєРµ.
 
 commands.clan.promote.usage=/clan promote <player>
-commands.clan.promote.description=Повысить игрока от рядового до админа или от админа до лидера.
-commands.clan.promote.success=Вы повысили %s до %s в %s.
-commands.clan.promote.notify=%s повысил %s до %s в %s.
-commands.clan.promote.promoted=Повышен %s до %s в %s.
-commands.clan.promote.error=Игрок %s не может быть повышен.
+commands.clan.promote.description=РџРѕРІС‹СЃРёС‚СЊ РёРіСЂРѕРєР° РѕС‚ СЂСЏРґРѕРІРѕРіРѕ РґРѕ Р°РґРјРёРЅР° РёР»Рё РѕС‚ Р°РґРјРёРЅР° РґРѕ Р»РёРґРµСЂР°.
+commands.clan.promote.success=Р’С‹ РїРѕРІС‹СЃРёР»Рё %s РґРѕ %s РІ %s.
+commands.clan.promote.notify=%s РїРѕРІС‹СЃРёР» %s РґРѕ %s РІ %s.
+commands.clan.promote.promoted=РџРѕРІС‹С€РµРЅ %s РґРѕ %s РІ %s.
+commands.clan.promote.error=РРіСЂРѕРє %s РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїРѕРІС‹С€РµРЅ.
 
 commands.clan.home.usage=/clan home
-commands.clan.home.description=Телепорт на клановый дом.
-commands.clan.home.nohome=%s не имеет дома. Лидер должен использовать /clan sethome, чтобы установить его.
-commands.clan.home.warmup=Готовимся телепортировать вас на %s дом клана. Не двигвайтесь и не получайте урон %s секунд.
+commands.clan.home.description=РўРµР»РµРїРѕСЂС‚ РЅР° РєР»Р°РЅРѕРІС‹Р№ РґРѕРј.
+commands.clan.home.nohome=%s РЅРµ РёРјРµРµС‚ РґРѕРјР°. Р›РёРґРµСЂ РґРѕР»Р¶РµРЅ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ /clan sethome, С‡С‚РѕР±С‹ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РµРіРѕ.
+commands.clan.home.warmup=Р“РѕС‚РѕРІРёРјСЃСЏ С‚РµР»РµРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РІР°СЃ РЅР° %s РґРѕРј РєР»Р°РЅР°. РќРµ РґРІРёРіРІР°Р№С‚РµСЃСЊ Рё РЅРµ РїРѕР»СѓС‡Р°Р№С‚Рµ СѓСЂРѕРЅ %s СЃРµРєСѓРЅРґ.
 commands.clan.home.cancelled=Your clan home teleport was cancelled.
-commands.clan.home.cooldown=Вы не можете использовать эту команду, пока ваше время восстановления не истечет через %s секунд.
-commands.clan.home.blocked=Ошибка телепортации домой. Убедитесь, что клановый дом не заблокирован.
-commands.clan.home.return_dim=Ошибка телепортации в измерение.
-commands.clan.home.dim_error=Ошибка телепортации в измерение кланового дома.
-commands.clan.home.disabled=/clan home отключен на сервере.
+commands.clan.home.cooldown=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ, РїРѕРєР° РІР°С€Рµ РІСЂРµРјСЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РЅРµ РёСЃС‚РµС‡РµС‚ С‡РµСЂРµР· %s СЃРµРєСѓРЅРґ.
+commands.clan.home.blocked=РћС€РёР±РєР° С‚РµР»РµРїРѕСЂС‚Р°С†РёРё РґРѕРјРѕР№. РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ РєР»Р°РЅРѕРІС‹Р№ РґРѕРј РЅРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ.
+commands.clan.home.return_dim=РћС€РёР±РєР° С‚РµР»РµРїРѕСЂС‚Р°С†РёРё РІ РёР·РјРµСЂРµРЅРёРµ.
+commands.clan.home.dim_error=РћС€РёР±РєР° С‚РµР»РµРїРѕСЂС‚Р°С†РёРё РІ РёР·РјРµСЂРµРЅРёРµ РєР»Р°РЅРѕРІРѕРіРѕ РґРѕРјР°.
+commands.clan.home.disabled=/clan home РѕС‚РєР»СЋС‡РµРЅ РЅР° СЃРµСЂРІРµСЂРµ.
 
 commands.clan.sethome.usage=/clan sethome
-commands.clan.sethome.description=Устанавливает дом клана.
-commands.clan.sethome.proximity=Вы слишком близко к дому другого клана. Вы должны быть на расстоянии не менее %s от домов других кланов, чтобы установить свой. Используйте /clan fancymap, чтобы увидеть, где находятся близкие кланы.
-commands.clan.sethome.success=%s дом установлен.
-commands.clan.sethome.territory=Клановый дом может быть установлен только на земле клана.
+commands.clan.sethome.description=РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РґРѕРј РєР»Р°РЅР°.
+commands.clan.sethome.proximity=Р’С‹ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґРѕРјСѓ РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°. Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РЅР° СЂР°СЃСЃС‚РѕСЏРЅРёРё РЅРµ РјРµРЅРµРµ %s РѕС‚ РґРѕРјРѕРІ РґСЂСѓРіРёС… РєР»Р°РЅРѕРІ, С‡С‚РѕР±С‹ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРІРѕР№. РСЃРїРѕР»СЊР·СѓР№С‚Рµ /clan fancymap, С‡С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ, РіРґРµ РЅР°С…РѕРґСЏС‚СЃСЏ Р±Р»РёР·РєРёРµ РєР»Р°РЅС‹.
+commands.clan.sethome.success=%s РґРѕРј СѓСЃС‚Р°РЅРѕРІР»РµРЅ.
+commands.clan.sethome.territory=РљР»Р°РЅРѕРІС‹Р№ РґРѕРј РјРѕР¶РµС‚ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅ С‚РѕР»СЊРєРѕ РЅР° Р·РµРјР»Рµ РєР»Р°РЅР°.
 
 commands.clan.unsethome.usage=/clan unsethome
-commands.clan.unsethome.description=Удаляет клановый дом.
-commands.clan.unsethome.success=%s клановый дом удалён.
-commands.clan.unsethome.failed=У клана %s нет дома.
+commands.clan.unsethome.description=РЈРґР°Р»СЏРµС‚ РєР»Р°РЅРѕРІС‹Р№ РґРѕРј.
+commands.clan.unsethome.success=%s РєР»Р°РЅРѕРІС‹Р№ РґРѕРј СѓРґР°Р»С‘РЅ.
+commands.clan.unsethome.failed=РЈ РєР»Р°РЅР° %s РЅРµС‚ РґРѕРјР°.
 
 commands.clan.trapped.usage=/clan trapped
-commands.clan.trapped.description=Телепортирует вас, если вы оказались заперты в чужих землях.
-commands.clan.trapped.fail=Вы не заперты в чужих землях.
+commands.clan.trapped.description=РўРµР»РµРїРѕСЂС‚РёСЂСѓРµС‚ РІР°СЃ, РµСЃР»Рё РІС‹ РѕРєР°Р·Р°Р»РёСЃСЊ Р·Р°РїРµСЂС‚С‹ РІ С‡СѓР¶РёС… Р·РµРјР»СЏС….
+commands.clan.trapped.fail=Р’С‹ РЅРµ Р·Р°РїРµСЂС‚С‹ РІ С‡СѓР¶РёС… Р·РµРјР»СЏС….
 
 commands.clan.permissions.usage=/clan permissions [page]
-commands.clan.permissions.description=Посмотрите, какие разрешения вашего клана в настоящее время установлены.
+commands.clan.permissions.description=РџРѕСЃРјРѕС‚СЂРёС‚Рµ, РєР°РєРёРµ СЂР°Р·СЂРµС€РµРЅРёСЏ РІР°С€РµРіРѕ РєР»Р°РЅР° РІ РЅР°СЃС‚РѕСЏС‰РµРµ РІСЂРµРјСЏ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹.
 commands.clan.permissions.format=%s: %s
-commands.clan.permissions.override=Переопределение игрока: %s: %s
+commands.clan.permissions.override=РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ РёРіСЂРѕРєР°: %s: %s
 
 commands.clan.set.usage=/clan set <permission> [player] <value>
-commands.clan.set.description=Установите значения для разрешений вашего клана. У игрока значение равно true или false. В противном случае вы устанавливаете ранг, который имеет доступ, и вы можете выбрать MEMBER, ADMIN, LEADER или ANY. Обратите внимание, что каждый ранг включает в себя более высокие ранги, и ЛЮБОЙ позволяет игрокам, которых нет в клане. Чтобы увидеть ваши текущие разрешения, используйте /clan permissions
-commands.clan.set.invalid_perm=Неверное разрешение: %s
-commands.clan.set.success=Разрешение установлено успешно!
+commands.clan.set.description=РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ СЂР°Р·СЂРµС€РµРЅРёР№ РІР°С€РµРіРѕ РєР»Р°РЅР°. РЈ РёРіСЂРѕРєР° Р·РЅР°С‡РµРЅРёРµ СЂР°РІРЅРѕ true РёР»Рё false. Р’ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ РІС‹ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚Рµ СЂР°РЅРі, РєРѕС‚РѕСЂС‹Р№ РёРјРµРµС‚ РґРѕСЃС‚СѓРї, Рё РІС‹ РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ MEMBER, ADMIN, LEADER РёР»Рё ANY. РћР±СЂР°С‚РёС‚Рµ РІРЅРёРјР°РЅРёРµ, С‡С‚Рѕ РєР°Р¶РґС‹Р№ СЂР°РЅРі РІРєР»СЋС‡Р°РµС‚ РІ СЃРµР±СЏ Р±РѕР»РµРµ РІС‹СЃРѕРєРёРµ СЂР°РЅРіРё, Рё Р›Р®Р‘РћР™ РїРѕР·РІРѕР»СЏРµС‚ РёРіСЂРѕРєР°Рј, РєРѕС‚РѕСЂС‹С… РЅРµС‚ РІ РєР»Р°РЅРµ. Р§С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ РІР°С€Рё С‚РµРєСѓС‰РёРµ СЂР°Р·СЂРµС€РµРЅРёСЏ, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ /clan permissions
+commands.clan.set.invalid_perm=РќРµРІРµСЂРЅРѕРµ СЂР°Р·СЂРµС€РµРЅРёРµ: %s
+commands.clan.set.success=Р Р°Р·СЂРµС€РµРЅРёРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ СѓСЃРїРµС€РЅРѕ!
 
 commands.clan.lock.usage=/clan lock [private|clan|open]
-commands.clan.lock.description=Блокирует блок, на который вы смотрите. Режимы: приватный (по умолчанию): приватный для игрока, который его заблокировал; клан: доступен для всего клана; открыто: доступно любому, даже игрокам, не входящим в клан
-commands.clan.lock.locked=Этот блок уже заблокирован %s.
-commands.clan.lock.failed=Вы не можете заблокировать этот блок. Если это ошибка, обратитесь к администратору.
-commands.clan.lock.not_block=Вы не смотрите на блок или слишком далеко.
-commands.clan.lock.wrong_owner=У клана %s нет притязаний на этот блок.
-commands.clan.lock.success=Вы успешно заблокировали блок, на который смотрите.
-commands.clan.lock.permission=%s не позволяет вам использовать блокировку %s.
+commands.clan.lock.description=Р‘Р»РѕРєРёСЂСѓРµС‚ Р±Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ. Р РµР¶РёРјС‹: РїСЂРёРІР°С‚РЅС‹Р№ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ): РїСЂРёРІР°С‚РЅС‹Р№ РґР»СЏ РёРіСЂРѕРєР°, РєРѕС‚РѕСЂС‹Р№ РµРіРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р»; РєР»Р°РЅ: РґРѕСЃС‚СѓРїРµРЅ РґР»СЏ РІСЃРµРіРѕ РєР»Р°РЅР°; РѕС‚РєСЂС‹С‚Рѕ: РґРѕСЃС‚СѓРїРЅРѕ Р»СЋР±РѕРјСѓ, РґР°Р¶Рµ РёРіСЂРѕРєР°Рј, РЅРµ РІС…РѕРґСЏС‰РёРј РІ РєР»Р°РЅ
+commands.clan.lock.locked=Р­С‚РѕС‚ Р±Р»РѕРє СѓР¶Рµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ %s.
+commands.clan.lock.failed=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ СЌС‚РѕС‚ Р±Р»РѕРє. Р•СЃР»Рё СЌС‚Рѕ РѕС€РёР±РєР°, РѕР±СЂР°С‚РёС‚РµСЃСЊ Рє Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂСѓ.
+commands.clan.lock.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ.
+commands.clan.lock.wrong_owner=РЈ РєР»Р°РЅР° %s РЅРµС‚ РїСЂРёС‚СЏР·Р°РЅРёР№ РЅР° СЌС‚РѕС‚ Р±Р»РѕРє.
+commands.clan.lock.success=Р’С‹ СѓСЃРїРµС€РЅРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р»Рё Р±Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ СЃРјРѕС‚СЂРёС‚Рµ.
+commands.clan.lock.permission=%s РЅРµ РїРѕР·РІРѕР»СЏРµС‚ РІР°Рј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р±Р»РѕРєРёСЂРѕРІРєСѓ %s.
 
 commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
-commands.clan.lockchunk.description=Блокирует все разблокированные блокируемые блоки в чанке. Режимы: приватный (по умолчанию): приватный для игрока, который его заблокировал; клан: доступен для всего клана; открыто: доступно любому, даже игрокам, не входящим в клан
-commands.clan.lockchunk.success=Вы заблокировали все доступные блоки в чанке.
+commands.clan.lockchunk.description=Р‘Р»РѕРєРёСЂСѓРµС‚ РІСЃРµ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ Р±Р»РѕРєРёСЂСѓРµРјС‹Рµ Р±Р»РѕРєРё РІ С‡Р°РЅРєРµ. Р РµР¶РёРјС‹: РїСЂРёРІР°С‚РЅС‹Р№ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ): РїСЂРёРІР°С‚РЅС‹Р№ РґР»СЏ РёРіСЂРѕРєР°, РєРѕС‚РѕСЂС‹Р№ РµРіРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р»; РєР»Р°РЅ: РґРѕСЃС‚СѓРїРµРЅ РґР»СЏ РІСЃРµРіРѕ РєР»Р°РЅР°; РѕС‚РєСЂС‹С‚Рѕ: РґРѕСЃС‚СѓРїРЅРѕ Р»СЋР±РѕРјСѓ, РґР°Р¶Рµ РёРіСЂРѕРєР°Рј, РЅРµ РІС…РѕРґСЏС‰РёРј РІ РєР»Р°РЅ
+commands.clan.lockchunk.success=Р’С‹ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р»Рё РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ Р±Р»РѕРєРё РІ С‡Р°РЅРєРµ.
 
 commands.clan.unlock.usage=/clan unlock
-commands.clan.unlock.description=Разблокирует блок, на который вы смотрите. Только игрок, заблокировавший игру, или игроки с разрешением клана "lockadmin" могут это сделать.
-commands.clan.unlock.locked=Вы не можете разблокировать блок, он заблокирован игроком %s.
-commands.clan.unlock.not_block=Вы не смотрите на блок или слишком далеко от блока, чтобы разблокировать его.
-commands.clan.unlock.success=Вы успешно разблокировали блок, на который смотрите.
+commands.clan.unlock.description=Р Р°Р·Р±Р»РѕРєРёСЂСѓРµС‚ Р±Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ. РўРѕР»СЊРєРѕ РёРіСЂРѕРє, Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РІС€РёР№ РёРіСЂСѓ, РёР»Рё РёРіСЂРѕРєРё СЃ СЂР°Р·СЂРµС€РµРЅРёРµРј РєР»Р°РЅР° "lockadmin" РјРѕРіСѓС‚ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ.
+commands.clan.unlock.locked=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р±Р»РѕРє, РѕРЅ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РёРіСЂРѕРєРѕРј %s.
+commands.clan.unlock.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ Р±Р»РѕРєР°, С‡С‚РѕР±С‹ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РµРіРѕ.
+commands.clan.unlock.success=Р’С‹ СѓСЃРїРµС€РЅРѕ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°Р»Рё Р±Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ СЃРјРѕС‚СЂРёС‚Рµ.
 
 commands.clan.unlockchunk.usage=/clan unlockchunk [player|all]
-commands.clan.unlockchunk.description=Разблокирует все заблокированные блоки в чанке. Только игроки с разрешением клана «lockadmin» могут использовать опцию player | all, если игрок удаляет блокировки указанного игрока. All очищает все блокировки.
-commands.clan.unlockchunk.success=Вы успешно разблокировали все свои заблокированные блоки в чанке.
-commands.clan.unlockchunk.success_player=Вы успешно разблокировали все заблокированные блоки %s в чанке.
-commands.clan.unlockchunk.success_all=Вы успешно разблокировали все блоки в чанке.
-commands.clan.unlockchunk.failed=У вас нет разрешения разблокировать блоки других игроков в этом клане.
+commands.clan.unlockchunk.description=Р Р°Р·Р±Р»РѕРєРёСЂСѓРµС‚ РІСЃРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ Р±Р»РѕРєРё РІ С‡Р°РЅРєРµ. РўРѕР»СЊРєРѕ РёРіСЂРѕРєРё СЃ СЂР°Р·СЂРµС€РµРЅРёРµРј РєР»Р°РЅР° В«lockadminВ» РјРѕРіСѓС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РѕРїС†РёСЋ player | all, РµСЃР»Рё РёРіСЂРѕРє СѓРґР°Р»СЏРµС‚ Р±Р»РѕРєРёСЂРѕРІРєРё СѓРєР°Р·Р°РЅРЅРѕРіРѕ РёРіСЂРѕРєР°. All РѕС‡РёС‰Р°РµС‚ РІСЃРµ Р±Р»РѕРєРёСЂРѕРІРєРё.
+commands.clan.unlockchunk.success=Р’С‹ СѓСЃРїРµС€РЅРѕ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°Р»Рё РІСЃРµ СЃРІРѕРё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ Р±Р»РѕРєРё РІ С‡Р°РЅРєРµ.
+commands.clan.unlockchunk.success_player=Р’С‹ СѓСЃРїРµС€РЅРѕ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°Р»Рё РІСЃРµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ Р±Р»РѕРєРё %s РІ С‡Р°РЅРєРµ.
+commands.clan.unlockchunk.success_all=Р’С‹ СѓСЃРїРµС€РЅРѕ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°Р»Рё РІСЃРµ Р±Р»РѕРєРё РІ С‡Р°РЅРєРµ.
+commands.clan.unlockchunk.failed=РЈ РІР°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р±Р»РѕРєРё РґСЂСѓРіРёС… РёРіСЂРѕРєРѕРІ РІ СЌС‚РѕРј РєР»Р°РЅРµ.
 
 commands.clan.grantaccess.usage=/clan grantaccess <player>
-commands.clan.grantaccess.description=Предоставляет игроку доступ к заблокированному блоку, на который вы смотрите. Вы можете предоставить доступ к блокам, только если вы являетесь игроком, который заблокировал его или у вас есть разрешение клана «lockadmin».
-commands.clan.grantaccess.locked=Вы не можете дать доступ, блок заблокирован %s.
-commands.clan.grantaccess.not_block=Вы не смотрите на блок или слишком далеко от него.
-commands.clan.grantaccess.success=Вы успешно дали доступ к данному блоку игроку %s. 
+commands.clan.grantaccess.description=РџСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ РёРіСЂРѕРєСѓ РґРѕСЃС‚СѓРї Рє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅРѕРјСѓ Р±Р»РѕРєСѓ, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ. Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРµРґРѕСЃС‚Р°РІРёС‚СЊ РґРѕСЃС‚СѓРї Рє Р±Р»РѕРєР°Рј, С‚РѕР»СЊРєРѕ РµСЃР»Рё РІС‹ СЏРІР»СЏРµС‚РµСЃСЊ РёРіСЂРѕРєРѕРј, РєРѕС‚РѕСЂС‹Р№ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р» РµРіРѕ РёР»Рё Сѓ РІР°СЃ РµСЃС‚СЊ СЂР°Р·СЂРµС€РµРЅРёРµ РєР»Р°РЅР° В«lockadminВ».
+commands.clan.grantaccess.locked=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РґР°С‚СЊ РґРѕСЃС‚СѓРї, Р±Р»РѕРє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ %s.
+commands.clan.grantaccess.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РЅРµРіРѕ.
+commands.clan.grantaccess.success=Р’С‹ СѓСЃРїРµС€РЅРѕ РґР°Р»Рё РґРѕСЃС‚СѓРї Рє РґР°РЅРЅРѕРјСѓ Р±Р»РѕРєСѓ РёРіСЂРѕРєСѓ %s.
 
 commands.clan.denyaccess.usage=/clan denyaccess <player>
-commands.clan.denyaccess.description=Запрещает игроку доступ к заблокированному блоку, на который вы смотрите. Вы можете запретить доступ к блокам только в том случае, если вы заблокировали его или у вас есть разрешение клана «lockadmin».
-commands.clan.denyaccess.locked=Вы не можете запретить доступ к этому блоку, потому что он заблокирован %s.
-commands.clan.denyaccess.not_block=Вы не смотрите на блок или слишком далеко от него, чтобы запретить доступ к нему.
-commands.clan.denyaccess.success=Вы успешно отказали %s в доступе к блоку, на которой смотрите.
+commands.clan.denyaccess.description=Р—Р°РїСЂРµС‰Р°РµС‚ РёРіСЂРѕРєСѓ РґРѕСЃС‚СѓРї Рє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅРѕРјСѓ Р±Р»РѕРєСѓ, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ. Р’С‹ РјРѕР¶РµС‚Рµ Р·Р°РїСЂРµС‚РёС‚СЊ РґРѕСЃС‚СѓРї Рє Р±Р»РѕРєР°Рј С‚РѕР»СЊРєРѕ РІ С‚РѕРј СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РІС‹ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°Р»Рё РµРіРѕ РёР»Рё Сѓ РІР°СЃ РµСЃС‚СЊ СЂР°Р·СЂРµС€РµРЅРёРµ РєР»Р°РЅР° В«lockadminВ».
+commands.clan.denyaccess.locked=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РїСЂРµС‚РёС‚СЊ РґРѕСЃС‚СѓРї Рє СЌС‚РѕРјСѓ Р±Р»РѕРєСѓ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РѕРЅ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ %s.
+commands.clan.denyaccess.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РЅРµРіРѕ, С‡С‚РѕР±С‹ Р·Р°РїСЂРµС‚РёС‚СЊ РґРѕСЃС‚СѓРї Рє РЅРµРјСѓ.
+commands.clan.denyaccess.success=Р’С‹ СѓСЃРїРµС€РЅРѕ РѕС‚РєР°Р·Р°Р»Рё %s РІ РґРѕСЃС‚СѓРїРµ Рє Р±Р»РѕРєСѓ, РЅР° РєРѕС‚РѕСЂРѕР№ СЃРјРѕС‚СЂРёС‚Рµ.
 
 commands.clan.lockinfo.usage=/clan lockinfo
-commands.clan.lockinfo.description=Просмотр информации о блокировке блока, который вы просматриваете.
-commands.clan.lockinfo.locked_by=Владелец: %s
-commands.clan.lockinfo.type=Тип: %s
-commands.clan.lockinfo.overrides=Переопределение:
-commands.clan.lockinfo.allowed=%s: разрешено.
-commands.clan.lockinfo.denied=%s: отказано.
-commands.clan.lockinfo.not_block=Вы не смотрите на блок или слишком далек от него.
+commands.clan.lockinfo.description=РџСЂРѕСЃРјРѕС‚СЂ РёРЅС„РѕСЂРјР°С†РёРё Рѕ Р±Р»РѕРєРёСЂРѕРІРєРµ Р±Р»РѕРєР°, РєРѕС‚РѕСЂС‹Р№ РІС‹ РїСЂРѕСЃРјР°С‚СЂРёРІР°РµС‚Рµ.
+commands.clan.lockinfo.locked_by=Р’Р»Р°РґРµР»РµС†: %s
+commands.clan.lockinfo.type=РўРёРї: %s
+commands.clan.lockinfo.overrides=РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ:
+commands.clan.lockinfo.allowed=%s: СЂР°Р·СЂРµС€РµРЅРѕ.
+commands.clan.lockinfo.denied=%s: РѕС‚РєР°Р·Р°РЅРѕ.
+commands.clan.lockinfo.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё СЃР»РёС€РєРѕРј РґР°Р»РµРє РѕС‚ РЅРµРіРѕ.
 
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
-commands.opclan.abandonclaim.description=Отзывает притязание на чанк, вне зависимости от того, чей он.
+commands.opclan.abandonclaim.description=РћС‚Р·С‹РІР°РµС‚ РїСЂРёС‚СЏР·Р°РЅРёРµ РЅР° С‡Р°РЅРє, РІРЅРµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, С‡РµР№ РѕРЅ.
 
-commands.opclan.addfunds.usage=/opclan addfunds <клан> <счёт>
-commands.opclan.addfunds.description=Добавляет деньги на баланс кого-либо клана.
+commands.opclan.addfunds.usage=/opclan addfunds <РєР»Р°РЅ> <СЃС‡С‘С‚>
+commands.opclan.addfunds.description=Р”РѕР±Р°РІР»СЏРµС‚ РґРµРЅСЊРіРё РЅР° Р±Р°Р»Р°РЅСЃ РєРѕРіРѕ-Р»РёР±Рѕ РєР»Р°РЅР°.
 
 commands.opclan.autoabandon.usage=/opclan autoabandon
 commands.opclan.autoabandon.description=Automatically abandon claims as you walk around, regardless of who owns them.
 commands.opclan.autoabandon.start=You are now autoabandoning land for everyone.
-commands.opclan.autoabandon.stop=Вы больше не отказываетесь от земли.
+commands.opclan.autoabandon.stop=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РѕС‚РєР°Р·С‹РІР°РµС‚РµСЃСЊ РѕС‚ Р·РµРјР»Рё.
 
-commands.opclan.autoclaim.usage=/opclan autoclaim <клан>
-commands.opclan.autoclaim.description=Автоматически оформляет притязяние на землю, вне зависимости от того есть ли на ней приват другого клана.
+commands.opclan.autoclaim.usage=/opclan autoclaim <РєР»Р°РЅ>
+commands.opclan.autoclaim.description=РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС„РѕСЂРјР»СЏРµС‚ РїСЂРёС‚СЏР·СЏРЅРёРµ РЅР° Р·РµРјР»СЋ, РІРЅРµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ РµСЃС‚СЊ Р»Рё РЅР° РЅРµР№ РїСЂРёРІР°С‚ РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°.
 
 commands.opclan.buildadmin.usage=/opclan buildadmin
-commands.opclan.buildadmin.description=Позволяет взаимодействовать с чужим приватом.
-commands.opclan.buildadmin.on=Вы в моде билдадмина.
-commands.opclan.buildadmin.off=Вы больше не в моде билдадмина.
+commands.opclan.buildadmin.description=РџРѕР·РІРѕР»СЏРµС‚ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРѕРІР°С‚СЊ СЃ С‡СѓР¶РёРј РїСЂРёРІР°С‚РѕРј.
+commands.opclan.buildadmin.on=Р’С‹ РІ РјРѕРґРµ Р±РёР»РґР°РґРјРёРЅР°.
+commands.opclan.buildadmin.off=Р’С‹ Р±РѕР»СЊС€Рµ РЅРµ РІ РјРѕРґРµ Р±РёР»РґР°РґРјРёРЅР°.
 
-commands.opclan.claim.usage=/opclan claim <клан>
-commands.opclan.claim.description=Получите кусок земли размером 16x16 для серверного клана, независимо от того, кто в данный момент владеет им.
+commands.opclan.claim.usage=/opclan claim <РєР»Р°РЅ>
+commands.opclan.claim.description=РџРѕР»СѓС‡РёС‚Рµ РєСѓСЃРѕРє Р·РµРјР»Рё СЂР°Р·РјРµСЂРѕРј 16x16 РґР»СЏ СЃРµСЂРІРµСЂРЅРѕРіРѕ РєР»Р°РЅР°, РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ С‚РѕРіРѕ, РєС‚Рѕ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РІР»Р°РґРµРµС‚ РёРј.
 
 commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <player>
-commands.opclan.setrank.description=Установить ранг игрока в клане.
-commands.opclan.setrank.success=Вы повысили игрока %s с %s до %s.
-commands.opclan.setrank.set=Вы повысили игрока %s с %s до %s.
+commands.opclan.setrank.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ СЂР°РЅРі РёРіСЂРѕРєР° РІ РєР»Р°РЅРµ.
+commands.opclan.setrank.success=Р’С‹ РїРѕРІС‹СЃРёР»Рё РёРіСЂРѕРєР° %s СЃ %s РґРѕ %s.
+commands.opclan.setrank.set=Р’С‹ РїРѕРІС‹СЃРёР»Рё РёРіСЂРѕРєР° %s СЃ %s РґРѕ %s.
 
-commands.opclan.disband.usage=/opclan disband <клан>
-commands.opclan.disband.description=Распустить клан.
+commands.opclan.disband.usage=/opclan disband <РєР»Р°РЅ>
+commands.opclan.disband.description=Р Р°СЃРїСѓСЃС‚РёС‚СЊ РєР»Р°РЅ.
 
-commands.opclan.kick.usage=/opclan kick <клан> <игрок>
-commands.opclan.kick.description=Выгнать игрока из клана.
+commands.opclan.kick.usage=/opclan kick <РєР»Р°РЅ> <РёРіСЂРѕРє>
+commands.opclan.kick.description=Р’С‹РіРЅР°С‚СЊ РёРіСЂРѕРєР° РёР· РєР»Р°РЅР°.
 
-commands.opclan.setcolor.usage=/opclan setcolor <клан> <цвет>
-commands.opclan.setcolor.description=Поменять цвет клана.
+commands.opclan.setcolor.usage=/opclan setcolor <РєР»Р°РЅ> <С†РІРµС‚>
+commands.opclan.setcolor.description=РџРѕРјРµРЅСЏС‚СЊ С†РІРµС‚ РєР»Р°РЅР°.
 
-commands.opclan.setdescription.usage=/opclan setdescription <клан> <описание>
-commands.opclan.setdescription.description=Установить клану описание.
+commands.opclan.setdescription.usage=/opclan setdescription <РєР»Р°РЅ> <РѕРїРёСЃР°РЅРёРµ>
+commands.opclan.setdescription.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РєР»Р°РЅСѓ РѕРїРёСЃР°РЅРёРµ.
 
-commands.opclan.setname.usage=/opclan setname <клан> <имя>
-commands.opclan.setname.description=Поменять имя клану.
+commands.opclan.setname.usage=/opclan setname <РєР»Р°РЅ> <РёРјСЏ>
+commands.opclan.setname.description=РџРѕРјРµРЅСЏС‚СЊ РёРјСЏ РєР»Р°РЅСѓ.
 
-commands.opclan.setshield.usage=/opclan setshield <клан> <продолжительность>
-commands.opclan.setshield.description=Установите время защиты для клана в минутах.
-commands.opclan.setshield.format=Неверная продолжительность защиты.
-commands.opclan.setshield.success=Защита для клана %s установлена на %s минут.
+commands.opclan.setshield.usage=/opclan setshield <РєР»Р°РЅ> <РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ>
+commands.opclan.setshield.description=РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РІСЂРµРјСЏ Р·Р°С‰РёС‚С‹ РґР»СЏ РєР»Р°РЅР° РІ РјРёРЅСѓС‚Р°С….
+commands.opclan.setshield.format=РќРµРІРµСЂРЅР°СЏ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р·Р°С‰РёС‚С‹.
+commands.opclan.setshield.success=Р—Р°С‰РёС‚Р° РґР»СЏ РєР»Р°РЅР° %s СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РЅР° %s РјРёРЅСѓС‚.
 
-commands.opclan.setserver.usage=/opclan setserver <клан> <true|1|false|0>
-commands.opclan.setserver.description=Установить клан сервера. Клан сервера защищён от рейдов.
-commands.opclan.setserver.success_t=Вы сделали %s кланом сервера. 
-commands.opclan.setserver.success_f=Вы убрали у %s статус клана сервера.
+commands.opclan.setserver.usage=/opclan setserver <РєР»Р°РЅ> <true|1|false|0>
+commands.opclan.setserver.description=РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РєР»Р°РЅ СЃРµСЂРІРµСЂР°. РљР»Р°РЅ СЃРµСЂРІРµСЂР° Р·Р°С‰РёС‰С‘РЅ РѕС‚ СЂРµР№РґРѕРІ.
+commands.opclan.setserver.success_t=Р’С‹ СЃРґРµР»Р°Р»Рё %s РєР»Р°РЅРѕРј СЃРµСЂРІРµСЂР°.
+commands.opclan.setserver.success_f=Р’С‹ СѓР±СЂР°Р»Рё Сѓ %s СЃС‚Р°С‚СѓСЃ РєР»Р°РЅР° СЃРµСЂРІРµСЂР°.
 
-commands.opclan.setoption.usage=/opclan set <клан> <параметр> <значение>
-commands.opclan.setoption.description=Установите различные параметры для клана. Допустимые параметры: количество притязаний, спавн мобов, стоимость притязаний, урон мобам, upkeepexemption, видимость карты, сервер, pvp.
-commands.opclan.setoption.success=Вы успешно установили параметр %s для %s как %s.
-commands.opclan.setoption.failed=Параметр %s не найден.
+commands.opclan.setoption.usage=/opclan set <РєР»Р°РЅ> <РїР°СЂР°РјРµС‚СЂ> <Р·РЅР°С‡РµРЅРёРµ>
+commands.opclan.setoption.description=РЈСЃС‚Р°РЅРѕРІРёС‚Рµ СЂР°Р·Р»РёС‡РЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РєР»Р°РЅР°. Р”РѕРїСѓСЃС‚РёРјС‹Рµ РїР°СЂР°РјРµС‚СЂС‹: РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёС‚СЏР·Р°РЅРёР№, СЃРїР°РІРЅ РјРѕР±РѕРІ, СЃС‚РѕРёРјРѕСЃС‚СЊ РїСЂРёС‚СЏР·Р°РЅРёР№, СѓСЂРѕРЅ РјРѕР±Р°Рј, upkeepexemption, РІРёРґРёРјРѕСЃС‚СЊ РєР°СЂС‚С‹, СЃРµСЂРІРµСЂ, pvp.
+commands.opclan.setoption.success=Р’С‹ СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІРёР»Рё РїР°СЂР°РјРµС‚СЂ %s РґР»СЏ %s РєР°Рє %s.
+commands.opclan.setoption.failed=РџР°СЂР°РјРµС‚СЂ %s РЅРµ РЅР°Р№РґРµРЅ.
 
-commands.opclan.tp.usage=/opclan tp <клан>
-commands.opclan.tp.description=Телепортация к дому клана.
+commands.opclan.tp.usage=/opclan tp <РєР»Р°РЅ>
+commands.opclan.tp.description=РўРµР»РµРїРѕСЂС‚Р°С†РёСЏ Рє РґРѕРјСѓ РєР»Р°РЅР°.
 
-commands.raid.common.notinparty=Вы не в рейдерском отряде.
-commands.raid.common.not_raiding=Вы не в активном рейде.
+commands.raid.common.notinparty=Р’С‹ РЅРµ РІ СЂРµР№РґРµСЂСЃРєРѕРј РѕС‚СЂСЏРґРµ.
+commands.raid.common.not_raiding=Р’С‹ РЅРµ РІ Р°РєС‚РёРІРЅРѕРј СЂРµР№РґРµ.
 
 commands.raid.collect.usage=/raid collect
-commands.raid.collect.description=Собрать блоки, потерянные во время рейда.
-commands.raid.collect.makespace=Интвентарь заполнен. Освободите место!
-commands.raid.collect.success=Сбор прошёл успешно.
-commands.raid.collect.empty=Нет предметов для сбора.
-commands.raid.collect.raiding=Вы не можете собрать предметы во время рейда.
+commands.raid.collect.description=РЎРѕР±СЂР°С‚СЊ Р±Р»РѕРєРё, РїРѕС‚РµСЂСЏРЅРЅС‹Рµ РІРѕ РІСЂРµРјСЏ СЂРµР№РґР°.
+commands.raid.collect.makespace=РРЅС‚РІРµРЅС‚Р°СЂСЊ Р·Р°РїРѕР»РЅРµРЅ. РћСЃРІРѕР±РѕРґРёС‚Рµ РјРµСЃС‚Рѕ!
+commands.raid.collect.success=РЎР±РѕСЂ РїСЂРѕС€С‘Р» СѓСЃРїРµС€РЅРѕ.
+commands.raid.collect.empty=РќРµС‚ РїСЂРµРґРјРµС‚РѕРІ РґР»СЏ СЃР±РѕСЂР°.
+commands.raid.collect.raiding=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРѕР±СЂР°С‚СЊ РїСЂРµРґРјРµС‚С‹ РІРѕ РІСЂРµРјСЏ СЂРµР№РґР°.
 
-commands.raid.invite.usage=/raid invite <игрок>
-commands.raid.invite.description=Пригласить игрока в рейдерский отряд
-commands.raid.invite.invited=Вы приглашены в рейд против клана %1$s. Для вступления в рейд введите /raid join %1$s.
-commands.raid.invite.success=Вы успешно пригласили %s в рейд.
-commands.raid.invite.inclan=Вы не можете пригласить игроков на рейд их клана.
-commands.raid.invite.limit=Ваш рейдерский отряд переполнен. Количество рейдеров - %s, лимит - %s.
+commands.raid.invite.usage=/raid invite <РёРіСЂРѕРє>
+commands.raid.invite.description=РџСЂРёРіР»Р°СЃРёС‚СЊ РёРіСЂРѕРєР° РІ СЂРµР№РґРµСЂСЃРєРёР№ РѕС‚СЂСЏРґ
+commands.raid.invite.invited=Р’С‹ РїСЂРёРіР»Р°С€РµРЅС‹ РІ СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %1$s. Р”Р»СЏ РІСЃС‚СѓРїР»РµРЅРёСЏ РІ СЂРµР№Рґ РІРІРµРґРёС‚Рµ /raid join %1$s.
+commands.raid.invite.success=Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРёРіР»Р°СЃРёР»Рё %s РІ СЂРµР№Рґ.
+commands.raid.invite.inclan=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёРіР»Р°СЃРёС‚СЊ РёРіСЂРѕРєРѕРІ РЅР° СЂРµР№Рґ РёС… РєР»Р°РЅР°.
+commands.raid.invite.limit=Р’Р°С€ СЂРµР№РґРµСЂСЃРєРёР№ РѕС‚СЂСЏРґ РїРµСЂРµРїРѕР»РЅРµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР№РґРµСЂРѕРІ - %s, Р»РёРјРёС‚ - %s.
 
-commands.raid.join.usage=/raid join <имя клана>
-commands.raid.join.description=Присоединиться к рейду против выбранного клана. Если отряд ещё не создан, то будет сформирован вами.
-commands.raid.join.created=Вы успешно создали рейд против клана %s.
-commands.raid.join.create_fail=У клана %s слишком мало игроков онлайн для начала рейда. 
-commands.raid.join.shield=Клан %s защищён. Попробуйте снова через %s часов.
-commands.raid.join.success=Вы вошли в рейд против клана %s.
-commands.raid.join.limit=Рейд против клана %s не может принять больше людей. Количество людей в отряде - %s, лимит рейдеров %s.
-commands.raid.join.inclan=Вы не можете рейдить свой клан.
-commands.raid.join.inparty=Вы уже участвуете в рейдерской группе и не можете присоединиться к другой, если не выйдете.
-commands.raid.join.unraidable=Администратор сервера не допустил рейда на клан %s.
+commands.raid.join.usage=/raid join <РёРјСЏ РєР»Р°РЅР°>
+commands.raid.join.description=РџСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СЂРµР№РґСѓ РїСЂРѕС‚РёРІ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РєР»Р°РЅР°. Р•СЃР»Рё РѕС‚СЂСЏРґ РµС‰С‘ РЅРµ СЃРѕР·РґР°РЅ, С‚Рѕ Р±СѓРґРµС‚ СЃС„РѕСЂРјРёСЂРѕРІР°РЅ РІР°РјРё.
+commands.raid.join.created=Р’С‹ СѓСЃРїРµС€РЅРѕ СЃРѕР·РґР°Р»Рё СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s.
+commands.raid.join.create_fail=РЈ РєР»Р°РЅР° %s СЃР»РёС€РєРѕРј РјР°Р»Рѕ РёРіСЂРѕРєРѕРІ РѕРЅР»Р°Р№РЅ РґР»СЏ РЅР°С‡Р°Р»Р° СЂРµР№РґР°.
+commands.raid.join.shield=РљР»Р°РЅ %s Р·Р°С‰РёС‰С‘РЅ. РџРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР° С‡РµСЂРµР· %s С‡Р°СЃРѕРІ.
+commands.raid.join.success=Р’С‹ РІРѕС€Р»Рё РІ СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s.
+commands.raid.join.limit=Р РµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s РЅРµ РјРѕР¶РµС‚ РїСЂРёРЅСЏС‚СЊ Р±РѕР»СЊС€Рµ Р»СЋРґРµР№. РљРѕР»РёС‡РµСЃС‚РІРѕ Р»СЋРґРµР№ РІ РѕС‚СЂСЏРґРµ - %s, Р»РёРјРёС‚ СЂРµР№РґРµСЂРѕРІ %s.
+commands.raid.join.inclan=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЂРµР№РґРёС‚СЊ СЃРІРѕР№ РєР»Р°РЅ.
+commands.raid.join.inparty=Р’С‹ СѓР¶Рµ СѓС‡Р°СЃС‚РІСѓРµС‚Рµ РІ СЂРµР№РґРµСЂСЃРєРѕР№ РіСЂСѓРїРїРµ Рё РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє РґСЂСѓРіРѕР№, РµСЃР»Рё РЅРµ РІС‹Р№РґРµС‚Рµ.
+commands.raid.join.unraidable=РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ СЃРµСЂРІРµСЂР° РЅРµ РґРѕРїСѓСЃС‚РёР» СЂРµР№РґР° РЅР° РєР»Р°РЅ %s.
 
 commands.raid.leave.usage=/raid leave
-commands.raid.leave.description=Покинуть рейд, в котором вы находитесь.
-commands.raid.leave.success=Вы успешно покинули рейд против клана %s.
+commands.raid.leave.description=РџРѕРєРёРЅСѓС‚СЊ СЂРµР№Рґ, РІ РєРѕС‚РѕСЂРѕРј РІС‹ РЅР°С…РѕРґРёС‚РµСЃСЊ.
+commands.raid.leave.success=Р’С‹ СѓСЃРїРµС€РЅРѕ РїРѕРєРёРЅСѓР»Рё СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s.
 
 commands.raid.start.usage=/raid start
-commands.raid.start.description=Начать рейд, с вас взымется плата, если таковая имеется.
-commands.raid.start.success=Вы успешно начали рейд против клана %s.
-commands.raid.start.insufficient_funds=У вас недостаточно средств, чтобы начать рейд против клана %s. Это стоит %s.
-commands.raid.start.raiding=Рейд уже начат.
-commands.raid.start.error=Ошибка: друго клан уже рейдит этот клан! Попробуйте через %s часов. Владельцы серверов, сообщите об этой ошибке.
+commands.raid.start.description=РќР°С‡Р°С‚СЊ СЂРµР№Рґ, СЃ РІР°СЃ РІР·С‹РјРµС‚СЃСЏ РїР»Р°С‚Р°, РµСЃР»Рё С‚Р°РєРѕРІР°СЏ РёРјРµРµС‚СЃСЏ.
+commands.raid.start.success=Р’С‹ СѓСЃРїРµС€РЅРѕ РЅР°С‡Р°Р»Рё СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s.
+commands.raid.start.insufficient_funds=РЈ РІР°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ, С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ СЂРµР№Рґ РїСЂРѕС‚РёРІ РєР»Р°РЅР° %s. Р­С‚Рѕ СЃС‚РѕРёС‚ %s.
+commands.raid.start.raiding=Р РµР№Рґ СѓР¶Рµ РЅР°С‡Р°С‚.
+commands.raid.start.error=РћС€РёР±РєР°: РґСЂСѓРіРѕ РєР»Р°РЅ СѓР¶Рµ СЂРµР№РґРёС‚ СЌС‚РѕС‚ РєР»Р°РЅ! РџРѕРїСЂРѕР±СѓР№С‚Рµ С‡РµСЂРµР· %s С‡Р°СЃРѕРІ. Р’Р»Р°РґРµР»СЊС†С‹ СЃРµСЂРІРµСЂРѕРІ, СЃРѕРѕР±С‰РёС‚Рµ РѕР± СЌС‚РѕР№ РѕС€РёР±РєРµ.
 
 commands.raid.thru.usage=/raid thru
-commands.raid.thru.description=Пройти сквозь защищённые блоки.
-commands.raid.thru.not_block=Вы не смотрите на блок или находитесь слишком далеко от блока, чтобы просмотреть информацию о блокировке.
-commands.raid.thru.wrong_pos_owner=Блок, на который вы смотрите, не находится на территории %s.
-commands.raid.thru.failed=По другую сторону от вас нет безопасного телепорта.
+commands.raid.thru.description=РџСЂРѕР№С‚Рё СЃРєРІРѕР·СЊ Р·Р°С‰РёС‰С‘РЅРЅС‹Рµ Р±Р»РѕРєРё.
+commands.raid.thru.not_block=Р’С‹ РЅРµ СЃРјРѕС‚СЂРёС‚Рµ РЅР° Р±Р»РѕРє РёР»Рё РЅР°С…РѕРґРёС‚РµСЃСЊ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ Р±Р»РѕРєР°, С‡С‚РѕР±С‹ РїСЂРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р±Р»РѕРєРёСЂРѕРІРєРµ.
+commands.raid.thru.wrong_pos_owner=Р‘Р»РѕРє, РЅР° РєРѕС‚РѕСЂС‹Р№ РІС‹ СЃРјРѕС‚СЂРёС‚Рµ, РЅРµ РЅР°С…РѕРґРёС‚СЃСЏ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёРё %s.
+commands.raid.thru.failed=РџРѕ РґСЂСѓРіСѓСЋ СЃС‚РѕСЂРѕРЅСѓ РѕС‚ РІР°СЃ РЅРµС‚ Р±РµР·РѕРїР°СЃРЅРѕРіРѕ С‚РµР»РµРїРѕСЂС‚Р°.
 
-clans.protection.break.claimed=Вы не можете ломать блоки. Это не ваша территория.
-clans.protection.break.borderland=Вы не можете ломать блоки. Это территория находится слишком близко к территории другого клана.
-clans.protection.break.raid=Вы не можете сломать этот блок во время рейда. Дождитесь окончания.
-clans.protection.break.claimed_raid=Вы не можете ломать этот блока, пока находитесь на чужой территории.
-clans.protection.break.wilderness=Вы не можете ломать блоки в дикой местности.
-clans.protection.break.locked=Вы не можете сломать этот блок. Он заблокирован игроком %s.
+clans.protection.break.claimed=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р»РѕРјР°С‚СЊ Р±Р»РѕРєРё. Р­С‚Рѕ РЅРµ РІР°С€Р° С‚РµСЂСЂРёС‚РѕСЂРёСЏ.
+clans.protection.break.borderland=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р»РѕРјР°С‚СЊ Р±Р»РѕРєРё. Р­С‚Рѕ С‚РµСЂСЂРёС‚РѕСЂРёСЏ РЅР°С…РѕРґРёС‚СЃСЏ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє С‚РµСЂСЂРёС‚РѕСЂРёРё РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°.
+clans.protection.break.raid=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃР»РѕРјР°С‚СЊ СЌС‚РѕС‚ Р±Р»РѕРє РІРѕ РІСЂРµРјСЏ СЂРµР№РґР°. Р”РѕР¶РґРёС‚РµСЃСЊ РѕРєРѕРЅС‡Р°РЅРёСЏ.
+clans.protection.break.claimed_raid=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р»РѕРјР°С‚СЊ СЌС‚РѕС‚ Р±Р»РѕРєР°, РїРѕРєР° РЅР°С…РѕРґРёС‚РµСЃСЊ РЅР° С‡СѓР¶РѕР№ С‚РµСЂСЂРёС‚РѕСЂРёРё.
+clans.protection.break.wilderness=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р»РѕРјР°С‚СЊ Р±Р»РѕРєРё РІ РґРёРєРѕР№ РјРµСЃС‚РЅРѕСЃС‚Рё.
+clans.protection.break.locked=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃР»РѕРјР°С‚СЊ СЌС‚РѕС‚ Р±Р»РѕРє. РћРЅ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РёРіСЂРѕРєРѕРј %s.
 
-clans.protection.place.territory=Вы можете ставить здесь блоки. Это не ваша территория.
-clans.protection.place.borderland=Вы не можете ставить блоки неподалёку от территории другого клана.
-clans.protection.place.wilderness=Вы не можете ставить блоки в дикой местности.
+clans.protection.place.territory=Р’С‹ РјРѕР¶РµС‚Рµ СЃС‚Р°РІРёС‚СЊ Р·РґРµСЃСЊ Р±Р»РѕРєРё. Р­С‚Рѕ РЅРµ РІР°С€Р° С‚РµСЂСЂРёС‚РѕСЂРёСЏ.
+clans.protection.place.borderland=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃС‚Р°РІРёС‚СЊ Р±Р»РѕРєРё РЅРµРїРѕРґР°Р»С‘РєСѓ РѕС‚ С‚РµСЂСЂРёС‚РѕСЂРёРё РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°.
+clans.protection.place.wilderness=Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃС‚Р°РІРёС‚СЊ Р±Р»РѕРєРё РІ РґРёРєРѕР№ РјРµСЃС‚РЅРѕСЃС‚Рё.
 
-clans.protection.interact.territory=Вы можете ставить здесь блоки. Это не ваша территория.
-clans.protection.interact.borderland=Эти блоки находятся слишком близко к территории другого клана.
-clans.protection.interact.locked=Этот блок заблокирован игроком %s.
+clans.protection.interact.territory=Р’С‹ РјРѕР¶РµС‚Рµ СЃС‚Р°РІРёС‚СЊ Р·РґРµСЃСЊ Р±Р»РѕРєРё. Р­С‚Рѕ РЅРµ РІР°С€Р° С‚РµСЂСЂРёС‚РѕСЂРёСЏ.
+clans.protection.interact.borderland=Р­С‚Рё Р±Р»РѕРєРё РЅР°С…РѕРґСЏС‚СЃСЏ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє С‚РµСЂСЂРёС‚РѕСЂРёРё РґСЂСѓРіРѕРіРѕ РєР»Р°РЅР°.
+clans.protection.interact.locked=Р­С‚РѕС‚ Р±Р»РѕРє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РёРіСЂРѕРєРѕРј %s.
 
-clans.rent.kicked=Вы исключены из клана %s, потому что не смогли оплатить налог.
+clans.rent.kicked=Р’С‹ РёСЃРєР»СЋС‡РµРЅС‹ РёР· РєР»Р°РЅР° %s, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅРµ СЃРјРѕРіР»Рё РѕРїР»Р°С‚РёС‚СЊ РЅР°Р»РѕРі.
 
-clans.upkeep.disbanded=%s был расформирован, так как не смог оплатить свои расходы.
+clans.upkeep.disbanded=%s Р±С‹Р» СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°РЅ, С‚Р°Рє РєР°Рє РЅРµ СЃРјРѕРі РѕРїР»Р°С‚РёС‚СЊ СЃРІРѕРё СЂР°СЃС…РѕРґС‹.
 
-clans.wilderness=Дикая местность
-clans.underground=Под землёй
+clans.wilderness=Р”РёРєР°СЏ РјРµСЃС‚РЅРѕСЃС‚СЊ
+clans.underground=РџРѕРґ Р·РµРјР»С‘Р№
 
-clans.territory.entry=Вы входите на территорию клана %s.
+clans.territory.entry=Р’С‹ РІС…РѕРґРёС‚Рµ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёСЋ РєР»Р°РЅР° %s.
 clans.territory.entrydesc=~%s
-clans.territory.unclaimed=Это территория свободная от притязяний.
-clans.territory.protected=Это территория свободная от притязаний, но он защищена.
-clans.territory.clanterritory=Территория клана %s.
-clans.territory.borderland=Границы клана %s.
+clans.territory.unclaimed=Р­С‚Рѕ С‚РµСЂСЂРёС‚РѕСЂРёСЏ СЃРІРѕР±РѕРґРЅР°СЏ РѕС‚ РїСЂРёС‚СЏР·СЏРЅРёР№.
+clans.territory.protected=Р­С‚Рѕ С‚РµСЂСЂРёС‚РѕСЂРёСЏ СЃРІРѕР±РѕРґРЅР°СЏ РѕС‚ РїСЂРёС‚СЏР·Р°РЅРёР№, РЅРѕ РѕРЅ Р·Р°С‰РёС‰РµРЅР°.
+clans.territory.clanterritory=РўРµСЂСЂРёС‚РѕСЂРёСЏ РєР»Р°РЅР° %s.
+clans.territory.borderland=Р“СЂР°РЅРёС†С‹ РєР»Р°РЅР° %s.
 
-clans.raid.glowing.defender=Рейд против %s начнётся через %s минут. Вы начнёте светится перед окончанием рейда. Количество живых рейдеров - %s 
-clans.raid.glowing.attacker=Рейд против %s начнётся через %s минут. Защитники в количестве %s начнут светиться перед окончанием рейда.
+clans.raid.glowing.defender=Р РµР№Рґ РїСЂРѕС‚РёРІ %s РЅР°С‡РЅС‘С‚СЃСЏ С‡РµСЂРµР· %s РјРёРЅСѓС‚. Р’С‹ РЅР°С‡РЅС‘С‚Рµ СЃРІРµС‚РёС‚СЃСЏ РїРµСЂРµРґ РѕРєРѕРЅС‡Р°РЅРёРµРј СЂРµР№РґР°. РљРѕР»РёС‡РµСЃС‚РІРѕ Р¶РёРІС‹С… СЂРµР№РґРµСЂРѕРІ - %s
+clans.raid.glowing.attacker=Р РµР№Рґ РїСЂРѕС‚РёРІ %s РЅР°С‡РЅС‘С‚СЃСЏ С‡РµСЂРµР· %s РјРёРЅСѓС‚. Р—Р°С‰РёС‚РЅРёРєРё РІ РєРѕР»РёС‡РµСЃС‚РІРµ %s РЅР°С‡РЅСѓС‚ СЃРІРµС‚РёС‚СЊСЃСЏ РїРµСЂРµРґ РѕРєРѕРЅС‡Р°РЅРёРµРј СЂРµР№РґР°.
 
-clans.raid.rmtimer.rm_attacker=Вы исключены из рейда, потому что вышли за территорию клана %s.
-clans.raid.rmtimer.rm_defender=Теперь вы считаетесь мёртвым для рейда. Вы вышли за территорию клана %s.
-clans.raid.rmtimer.warn_attacker=Вы находитесь за пределами территории %s. Вам дано %s секунд для возвращения. Успейте до исключения из рейда.
-clans.raid.rmtimer.warn_defender=Вы находитесь за пределами территории %s. Вам дано %s секунд для возвращения, иначе рейдеры одержат победу.
+clans.raid.rmtimer.rm_attacker=Р’С‹ РёСЃРєР»СЋС‡РµРЅС‹ РёР· СЂРµР№РґР°, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РІС‹С€Р»Рё Р·Р° С‚РµСЂСЂРёС‚РѕСЂРёСЋ РєР»Р°РЅР° %s.
+clans.raid.rmtimer.rm_defender=РўРµРїРµСЂСЊ РІС‹ СЃС‡РёС‚Р°РµС‚РµСЃСЊ РјС‘СЂС‚РІС‹Рј РґР»СЏ СЂРµР№РґР°. Р’С‹ РІС‹С€Р»Рё Р·Р° С‚РµСЂСЂРёС‚РѕСЂРёСЋ РєР»Р°РЅР° %s.
+clans.raid.rmtimer.warn_attacker=Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ Р·Р° РїСЂРµРґРµР»Р°РјРё С‚РµСЂСЂРёС‚РѕСЂРёРё %s. Р’Р°Рј РґР°РЅРѕ %s СЃРµРєСѓРЅРґ РґР»СЏ РІРѕР·РІСЂР°С‰РµРЅРёСЏ. РЈСЃРїРµР№С‚Рµ РґРѕ РёСЃРєР»СЋС‡РµРЅРёСЏ РёР· СЂРµР№РґР°.
+clans.raid.rmtimer.warn_defender=Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ Р·Р° РїСЂРµРґРµР»Р°РјРё С‚РµСЂСЂРёС‚РѕСЂРёРё %s. Р’Р°Рј РґР°РЅРѕ %s СЃРµРєСѓРЅРґ РґР»СЏ РІРѕР·РІСЂР°С‰РµРЅРёСЏ, РёРЅР°С‡Рµ СЂРµР№РґРµСЂС‹ РѕРґРµСЂР¶Р°С‚ РїРѕР±РµРґСѓ.
 
-clans.raid.confiscated=У вас были конфискованы предметы, которые запрещены во время рейда: %s. Вы сможете забрать их после рейда командой /raid collect.
+clans.raid.confiscated=РЈ РІР°СЃ Р±С‹Р»Рё РєРѕРЅС„РёСЃРєРѕРІР°РЅС‹ РїСЂРµРґРјРµС‚С‹, РєРѕС‚РѕСЂС‹Рµ Р·Р°РїСЂРµС‰РµРЅС‹ РІРѕ РІСЂРµРјСЏ СЂРµР№РґР°: %s. Р’С‹ СЃРјРѕР¶РµС‚Рµ Р·Р°Р±СЂР°С‚СЊ РёС… РїРѕСЃР»Рµ СЂРµР№РґР° РєРѕРјР°РЅРґРѕР№ /raid collect.
 
-clans.raid.init.defender=Отряд, состоящий из %s участников, готовится к штурму клана %s. Рейд начнётся через %s секунд.
-clans.raid.init.attacker=Ваш отряд, состоящий из %s участников, готовится к штурму клана %s. Рейд начнётся через %s секунд.
+clans.raid.init.defender=РћС‚СЂСЏРґ, СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· %s СѓС‡Р°СЃС‚РЅРёРєРѕРІ, РіРѕС‚РѕРІРёС‚СЃСЏ Рє С€С‚СѓСЂРјСѓ РєР»Р°РЅР° %s. Р РµР№Рґ РЅР°С‡РЅС‘С‚СЃСЏ С‡РµСЂРµР· %s СЃРµРєСѓРЅРґ.
+clans.raid.init.attacker=Р’Р°С€ РѕС‚СЂСЏРґ, СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· %s СѓС‡Р°СЃС‚РЅРёРєРѕРІ, РіРѕС‚РѕРІРёС‚СЃСЏ Рє С€С‚СѓСЂРјСѓ РєР»Р°РЅР° %s. Р РµР№Рґ РЅР°С‡РЅС‘С‚СЃСЏ С‡РµСЂРµР· %s СЃРµРєСѓРЅРґ.
 
-clans.raid.activate=Рейд против %s начался!
-clans.raid.end=Рейд против %s закончен!
-clans.raid.victory.raider=Рейдеры одержали победу на кланом %s!
-clans.raid.victory.clan=клан %s одержал победу на рейдерами!
+clans.raid.activate=Р РµР№Рґ РїСЂРѕС‚РёРІ %s РЅР°С‡Р°Р»СЃСЏ!
+clans.raid.end=Р РµР№Рґ РїСЂРѕС‚РёРІ %s Р·Р°РєРѕРЅС‡РµРЅ!
+clans.raid.victory.raider=Р РµР№РґРµСЂС‹ РѕРґРµСЂР¶Р°Р»Рё РїРѕР±РµРґСѓ РЅР° РєР»Р°РЅРѕРј %s!
+clans.raid.victory.clan=РєР»Р°РЅ %s РѕРґРµСЂР¶Р°Р» РїРѕР±РµРґСѓ РЅР° СЂРµР№РґРµСЂР°РјРё!
 
-clans.chat.prefix=<%s Чат>
-clans.chat.page.next=[Далее]
-clans.chat.page.prev=[Назад]
+clans.chat.prefix=<%s Р§Р°С‚>
+clans.chat.page.next=[Р”Р°Р»РµРµ]
+clans.chat.page.prev=[РќР°Р·Р°Рґ]
 clans.chat.page.num=page: %s/%s
