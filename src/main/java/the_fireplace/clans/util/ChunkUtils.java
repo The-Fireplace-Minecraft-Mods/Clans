@@ -212,27 +212,27 @@ public class ChunkUtils {
 
 		sendGlowStoneToPositions(player, w,
 				//Corners
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zStart)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart+(zEnd > zStart ? 1 : -1))),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zStart)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zStart+(zEnd > zStart ? 1 : -1))).down(),
 
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zEnd)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd+(zEnd > zStart ? -1 : 1))),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart+(xEnd > xStart ? 1 : -1), 64, zEnd)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, zEnd+(zEnd > zStart ? -1 : 1))).down(),
 
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zEnd)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd+(zEnd > zStart ? -1 : 1))),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zEnd)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zEnd+(zEnd > zStart ? -1 : 1))).down(),
 
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zStart)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart+(zEnd > zStart ? 1 : -1))),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd+(xEnd > xStart ? -1 : 1), 64, zStart)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, zStart+(zEnd > zStart ? 1 : -1))).down(),
 
 				//Midpoints
-				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zStart)),
-				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zEnd)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, (zStart+zEnd)/2)),
-				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, (zStart+zEnd)/2))
+				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zStart)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos((xStart+xEnd)/2, 64, zEnd)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xStart, 64, (zStart+zEnd)/2)).down(),
+				w.getTopSolidOrLiquidBlock(new BlockPos(xEnd, 64, (zStart+zEnd)/2)).down()
 		);
 	}
 

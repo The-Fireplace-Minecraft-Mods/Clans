@@ -5,3 +5,4 @@ Updated Ice and Fire integration to use the new Ice and Fire events.
 Dynmap now says "Clan Members" instead of "Team Members"
 
 Fixes/Internal Changes:
+Moved the glowstone from /clan seechunk down a block to prevent triggering anticheat plugins when walking on them.
