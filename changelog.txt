@@ -2,5 +2,6 @@ Additions:
 
 Changes:
 Updated Ice and Fire integration to use the new Ice and Fire events.
+Dynmap now says "Clan Members" instead of "Team Members"
 
 Fixes/Internal Changes:

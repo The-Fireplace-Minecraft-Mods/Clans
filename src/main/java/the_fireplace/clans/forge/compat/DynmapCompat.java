@@ -40,7 +40,7 @@ public class DynmapCompat implements IDynmapCompat {
     private long m_NextTriggerTickCount = 0;
     private int mapInitAttemptCount = 0;
     private boolean mapInitialized = false;
-    private Set<ClanDimInfo> claimUpdates = Sets.newHashSet();
+    private final Set<ClanDimInfo> claimUpdates = Sets.newHashSet();
 
 
     @SubscribeEvent
@@ -162,7 +162,7 @@ public class DynmapCompat implements IDynmapCompat {
 
     private MarkerAPI dynmapMarkerApi = null;
     private MarkerSet dynmapMarkerSet = null;
-    private Map<Integer, String> dimensionNames = new HashMap<>();
+    private final Map<Integer, String> dimensionNames = new HashMap<>();
 
     private static final Pattern FORMATTING_COLOR_CODES_PATTERN = Pattern.compile("(?i)\\u00a7[0-9A-FK-OR]");
 
@@ -269,7 +269,7 @@ public class DynmapCompat implements IDynmapCompat {
         Set<UUID> teamMembers = Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
 
         if (!teamMembers.isEmpty()) {
-            stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Team Members</i></span></div>");
+            stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Clan Members</i></span></div>");
 
             for (UUID member : teamMembers) {
                 GameProfile gp = Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member);
