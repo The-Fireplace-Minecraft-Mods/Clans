@@ -1,7 +1,6 @@
 Additions:
 
 Changes:
+Updated Ice and Fire integration to use the new Ice and Fire events.
 
 Fixes/Internal Changes:
-Added handling for the old method of exponentiation in formula config values
-Fixed the Russian translation

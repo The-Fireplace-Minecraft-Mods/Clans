@@ -1,10 +1,14 @@
 package the_fireplace.clans.compat;
 
+import com.github.alexthe666.iceandfire.api.event.DragonFireDamageWorldEvent;
+import com.github.alexthe666.iceandfire.api.event.DragonFireEvent;
+import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
 import com.github.alexthe666.iceandfire.entity.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.tileentity.TileEntity;
@@ -83,5 +87,20 @@ public class IceAndFireCompat implements IProtectionCompat {
                     event.setResult(Event.Result.DENY);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void dragonFire(DragonFireEvent event) {
+        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+    }
+
+    @SubscribeEvent
+    public void dragonBreak(DragonFireDamageWorldEvent event) {
+        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+    }
+
+    @SubscribeEvent
+    public void nondragonBreak(GenericGriefEvent event) {
+        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), (event.getEntity() instanceof EntityTameable && ((EntityTameable) event.getEntity()).getOwner() instanceof EntityPlayerMP) ? ((EntityPlayerMP)((EntityTameable) event.getEntity()).getOwner()) : null, false));
     }
 }
