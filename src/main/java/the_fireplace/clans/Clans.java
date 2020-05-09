@@ -177,8 +177,8 @@ public final class Clans {
         public static int maxClaims = 0;
         @Config.Comment("If enabled, multiplies the max claim count by the number of players in the clan.")
         public static boolean multiplyMaxClaimsByPlayers = true;
-        @Config.Comment("Default clan prefix for chat. Make empty for no prefix.")
-        public static String defaultClanPrefix = "<%s>";
+        @Config.Comment("Clan prefix for chat. Make empty for no prefix. %s is where the clan name will go.")
+        public static String defaultClanPrefix = "[%s]";
         @Config.Comment("Default clan to put players in when they first join the server. Leave empty for no clan.")
         public static String serverDefaultClan = "";
         @Config.Comment("Value or formula for the cost of disbanding a clan. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
