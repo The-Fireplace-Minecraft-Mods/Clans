@@ -1,4 +1,4 @@
-package the_fireplace.clans.compat;
+package the_fireplace.clans.forge.compat;
 
 import com.github.alexthe666.iceandfire.api.event.DragonFireDamageWorldEvent;
 import com.github.alexthe666.iceandfire.api.event.DragonFireEvent;
