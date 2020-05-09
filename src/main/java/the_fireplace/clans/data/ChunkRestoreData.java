@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +56,12 @@ public final class ChunkRestoreData {
 		//Teleport players out of the chunk before restoring the data, to help prevent them from suffocating
 		for(EntityPlayerMP p: players)
 			EntityUtil.teleportSafelyToChunk(p, EntityUtil.findSafeChunkFor(p, new ChunkPosition(c), true));
+		List<EntityTNTPrimed> tnts = Lists.newArrayList();
+		c.getEntitiesOfTypeWithinAABB(EntityTNTPrimed.class,
+			new AxisAlignedBB(new BlockPos(c.getPos().getXStart(), 0, c.getPos().getZStart()), new BlockPos(c.getPos().getXEnd(), (c.getTopFilledSegment()+1) * 16, c.getPos().getZEnd())),
+			tnts, p -> true);
+		for(EntityTNTPrimed tnt: tnts)
+			c.getWorld().removeEntity(tnt);
 		for(BlockPos entry: removeBlocks)
 			c.getWorld().setBlockToAir(new BlockPos(entry.getX(), entry.getY(), entry.getZ()));
 		for(Map.Entry<BlockPos, String> entry: replaceBlocks.entrySet())

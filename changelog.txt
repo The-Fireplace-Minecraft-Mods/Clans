@@ -7,3 +7,4 @@ Changed the default clan prefix and updated the description to make it clearer h
 
 Fixes/Internal Changes:
 Moved the glowstone from /clan seechunk down a block to prevent triggering anticheat plugins when walking on them.
+Fixed TNT that was primed before rollback not getting removed on rollback
