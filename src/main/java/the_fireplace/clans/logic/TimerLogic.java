@@ -36,6 +36,8 @@ public class TimerLogic {
 
         if (ClansHelper.getConfig().getClanUpkeepDays() > 0 || ClansHelper.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
+                if(clan.isServer())
+                    continue;
                 if (ClansHelper.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
                     for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
