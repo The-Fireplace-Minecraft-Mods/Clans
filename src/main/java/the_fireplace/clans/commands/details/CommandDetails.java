@@ -123,7 +123,7 @@ public class CommandDetails extends ClanSubCommand {
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getName()).setStyle(TextStyles.RED));
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
-		if((senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) && !clan.isServer()) {
+		if((senderId != null && (members.contains(senderId) || admins.contains(senderId) || leaders.contains(senderId)) || sender instanceof MinecraftServer) && !clan.isServer()) {
 			if(ClansHelper.getConfig().getChargeRentDays() <= 0 && ClansHelper.getConfig().getClanUpkeepDays() <= 0)
 				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.details.disabled"));
 			double upkeep = 0;

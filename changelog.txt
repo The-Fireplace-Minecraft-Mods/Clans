@@ -5,3 +5,4 @@ Updated to use Grand Economy 2.0.0+
 Raid start cost is now formula-based
 
 Fixes/Internal Changes:
+Fixed upkeep and rent not displaying to admins and leaders of clans when viewing clan details
