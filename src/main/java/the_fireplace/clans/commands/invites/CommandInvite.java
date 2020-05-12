@@ -136,16 +136,16 @@ public class CommandInvite extends ClanSubCommand {
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (GameProfile profile : players)
 				playerNames.add(profile.getName());
-			return playerNames;
+			return getListOfStringsMatchingLastWord(args, playerNames);
 		} else if(args.length == 1 && (args[0].equalsIgnoreCase("revoke") || args[0].equalsIgnoreCase("r"))) {
 			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 			players.removeIf(gameProfile -> !ClanCache.getInvitedPlayers(selectedClan.getId()).contains(gameProfile.getId()));
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (GameProfile profile : players)
 				playerNames.add(profile.getName());
-			return playerNames;
+			return getListOfStringsMatchingLastWord(args, playerNames);
 		} else if(args.length == 0) {
-			return Lists.newArrayList("send", "revoke", "list");
+			return getListOfStringsMatchingLastWord(args, "send", "revoke", "list");
 		}
 		return Collections.emptyList();
 	}

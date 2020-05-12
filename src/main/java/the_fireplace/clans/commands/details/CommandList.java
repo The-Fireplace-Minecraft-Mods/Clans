@@ -120,7 +120,7 @@ public class CommandList extends ClanSubCommand {
 		else if(args.length == 2)
 			for(int i = 1; i < ClanDatabase.getClans().size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
 				ret.add(String.valueOf(i));
-		return ret;
+		return getListOfStringsMatchingLastWord(args, ret);
 	}
 
 	public static void listInvites(EntityPlayerMP sender, int page) {

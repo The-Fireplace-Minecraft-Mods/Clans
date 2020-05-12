@@ -66,7 +66,7 @@ public class OpCommandKick extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return Lists.newArrayList(ClanCache.getClanNames().keySet());
+			return getListOfStringsMatchingLastWord(args, ClanCache.getClanNames().keySet());
 		Clan target = ClanCache.getClanByName(args[0]);
 		if(target != null && args.length == 2) {
 			ArrayList<String> playerNames = Lists.newArrayList();
@@ -75,7 +75,7 @@ public class OpCommandKick extends OpClanSubCommand {
 				if (playerProf != null && !target.getMembers().get(player).equals(EnumRank.LEADER))
 					playerNames.add(playerProf.getName());
 			}
-			return playerNames;
+			return getListOfStringsMatchingLastWord(args, playerNames);
 		}
 		return Collections.emptyList();
 	}

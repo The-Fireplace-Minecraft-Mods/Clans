@@ -60,6 +60,6 @@ public class CommandSetDefault extends ClanSubCommand {
 		if(args.length == 1 && sender instanceof EntityPlayerMP)
 			for(Clan c: ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID()))
 				ret.add(c.getName());
-		return ret;
+		return getListOfStringsMatchingLastWord(args, ret);
 	}
 }

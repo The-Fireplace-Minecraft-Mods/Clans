@@ -79,6 +79,6 @@ public class CommandJoinRaid extends RaidSubCommand {
 		for(Clan clan: ClanDatabase.getClans())
 			if(sender.getCommandSenderEntity() != null && !clan.getMembers().containsKey(sender.getCommandSenderEntity().getUniqueID()) && !clan.isServer())
 				targetClanNames.add(clan.getName());
-		return args.length == 1 ? targetClanNames : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, targetClanNames) : Collections.emptyList();
 	}
 }

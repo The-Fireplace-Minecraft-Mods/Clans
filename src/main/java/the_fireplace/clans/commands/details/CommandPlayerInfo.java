@@ -65,7 +65,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(server.getPlayerProfileCache().getUsernames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerProfileCache().getUsernames()) : Collections.emptyList();
 	}
 
 	private void showPlayerClanDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {

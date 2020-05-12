@@ -83,6 +83,6 @@ public class CommandInviteRaid extends RaidSubCommand {
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)
 			playerNames.add(profile.getName());
-		return args.length == 1 ? playerNames : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();
 	}
 }

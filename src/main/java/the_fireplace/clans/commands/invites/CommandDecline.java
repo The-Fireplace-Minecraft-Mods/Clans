@@ -67,7 +67,7 @@ public class CommandDecline extends ClanSubCommand {
 			List<String> clanNames = Lists.newArrayList();
 			for(UUID c: PlayerData.getInvites(((EntityPlayerMP) sender).getUniqueID()))
 				clanNames.add(Objects.requireNonNull(ClanCache.getClanById(c)).getName());
-			return clanNames;
+			return getListOfStringsMatchingLastWord(args, clanNames);
 		} else if(args.length == 2)
 			return Collections.singletonList("block");
 		return Collections.emptyList();

@@ -1,6 +1,5 @@
 package the_fireplace.clans.commands.lock;
 
-import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -76,6 +75,6 @@ public class CommandGrantAccess extends ClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(server.getPlayerList().getOnlinePlayerNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getPlayerList().getOnlinePlayerNames()) : Collections.emptyList();
 	}
 }

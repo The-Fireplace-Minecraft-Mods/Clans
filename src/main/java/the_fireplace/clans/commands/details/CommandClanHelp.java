@@ -81,6 +81,6 @@ public class CommandClanHelp extends ClanSubCommand {
             comp.add(String.valueOf(i));
         comp.addAll(CommandClan.aliases.keySet());
         comp.addAll(CommandClan.commands.keySet());
-        return comp;
+        return getListOfStringsMatchingLastWord(args, comp);
     }
 }

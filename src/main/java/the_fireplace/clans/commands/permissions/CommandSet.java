@@ -72,6 +72,6 @@ public class CommandSet extends ClanSubCommand {
 			ret.add("true");
 			ret.add("false");
 		}
-		return ret;
+		return getListOfStringsMatchingLastWord(args, ret);
 	}
 }

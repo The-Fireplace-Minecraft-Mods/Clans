@@ -1,6 +1,5 @@
 package the_fireplace.clans.commands.lock;
 
-import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -82,7 +81,7 @@ public class CommandLock extends ClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return Lists.newArrayList("private", "clan", "open");
+			return getListOfStringsMatchingLastWord(args, "private", "clan", "open");
 		return Collections.emptyList();
 	}
 }

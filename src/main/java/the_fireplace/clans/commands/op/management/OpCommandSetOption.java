@@ -67,9 +67,9 @@ public class OpCommandSetOption extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		List<String> ret = Lists.newArrayList();
 		if(args.length == 1)
-			return Lists.newArrayList(ClanCache.getClanNames().keySet());
+			return getListOfStringsMatchingLastWord(args, ClanCache.getClanNames().keySet());
 		else if(args.length == 2)
-			return Lists.newArrayList(Clan.defaultOptions.keySet());
+			return getListOfStringsMatchingLastWord(args, Clan.defaultOptions.keySet());
 		return ret;
 	}
 }

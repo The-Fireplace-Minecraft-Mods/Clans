@@ -77,6 +77,6 @@ public class CommandRaidHelp extends RaidSubCommand {
             comp.add(String.valueOf(i));
         comp.addAll(CommandRaid.aliases.keySet());
         comp.addAll(CommandRaid.commands.keySet());
-        return comp;
+        return getListOfStringsMatchingLastWord(args, comp);
     }
 }

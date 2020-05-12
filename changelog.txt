@@ -6,3 +6,4 @@ Raid start cost is now formula-based
 
 Fixes/Internal Changes:
 Fixed upkeep and rent not displaying to admins and leaders of clans when viewing clan details
+Fixed tab completions not using what you typed when completing

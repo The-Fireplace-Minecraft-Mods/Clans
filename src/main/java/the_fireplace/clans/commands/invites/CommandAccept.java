@@ -68,7 +68,7 @@ public class CommandAccept extends ClanSubCommand {
 			List<String> clanNames = Lists.newArrayList();
 			for(UUID c: PlayerData.getInvites(((EntityPlayerMP) sender).getUniqueID()))
 				clanNames.add(Objects.requireNonNull(ClanCache.getClanById(c)).getName());
-			return clanNames;
+			return getListOfStringsMatchingLastWord(args, clanNames);
 		}
 		return Collections.emptyList();
 	}

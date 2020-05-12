@@ -61,5 +61,4 @@ public class CommandLeave extends ClanSubCommand {
 		} else //Internal error because this should be unreachable
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.error", selectedClan.getName()).setStyle(TextStyles.RED));
 	}
-
 }

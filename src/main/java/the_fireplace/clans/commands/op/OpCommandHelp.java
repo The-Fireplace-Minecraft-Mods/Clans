@@ -72,6 +72,6 @@ public class OpCommandHelp extends OpClanSubCommand {
             comp.add(String.valueOf(i));
         comp.addAll(CommandOpClan.aliases.keySet());
         comp.addAll(CommandOpClan.commands.keySet());
-        return comp;
+        return getListOfStringsMatchingLastWord(args, comp);
     }
 }

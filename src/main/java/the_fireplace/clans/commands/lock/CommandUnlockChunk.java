@@ -96,7 +96,7 @@ public class CommandUnlockChunk extends ClanSubCommand {
 					for (UUID member : chunkClan.getMembers().keySet())
 						completions.add(Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(member)).getName());
 			}
-			return completions;
+			return getListOfStringsMatchingLastWord(args, completions);
 		}
 		return Collections.emptyList();
 	}

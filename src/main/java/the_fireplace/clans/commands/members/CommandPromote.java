@@ -61,6 +61,6 @@ public class CommandPromote extends ClanSubCommand {
 			if(playerProf != null && !selectedClan.getMembers().get(player).equals(EnumRank.LEADER))
 				playerNames.add(playerProf.getName());
 		}
-		return args.length == 1 ? playerNames : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();
 	}
 }
