@@ -2,6 +2,7 @@ package the_fireplace.clans.forge.event;
 
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.ClansHelper;
@@ -31,7 +32,7 @@ public class PlayerEvents {
         PlayerEventLogic.onPlayerChangedDimension(event.player);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerChat(ServerChatEvent event) {
         if(event.getPlayer() != null) {
             if(ClanCache.clanChattingPlayers.containsKey(event.getPlayer().getUniqueID())) {
