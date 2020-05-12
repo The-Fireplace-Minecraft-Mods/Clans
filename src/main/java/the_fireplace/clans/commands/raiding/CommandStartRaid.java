@@ -3,8 +3,8 @@ package the_fireplace.clans.commands.raiding;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.model.EnumRank;
@@ -44,7 +44,7 @@ public class CommandStartRaid extends RaidSubCommand {
 				if(clanPlayers.size() >= raid.getAttackerCount() - ClansHelper.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
-							long raidCost = ClansHelper.getConfig().getStartRaidCost();
+							double raidCost = ClansHelper.getConfig().getStartRaidCost();
 							if (ClansHelper.getConfig().isStartRaidMultiplier())
 								raidCost *= raid.getTarget().getClaimCount();
 							raid.setCost(raidCost);
@@ -52,7 +52,7 @@ public class CommandStartRaid extends RaidSubCommand {
 								RaidingParties.initRaid(raid.getTarget());
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), ClansHelper.getPaymentHandler().getCurrencyString(raidCost)).setStyle(TextStyles.RED));
+								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), ClansHelper.getPaymentHandler().getFormattedCurrency(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible

@@ -1,6 +1,6 @@
 Additions:
 
 Changes:
+Updated to use Grand Economy 2.0.0+
 
 Fixes/Internal Changes:
-Fixed server clans charging rent and getting disbanded due to lack of upkeep

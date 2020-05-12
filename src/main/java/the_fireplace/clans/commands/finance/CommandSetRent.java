@@ -41,14 +41,14 @@ public class CommandSetRent extends ClanSubCommand {
 		if(ClansHelper.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
 		if(!selectedClan.isServer()) {
-			int newRent = Integer.parseInt(args[0]);
+			double newRent = parseDouble(args[0]);
 			if (newRent >= 0) {
-				long maxRent = (long) FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), selectedClan, 0);
+				double maxRent = FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), selectedClan, 0);
 				if (maxRent <= 0 || newRent <= maxRent) {
 					selectedClan.setRent(newRent);
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getName(), selectedClan.getRent()).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getName(), ClansHelper.getPaymentHandler().getCurrencyString(maxRent)).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getName(), ClansHelper.getPaymentHandler().getFormattedCurrency(maxRent)).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 		} else

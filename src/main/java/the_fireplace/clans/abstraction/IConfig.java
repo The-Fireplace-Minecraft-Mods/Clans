@@ -64,10 +64,10 @@ public interface IConfig {
     boolean isTeleportToRaidStart();
 
     //Costs, rewards, and multipliers
-    int getFormClanCost();
-    int getFormClanBankAmount();
+    double getFormClanCost();
+    double getFormClanBankAmount();
     String getClaimChunkCostFormula();
-    int getReducedChunkClaimCost();
+    double getReducedChunkClaimCost();
     int getReducedCostClaimCount();
     int getStartRaidCost();
     boolean isStartRaidMultiplier();

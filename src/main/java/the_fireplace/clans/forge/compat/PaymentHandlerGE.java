@@ -1,8 +1,6 @@
 package the_fireplace.clans.forge.compat;
 
-import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IPaymentHandler;
-import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import java.util.UUID;
@@ -10,17 +8,13 @@ import java.util.UUID;
 public class PaymentHandlerGE implements IPaymentHandler {
 
 	@Override
-	public boolean deductAmount(long amount, UUID account) {
-		boolean ret = GrandEconomyApi.takeFromBalance(account, amount, null);
-		if(ret && ClanCache.getClanById(account) != null)
-			if(Boolean.FALSE.equals(GrandEconomyApi.forceSave(account, false)))
-				Clans.getLogger().warn("Unable to save clan account for clan with ID: {}", account.toString());
-		return ret;
+	public boolean deductAmount(double amount, UUID account) {
+		return GrandEconomyApi.takeFromBalance(account, amount, null);
 	}
 
 	@Override
-	public long deductPartialAmount(long amount, UUID account) {
-		long balance = getBalance(account);
+	public double deductPartialAmount(double amount, UUID account) {
+		double balance = getBalance(account);
 		if(balance > amount) {
 			deductAmount(amount, account);
 			return 0;
@@ -31,31 +25,22 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	}
 
 	@Override
-	public boolean addAmount(long amount, UUID account) {
-		GrandEconomyApi.addToBalance(account, amount, null);
-		if(ClanCache.getClanById(account) != null)
-			if(Boolean.FALSE.equals(GrandEconomyApi.forceSave(account, false)))
-				Clans.getLogger().warn("Unable to save clan account for clan with ID: {}", account.toString());
-		return true;
+	public boolean addAmount(double amount, UUID account) {
+		return GrandEconomyApi.addToBalance(account, amount, null);
 	}
 
 	@Override
-	public void ensureAccountExists(UUID account) {
-		GrandEconomyApi.ensureAccountExists(account, null);
-	}
-
-	@Override
-	public long getBalance(UUID account) {
+	public double getBalance(UUID account) {
 		return GrandEconomyApi.getBalance(account, null);
 	}
 
 	@Override
-	public String getCurrencyName(long amount) {
+	public String getCurrencyName(double amount) {
 		return GrandEconomyApi.getCurrencyName(amount);
 	}
 
 	@Override
-	public String getCurrencyString(long amount) {
-		return GrandEconomyApi.toString(amount);
+	public String getFormattedCurrency(double amount) {
+		return GrandEconomyApi.getFormattedCurrency(amount);
 	}
 }

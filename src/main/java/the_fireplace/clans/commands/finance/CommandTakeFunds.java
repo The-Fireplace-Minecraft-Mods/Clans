@@ -40,11 +40,11 @@ public class CommandTakeFunds extends ClanSubCommand {
 		if(!ClansHelper.getConfig().isLeaderWithdrawFunds())
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender.getUniqueID(), "commands.clan.takefunds.disabled"));
 		if(!selectedClan.isServer()) {
-			long amount = Long.parseLong(args[0]);
+			double amount = parseDouble(args[0]);
 			if(ClansHelper.getPaymentHandler().deductAmount(amount, selectedClan.getId())) {
 				if(ClansHelper.getPaymentHandler().addAmount(amount, sender.getUniqueID())) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", ClansHelper.getPaymentHandler().getCurrencyString(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
-					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.takefunds.taken", sender.getDisplayNameString(), ClansHelper.getPaymentHandler().getCurrencyString(amount), selectedClan.getName());
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.takefunds.success", ClansHelper.getPaymentHandler().getFormattedCurrency(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
+					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.takefunds.taken", sender.getDisplayNameString(), ClansHelper.getPaymentHandler().getFormattedCurrency(amount), selectedClan.getName());
 				} else {
 					ClansHelper.getPaymentHandler().addAmount(amount, selectedClan.getId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_player_econ_acct").setStyle(TextStyles.RED));

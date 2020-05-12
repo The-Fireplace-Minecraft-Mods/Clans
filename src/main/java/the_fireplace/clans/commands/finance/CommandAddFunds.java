@@ -1,6 +1,7 @@
 package the_fireplace.clans.commands.finance;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.ClansHelper;
@@ -37,19 +38,19 @@ public class CommandAddFunds extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!selectedClan.isServer()) {
-			long amount;
+			double amount;
 			try {
-				amount = Long.parseLong(args[0]);
+				amount = parseDouble(args[0]);
 				if(amount < 0)
 					amount = 0;
-			} catch(NumberFormatException e) {
+			} catch(NumberFormatException|CommandException e) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 				return;
 			}
 			if(ClansHelper.getPaymentHandler().deductAmount(amount, sender.getUniqueID())) {
 				if(ClansHelper.getPaymentHandler().addAmount(amount, selectedClan.getId())) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", ClansHelper.getPaymentHandler().getCurrencyString(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
-					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), ClansHelper.getPaymentHandler().getCurrencyString(amount), selectedClan.getName());
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", ClansHelper.getPaymentHandler().getFormattedCurrency(amount), selectedClan.getName()).setStyle(TextStyles.GREEN));
+					selectedClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), ClansHelper.getPaymentHandler().getFormattedCurrency(amount), selectedClan.getName());
 				} else {
 					ClansHelper.getPaymentHandler().addAmount(amount, sender.getUniqueID());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));

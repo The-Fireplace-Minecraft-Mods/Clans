@@ -46,7 +46,7 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private long rent = 0;
+    private double rent = 0;
     private int wins = 0, losses = 0;
     private long shield = ClansHelper.getConfig().getInitialShield() * 60;
     private long rentTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
@@ -106,7 +106,6 @@ public class Clan {
             this.clanId = UUID.randomUUID();
         } while(!ClanDatabase.addClan(this.clanId, this));
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
-        ClansHelper.getPaymentHandler().ensureAccountExists(clanId);
 
         // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
         if (ClansHelper.getPaymentHandler().getBalance(clanId) > 0)
@@ -217,7 +216,7 @@ public class Clan {
         this.homeZ = obj.get("homeZ").getAsFloat();
         this.hasHome = obj.get("hasHome").getAsBoolean();
         this.homeDimension = obj.get("homeDimension").getAsInt();
-        this.rent = obj.get("rent").getAsLong();
+        this.rent = obj.get("rent").getAsDouble();
         this.wins = obj.get("wins").getAsInt();
         this.losses = obj.get("losses").getAsInt();
         this.shield = obj.get("shield").getAsLong();
@@ -263,9 +262,6 @@ public class Clan {
                 options.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
             }
         }
-        //TODO remove this legacy compat in the 1.15.2 port and Clans 1.7
-        if(obj.has("isOpclan") || obj.has("isLimitless") || obj.has("isServer"))
-            this.options.put("server", (obj.has("isOpclan") ? obj.get("isOpclan").getAsBoolean() : obj.has("isLimitless") ? obj.get("isLimitless").getAsBoolean() : obj.get("isServer").getAsBoolean()) ? 1 : 0);
 
         addonData = JsonHelper.getAddonData(obj);
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
@@ -324,17 +320,13 @@ public class Clan {
         return Collections.unmodifiableList(leaders);
     }
 
-    public long payLeaders(long totalAmount) {
+    public double payLeaders(double totalAmount) {
         List<UUID> leaders = getLeaders();
         if(leaders.isEmpty())
             return totalAmount;
-        long remainder = totalAmount % leaders.size();
         totalAmount /= leaders.size();
-        for(UUID leader: leaders) {
+        for(UUID leader: leaders)
             ClansHelper.getPaymentHandler().addAmount(totalAmount, leader);
-            if(remainder-- > 0)
-                ClansHelper.getPaymentHandler().addAmount(1, leader);
-        }
         return 0;
     }
 
@@ -460,15 +452,15 @@ public class Clan {
         return options.get("mobdamage") == 1;
     }
 
-    public long getClaimCost() {
+    public double getClaimCost() {
         return getClaimCost(getClaimCount());
     }
 
     /**
      * Gets the cost of one claim when the clan has a certain number of claims
      */
-    public long getClaimCost(int currentClaimCount) {
-        return options.get("claimcost") < 0 ? (currentClaimCount < ClansHelper.getConfig().getReducedCostClaimCount() ? ClansHelper.getConfig().getReducedChunkClaimCost() : (long)FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
+    public double getClaimCost(int currentClaimCount) {
+        return options.get("claimcost") < 0 ? (currentClaimCount < ClansHelper.getConfig().getReducedCostClaimCount() ? ClansHelper.getConfig().getReducedChunkClaimCost() : FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
     }
 
     public boolean hasCustomClaimCost() {
@@ -579,11 +571,11 @@ public class Clan {
         return false;
     }
 
-    public long getRent() {
+    public double getRent() {
         return rent;
     }
 
-    public void setRent(long rent) {
+    public void setRent(double rent) {
         this.rent = rent;
         markChanged();
     }
@@ -685,8 +677,8 @@ public class Clan {
             multiplier = eval;
     }
 
-    public long getDisbandCost() {
-        return (long)FormulaParser.eval(ClansHelper.getConfig().getDisbandFeeFormula(), this, 1.0);
+    public double getDisbandCost() {
+        return FormulaParser.eval(ClansHelper.getConfig().getDisbandFeeFormula(), this, 1.0);
     }
 
     public int getColor() {
@@ -852,21 +844,13 @@ public class Clan {
         if(isServer())
             return;
 
-        long distFunds = ClansHelper.getPaymentHandler().getBalance(this.getId());
-        long rem;
+        double distFunds = ClansHelper.getPaymentHandler().getBalance(this.getId());
         distFunds += FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0) * this.getClaimCount();
-        if (ClansHelper.getConfig().isLeaderRecieveDisbandFunds()) {
+        if (ClansHelper.getConfig().isLeaderRecieveDisbandFunds())
             distFunds = this.payLeaders(distFunds);
-            rem = distFunds % this.getMemberCount();
-            distFunds /= this.getMemberCount();
-        } else {
-            rem = this.payLeaders(distFunds % this.getMemberCount());
-            distFunds /= this.getMemberCount();
-        }
+        distFunds /= this.getMemberCount();
         for (UUID member : this.getMembers().keySet()) {
-            ClansHelper.getPaymentHandler().ensureAccountExists(member);
-            if (!ClansHelper.getPaymentHandler().addAmount(distFunds + (rem-- > 0 ? 1 : 0), member))
-                rem += this.payLeaders(distFunds);
+            ClansHelper.getPaymentHandler().addAmount(distFunds, member);
             PlayerData.updateDefaultClan(member, getId());
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions

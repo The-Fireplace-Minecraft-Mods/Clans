@@ -126,11 +126,11 @@ public class CommandDetails extends ClanSubCommand {
 		if((senderId != null && members.contains(senderId) || sender instanceof MinecraftServer) && !clan.isServer()) {
 			if(ClansHelper.getConfig().getChargeRentDays() <= 0 && ClansHelper.getConfig().getClanUpkeepDays() <= 0)
 				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.details.disabled"));
-			long upkeep = 0;
-			long rent = 0;
+			double upkeep = 0;
+			double rent = 0;
 			if(ClansHelper.getConfig().getClanUpkeepDays() > 0) {
 				upkeep += FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
-				String upkeepStr = TranslationUtil.getStringTranslation("commands.clan.details.upkeep_formula", FormulaParser.getFilteredFormula(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan), ClansHelper.getPaymentHandler().getCurrencyString(upkeep));
+				String upkeepStr = TranslationUtil.getStringTranslation("commands.clan.details.upkeep_formula", FormulaParser.getFilteredFormula(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan), ClansHelper.getPaymentHandler().getFormattedCurrency(upkeep));
 				if(upkeep > 0) {
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", upkeepStr, ClansHelper.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
@@ -139,17 +139,17 @@ public class CommandDetails extends ClanSubCommand {
 			if(ClansHelper.getConfig().getChargeRentDays() > 0) {
 				rent += selectedClan.getRent();
 				if(rent > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", ClansHelper.getPaymentHandler().getCurrencyString(rent*selectedClan.getMemberCount()), ClansHelper.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
-                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", ClansHelper.getPaymentHandler().getCurrencyString(rent), ClansHelper.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", ClansHelper.getPaymentHandler().getFormattedCurrency(rent*selectedClan.getMemberCount()), ClansHelper.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", ClansHelper.getPaymentHandler().getFormattedCurrency(rent), ClansHelper.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (selectedClan.getNextRentTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(upkeep > 0 && rent > 0 && leaders.contains(senderId)) {
 				upkeep /= ClansHelper.getConfig().getClanUpkeepDays();
 				rent /= ClansHelper.getConfig().getChargeRentDays();
-				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? ClansHelper.getPaymentHandler().getCurrencyString(rent-upkeep) : '+'+ ClansHelper.getPaymentHandler().getCurrencyString(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? ClansHelper.getPaymentHandler().getFormattedCurrency(rent-upkeep) : '+'+ ClansHelper.getPaymentHandler().getFormattedCurrency(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
 				if(upkeep > rent) {
-					long maxRent = (long)FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), clan, 0);
+					double maxRent = FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), clan, 0);
 					if(selectedClan.getRent() < maxRent) {
 						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.increase_rent", maxRent/ ClansHelper.getConfig().getChargeRentDays() < upkeep ? maxRent : ClansHelper.getConfig().getChargeRentDays() *upkeep/selectedClan.getMemberCount()).setStyle(TextStyles.YELLOW));
 					} else

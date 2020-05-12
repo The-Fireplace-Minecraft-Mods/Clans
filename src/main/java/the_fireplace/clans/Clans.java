@@ -225,6 +225,7 @@ public final class Clans {
         public static String[] lockableBlocks = {
                 "minecraft:chest",
                 "minecraft:furnace",
+                "minecraft:lit_furnace",
                 "minecraft:jukebox",
                 "minecraft:white_shulker_box",
                 "minecraft:orange_shulker_box",
@@ -319,16 +320,16 @@ public final class Clans {
         public static boolean teleportOnRaidStart = true;
         //Costs, rewards, and multipliers
         @Config.Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int formClanCost = 0;
+        @Config.RangeDouble(min=0)
+        public static double formClanCost = 0;
         @Config.Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int formClanBankAmount = 0;
+        @Config.RangeDouble(min=0)
+        public static double formClanBankAmount = 0;
         @Config.Comment("Value or formula for cost of claiming a chunk. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String claimChunkCostFormula = "0";
         @Config.Comment("Reduced cost of claiming a chunk for the first x claims. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int reducedClaimChunkCost = 0;
+        @Config.RangeDouble(min=0)
+        public static double reducedClaimChunkCost = 0;
         @Config.Comment("Use the reduced cost for this many claims. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int reducedCostClaimCount = 0;
@@ -561,12 +562,12 @@ public final class Clans {
         }
 
         @Override
-        public int getFormClanCost() {
+        public double getFormClanCost() {
             return formClanCost;
         }
 
         @Override
-        public int getFormClanBankAmount() {
+        public double getFormClanBankAmount() {
             return formClanBankAmount;
         }
 
@@ -576,7 +577,7 @@ public final class Clans {
         }
 
         @Override
-        public int getReducedChunkClaimCost() {
+        public double getReducedChunkClaimCost() {
             return reducedClaimChunkCost;
         }
 

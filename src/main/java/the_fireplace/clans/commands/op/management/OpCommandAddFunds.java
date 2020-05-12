@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.op.management;
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.ClansHelper;
@@ -41,17 +42,17 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			if(!c.isServer()) {
-				long amount;
+				double amount;
 				try {
-					amount = Long.parseLong(args[1]);
+					amount = parseDouble(args[1]);
 					if (amount < 0)
 						amount = 0;
-				} catch (NumberFormatException e) {
+				} catch (NumberFormatException | NumberInvalidException e) {
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 					return;
 				}
 				if (ClansHelper.getPaymentHandler().addAmount(amount, c.getId()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", ClansHelper.getPaymentHandler().getCurrencyString(amount), c.getName()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", ClansHelper.getPaymentHandler().getFormattedCurrency(amount), c.getName()).setStyle(TextStyles.GREEN));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else

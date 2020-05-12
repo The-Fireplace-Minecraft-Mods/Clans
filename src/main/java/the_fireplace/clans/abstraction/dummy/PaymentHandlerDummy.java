@@ -6,37 +6,32 @@ import java.util.UUID;
 
 public class PaymentHandlerDummy implements IPaymentHandler {
 	@Override
-	public boolean deductAmount(long amount, UUID account) {
+	public boolean deductAmount(double amount, UUID account) {
 		return true;
 	}
 
 	@Override
-	public long deductPartialAmount(long amount, UUID account) {
+	public double deductPartialAmount(double amount, UUID account) {
 		return 0;
 	}
 
 	@Override
-	public boolean addAmount(long amount, UUID account) {
+	public boolean addAmount(double amount, UUID account) {
 		return true;
 	}
 
 	@Override
-	public void ensureAccountExists(UUID account) {
-
-	}
-
-	@Override
-	public long getBalance(UUID account) {
+	public double getBalance(UUID account) {
 		return 0;
 	}
 
 	@Override
-	public String getCurrencyName(long amount) {
+	public String getCurrencyName(double amount) {
 		return "";
 	}
 
 	@Override
-	public String getCurrencyString(long amount) {
+	public String getFormattedCurrency(double amount) {
 		return "";
 	}
 }

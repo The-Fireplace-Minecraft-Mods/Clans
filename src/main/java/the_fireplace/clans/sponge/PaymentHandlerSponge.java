@@ -25,29 +25,29 @@ public class PaymentHandlerSponge implements IPaymentHandler {
     }
 
     @Override
-    public long getBalance(UUID uuid) {
+    public double getBalance(UUID uuid) {
         if(getEcon() != null && getEcon().getOrCreateAccount(uuid).isPresent())
-            return getEcon().getOrCreateAccount(uuid).get().getBalance(getEcon().getDefaultCurrency()).longValue();
+            return getEcon().getOrCreateAccount(uuid).get().getBalance(getEcon().getDefaultCurrency()).doubleValue();
         return 0;
     }
 
     @Override
-    public boolean addAmount(long amount, UUID uuid) {
+    public boolean addAmount(double amount, UUID uuid) {
         if(getEcon() != null && getEcon().getOrCreateAccount(uuid).isPresent())
             return getEcon().getOrCreateAccount(uuid).get().deposit(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansHelper.MODID)).getResult().equals(ResultType.SUCCESS);
         return false;
     }
 
     @Override
-    public boolean deductAmount(long amount, UUID uuid) {
+    public boolean deductAmount(double amount, UUID uuid) {
         if(getEcon() != null && getEcon().getOrCreateAccount(uuid).isPresent())
             return getEcon().getOrCreateAccount(uuid).get().withdraw(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansHelper.MODID)).getResult().equals(ResultType.SUCCESS);
         return false;
     }
 
     @Override
-    public long deductPartialAmount(long amount, UUID account) {
-        long balance = getBalance(account);
+    public double deductPartialAmount(double amount, UUID account) {
+        double balance = getBalance(account);
         if(balance > amount) {
             deductAmount(amount, account);
             return 0;
@@ -58,18 +58,12 @@ public class PaymentHandlerSponge implements IPaymentHandler {
     }
 
     @Override
-    public String getCurrencyName(long amount) {
+    public String getCurrencyName(double amount) {
         return getEcon() == null ? "" : (amount == 1 ? getEcon().getDefaultCurrency().getDisplayName().toPlain() : getEcon().getDefaultCurrency().getPluralDisplayName().toPlain());
     }
 
     @Override
-    public String getCurrencyString(long amount) {
+    public String getFormattedCurrency(double amount) {
         return getEcon() == null ? "" : getEcon().getDefaultCurrency().format(BigDecimal.valueOf(amount)).toPlain();
-    }
-
-    @Override
-    public void ensureAccountExists(UUID uuid) {
-        if(getEcon() != null)
-            getEcon().getOrCreateAccount(uuid);
     }
 }

@@ -62,9 +62,9 @@ public class CommandList extends ClanSubCommand {
 				switch (args[0]) {
 					case "money":
 					case "$":
-						clans.sort(Comparator.comparingLong(clan -> ClansHelper.getPaymentHandler().getBalance(clan.getId())));
+						clans.sort(Comparator.comparingDouble(clan -> ClansHelper.getPaymentHandler().getBalance(clan.getId())));
 						for (Clan clan : clans)
-							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansHelper.getPaymentHandler().getBalance(clan.getId()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansHelper.getPaymentHandler().getFormattedCurrency(ClansHelper.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 						break;
 					case "land":
 					case "claims":

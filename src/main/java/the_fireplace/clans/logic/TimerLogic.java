@@ -58,7 +58,7 @@ public class TimerLogic {
                 }
                 if (ClansHelper.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
-                    long upkeep = (long)FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
+                    double upkeep = FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
                     if(ClansHelper.getConfig().isDisbandNoUpkeep() && upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId()) && upkeep <= ClansHelper.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
                         while(upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId())) {
                             ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));

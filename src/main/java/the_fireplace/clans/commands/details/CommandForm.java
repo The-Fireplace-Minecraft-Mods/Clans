@@ -52,7 +52,7 @@ public class CommandForm extends ClanSubCommand {
 						PlayerData.setDefaultClan(sender.getUniqueID(), c.getId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", ClansHelper.getPaymentHandler().getCurrencyString(ClansHelper.getConfig().getFormClanCost())).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", ClansHelper.getPaymentHandler().getFormattedCurrency(ClansHelper.getConfig().getFormClanCost())).setStyle(TextStyles.RED));
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.already_in_clan").setStyle(TextStyles.RED));

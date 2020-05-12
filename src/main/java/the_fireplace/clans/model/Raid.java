@@ -21,10 +21,10 @@ import java.util.UUID;
 
 public class Raid {
 	private Set<UUID> initAttackers, initDefenders;
-	private Map<UUID, Integer> attackers, defenders;
-	private Clan target;
+	private final Map<UUID, Integer> attackers, defenders;
+	private final Clan target;
 	private int remainingSeconds = ClansHelper.getConfig().getMaxRaidDuration() * 60;
-	private long cost;
+	private double cost;
 	private boolean isActive;
 
 	public Raid(EntityPlayerMP starter, Clan targetClan){
@@ -39,16 +39,11 @@ public class Raid {
 
 	public void raiderVictory() {
 		RaidingParties.endRaid(target, true);
-		long reward = (long)FormulaParser.eval(ClansHelper.getConfig().getWinRaidAmountFormula(), target, this, 0);
+		double reward = FormulaParser.eval(ClansHelper.getConfig().getWinRaidAmountFormula(), target, this, 0);
 		reward -= ClansHelper.getPaymentHandler().deductPartialAmount(reward, target.getId());
-		long remainder = reward % initAttackers.size();
 		reward /= initAttackers.size();
-		for(UUID player: initAttackers) {
-			ClansHelper.getPaymentHandler().ensureAccountExists(player);
+		for(UUID player: initAttackers)
 			ClansHelper.getPaymentHandler().addAmount(reward, player);
-			if(remainder-- > 0)
-				ClansHelper.getPaymentHandler().addAmount(1, player);
-		}
 		target.addShield(ClansHelper.getConfig().getDefenseShield() * 60);
 		target.addLoss();
 
@@ -209,7 +204,7 @@ public class Raid {
 			raiderVictory();
 	}
 
-	public long getCost() {
+	public double getCost() {
 		return cost;
 	}
 
@@ -224,7 +219,7 @@ public class Raid {
 		initDefenders = Collections.unmodifiableSet(defenders.keySet());
 	}
 
-	public void setCost(long cost) {
+	public void setCost(double cost) {
 		this.cost = cost;
 	}
 
