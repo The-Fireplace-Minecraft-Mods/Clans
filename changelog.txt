@@ -2,5 +2,6 @@ Additions:
 
 Changes:
 Updated to use Grand Economy 2.0.0+
+Raid start cost is now formula-based
 
 Fixes/Internal Changes:

@@ -333,11 +333,8 @@ public final class Clans {
         @Config.Comment("Use the reduced cost for this many claims. This requires a compatible economy to be installed.")
         @Config.RangeInt(min=0)
         public static int reducedCostClaimCount = 0;
-        @Config.Comment("Cost of forming a new raiding party. This requires a compatible economy to be installed.")
-        @Config.RangeInt(min=0)
-        public static int startRaidCost = 0;
-        @Config.Comment("Multiply the cost of starting a raid by the number of enemy claims. This requires a compatible economy to be installed.")
-        public static boolean startRaidMultiplier = true;
+        @Config.Comment("Value or formula for cost of starting a raid. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
+        public static String startRaidCostFormula = "0*c";
         @Config.Comment("Value or formula for reward for winning a raid. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public static String winRaidAmountFormula = "0*m";
         @Config.Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")
@@ -587,13 +584,8 @@ public final class Clans {
         }
 
         @Override
-        public int getStartRaidCost() {
-            return startRaidCost;
-        }
-
-        @Override
-        public boolean isStartRaidMultiplier() {
-            return startRaidMultiplier;
+        public String getStartRaidCostFormula() {
+            return startRaidCostFormula;
         }
 
         @Override

@@ -69,8 +69,7 @@ public interface IConfig {
     String getClaimChunkCostFormula();
     double getReducedChunkClaimCost();
     int getReducedCostClaimCount();
-    int getStartRaidCost();
-    boolean isStartRaidMultiplier();
+    String getStartRaidCostFormula();
     String getWinRaidAmountFormula();
     int getClanUpkeepDays();
     String getClanUpkeepCostFormula();

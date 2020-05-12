@@ -9,6 +9,7 @@ import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.model.Raid;
+import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -44,9 +45,7 @@ public class CommandStartRaid extends RaidSubCommand {
 				if(clanPlayers.size() >= raid.getAttackerCount() - ClansHelper.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
-							double raidCost = ClansHelper.getConfig().getStartRaidCost();
-							if (ClansHelper.getConfig().isStartRaidMultiplier())
-								raidCost *= raid.getTarget().getClaimCount();
+							double raidCost = FormulaParser.eval(ClansHelper.getConfig().getStartRaidCostFormula(), raid.getTarget(), raid, 0);
 							raid.setCost(raidCost);
 							if (ClansHelper.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
 								RaidingParties.initRaid(raid.getTarget());

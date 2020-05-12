@@ -43,7 +43,7 @@ public final class FormulaParser {
         formula = formula.replaceAll("m", String.valueOf(ClansHelper.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
         formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(clan.getId())));
         formula = formula.replaceAll("p", String.valueOf(clan.getMemberCount()));
-        formula = formula.replaceAll("d", String.valueOf(raid != null ? raid.getInitDefenders().size() : clan.getOnlineSurvivalMembers().size()));
+        formula = formula.replaceAll("d", String.valueOf(raid != null && !raid.getInitDefenders().isEmpty() ? raid.getInitDefenders().size() : clan.getOnlineSurvivalMembers().size()));
         formula = formula.replaceAll("w", String.valueOf(raid != null ? raid.getPartyWlr() : 1));
         return formula;
     }
