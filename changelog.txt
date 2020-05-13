@@ -10,3 +10,4 @@ Fixed upkeep and rent not displaying to admins and leaders of clans when viewing
 Fixed tab completions not using what you typed when completing
 Fixed broken error message when the player uses /clan NOT_IN_THIS_CLAN command
 Fixed the details command not showing upkeep correctly
+Fixed the error messages when you can't break or interact with a locked block

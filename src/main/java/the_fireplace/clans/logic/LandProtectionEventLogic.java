@@ -60,7 +60,8 @@ public class LandProtectionEventLogic {
                     IBlockState targetState = world.getBlockState(pos);
                     if(chunkClan.isLocked(pos) && !chunkClan.isLockOwner(pos, breaker.getUniqueID()) && !chunkClan.hasPerm("lockadmin", breaker.getUniqueID())) {
                         if(showMessage)
-                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", chunkClan.getLockOwner(pos)).setStyle(TextStyles.RED));
+                            //noinspection ConstantConditions
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                         return true;
                     }
                     if (!ClanCache.isClaimAdmin((EntityPlayerMP) breaker)
@@ -83,7 +84,8 @@ public class LandProtectionEventLogic {
                         }
                     } else if(chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), isContainer(world, pos, targetState, null) ? "access" : "build")) {
                         if(showMessage)
-                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked").setStyle(TextStyles.RED));
+                            //noinspection ConstantConditions
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                         return true;
                     }
                 }
@@ -187,7 +189,8 @@ public class LandProtectionEventLogic {
                     //Only bypass lock if there is an active raid, stealing is enabled, and the thief is either a raider or a member of the clan (It doesn't make sense to allow raiders to bypass the lock but not the clan members)
                     if(chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !ClansHelper.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
                         if(!chunkClan.hasLockAccess(pos, player.getUniqueID(), isContainer ? "access" : "interact")) {
-                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked").setStyle(TextStyles.RED));
+                            //noinspection ConstantConditions
+                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                             notifyClientOfCancelledInteract(world, pos, player, targetState, hand);
                             return true;
                         } else
