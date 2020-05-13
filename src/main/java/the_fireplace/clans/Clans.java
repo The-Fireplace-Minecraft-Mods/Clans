@@ -31,7 +31,7 @@ import java.util.UUID;
 import static the_fireplace.clans.ClansHelper.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = ClansHelper.MODNAME, version = ClansHelper.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi;required-after:forge@[14.23.5.2817,)")
+@Mod(modid = MODID, name = ClansHelper.MODNAME, version = ClansHelper.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi;required-after:forge@[14.23.5.2817,)", certificateFingerprint = "${fingerprint}")
 public final class Clans {
     @Mod.Instance(MODID)
     public static Clans instance;

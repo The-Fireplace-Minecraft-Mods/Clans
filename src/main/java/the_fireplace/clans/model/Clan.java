@@ -46,7 +46,7 @@ public class Clan {
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
     private int homeDimension;
-    private double rent = 0;
+    private double rent;
     private int wins = 0, losses = 0;
     private long shield = ClansHelper.getConfig().getInitialShield() * 60;
     private long rentTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
@@ -92,7 +92,7 @@ public class Clan {
 
     private Map<String, Object> addonData = Maps.newHashMap();
 
-    public Clan(String clanName, UUID leader){
+    public Clan(String clanName, UUID leader) {
         this.clanName = TextStyles.stripFormatting(clanName);
         this.members = Maps.newHashMap();
         this.members.put(leader, EnumRank.LEADER);
@@ -116,6 +116,7 @@ public class Clan {
         if(!ClansHelper.getConfig().isAllowMultiClanMembership())
             for(Clan clan: ClanDatabase.getClans())
                 PlayerData.removeInvite(leader, clan.getId());
+        rent = Math.min(FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), this, 0)/ClansHelper.getConfig().getChargeRentDays(), FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), this, 0)/ClansHelper.getConfig().getClanUpkeepDays())*ClansHelper.getConfig().getChargeRentDays();
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         isChanged = true;
     }

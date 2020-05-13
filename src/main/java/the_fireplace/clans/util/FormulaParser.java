@@ -52,7 +52,7 @@ public final class FormulaParser {
      * Formula parse code taken and slightly modified from https://stackoverflow.com/a/26227947
      * Use this instead of javascript to avoid any problems with Minecraft's built in Java version not having a JavaScript engine.
      */
-    public static double eval(final String str) {
+    private static double eval(final String str) {
         return new Object() {
             int pos = -1, ch;
 
