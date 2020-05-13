@@ -124,15 +124,12 @@ public class CommandDetails extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getName()).setStyle(TextStyles.RED));
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
 		if((senderId != null && (members.contains(senderId) || admins.contains(senderId) || leaders.contains(senderId)) || sender instanceof MinecraftServer) && !clan.isServer()) {
-			if(ClansHelper.getConfig().getChargeRentDays() <= 0 && ClansHelper.getConfig().getClanUpkeepDays() <= 0)
-				throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.details.disabled"));
 			double upkeep = 0;
 			double rent = 0;
 			if(ClansHelper.getConfig().getClanUpkeepDays() > 0) {
 				upkeep += FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
-				String upkeepStr = TranslationUtil.getStringTranslation("commands.clan.details.upkeep_formula", FormulaParser.getFilteredFormula(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan), ClansHelper.getPaymentHandler().getFormattedCurrency(upkeep));
 				if(upkeep > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", upkeepStr, ClansHelper.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", ClansHelper.getPaymentHandler().getFormattedCurrency(upkeep), ClansHelper.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
 					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}

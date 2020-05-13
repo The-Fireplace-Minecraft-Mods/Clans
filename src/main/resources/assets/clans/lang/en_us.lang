@@ -68,7 +68,6 @@ commands.clan.details.reduce_upkeep=You may want to find a way to reduce upkeep.
 commands.clan.details.breaking_even=%s is not earning or losing money.
 commands.clan.details.rentdue=Rent is due in %s hours.
 commands.clan.details.upkeepdue=Upkeep is due in %s hours.
-comamnds.clan.details.upkeep_formula=%s = %s
 commands.clan.details.server=This clan is a server clan.
 commands.clan.details.multiplier=Raid Rewards Multiplier: %s
 

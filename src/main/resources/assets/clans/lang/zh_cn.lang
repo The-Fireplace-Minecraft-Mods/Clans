@@ -68,10 +68,6 @@ commands.clan.details.reduce_upkeep=你需要找到一种减少维护费的方�
 commands.clan.details.breaking_even=%s 是没有盈利或负债的.
 commands.clan.details.rentdue=租金将在 %s 后到期.
 commands.clan.details.upkeepdue=维护费将在 %s 后到期
-comamnds.clan.details.base_amount=%s(基础)
-commands.clan.details.times_members=*%s(成员)
-commands.clan.details.times_claims=*%s(领土)
-commands.clan.details.equals_total==%s
 commands.clan.details.server=这个城镇属于服务器城镇.
 commands.clan.details.multiplier=突袭奖励: %s
 
@@ -492,3 +488,11 @@ clans.chat.prefix=<%s频道>
 clans.chat.page.next=[下一页]
 clans.chat.page.prev=[上一页]
 clans.chat.page.num=页码: %s/%s
+commands.clan.abandonclaim.disconnected=You cannot abandon this chunk of land because it would create a disconnected claim.
+commands.clan.abandonall.usage=/clan abandonall
+commands.clan.abandonall.description=Abandon all of your clan's claimed land.
+commands.clan.unsethome.usage=/clan unsethome
+commands.clan.unsethome.description=Remove your clan's home.
+commands.clan.unsethome.success=%s home removed.
+commands.clan.unsethome.failed=%s does not have a home.
+commands.raid.join.unraidable=A server administrator has prevented %s from being raided.
