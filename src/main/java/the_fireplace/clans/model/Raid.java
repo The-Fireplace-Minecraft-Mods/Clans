@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Raid {
-	private Set<UUID> initAttackers, initDefenders;
+	private Set<UUID> initAttackers, initDefenders = null;
 	private final Map<UUID, Integer> attackers, defenders;
 	private final Clan target;
 	private int remainingSeconds = ClansHelper.getConfig().getMaxRaidDuration() * 60;
@@ -97,7 +97,7 @@ public class Raid {
 	 * This includes defenders who have died or deserted during the raid.
 	 */
 	public Set<UUID> getInitDefenders() {
-		return Collections.unmodifiableSet(initDefenders);
+		return initDefenders != null ? Collections.unmodifiableSet(initDefenders) : Sets.newHashSet();
 	}
 
 	public int getAttackerCount(){
