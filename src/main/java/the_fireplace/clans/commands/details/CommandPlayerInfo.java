@@ -15,6 +15,7 @@ import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TimeUtils;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -70,6 +71,8 @@ public class CommandPlayerInfo extends ClanSubCommand {
 
 	private void showPlayerClanDetails(MinecraftServer server, ICommandSender sender, GameProfile target) {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.name", target.getName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.wlr", PlayerData.getRaidWLR(target.getId())).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.last_seen", TimeUtils.getFormattedTime(PlayerData.getLastSeen(target.getId()))).setStyle(TextStyles.GREEN));
 		List<Clan> leaders = Lists.newArrayList();
 		List<Clan> admins = Lists.newArrayList();
 		List<Clan> members = Lists.newArrayList();

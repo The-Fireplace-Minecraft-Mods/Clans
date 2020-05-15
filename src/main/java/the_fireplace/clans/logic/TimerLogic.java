@@ -175,7 +175,7 @@ public class TimerLogic {
 
     private static void handleDepthChangedMessage(EntityPlayer player) {
         TerritoryDisplayMode mode = PlayerData.getTerritoryDisplayMode(player.getUniqueID());
-        if(mode.equals(TerritoryDisplayMode.OFF))
+        if(!PlayerData.showUndergroundMessages(player.getUniqueID()) || mode.equals(TerritoryDisplayMode.OFF))
             return;
         int curY = (int) Math.round(player.posY);
         int prevY = PlayerCache.getPreviousY(player.getUniqueID());

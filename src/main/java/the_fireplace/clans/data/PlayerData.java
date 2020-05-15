@@ -63,6 +63,10 @@ public final class PlayerData {
         return getPlayerData(player).showUndergroundMessages;
     }
 
+    public static long getLastSeen(UUID player) {
+        return getPlayerData(player).lastSeen;
+    }
+
     public static void setDefaultClan(UUID player, @Nullable UUID defaultClan) {
         getPlayerData(player).setDefaultClan(defaultClan);
     }
@@ -144,6 +148,10 @@ public final class PlayerData {
         getPlayerData(player).setShowUndergroundMessages(showUndergroundMessages);
     }
 
+    public static void updateLastSeen(UUID player) {
+        getPlayerData(player).updateLastSeen();
+    }
+
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
         getPlayerData(player).shouldDisposeReferences = shouldDisposeReferences;
     }
@@ -172,6 +180,7 @@ public final class PlayerData {
         private boolean inviteBlock, showUndergroundMessages;
         private List<UUID> invites, blockedClans;
         private TerritoryDisplayMode territoryDisplayMode;
+        private long lastSeen;
 
         private Map<String, Object> addonData = Maps.newHashMap();
 
@@ -216,6 +225,7 @@ public final class PlayerData {
                     raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
                     territoryDisplayMode = jsonObject.has("territoryDisplayMode") ? TerritoryDisplayMode.valueOf(jsonObject.getAsJsonPrimitive("territoryDisplayMode").getAsString()) : TerritoryDisplayMode.ACTION_BAR;
                     showUndergroundMessages = !jsonObject.has("showUndergroundMessages") || jsonObject.getAsJsonPrimitive("showUndergroundMessages").getAsBoolean();
+                    lastSeen = jsonObject.has("lastSeen") ? jsonObject.getAsJsonPrimitive("lastSeen").getAsLong() : 0;
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -242,6 +252,7 @@ public final class PlayerData {
                 obj.addProperty("raidDeaths", raidLosses);
                 obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
                 obj.addProperty("showUndergroundMessages", showUndergroundMessages);
+                obj.addProperty("lastSeen", lastSeen);
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -325,6 +336,11 @@ public final class PlayerData {
                 showUndergroundMessages = show;
                 isChanged = true;
             }
+        }
+
+        public void updateLastSeen() {
+            lastSeen = System.currentTimeMillis();
+            isChanged = true;
         }
 
         /**

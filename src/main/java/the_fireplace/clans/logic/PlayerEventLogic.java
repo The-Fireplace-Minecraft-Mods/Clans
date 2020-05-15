@@ -20,6 +20,7 @@ import java.util.UUID;
 public class PlayerEventLogic {
     public static void onPlayerLoggedIn(EntityPlayer player) {
         checkUpdateDefaultClan(player);
+        PlayerData.updateLastSeen(player.getUniqueID());
         PlayerData.setShouldDisposeReferences(player.getUniqueID(), false);
         PlayerCache.setNeedsCleanup(player.getUniqueID(), false);
     }
@@ -45,6 +46,7 @@ public class PlayerEventLogic {
         ClanCache.autoClaimLands.remove(playerId);
         ClanCache.clanChattingPlayers.remove(playerId);
         RaidingParties.playerLoggedOut(playerId);
+        PlayerData.updateLastSeen(playerId);
         PlayerData.setShouldDisposeReferences(playerId, true);
         PlayerCache.setNeedsCleanup(playerId, true);
     }

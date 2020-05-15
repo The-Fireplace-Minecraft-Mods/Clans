@@ -8,14 +8,15 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.TimeUtils;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -108,17 +109,17 @@ public class CommandDetails extends ClanSubCommand {
 			for(UUID leader: leaders) {
 				GameProfile l = server.getPlayerProfileCache().getProfileByUUID(leader);
 				if(l != null)
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.leader", l.getName()).setStyle(server.getPlayerList().getPlayerByUUID(leader) != null ? TextStyles.ONLINE_LEADER : TextStyles.OFFLINE_LEADER));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.leader", l.getName(), PlayerData.getRaidWLR(l.getId()), TimeUtils.getFormattedTime(PlayerData.getLastSeen(l.getId()))).setStyle(server.getPlayerList().getPlayerByUUID(leader) != null ? TextStyles.ONLINE_LEADER : TextStyles.OFFLINE_LEADER));
 			}
 			for(UUID admin: admins) {
 				GameProfile a = server.getPlayerProfileCache().getProfileByUUID(admin);
 				if(a != null)
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.admin", a.getName()).setStyle(server.getPlayerList().getPlayerByUUID(admin) != null ? TextStyles.ONLINE_ADMIN : TextStyles.OFFLINE_ADMIN));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.admin", a.getName(), PlayerData.getRaidWLR(a.getId()), TimeUtils.getFormattedTime(PlayerData.getLastSeen(a.getId()))).setStyle(server.getPlayerList().getPlayerByUUID(admin) != null ? TextStyles.ONLINE_ADMIN : TextStyles.OFFLINE_ADMIN));
 			}
 			for(UUID member: members) {
 				GameProfile m = server.getPlayerProfileCache().getProfileByUUID(member);
 				if(m != null)
-					sender.sendMessage(new TextComponentString(m.getName()).setStyle(server.getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.member", m.getName(), PlayerData.getRaidWLR(m.getId()), TimeUtils.getFormattedTime(PlayerData.getLastSeen(m.getId()))).setStyle(server.getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW));
 			}
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getName()).setStyle(TextStyles.RED));

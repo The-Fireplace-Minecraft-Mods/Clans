@@ -1,7 +1,9 @@
 Additions:
+Added support for decimal currency amounts
 Added the ability to choose which dimensions players can claim in
 Added a way to choose how you want to see clan territory details, if at all: /clan territorymessagemode
 Added a command to choose if you want to see underground/overground messages: /clan undergroundmessages
+Added Win-Loss Ratio and Last Seen to the /clan details and /clan playerinfo
 
 Changes:
 Updated to use Grand Economy 2.0.0+
