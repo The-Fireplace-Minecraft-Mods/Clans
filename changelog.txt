@@ -1,6 +1,7 @@
 Additions:
 Added the ability to choose which dimensions players can claim in
 Added a way to choose how you want to see clan territory details, if at all: /clan territorymessagemode
+Added a command to choose if you want to see underground/overground messages: /clan undergroundmessages
 
 Changes:
 Updated to use Grand Economy 2.0.0+

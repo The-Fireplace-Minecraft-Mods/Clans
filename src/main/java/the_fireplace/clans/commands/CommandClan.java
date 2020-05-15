@@ -17,6 +17,7 @@ import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.config.clan.*;
 import the_fireplace.clans.commands.config.player.CommandSetDefault;
 import the_fireplace.clans.commands.config.player.CommandTerritoryMessageMode;
+import the_fireplace.clans.commands.config.player.CommandUndergroundMessages;
 import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.finance.CommandAddFunds;
 import the_fireplace.clans.commands.finance.CommandBalance;
@@ -84,6 +85,8 @@ public class CommandClan extends CommandBase {
         //player config
         put("setdefault", new CommandSetDefault());
         put("territorymessagemode", new CommandTerritoryMessageMode());
+        if(ClansHelper.getConfig().isProtectWilderness())
+            put("undergroundmessages", new CommandUndergroundMessages());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -144,6 +147,8 @@ public class CommandClan extends CommandBase {
         aliases.put("setdesc", "setdescription");
         //player config
         aliases.put("tmm", "territorymessagemode");
+        if(ClansHelper.getConfig().isProtectWilderness())
+            aliases.put("um", "undergroundmessages");
         //teleportation related
         aliases.put("h", "home");
         aliases.put("t", "trapped");
@@ -154,7 +159,6 @@ public class CommandClan extends CommandBase {
         aliases.put("withdraw", "takefunds");
         //permissions
         aliases.put("perms", "permissions");
-        aliases.put("options", "permissions");
         aliases.put("setperm", "set");
         //locks
         aliases.put("l", "lock");

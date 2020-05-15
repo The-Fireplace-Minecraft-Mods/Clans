@@ -347,6 +347,10 @@ commands.clan.territorymessagemode.usage=/clan territorymessagemode <chat|action
 commands.clan.territorymessagemode.description=Set how territory messages will display for you. Chat shows it in chat, action bar shows it in the action bar, and off turns them off. showdescription only makes a difference when using chat; descriptions cannot be shown in the action bar.
 commands.clan.territorymessagemode.success=You have successfully updated your territory message mode.
 
+commands.clan.undergroundmessages.usage=/clan undergroundmessages <on|off>
+commands.clan.undergroundmessages.description=Set if you see messages when moving between being above ground and below ground for Wilderness purposes.
+commands.clan.undergroundmessages.success=You have successfully updated your underground message mode.
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 

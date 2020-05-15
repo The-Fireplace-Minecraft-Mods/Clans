@@ -59,6 +59,10 @@ public final class PlayerData {
         return getPlayerData(player).territoryDisplayMode;
     }
 
+    public static boolean showUndergroundMessages(UUID player) {
+        return getPlayerData(player).showUndergroundMessages;
+    }
+
     public static void setDefaultClan(UUID player, @Nullable UUID defaultClan) {
         getPlayerData(player).setDefaultClan(defaultClan);
     }
@@ -136,6 +140,10 @@ public final class PlayerData {
         getPlayerData(player).setTerritoryDisplayMode(mode);
     }
 
+    public static void setShowUndergroundMessages(UUID player, boolean showUndergroundMessages) {
+        getPlayerData(player).setShowUndergroundMessages(showUndergroundMessages);
+    }
+
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
         getPlayerData(player).shouldDisposeReferences = shouldDisposeReferences;
     }
@@ -161,7 +169,7 @@ public final class PlayerData {
         @Nullable
         private UUID defaultClan;
         private int cooldown, raidWins, raidLosses;
-        private boolean inviteBlock;
+        private boolean inviteBlock, showUndergroundMessages;
         private List<UUID> invites, blockedClans;
         private TerritoryDisplayMode territoryDisplayMode;
 
@@ -207,6 +215,7 @@ public final class PlayerData {
                     raidWins = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
                     raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
                     territoryDisplayMode = jsonObject.has("territoryDisplayMode") ? TerritoryDisplayMode.valueOf(jsonObject.getAsJsonPrimitive("territoryDisplayMode").getAsString()) : TerritoryDisplayMode.ACTION_BAR;
+                    showUndergroundMessages = !jsonObject.has("showUndergroundMessages") || jsonObject.getAsJsonPrimitive("showUndergroundMessages").getAsBoolean();
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -232,6 +241,7 @@ public final class PlayerData {
                 obj.addProperty("raidKills", raidWins);
                 obj.addProperty("raidDeaths", raidLosses);
                 obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
+                obj.addProperty("showUndergroundMessages", showUndergroundMessages);
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -306,6 +316,13 @@ public final class PlayerData {
         public void setTerritoryDisplayMode(TerritoryDisplayMode mode) {
             if(mode != territoryDisplayMode) {
                 territoryDisplayMode = mode;
+                isChanged = true;
+            }
+        }
+
+        public void setShowUndergroundMessages(boolean show) {
+            if(showUndergroundMessages != show) {
+                showUndergroundMessages = show;
                 isChanged = true;
             }
         }
