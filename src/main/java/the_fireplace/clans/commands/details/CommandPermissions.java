@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.permissions;
+package the_fireplace.clans.commands.details;
 
 import com.google.common.collect.Lists;
 import mcp.MethodsReturnNonnullByDefault;

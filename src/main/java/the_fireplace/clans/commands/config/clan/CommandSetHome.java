@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.teleportation;
+package the_fireplace.clans.commands.config.clan;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;

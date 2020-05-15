@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.teleportation;
+package the_fireplace.clans.commands.config.clan;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,10 +12,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandUnsetHome extends ClanSubCommand {
+public class CommandSetDescription extends ClanSubCommand {
 	@Override
 	public String getName() {
-		return "unsethome";
+		return "setdescription";
 	}
 
 	@Override
@@ -25,20 +25,20 @@ public class CommandUnsetHome extends ClanSubCommand {
 
 	@Override
 	public int getMinArgs() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public int getMaxArgs() {
-		return 0;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(selectedClan.hasHome()) {
-			selectedClan.unsetHome();
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.failed", selectedClan.getName()).setStyle(TextStyles.RED));
+		StringBuilder newTagline = new StringBuilder();
+		for(String arg: args)
+			newTagline.append(arg).append(' ');
+		selectedClan.setDescription(newTagline.toString());
+		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 	}
 }

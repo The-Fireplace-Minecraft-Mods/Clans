@@ -10,6 +10,7 @@ import com.google.gson.JsonParser;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
+import the_fireplace.clans.model.TerritoryDisplayMode;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -18,10 +19,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public final class PlayerData {
-    private static HashMap<UUID, PlayerStoredData> playerData = Maps.newHashMap();
+    private static final HashMap<UUID, PlayerStoredData> playerData = Maps.newHashMap();
     public static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
 
-    //region getters
     @Nullable
     public static UUID getDefaultClan(UUID player) {
         return getPlayerData(player).defaultClan;
@@ -44,20 +44,21 @@ public final class PlayerData {
     }
 
     public static int getRaidWins(UUID player) {
-        return getPlayerData(player).raidKills;
+        return getPlayerData(player).raidWins;
     }
 
     public static int getRaidLosses(UUID player) {
-        return getPlayerData(player).raidDeaths;
+        return getPlayerData(player).raidLosses;
     }
 
     public static double getRaidWLR(UUID player) {
         return ((double) getRaidWins(player))/((double) getRaidLosses(player));
     }
 
-    //endregion
+    public static TerritoryDisplayMode getTerritoryDisplayMode(UUID player) {
+        return getPlayerData(player).territoryDisplayMode;
+    }
 
-    //region saved data setters
     public static void setDefaultClan(UUID player, @Nullable UUID defaultClan) {
         getPlayerData(player).setDefaultClan(defaultClan);
     }
@@ -130,22 +131,21 @@ public final class PlayerData {
     public static void incrementRaidWins(UUID player) {
         getPlayerData(player).incrementRaidWins();
     }
-    //endregion
+
+    public static void setTerritoryDisplayMode(UUID player, TerritoryDisplayMode mode) {
+        getPlayerData(player).setTerritoryDisplayMode(mode);
+    }
 
     public static void setShouldDisposeReferences(UUID player, boolean shouldDisposeReferences) {
         getPlayerData(player).shouldDisposeReferences = shouldDisposeReferences;
     }
-    //endregion
 
-    //region getPlayerData
     private static PlayerStoredData getPlayerData(UUID player) {
         if(!playerData.containsKey(player))
             playerData.put(player, new PlayerStoredData(player));
         return playerData.get(player);
     }
-    //endregion
 
-    //region save
     public static void save() {
         for(Map.Entry<UUID, PlayerStoredData> entry : Sets.newHashSet(playerData.entrySet())) {
             entry.getValue().save();
@@ -153,32 +153,27 @@ public final class PlayerData {
                 playerData.remove(entry.getKey());
         }
     }
-    //endregion
 
     private static class PlayerStoredData {
-        //region Internal variables
-        private File playerDataFile;
+        private final File playerDataFile;
         private boolean isChanged, saving, shouldDisposeReferences = false;
-        //endregion
 
-        //region Saved variables
         @Nullable
         private UUID defaultClan;
-        private int cooldown, raidKills, raidDeaths;
+        private int cooldown, raidWins, raidLosses;
         private boolean inviteBlock;
         private List<UUID> invites, blockedClans;
+        private TerritoryDisplayMode territoryDisplayMode;
 
         private Map<String, Object> addonData = Maps.newHashMap();
-        //endregion
 
-        //region Constructor
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
             if(!load()) {
                 invites = Lists.newArrayList();
                 blockedClans = Lists.newArrayList();
                 inviteBlock = false;
-                raidKills = raidDeaths = 0;
+                raidWins = raidLosses = 0;
                 PlayerEventLogic.onFirstLogin(playerId);
             }
             //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
@@ -209,8 +204,9 @@ public final class PlayerData {
                     invites = jsonObject.has("invites") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("invites")) : Lists.newArrayList();
                     blockedClans = jsonObject.has("blockedClans") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("blockedClans")) : Lists.newArrayList();
                     inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
-                    raidKills = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
-                    raidDeaths = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
+                    raidWins = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
+                    raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
+                    territoryDisplayMode = jsonObject.has("territoryDisplayMode") ? TerritoryDisplayMode.valueOf(jsonObject.getAsJsonPrimitive("territoryDisplayMode").getAsString()) : TerritoryDisplayMode.ACTION_BAR;
                     addonData = JsonHelper.getAddonData(jsonObject);
                     return true;
                 }
@@ -220,9 +216,7 @@ public final class PlayerData {
             }
             return false;
         }
-        //endregion
 
-        //region save
         private void save() {
             if(!isChanged || saving)
                 return;
@@ -235,8 +229,9 @@ public final class PlayerData {
                 obj.add("invites", JsonHelper.toJsonArray(invites));
                 obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
                 obj.addProperty("inviteBlock", inviteBlock);
-                obj.addProperty("raidKills", raidKills);
-                obj.addProperty("raidDeaths", raidDeaths);
+                obj.addProperty("raidKills", raidWins);
+                obj.addProperty("raidDeaths", raidLosses);
+                obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
 
                 JsonHelper.attachAddonData(obj, this.addonData);
 
@@ -250,9 +245,7 @@ public final class PlayerData {
                 saving = isChanged = false;
             }).start();
         }
-        //endregion
 
-        //region setters
         public void setDefaultClan(@Nullable UUID defaultClan) {
             if(!Objects.equals(this.defaultClan, defaultClan)) {
                 this.defaultClan = defaultClan;
@@ -266,7 +259,6 @@ public final class PlayerData {
                 isChanged = true;
             }
         }
-        //endregion
 
         public boolean addInvite(UUID clan) {
             boolean ret = !invites.contains(clan);
@@ -302,18 +294,24 @@ public final class PlayerData {
         }
 
         public void incrementRaidWins() {
-            raidKills++;
+            raidWins++;
             isChanged = true;
         }
 
         public void incrementRaidLosses() {
-            raidDeaths++;
+            raidLosses++;
             isChanged = true;
         }
 
-        //region Addon Data
+        public void setTerritoryDisplayMode(TerritoryDisplayMode mode) {
+            if(mode != territoryDisplayMode) {
+                territoryDisplayMode = mode;
+                isChanged = true;
+            }
+        }
+
         /**
-         * Sets addon data for this chunk
+         * Sets addon data for this player
          * @param key
          * The key you are giving this data. It should be unique
          * @param value
@@ -330,6 +328,5 @@ public final class PlayerData {
         public Object getCustomData(String key) {
             return addonData.get(key);
         }
-        //endregion
     }
 }

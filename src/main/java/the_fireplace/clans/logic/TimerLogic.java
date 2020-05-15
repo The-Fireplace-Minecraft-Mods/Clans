@@ -174,12 +174,16 @@ public class TimerLogic {
     }
 
     private static void handleDepthChangedMessage(EntityPlayer player) {
+        TerritoryDisplayMode mode = PlayerData.getTerritoryDisplayMode(player.getUniqueID());
+        if(mode.equals(TerritoryDisplayMode.OFF))
+            return;
         int curY = (int) Math.round(player.posY);
         int prevY = PlayerCache.getPreviousY(player.getUniqueID());
         int yBound = (ClansHelper.getConfig().getMinWildernessY() < 0 ? player.world.getSeaLevel() : ClansHelper.getConfig().getMinWildernessY());
         if (curY >= yBound && prevY < yBound) {
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW));
-            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected")).setStyle(TextStyles.YELLOW));
+            player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW), mode.isAction());
+            if(mode.showsDescription())
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected")).setStyle(TextStyles.YELLOW));
         } else if (prevY >= yBound && curY < yBound) {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
@@ -189,6 +193,9 @@ public class TimerLogic {
 
     private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, Collection<Clan> playerClans, boolean isBorderland) {
         PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getId() : null, isBorderland);
+        TerritoryDisplayMode mode = PlayerData.getTerritoryDisplayMode(player.getUniqueID());
+        if(mode.equals(TerritoryDisplayMode.OFF))
+            return;
         Style color = TextStyles.GREEN;
         if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
             color = TextStyles.YELLOW;
@@ -217,15 +224,14 @@ public class TimerLogic {
             territoryDesc = chunkClan.getDescription();
         }
 
-        player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color));
-        if(!territoryDesc.isEmpty())
+        player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
+        if(!territoryDesc.isEmpty() && mode.showsDescription())
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
     }
 
     private static void checkAndResetClaimWarning(EntityPlayerMP player) {
-        if(PlayerCache.getClaimWarning(player.getUniqueID())) {
+        if(PlayerCache.getClaimWarning(player.getUniqueID()))
             PlayerCache.setClaimWarning(player.getUniqueID(), false);
-        }
     }
 
     private static void checkRaidAbandonmentTime(@Nullable UUID chunkClan, Collection<Clan> playerClans, EntityPlayer player) {

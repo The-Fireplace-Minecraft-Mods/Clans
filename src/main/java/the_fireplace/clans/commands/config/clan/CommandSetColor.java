@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.details;
+package the_fireplace.clans.commands.config.clan;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;

@@ -130,4 +130,6 @@ public class LandProtectionEvents {
 		event.setResult(cancel ? Event.Result.DENY : Event.Result.DEFAULT);
 		event.setCanceled(cancel);
 	}
+
+	//TODO entityinteractspecific
 }

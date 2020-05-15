@@ -14,6 +14,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.commands.config.clan.*;
+import the_fireplace.clans.commands.config.player.CommandSetDefault;
+import the_fireplace.clans.commands.config.player.CommandTerritoryMessageMode;
 import the_fireplace.clans.commands.details.*;
 import the_fireplace.clans.commands.finance.CommandAddFunds;
 import the_fireplace.clans.commands.finance.CommandBalance;
@@ -29,12 +32,8 @@ import the_fireplace.clans.commands.members.CommandDemote;
 import the_fireplace.clans.commands.members.CommandKick;
 import the_fireplace.clans.commands.members.CommandLeave;
 import the_fireplace.clans.commands.members.CommandPromote;
-import the_fireplace.clans.commands.permissions.CommandPermissions;
-import the_fireplace.clans.commands.permissions.CommandSet;
 import the_fireplace.clans.commands.teleportation.CommandHome;
-import the_fireplace.clans.commands.teleportation.CommandSetHome;
 import the_fireplace.clans.commands.teleportation.CommandTrapped;
-import the_fireplace.clans.commands.teleportation.CommandUnsetHome;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.util.PermissionManager;
@@ -70,18 +69,21 @@ public class CommandClan extends CommandBase {
         //clan constants/details/other
         put("form", new CommandForm());
 	    put("disband", new CommandDisband());
+        put("banner", new CommandBanner());
+        put("details", new CommandDetails());
+        put("playerinfo", new CommandPlayerInfo());
+        put("list", new CommandList());
+        put("clanchat", new CommandClanChat());
+        //clan config
+        put("setname", new CommandSetName());
+        put("setdescription", new CommandSetDescription());
+        put("setcolor", new CommandSetColor());
         put("sethome", new CommandSetHome());
         put("unsethome", new CommandUnsetHome());
         put("setbanner", new CommandSetBanner());
-        put("banner", new CommandBanner());
-        put("setname", new CommandSetName());
-        put("details", new CommandDetails());
-        put("setdescription", new CommandSetDescription());
+        //player config
         put("setdefault", new CommandSetDefault());
-        put("playerinfo", new CommandPlayerInfo());
-        put("setcolor", new CommandSetColor());
-        put("list", new CommandList());
-        put("clanchat", new CommandClanChat());
+        put("territorymessagemode", new CommandTerritoryMessageMode());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -96,7 +98,7 @@ public class CommandClan extends CommandBase {
         put("help", new CommandClanHelp());
         //permissions
         put("permissions", new CommandPermissions());
-        put("set", new CommandSet());
+        put("set", new CommandSetPermission());
         //locks
         put("lock", new CommandLock());
         put("lockchunk", new CommandLockChunk());
@@ -135,10 +137,13 @@ public class CommandClan extends CommandBase {
         aliases.put("clan", "details");
         aliases.put("info", "details");
         aliases.put("d", "details");
-        aliases.put("setdesc", "setdescription");
         aliases.put("pi", "playerinfo");
         aliases.put("player", "playerinfo");
+        //clan config
         aliases.put("setcolour", "setcolor");
+        aliases.put("setdesc", "setdescription");
+        //player config
+        aliases.put("tmm", "territorymessagemode");
         //teleportation related
         aliases.put("h", "home");
         aliases.put("t", "trapped");

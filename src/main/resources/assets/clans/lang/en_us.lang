@@ -343,6 +343,10 @@ commands.clan.lockinfo.allowed=%s: allowed
 commands.clan.lockinfo.denied=%s: denied
 commands.clan.lockinfo.not_block=You are not looking at a block or are too far from the block to view lock information.
 
+commands.clan.territorymessagemode.usage=/clan territorymessagemode <chat|action_bar|off> [showdescription: true|false]
+commands.clan.territorymessagemode.description=Set how territory messages will display for you. Chat shows it in chat, action bar shows it in the action bar, and off turns them off. showdescription only makes a difference when using chat; descriptions cannot be shown in the action bar.
+commands.clan.territorymessagemode.success=You have successfully updated your territory message mode.
+
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Abandon a claim, regardless of who owns it.
 

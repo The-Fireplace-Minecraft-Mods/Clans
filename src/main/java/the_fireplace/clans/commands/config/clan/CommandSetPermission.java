@@ -1,4 +1,4 @@
-package the_fireplace.clans.commands.permissions;
+package the_fireplace.clans.commands.config.clan;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSet extends ClanSubCommand {
+public class CommandSetPermission extends ClanSubCommand {
 	@Override
 	public String getName() {
 		return "set";
