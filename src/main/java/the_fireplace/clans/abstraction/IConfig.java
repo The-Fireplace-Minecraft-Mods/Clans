@@ -46,6 +46,7 @@ public interface IConfig {
     //Wilderness guard
     boolean isProtectWilderness();
     int getMinWildernessY();
+    String[] getClaimableDimensions();
 
     //Raid configuration
     int getMaxRaidersOffset();

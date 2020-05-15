@@ -1,4 +1,5 @@
 Additions:
+Added the ability to choose which dimensions players can claim in
 
 Changes:
 Updated to use Grand Economy 2.0.0+

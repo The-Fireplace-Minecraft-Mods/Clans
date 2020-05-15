@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ import the_fireplace.clans.sponge.SpongePermissionHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static the_fireplace.clans.ClansHelper.MODID;
@@ -37,10 +39,10 @@ public final class Clans {
     public static Clans instance;
 
     private static Logger LOGGER = FMLLog.log;
-    private static ForgeMinecraftHelper minecraftHelper = new ForgeMinecraftHelper();
-    static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
-    private static List<IProtectionCompat> protectionCompats = Lists.newArrayList();
-    private static IProtectionCompat protectionCompatManager = new IProtectionCompat() {
+    private static final ForgeMinecraftHelper minecraftHelper = new ForgeMinecraftHelper();
+    private static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
+    private static final List<IProtectionCompat> protectionCompats = Lists.newArrayList();
+    private static final IProtectionCompat protectionCompatManager = new IProtectionCompat() {
         @Override
         public void init() {
             for(IProtectionCompat compat: protectionCompats)
@@ -80,7 +82,7 @@ public final class Clans {
             return false;
         }
     };
-    //private boolean validJar = true;
+    private boolean validJar = true;
 
     public static Logger getLogger() {
         return LOGGER;
@@ -100,8 +102,8 @@ public final class Clans {
         if(getMinecraftHelper().isPluginLoaded("iceandfire"))
             addProtectionCompat(new IceAndFireCompat());
 
-        //if(!validJar)
-        //    Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
+        if(!validJar)
+            Clans.getMinecraftHelper().getLogger().error("The jar's signature is invalid! Please redownload from "+ Objects.requireNonNull(Loader.instance().activeModContainer()).getUpdateUrl());
     }
 
     @Mod.EventHandler
@@ -148,12 +150,11 @@ public final class Clans {
         return dynmapCompat;
     }
 
-    /*@Mod.EventHandler
+    @Mod.EventHandler
     public void invalidFingerprint(FMLFingerprintViolationEvent e) {
-        if(!e.isDirectory()) {
+        if(!e.isDirectory())
             validJar = false;
-        }
-    }*/
+    }
 
     @SuppressWarnings("WeakerAccess")
     @Config(modid = MODID)
@@ -281,6 +282,8 @@ public final class Clans {
         public static boolean protectWilderness = false;
         @Config.Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")
         public static int minWildernessY = -1;
+        @Config.Comment("A list of dimensions players are allowed to claim in. If it contains a *, this list is a blacklist. Otherwise, it is a whitelist, so by default it is a whitelist containing the overworld and the nether.")
+        public static String[] claimableDimensions = {"overworld", "the_nether"};
         //Raid configuration
         @Config.Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public static int maxRaidersOffset = 0;
@@ -501,6 +504,11 @@ public final class Clans {
         @Override
         public int getMinWildernessY() {
             return minWildernessY;
+        }
+
+        @Override
+        public String[] getClaimableDimensions() {
+            return claimableDimensions;
         }
 
         @Override

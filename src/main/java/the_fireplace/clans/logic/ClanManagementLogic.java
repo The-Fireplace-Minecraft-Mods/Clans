@@ -140,6 +140,41 @@ public class ClanManagementLogic {
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, Clan claimingClan, ChunkPositionWithData claimChunk, boolean force) {
+        if(ArrayUtils.contains(ClansHelper.getConfig().getClaimableDimensions(), "*")) {
+            for(String s: ClansHelper.getConfig().getClaimableDimensions())
+                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
+                    return false;
+                } else {
+                    try {
+                        int dimId = Integer.parseInt(s);
+                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
+                            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
+                            return false;
+                        }
+                    } catch(NumberFormatException ignored) {}
+                }
+        } else {
+            boolean found = false;
+            for(String s: ClansHelper.getConfig().getClaimableDimensions())
+                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
+                    found = true;
+                    break;
+                } else {
+                    try {
+                        int dimId = Integer.parseInt(s);
+                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
+                            found = true;
+                            break;
+                        }
+                    } catch(NumberFormatException ignored) {}
+                }
+            if(!found) {
+                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
+                return false;
+            }
+        }
+
         UUID claimOwner = ClaimData.getChunkClanId(claimChunk);
         Clan claimClan = ClanCache.getClanById(claimOwner);
         if(claimOwner != null && claimClan != null && (!force || claimOwner.equals(claimingClan.getId()))) {
