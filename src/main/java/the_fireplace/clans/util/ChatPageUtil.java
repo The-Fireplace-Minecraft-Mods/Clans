@@ -36,8 +36,8 @@ public final class ChatPageUtil {
             printItems.add(item);
         }
 
-        ITextComponent nextButton = current < totalPageCount ? TranslationUtil.getTranslation(target, "clans.chat.page.next").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current+1)))) : new TextComponentString("-----");
-        ITextComponent prevButton = current > 1 ? TranslationUtil.getTranslation(target, "clans.chat.page.prev").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current-1)))) : new TextComponentString("------");
+        ITextComponent nextButton = current < totalPageCount ? TranslationUtil.getTranslation(target, "clans.chat.page.next").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current+1)))) : new TextComponentString("------");
+        ITextComponent prevButton = current > 1 ? TranslationUtil.getTranslation(target, "clans.chat.page.prev").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current-1)))) : new TextComponentString("-------");
         ITextComponent bottom = new TextComponentString("---------------").setStyle(TextStyles.GREEN).appendSibling(prevButton).appendText("---").setStyle(TextStyles.GREEN).appendSibling(nextButton).appendText("-------------").setStyle(TextStyles.GREEN);
 
         target.sendMessage(top);
