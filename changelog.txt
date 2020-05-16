@@ -17,3 +17,4 @@ Fixed mismatched number of dashes for the top and bottom of a one-page paged cha
 Fixed /clan list showing no entries when clicking to switch pages or using invalid sort
 Improved the performance of timer-based events
 Improved the performance of the Dynmap integration
+Fixed clans getting their mobs removed if the override is set to true and not getting them removed if false.

@@ -113,8 +113,12 @@ public class TimerLogic {
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
         Clan c = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
-        if(c != null && (ClansHelper.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride())) && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride())))
-            mob.setDead();
+        if(c != null) {
+            if(Boolean.FALSE.equals(c.getMobSpawnOverride()))
+                mob.onKillCommand();
+            else if (ClansHelper.getConfig().isPreventMobsOnClaims() && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland()))
+                mob.onKillCommand();
+        }
     }
 
     public static void runPlayerSecondLogic(EntityPlayer player) {

@@ -16,5 +16,6 @@ public enum TerritoryDisplayMode {
 
     TerritoryDisplayMode(boolean isAction, boolean showDescription) {
         this.showDescription = showDescription;
+        this.isAction = isAction;
     }
 }
