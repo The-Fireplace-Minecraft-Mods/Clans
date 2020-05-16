@@ -233,7 +233,7 @@ public class DynmapCompat implements IDynmapCompat {
         stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(checkAndCensor(clanDimInfo.getClanName())).append("</span></div>");
 
         if (!clanDimInfo.getClanDescription().isEmpty()) {
-            stToolTip.append("<div style=\"text-align: center;\"><span>").append(clanDimInfo.getClanDescription()).append("</span></div>");
+            stToolTip.append("<div style=\"text-align: center;\"><span>").append(checkAndCensor(clanDimInfo.getClanDescription())).append("</span></div>");
         }
 
         Set<UUID> teamMembers = Objects.requireNonNull(ClanCache.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
