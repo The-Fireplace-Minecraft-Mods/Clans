@@ -6,24 +6,24 @@ import the_fireplace.clans.Clans;
 import java.util.*;
 
 public class GroupedChunks {
-    private Map<ChunkPosition, AdjacentChunk> chunkGroupMap = Maps.newHashMap();
+    private final Map<ChunkPosition, AdjacentChunk> chunkGroupMap = Maps.newHashMap();
 
     /**
      * Takes the info for the position of the current frame and finds all the chunks that are adjacent to it and
      * then to each other. Eventually building up a list of all chunks that are related to each other in a group.
      *
      * @param chunkPos The starting chunk to processes for this group
-     * @param teamClaimsMap The list of available claim chunks to check for adjacent chunks.
+     * @param remainingChunksToProcess The list of remaining claim chunks to check for adjacent chunks.
      */
-    public void processChunk(ChunkPosition chunkPos, Set<ChunkPosition> teamClaimsMap) {
+    public void processChunk(ChunkPosition chunkPos, Set<ChunkPosition> remainingChunksToProcess) {
         AdjacentChunk chunk = new AdjacentChunk(chunkPos);
 
-        // Once we process a claim chunk remove it from the getTeamID list and add it to the group map
-        teamClaimsMap.remove(chunkPos);
+        // Once we process a claim chunk remove it from the getClanID list and add it to the group map
+        remainingChunksToProcess.remove(chunkPos);
         chunkGroupMap.put(chunkPos, chunk);
 
         // Have each chunk find its adjacent chunks and process them recursively
-        chunk.processAdjacentChunks(teamClaimsMap, chunkGroupMap);
+        chunk.processAdjacentChunks(remainingChunksToProcess, chunkGroupMap);
     }
 
     /**
@@ -48,9 +48,7 @@ public class GroupedChunks {
             for (ChunkEdge edge : edges) {
                 // Keep track of an edge that is the lowest X position so we can use it as a starting point.
                 if (startEdge == null || edge.point1().getX() < startEdge.point1().getX())
-                {
                     startEdge = edge;
-                }
 
                 nTotalEdgeCount++;
 
@@ -58,8 +56,7 @@ public class GroupedChunks {
                 if (pointSearchMap.containsKey(edge.point1())) {
                     List<ChunkEdge> entry = pointSearchMap.get(edge.point1());
                     entry.add(edge);
-                }
-                else {
+                } else {
                     List<ChunkEdge> entry = new ArrayList<>();
                     entry.add(edge);
                     pointSearchMap.put(edge.point1(), entry);
@@ -85,16 +82,14 @@ public class GroupedChunks {
                     // If we found just 1 point that matches the coordinates then just use it.
                     if (edges.size() == 1) {
                         curEdge = edges.get(0);
-                    }
-                    else {
+                    } else {
                         // If we find more than one point that matches the coordinate, then we always want to
                         // turn right, so take the current edge and determine what the next edge to the right would
                         // be.
                         ChunkEdge.Edge nextEdge = ChunkEdge.Edge.LEFT;
 
-                        if (lastEdgeType == null) {
+                        if (lastEdgeType == null)
                             lastEdgeType = curEdge.edgeType();
-                        }
 
                         switch (lastEdgeType) {
                             case LEFT:
@@ -120,26 +115,21 @@ public class GroupedChunks {
                         }
 
                     }
-                }
-                else {
+                } else
                     curEdge = null;
-                }
 
                 if (curEdge != null) {
                     // While tracing if this point is on the same axis as the previous point, then just replace the
                     // previous point with this new one, this will end up removing all the redundant points for each
                     // chunk. For example a square box of 9 chunks will produce 4 points for the corners only (assuming
                     // it starts on a corner)
-                    if (lastEdgeType != null && lastEdgeType == curEdge.edgeType()) {
+                    if (lastEdgeType != null && lastEdgeType == curEdge.edgeType())
                         perimeterPoints.set(perimeterPoints.size() - 1, curEdge.point2());
-                    }
-                    else {
+                    else
                         perimeterPoints.add(curEdge.point2());
-                    }
 
                     lastEdgeType = curEdge.edgeType();
-                }
-                else {
+                } else {
                     Clans.getMinecraftHelper().getLogger().error("Unable to successfully trace claim chunk perimeter. This claim will not be visible on dynmap.");
                     bTraceError = true;
                     break;
@@ -154,9 +144,8 @@ public class GroupedChunks {
             } while (curEdge != startEdge);
         }
 
-        if (bTraceError) {
+        if (bTraceError)
             perimeterPoints.clear();
-        }
 
         return perimeterPoints;
     }

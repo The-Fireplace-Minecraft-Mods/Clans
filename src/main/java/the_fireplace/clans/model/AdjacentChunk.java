@@ -51,14 +51,14 @@ class AdjacentChunk {
 
     /**
      * Takes a list of available claim chunks and finds all chunks which attach to this chunk location. As chunks
-     * are found to be attached they are removed from the availableChunks list and put it the processedChunks list.
+     * are found to be attached they are removed from the remainingChunksToProcess list and put it the processedChunks list.
      *
      * Note: This is a recursive method.
      *
-     * @param availableChunks A list of available chunks to search for adjacent chunks
+     * @param remainingChunksToProcess A list of available chunks to search for adjacent chunks
      * @param processedChunks A list of chunks that have been found and processed already.
      */
-    void processAdjacentChunks(Set<ChunkPosition> availableChunks, Map<ChunkPosition, AdjacentChunk> processedChunks) {
+    void processAdjacentChunks(Set<ChunkPosition> remainingChunksToProcess, Map<ChunkPosition, AdjacentChunk> processedChunks) {
         ChunkPosition[] adjacentPos = { new ChunkPosition(loc.getPosX(), loc.getPosZ() - 1, loc.getDim()),
                 new ChunkPosition(loc.getPosX(), loc.getPosZ() + 1, loc.getDim()),
                 new ChunkPosition(loc.getPosX() - 1, loc.getPosZ(), loc.getDim()),
@@ -68,18 +68,16 @@ class AdjacentChunk {
         AdjacentChunk[] adjacentChunks = { null, null, null, null };
 
         // Loop through all 4 sides of the chunk and associate each neighbor
-        for (int index = 0; index < 4; index++)
-        {
-            if (availableChunks.contains(adjacentPos[index])) {
+        for (int index = 0; index < 4; index++) {
+            if (remainingChunksToProcess.contains(adjacentPos[index])) {
                 // Once we process a chunk remove it from the available chunk map so we don't keep processing over it
-                availableChunks.remove(adjacentPos[index]);
+                remainingChunksToProcess.remove(adjacentPos[index]);
 
                 adjacentChunks[index] = new AdjacentChunk(adjacentPos[index]);
                 processedChunks.put(adjacentPos[index], adjacentChunks[index]);
 
-                adjacentChunks[index].processAdjacentChunks(availableChunks, processedChunks);
-            }
-            else {
+                adjacentChunks[index].processAdjacentChunks(remainingChunksToProcess, processedChunks);
+            } else {
                 // Associate the side if it exists in the processed chunk list.
                 adjacentChunks[index] = processedChunks.get(adjacentPos[index]);
             }

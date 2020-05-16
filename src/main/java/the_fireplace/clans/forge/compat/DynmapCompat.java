@@ -27,19 +27,17 @@ public class DynmapCompat implements IDynmapCompat {
     @Override
     public void serverStart() {
         buildDynmapWorldNames();
+        initializeMap();
     }
 
     @Override
     public void init() {
         MinecraftForge.EVENT_BUS.register(this);
         DynmapCommonAPIListener.register(new DynmapAPIListener());
-        initializeMap();
     }
 
     private byte tickCounter = 0;
-
     private final Set<ClanDimInfo> claimUpdates = Sets.newHashSet();
-
 
     @SubscribeEvent
     public void onServerTickEvent(TickEvent.ServerTickEvent event) {
@@ -77,27 +75,23 @@ public class DynmapCompat implements IDynmapCompat {
      * @param clanDimInfo The clan and dimension to update claims for.
      */
     private void updateClanClaims(ClanDimInfo clanDimInfo) {
-        long startTimeNS;
-        long totalChunks;
-        long totalGroups;
-
-        startTimeNS = System.nanoTime();
+        final long startTimeNS = System.nanoTime();
         Clans.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> clanClaimsList = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
-        totalChunks = clanClaimsList.size();
+        Set<ChunkPosition> remainingChunksToProcess = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));
+        final long totalChunks = remainingChunksToProcess.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
         List<GroupedChunks> groupList = new ArrayList<>();
-        if (!clanClaimsList.isEmpty()) {
-            for (ChunkPosition pos: clanClaimsList) {
+        if (!remainingChunksToProcess.isEmpty()) {
+            for (ChunkPosition pos: remainingChunksToProcess) {
                 GroupedChunks group = new GroupedChunks();
                 groupList.add(group);
 
-                group.processChunk(pos, clanClaimsList);
+                group.processChunk(pos, remainingChunksToProcess);
             }
         }
-        totalGroups = groupList.size();
+        final long totalGroups = groupList.size();
 
         // Draw all the team claim markers for the specified dimension.
         clearAllClanMarkers(clanDimInfo);
@@ -112,7 +106,7 @@ public class DynmapCompat implements IDynmapCompat {
         for (GroupedChunks group : groupList)
             group.cleanup();
 
-        long deltaNs = System.nanoTime() - startTimeNS;
+        final long deltaNs = System.nanoTime() - startTimeNS;
         Clans.getMinecraftHelper().getLogger().trace(" --> {} Claim chunks processed.", totalChunks);
         Clans.getMinecraftHelper().getLogger().trace(" --> {} Claim groups detected.", totalGroups);
         Clans.getMinecraftHelper().getLogger().trace(" --> Complete claim update in [{}ns]", deltaNs);
@@ -280,9 +274,11 @@ public class DynmapCompat implements IDynmapCompat {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
 
-            int nMarkerID = 0;
-            AreaMarker areaMarker;
-            do {
+            //int nMarkerID = 0;
+            //AreaMarker areaMarker;
+            //This works, if the naming convention for markers is consistent and there's no way an individual marker could be removed from the middle.
+            //TODO Investigate if it's possible a marker could be removed from the middle of this list, thus cancelling the clear early.
+            /*do {
                 String markerID = worldName + "_" + clanDimInfo.getClanIdString() + "_" + nMarkerID;
                 areaMarker = dynmapMarkerSet.findAreaMarker(markerID);
 
@@ -290,7 +286,12 @@ public class DynmapCompat implements IDynmapCompat {
                     areaMarker.deleteMarker();
 
                 nMarkerID++;
-            } while (areaMarker != null);
+            } while (areaMarker != null);*/
+
+            //Performance is probably better this way anyways, it goes through the set once rather than searching for the marker id in the set each iteration of the loop.
+            for(AreaMarker marker: dynmapMarkerSet.getAreaMarkers())
+                if(marker.getMarkerID().startsWith(worldName+"_"+clanDimInfo.getClanIdString()+"_") && marker.getWorld().equals(worldName))
+                    marker.deleteMarker();
         }
     }
 
