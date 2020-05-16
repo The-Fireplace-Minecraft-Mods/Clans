@@ -33,48 +33,26 @@ public class DynmapCompat implements IDynmapCompat {
     public void init() {
         MinecraftForge.EVENT_BUS.register(this);
         DynmapCommonAPIListener.register(new DynmapAPIListener());
+        initializeMap();
     }
 
-    private long tickCounter = 0;
+    private byte tickCounter = 0;
 
-    private long m_NextTriggerTickCount = 0;
-    private int mapInitAttemptCount = 0;
-    private boolean mapInitialized = false;
     private final Set<ClanDimInfo> claimUpdates = Sets.newHashSet();
 
 
     @SubscribeEvent
     public void onServerTickEvent(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            tickCounter++;
-
             // Only process these server tickCounter events once a second, there is no need to do this on every tick.
-            if (tickCounter % 20 == 0) {
-                if (tickCounter >= m_NextTriggerTickCount) {
-                    if (mapInitialized) {
-                        // Update the claim display in dynmap for the list of teams.
-                        if (!claimUpdates.isEmpty()) {
-                            for (ClanDimInfo clanDim : claimUpdates)
-                                updateClanClaims(clanDim);
+            if (tickCounter++ >= 20) {
+                tickCounter -= 20;
+                // Update the claim display in dynmap for the list of clans.
+                if (!claimUpdates.isEmpty()) {
+                    for (ClanDimInfo clanDim : claimUpdates)
+                        updateClanClaims(clanDim);
 
-                            claimUpdates.clear();
-                        }
-                    } else {
-                        // We can't determine when FTB Claims information will be available so we have to check every so often, for
-                        // the most part after the first tickCounter update FTB should be ready to go but we retry a few times before we
-                        // consider ourselves initialized.
-
-                        mapInitialized = initializeMap();
-
-                        mapInitAttemptCount++;
-
-                        // After a few attempts to initialize, just consider the system initialized. When no claims exist
-                        // we will hit this case.
-                        if (mapInitAttemptCount > 10)
-                            mapInitialized = true;
-                    }
-
-                    m_NextTriggerTickCount = tickCounter + 40;
+                    claimUpdates.clear();
                 }
             }
         }
@@ -141,7 +119,7 @@ public class DynmapCompat implements IDynmapCompat {
 
     }
 
-    private boolean initializeMap() {
+    private void initializeMap() {
         Set<ClanDimInfo> clanDimList = Sets.newHashSet();
 
         for(Clan clan: ClaimData.clansWithClaims()) {
@@ -155,8 +133,6 @@ public class DynmapCompat implements IDynmapCompat {
 
         for (ClanDimInfo clanDim : clanDimList)
             queueClaimEventReceived(clanDim);
-
-        return !clanDimList.isEmpty();
     }
 
 

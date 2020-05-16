@@ -18,7 +18,7 @@ public class Timer {
 
 	@SubscribeEvent
 	public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if(!executing) {
+        if(event.phase.equals(TickEvent.Phase.END) && !executing) {
             if(++fiveMinuteCounter >= 20*60*5) {
                 executing = true;
                 fiveMinuteCounter -= 20*60*5;
@@ -48,13 +48,11 @@ public class Timer {
 
     @SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if(!event.player.getEntityWorld().isRemote) {
-			if (event.player.getEntityWorld().getTotalWorldTime() % 20 == 0) {
+		if(event.phase.equals(TickEvent.Phase.END) && !event.player.getEntityWorld().isRemote) {
+			if (event.player.getEntityWorld().getTotalWorldTime() % 20 == 0)
 				TimerLogic.runPlayerSecondLogic(event.player);
-			}
-			if (event.player.getEntityWorld().getTotalWorldTime() % 10 == 0) {
+			if (event.player.getEntityWorld().getTotalWorldTime() % 10 == 0)
 				TimerLogic.runPlayerHalfSecondLogic(event.player);
-			}
 		}
 	}
 
