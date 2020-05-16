@@ -42,7 +42,7 @@ public class CommandForm extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(selectedClan == null || ClansHelper.getConfig().isAllowMultiClanMembership()) {
 			String newClanName = TextStyles.stripFormatting(args[0]);
-			if(Clans.CensorConfig.censorClanDetails)
+			if(Clans.CensorConfig.censorClanNames)
 				newClanName = Clans.getChatCensorCompat().getCensoredString(newClanName);
 			if (ClansHelper.getConfig().getMaxNameLength() > 0 && newClanName.length() > ClansHelper.getConfig().getMaxNameLength())
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", newClanName, ClansHelper.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));

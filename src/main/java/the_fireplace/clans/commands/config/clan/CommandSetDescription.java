@@ -40,7 +40,7 @@ public class CommandSetDescription extends ClanSubCommand {
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
 		String descString = newTagline.toString();
-		if(Clans.CensorConfig.censorClanDetails)
+		if(Clans.CensorConfig.censorClanDescriptions)
 			descString = Clans.getChatCensorCompat().getCensoredString(descString);
 		selectedClan.setDescription(descString);
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getName()).setStyle(TextStyles.GREEN));

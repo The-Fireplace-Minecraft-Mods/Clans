@@ -39,7 +39,7 @@ public class CommandSetName extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
-		if(Clans.CensorConfig.censorClanDetails)
+		if(Clans.CensorConfig.censorClanNames)
 			newName = Clans.getChatCensorCompat().getCensoredString(newName);
 		if(ClansHelper.getConfig().getMaxNameLength() > 0 && newName.length() > ClansHelper.getConfig().getMaxNameLength())
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansHelper.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));

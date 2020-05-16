@@ -726,8 +726,10 @@ public final class Clans {
 
     @Config(modid = MODID, category = "chatcensor")
     public static class CensorConfig {
-        @Config.Comment("Censor clan names and descriptions before they are set. This requires Chat Censor to do anything.")
-        public static boolean censorClanDetails = true;
+        @Config.Comment("Censor clan names before they are set. This requires Chat Censor to do anything.")
+        public static boolean censorClanNames = true;
+        @Config.Comment("Censor clan descriptions before they are set. This is a bit excessive since currently Chat Censor will censor the description before it reaches the user anyways, but good if something else uses the clan description that is not fixed by Chat Censor. This requires Chat Censor to do anything.")
+        public static boolean censorClanDescriptions = false;
         @Config.Comment("Censor clan names and descriptions that get sent to Dynmap. This requires Chat Censor and Dynmap to do anything.")
         public static boolean censorDynmapDetails = true;
     }
