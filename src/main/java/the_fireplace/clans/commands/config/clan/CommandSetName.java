@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.config.clan;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
@@ -38,6 +39,8 @@ public class CommandSetName extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
+		if(Clans.CensorConfig.censorClanDetails)
+			newName = Clans.getChatCensorCompat().getCensoredString(newName);
 		if(ClansHelper.getConfig().getMaxNameLength() > 0 && newName.length() > ClansHelper.getConfig().getMaxNameLength())
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansHelper.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
 		else if(!ClanCache.clanNameTaken(newName)) {

@@ -54,8 +54,8 @@ public class DynmapCompat implements IDynmapCompat {
                     if (mapInitialized) {
                         // Update the claim display in dynmap for the list of teams.
                         if (!claimUpdates.isEmpty()) {
-                            for (ClanDimInfo teamDim : claimUpdates)
-                                updateClanClaims(teamDim);
+                            for (ClanDimInfo clanDim : claimUpdates)
+                                updateClanClaims(clanDim);
 
                             claimUpdates.clear();
                         }
@@ -106,23 +106,23 @@ public class DynmapCompat implements IDynmapCompat {
         startTimeNS = System.nanoTime();
         Clans.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> teamClaimsList = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
-        totalChunks = teamClaimsList.size();
+        Set<ChunkPosition> clanClaimsList = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));//new set to prevent cache from getting removed from the chunk cache
+        totalChunks = clanClaimsList.size();
 
         // Build a list of groups of claim chunks where the claims are touching each other.
         List<GroupedChunks> groupList = new ArrayList<>();
-        if (!teamClaimsList.isEmpty()) {
-            for (ChunkPosition pos: teamClaimsList) {
+        if (!clanClaimsList.isEmpty()) {
+            for (ChunkPosition pos: clanClaimsList) {
                 GroupedChunks group = new GroupedChunks();
                 groupList.add(group);
 
-                group.processChunk(pos, teamClaimsList);
+                group.processChunk(pos, clanClaimsList);
             }
         }
         totalGroups = groupList.size();
 
         // Draw all the team claim markers for the specified dimension.
-        clearAllTeamMarkers(clanDimInfo);
+        clearAllClanMarkers(clanDimInfo);
         int nIndex = 0;
         for (GroupedChunks group : groupList) {
             List<CoordinatePair> perimeterPoints = group.traceShapePerimeter();
@@ -142,21 +142,21 @@ public class DynmapCompat implements IDynmapCompat {
     }
 
     private boolean initializeMap() {
-        Set<ClanDimInfo> teamDimList = Sets.newHashSet();
+        Set<ClanDimInfo> clanDimList = Sets.newHashSet();
 
         for(Clan clan: ClaimData.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
             for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
                 if(!addedDims.contains(chunk.getDim())) {
-                    teamDimList.add(new ClanDimInfo(clan, chunk.getDim()));
+                    clanDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
                 }
         }
 
-        for (ClanDimInfo teamDim : teamDimList)
-            queueClaimEventReceived(teamDim);
+        for (ClanDimInfo clanDim : clanDimList)
+            queueClaimEventReceived(clanDim);
 
-        return !teamDimList.isEmpty();
+        return !clanDimList.isEmpty();
     }
 
 
@@ -260,7 +260,7 @@ public class DynmapCompat implements IDynmapCompat {
     public static StringBuilder getTooltipString(ClanDimInfo clanDimInfo) {
         StringBuilder stToolTip = new StringBuilder("<div class=\"infowindow\">");
 
-        stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(clanDimInfo.getClanName()).append("</span></div>");
+        stToolTip.append("<div style=\"text-align: center;\"><span style=\"font-weight:bold;\">").append(checkAndCensor(clanDimInfo.getClanName())).append("</span></div>");
 
         if (!clanDimInfo.getClanDescription().isEmpty()) {
             stToolTip.append("<div style=\"text-align: center;\"><span>").append(clanDimInfo.getClanDescription()).append("</span></div>");
@@ -274,7 +274,7 @@ public class DynmapCompat implements IDynmapCompat {
             for (UUID member : teamMembers) {
                 GameProfile gp = Clans.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member);
                 if(gp != null)
-                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(stripColorCodes(gp.getName())).append("</span></div>");
+                    stToolTip.append("<div style=\"text-align: center;\"><span>").append(checkAndCensor(stripColorCodes(gp.getName()))).append("</span></div>");
             }
         }
 
@@ -282,21 +282,25 @@ public class DynmapCompat implements IDynmapCompat {
         return stToolTip;
     }
 
+    /**
+     * Find all the markers for the specified clan and clear them.
+     * @param clan Name of clan you want to clear the markers for. Clears in all dimensions.
+     */
     @Override
-    public void clearAllTeamMarkers(Clan clan) {
+    public void clearAllClanMarkers(Clan clan) {
         List<Integer> addedDims = Lists.newArrayList();
         for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
             if(!addedDims.contains(chunk.getDim())) {
-                clearAllTeamMarkers(new ClanDimInfo(clan, chunk.getDim()));
+                clearAllClanMarkers(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
             }
     }
 
     /**
-     * Find all the markers for the specified team and clear them.
-     * @param clanDimInfo Name of team and dimension you want to clear the markers for.
+     * Find all the markers for the specified clan and clear them.
+     * @param clanDimInfo Name of clan and dimension you want to clear the markers for.
      */
-    public void clearAllTeamMarkers(ClanDimInfo clanDimInfo) {
+    public void clearAllClanMarkers(ClanDimInfo clanDimInfo) {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
 
@@ -322,12 +326,12 @@ public class DynmapCompat implements IDynmapCompat {
     public void buildDynmapWorldNames() {
         WorldServer[] worldsList = Clans.getMinecraftHelper().getServer().worlds;
 
+        Clans.getMinecraftHelper().getLogger().debug("Building Dynmap compatible world name list");
+
         // This code below follows Dynmap's naming which is required to get mapping between dimensions and worlds
         // to work. As dynmap API takes world strings not dimension numbers.
         for (WorldServer world : worldsList)
             dimensionNames.put(world.provider.getDimension(),  world.getWorldInfo().getWorldName());
-
-        Clans.getMinecraftHelper().getLogger().debug("Building Dynmap compatible world name list");
 
         for (Map.Entry<Integer, String> entry : dimensionNames.entrySet())
             Clans.getMinecraftHelper().getLogger().debug("  --> Dimension [{}] = {}", entry.getKey(), entry.getValue());
@@ -345,7 +349,7 @@ public class DynmapCompat implements IDynmapCompat {
         if (dimensionNames.containsKey(dim))
             worldName = dimensionNames.get(dim);
 
-        return  worldName;
+        return worldName;
     }
 
     /**
@@ -354,5 +358,9 @@ public class DynmapCompat implements IDynmapCompat {
      */
     public static String stripColorCodes(String text) {
         return text.isEmpty() ? text :FORMATTING_COLOR_CODES_PATTERN.matcher(text).replaceAll("");
+    }
+
+    public static String checkAndCensor(String text) {
+        return Clans.CensorConfig.censorDynmapDetails ? Clans.getChatCensorCompat().getCensoredString(text) : text;
     }
 }

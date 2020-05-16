@@ -8,5 +8,5 @@ public interface IDynmapCompat {
     void serverStart();
     void queueClaimEventReceived(ClanDimInfo clanDimInfo);
     void refreshTooltip(Clan clan);
-    void clearAllTeamMarkers(Clan clan);
+    void clearAllClanMarkers(Clan clan);
 }

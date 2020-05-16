@@ -12,15 +12,14 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
+import the_fireplace.clans.abstraction.IChatCensorCompat;
 import the_fireplace.clans.abstraction.IConfig;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.abstraction.IProtectionCompat;
+import the_fireplace.clans.abstraction.dummy.ChatCensorCompatDummy;
 import the_fireplace.clans.abstraction.dummy.DynmapCompatDummy;
 import the_fireplace.clans.forge.ForgePermissionHandler;
-import the_fireplace.clans.forge.compat.DynmapCompat;
-import the_fireplace.clans.forge.compat.ForgeMinecraftHelper;
-import the_fireplace.clans.forge.compat.IceAndFireCompat;
-import the_fireplace.clans.forge.compat.PaymentHandlerGE;
+import the_fireplace.clans.forge.compat.*;
 import the_fireplace.clans.logic.ServerEventLogic;
 import the_fireplace.clans.sponge.PaymentHandlerSponge;
 import the_fireplace.clans.sponge.SpongePermissionHandler;
@@ -41,6 +40,7 @@ public final class Clans {
     private static Logger LOGGER = FMLLog.log;
     private static final ForgeMinecraftHelper minecraftHelper = new ForgeMinecraftHelper();
     private static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
+    private static IChatCensorCompat chatCensorCompat = new ChatCensorCompatDummy();
     private static final List<IProtectionCompat> protectionCompats = Lists.newArrayList();
     private static final IProtectionCompat protectionCompatManager = new IProtectionCompat() {
         @Override
@@ -88,17 +88,15 @@ public final class Clans {
         return LOGGER;
     }
 
-    static void setDynmapCompat(IDynmapCompat dynmapCompat) {
-        Clans.dynmapCompat = dynmapCompat;
-    }
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ClansHelper.setConfig(new cfg());
         LOGGER = event.getModLog();
 
         if(getMinecraftHelper().isPluginLoaded("dynmap"))
-            setDynmapCompat(new DynmapCompat());
+            dynmapCompat = new DynmapCompat();
+        if(getMinecraftHelper().isPluginLoaded("chatcensor"))
+            chatCensorCompat = new ChatCensorCompat();
         if(getMinecraftHelper().isPluginLoaded("iceandfire"))
             addProtectionCompat(new IceAndFireCompat());
 
@@ -148,6 +146,10 @@ public final class Clans {
 
     public static IDynmapCompat getDynmapCompat(){
         return dynmapCompat;
+    }
+
+    public static IChatCensorCompat getChatCensorCompat(){
+        return chatCensorCompat;
     }
 
     @Mod.EventHandler
@@ -720,5 +722,13 @@ public final class Clans {
         public boolean allowInteractionProtection() {
             return allowInteractProtection;
         }
+    }
+
+    @Config(modid = MODID, category = "chatcensor")
+    public static class CensorConfig {
+        @Config.Comment("Censor clan names and descriptions before they are set. This requires Chat Censor to do anything.")
+        public static boolean censorClanDetails = true;
+        @Config.Comment("Censor clan names and descriptions that get sent to Dynmap. This requires Chat Censor and Dynmap to do anything.")
+        public static boolean censorDynmapDetails = true;
     }
 }

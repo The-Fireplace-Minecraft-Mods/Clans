@@ -136,6 +136,7 @@ curseforge {
         relations{
             optionalLibrary 'grand-economy'
             optionalLibrary 'dynmapforge'
+            optionalLibrary 'chat-censor'
         }
     }
     addArtifact(sourceJar) {

@@ -3,6 +3,7 @@ package the_fireplace.clans.commands.config.clan;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -38,7 +39,10 @@ public class CommandSetDescription extends ClanSubCommand {
 		StringBuilder newTagline = new StringBuilder();
 		for(String arg: args)
 			newTagline.append(arg).append(' ');
-		selectedClan.setDescription(newTagline.toString());
+		String descString = newTagline.toString();
+		if(Clans.CensorConfig.censorClanDetails)
+			descString = Clans.getChatCensorCompat().getCensoredString(descString);
+		selectedClan.setDescription(descString);
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
 	}
 }

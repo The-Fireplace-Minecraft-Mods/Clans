@@ -4,6 +4,7 @@ Added the ability to choose which dimensions players can claim in
 Added a way to choose how you want to see clan territory details, if at all: /clan territorymessagemode
 Added a command to choose if you want to see underground/overground messages: /clan undergroundmessages
 Added Win-Loss Ratio and Last Seen to the /clan details and /clan playerinfo
+Added integration with Chat Censor - Clan names and descriptions will be censored by default when they are set, as well as when they are shown on Dynmap.
 
 Changes:
 Updated to use Grand Economy 2.0.0+

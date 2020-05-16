@@ -18,5 +18,5 @@ public class DynmapCompatDummy implements IDynmapCompat {
     public void refreshTooltip(Clan clan) {}
 
     @Override
-    public void clearAllTeamMarkers(Clan clan) {}
+    public void clearAllClanMarkers(Clan clan) {}
 }

@@ -840,7 +840,7 @@ public class Clan {
             RaidingParties.getActiveRaid(this).raiderVictory();
         if(RaidingParties.isPreparingRaid(this))
             RaidingParties.removeRaid(RaidingParties.getInactiveRaid(this));
-        Clans.getDynmapCompat().clearAllTeamMarkers(this);
+        Clans.getDynmapCompat().clearAllClanMarkers(this);
         ClanDatabase.removeClan(getId());
         if(isServer())
             return;
