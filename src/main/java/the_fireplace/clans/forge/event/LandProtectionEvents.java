@@ -1,6 +1,7 @@
 package the_fireplace.clans.forge.event;
 
 import net.minecraft.block.BlockFire;
+import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
@@ -86,7 +87,7 @@ public class LandProtectionEvents {
 
 	@SubscribeEvent
 	public static void minecartInteract(MinecartInteractEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelMinecartInteract(event.getMinecart(), event.getPlayer()));
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityInteract(event.getEntity().getEntityWorld(), event.getMinecart(), event.getPlayer(), true));
 	}
 
 	@SubscribeEvent
@@ -131,5 +132,8 @@ public class LandProtectionEvents {
 		event.setCanceled(cancel);
 	}
 
-	//TODO entityinteractspecific
+	@SubscribeEvent
+	public static void entityInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityInteract(event.getWorld(), event.getTarget(), event.getEntityPlayer(), event.getTarget() instanceof AbstractChestHorse));
+	}
 }

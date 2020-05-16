@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.IAnimals;
@@ -227,18 +226,17 @@ public class LandProtectionEventLogic {
         return state.getBlock() instanceof BlockContainer || tileEntity instanceof IInventory || Clans.getProtectionCompat().isContainer(world, pos, state, tileEntity);
     }
 
-    public static boolean shouldCancelMinecartInteract(EntityMinecart minecart, EntityPlayer player) {
-        if(!minecart.world.isRemote && ClansHelper.getConfig().allowInteractionProtection()) {
-            Chunk c = minecart.world.getChunk(minecart.getPosition());
+    public static boolean shouldCancelEntityInteract(World world, Entity target, EntityPlayer player, boolean useAccessPermission) {
+        if(!world.isRemote && ClansHelper.getConfig().allowInteractionProtection()) {
+            Chunk c = world.getChunk(target.getPosition());
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null && !ChunkUtils.isBorderland(c)) {
                 if (player instanceof EntityPlayerMP) {
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
-                    if (!ClanCache.isClaimAdmin((EntityPlayerMP) player)
-                            && !chunkClan.hasPerm("access", player.getUniqueID())
-                            && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)) {
-                        return !isRaidedBy;
-                    }
+                    return !ClanCache.isClaimAdmin((EntityPlayerMP) player)
+                        && !chunkClan.hasPerm(useAccessPermission ? "access" : "interact", player.getUniqueID())
+                        && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
+                        && !isRaidedBy;
                 }
             }
         }
@@ -303,7 +301,7 @@ public class LandProtectionEventLogic {
      * @param target
      * The target of the damage
      * @param source
-     * The damage source should be provided if possible, try to avoid making this null because it can result in invinvibility
+     * The damage source should be provided if possible, try to avoid making this null because it can result in invincibility
      * @param attacker
      * The attacker, if there is one
      * @return
@@ -311,24 +309,25 @@ public class LandProtectionEventLogic {
      */
     public static boolean shouldCancelEntityDamage(Entity target, @Nullable DamageSource source, @Nullable Entity attacker) {
         if(!target.getEntityWorld().isRemote && ClansHelper.getConfig().allowInjuryProtection()) {
-            Chunk c = target.getEntityWorld().getChunk(target.getPosition());
-            Clan chunkClan = ClanCache.getClanById(ChunkUtils.getChunkOwner(c));
+            Chunk chunk = target.getEntityWorld().getChunk(target.getPosition());
+            Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(chunk));
             if(attacker == null && source != null)
                 attacker = source.getTrueSource();
             //Do not cancel if the attacker is in admin mode or the chunk is not a claim
-            if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(c))
+            if(attacker instanceof EntityPlayerMP && ClanCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkOwner == null || ChunkUtils.isBorderland(chunk))
                 return false;
-            if(!chunkClan.isMobDamageAllowed() && isMob(attacker))
+            //Cancel if mobs cannot do damage and the attacker is a mob
+            if(!chunkOwner.isMobDamageAllowed() && isMob(attacker))
                 return true;
-            //Do not cancel if it would be able to harm in creative or doesn't come from being attacked
+            //Do not cancel if it would be able to harm creative players or doesn't come from being attacked
             if(source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
                 return false;
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if(target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                Boolean pvpAllowed = chunkClan.pvpAllowed();
+                Boolean pvpAllowed = chunkOwner.pvpAllowed();
                 if(pvpAllowed == null)
-                    return shouldCancelPVPDefault(target, attacker, chunkClan, attackingPlayer);
+                    return shouldCancelPVPDefault(target, attacker, chunkOwner, attackingPlayer);
                 else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
                     return !pvpAllowed;
             } else {//Target is not a player and not owned by a player
@@ -336,16 +335,17 @@ public class LandProtectionEventLogic {
                     UUID attackingPlayerId = attackingPlayer.getUniqueID();
                     List<Clan> attackerEntityClans = ClanCache.getPlayerClans(attackingPlayerId);
                     //Players can harm things in their own claims as long as they have permission
-                    if (!attackerEntityClans.isEmpty()
-                            && attackerEntityClans.contains(chunkClan))
-                        return !hasPermissionToHarm(target, chunkClan, attackingPlayerId);
+                    if (attackerEntityClans.contains(chunkOwner))
+                        return !hasPermissionToHarm(target, chunkOwner, attackingPlayerId);
                     //Raiders can harm things when they are attacking
-                    if (RaidingParties.isRaidedBy(chunkClan, attackingPlayer))
+                    if (RaidingParties.isRaidedBy(chunkOwner, attackingPlayer))
                         return false;
-                    //Attacker is not a raider and not in the clan. Check if the clan has given them permission to harm whatever
-                    return !hasPermissionToHarm(target, chunkClan, attackingPlayerId)
+                    //Attacker is not a raider and not in the clan.
+                    //Cancel if the chunk owner has not given permission to harm
+                    return !hasPermissionToHarm(target, chunkOwner, attackingPlayerId)
                             //Allow anyone to kill mobs on server clan land
-                            && (!chunkClan.isServer() || !(isMob(target)))
+                            && !(chunkOwner.isServer() && isMob(target))
+                            //Allow fake players to harm things if they are allowed to do so.
                             && !Clans.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
                 }
             }
@@ -413,10 +413,12 @@ public class LandProtectionEventLogic {
     }
 
     public static boolean hasPermissionToHarm(Entity targetEntity, Clan permissionClan, UUID attackingPlayerId) {
-        return isMob(targetEntity)
-                ? permissionClan.hasPerm("harmmob", attackingPlayerId)
-                : targetEntity instanceof IAnimals
-                && permissionClan.hasPerm("harmanimal", attackingPlayerId);
+        if(isMob(targetEntity))
+            return permissionClan.hasPerm("harmmob", attackingPlayerId);
+        else if(targetEntity instanceof IAnimals)
+            return permissionClan.hasPerm("harmanimal", attackingPlayerId);
+        else //Technically other living entities that are not mob or animal may be impacted if for some reason the player does not have build permissions, but what better way is there to handle it considering that item frames, armor stands, and other inanimate entities fall into this category?
+            return permissionClan.hasPerm("build", attackingPlayerId);
     }
 
     public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
