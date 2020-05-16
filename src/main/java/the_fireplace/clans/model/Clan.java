@@ -50,8 +50,8 @@ public class Clan {
     private int wins = 0, losses = 0;
     private long shield = ClansHelper.getConfig().getInitialShield() * 60;
     private long rentTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
-    private int color = new Random().nextInt(0xffffff);
-    private int textColor = TextStyles.getNearestTextColor(color).getColorIndex();
+    private int color;
+    private int textColor;
     private double multiplier = 1.0;
 
     public static final Map<String, EnumRank> defaultPermissions = Maps.newHashMap();
@@ -117,6 +117,8 @@ public class Clan {
             for(Clan clan: ClanDatabase.getClans())
                 PlayerData.removeInvite(leader, clan.getId());
         rent = Math.min(FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), this, 0)/ClansHelper.getConfig().getChargeRentDays(), FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), this, 0)/ClansHelper.getConfig().getClanUpkeepDays())*ClansHelper.getConfig().getChargeRentDays();
+        color = new Random().nextInt(0xffffff);
+        textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
         isChanged = true;
     }

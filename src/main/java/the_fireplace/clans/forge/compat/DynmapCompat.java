@@ -197,7 +197,7 @@ public class DynmapCompat implements IDynmapCompat {
                 int nStrokeWeight = ClansHelper.getConfig().getDynmapBorderWeight();
                 double dStrokeOpacity = ClansHelper.getConfig().getDynmapBorderOpacity();
                 double dFillOpacity = ClansHelper.getConfig().getDynmapFillOpacity();
-                int nFillColor = clanDimInfo.getTeamColor();
+                int nFillColor = clanDimInfo.getClanColor();
 
                 marker.setLineStyle(nStrokeWeight, dStrokeOpacity, nFillColor);
                 marker.setFillStyle(dFillOpacity, nFillColor);
