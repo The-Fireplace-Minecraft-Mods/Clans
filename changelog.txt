@@ -12,3 +12,4 @@ Rent now defaults to the cost of upkeep for 1 player or max rent, whichever is l
 
 Fixes/Internal Changes:
 Fixed mismatched number of dashes for the top and bottom of a one-page paged chat message
+Fixed /clan list showing no entries when clicking to switch pages or using invalid sort

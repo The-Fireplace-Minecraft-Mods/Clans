@@ -58,44 +58,46 @@ public class CommandList extends ClanSubCommand {
 		if(!ClanDatabase.getClans().isEmpty()) {
 			ArrayList<Clan> clans = Lists.newArrayList(ClanDatabase.getClans());
 			ArrayList<ITextComponent> listItems = Lists.newArrayList();
-			if(args.length > 0)
-				switch (args[0]) {
-					case "money":
-					case "$":
-						clans.sort(Comparator.comparingDouble(clan -> ClansHelper.getPaymentHandler().getBalance(clan.getId())));
-						for (Clan clan : clans)
-							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansHelper.getPaymentHandler().getFormattedCurrency(ClansHelper.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
-						break;
-					case "land":
-					case "claims":
-						clans.sort(Comparator.comparingInt(Clan::getClaimCount));
-						for (Clan clan : clans)
-							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClaimCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
-						break;
-					case "members":
-						clans.sort(Comparator.comparingInt(Clan::getMemberCount));
-						for (Clan clan : clans)
-							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getMemberCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
-						break;
-					case "rewardmult":
-						clans.sort(Comparator.comparingDouble(Clan::getRaidRewardMultiplier));
-						DecimalFormat df = new DecimalFormat("#.00");
-						for (Clan clan : clans)
-							listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(clan.getRaidRewardMultiplier()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
-						break;
-					case "invites":
-					case "invite":
-					case "i":
-						if(sender instanceof EntityPlayerMP)
-							listInvites((EntityPlayerMP)sender, args.length == 2 ? parseInt(args[1]) : 1);
-						else
-							sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player").setStyle(TextStyles.RED));
-						return;
-				}
-			else {
-				clans.sort(Comparator.comparing(Clan::getName));
-				for (Clan clan : clans)
-					listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+			String sort = args.length > 0 ? args[0] : "abc";
+			switch (sort) {
+				case "alphabetical":
+				case "abc":
+				default:
+					clans.sort(Comparator.comparing(Clan::getName));
+					for (Clan clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+					break;
+				case "money":
+				case "$":
+					clans.sort(Comparator.comparingDouble(clan -> ClansHelper.getPaymentHandler().getBalance(clan.getId())));
+					for (Clan clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansHelper.getPaymentHandler().getFormattedCurrency(ClansHelper.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+					break;
+				case "land":
+				case "claims":
+					clans.sort(Comparator.comparingInt(Clan::getClaimCount));
+					for (Clan clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClaimCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+					break;
+				case "members":
+					clans.sort(Comparator.comparingInt(Clan::getMemberCount));
+					for (Clan clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getMemberCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+					break;
+				case "rewardmult":
+					clans.sort(Comparator.comparingDouble(Clan::getRaidRewardMultiplier));
+					DecimalFormat df = new DecimalFormat("#,###.00");
+					for (Clan clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(clan.getRaidRewardMultiplier()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+					break;
+				case "invites":
+				case "invite":
+				case "i":
+					if(sender instanceof EntityPlayerMP)
+						listInvites((EntityPlayerMP)sender, args.length == 2 ? parseInt(args[1]) : 1);
+					else
+						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player").setStyle(TextStyles.RED));
+					return;
 			}
 			int page;
 			if(args.length > 1)
