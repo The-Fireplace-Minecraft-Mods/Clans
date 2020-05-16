@@ -11,10 +11,3 @@ Raid start cost is now formula-based
 Rent now defaults to the cost of upkeep for 1 player or max rent, whichever is lower.
 
 Fixes/Internal Changes:
-Fixed upkeep and rent not displaying to admins and leaders of clans when viewing clan details
-Fixed tab completions not using what you typed when completing
-Fixed broken error message when the player uses /clan NOT_IN_THIS_CLAN command
-Fixed the details command not showing upkeep correctly
-Fixed the error messages when you can't break or interact with a locked block
-Fixed attacking entities on claimed land that are not mobs or animals
-Fixed entity interaction protection
