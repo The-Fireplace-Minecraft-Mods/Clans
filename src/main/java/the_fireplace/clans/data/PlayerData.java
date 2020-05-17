@@ -191,6 +191,8 @@ public final class PlayerData {
                 blockedClans = Lists.newArrayList();
                 inviteBlock = false;
                 raidWins = raidLosses = 0;
+                territoryDisplayMode = TerritoryDisplayMode.ACTION_BAR;
+                lastSeen = System.currentTimeMillis();
                 PlayerEventLogic.onFirstLogin(playerId);
             }
             //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
