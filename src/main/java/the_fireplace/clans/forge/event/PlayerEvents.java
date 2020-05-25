@@ -5,11 +5,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
 
-@Mod.EventBusSubscriber(modid = ClansHelper.MODID)
+@Mod.EventBusSubscriber(modid = Clans.MODID)
 public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {

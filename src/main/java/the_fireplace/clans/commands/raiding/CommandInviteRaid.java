@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -54,14 +53,14 @@ public class CommandInviteRaid extends RaidSubCommand {
 				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
 				if(target != null) {
 					Map<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
-					if (clanPlayers.size() > raid.getAttackerCount() - ClansHelper.getConfig().getMaxRaidersOffset()) {
+					if (clanPlayers.size() > raid.getAttackerCount() - Clans.getConfig().getMaxRaidersOffset()) {
 						if (!clanPlayers.containsKey(target)) {
 							target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
 					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + ClansHelper.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 				} else
 					throw new PlayerNotFoundException("commands.generic.player.notFound", args[0]);
 			} else {

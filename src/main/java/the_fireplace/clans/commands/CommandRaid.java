@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.raiding.*;
 import the_fireplace.clans.util.PermissionManager;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -65,7 +65,7 @@ public class CommandRaid extends CommandBase {
         if(args.length <= 0)
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
-        if(ClansHelper.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
+        if(Clans.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {
             if(commands.containsKey(processAlias(tag)))

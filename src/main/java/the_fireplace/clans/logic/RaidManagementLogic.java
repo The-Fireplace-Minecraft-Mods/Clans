@@ -22,7 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.cache.WorldTrackingCache;
@@ -38,13 +38,14 @@ import the_fireplace.clans.util.MultiblockUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class RaidManagementLogic {
     public static boolean shouldCancelBlockDrops(World world, BlockPos pos) {
-        if(!world.isRemote && !ClansHelper.getConfig().isDisableRaidRollback()) {
+        if(!world.isRemote && !Clans.getConfig().isDisableRaidRollback()) {
             Chunk c = world.getChunk(pos);
             UUID chunkOwner = ChunkUtils.getChunkOwner(c);
             if (chunkOwner != null) {
@@ -85,7 +86,7 @@ public class RaidManagementLogic {
     }
 
     public static void onNeighborBlockNotified(World world, IBlockState state, BlockPos pos) {
-        if(!world.isRemote && !ClansHelper.getConfig().isDisableRaidRollback()) {
+        if(!world.isRemote && !Clans.getConfig().isDisableRaidRollback()) {
             if (state.getBlock() instanceof BlockPistonBase) {
                 if (state.getProperties().containsKey(BlockPistonBase.FACING) && state.getProperties().containsKey(BlockPistonBase.EXTENDED)) {
                     Comparable facing = state.getProperties().get(BlockPistonBase.FACING);
@@ -167,7 +168,7 @@ public class RaidManagementLogic {
         if(entity.world.isRemote)
             return false;
         Clan owningClan = ClaimData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
-        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !ClansHelper.getConfig().isDisableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
+        return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !Clans.getConfig().isDisableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
     }
 
     private static void doSlimePush(World world, EnumFacing facing, BlockPos newPos, EnumFacing shiftDir) {
@@ -211,7 +212,7 @@ public class RaidManagementLogic {
     }
 
     public static void checkAndRemoveForbiddenItems(MinecraftServer server, Raid raid) {
-        List<String> itemList = ClansHelper.getConfig().getRaidItemList();
+        Collection<String> itemList = Clans.getConfig().getRaidItemList();
         boolean isBlacklist = itemList.contains("*");
         //If everything is allowed, no need to go through this process
         if(itemList.size() == 1 && isBlacklist)
@@ -243,7 +244,7 @@ public class RaidManagementLogic {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null) {
-                if (RaidingParties.hasActiveRaid(chunkClan) && !ClansHelper.getConfig().isDisableRaidRollback()) {
+                if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
                     IBlockState targetState = state != null ? state : world.getBlockState(pos);
                     RaidRestoreDatabase.addRestoreBlock(world.provider.getDimension(), c, pos, BlockSerializeUtil.blockToString(targetState));
                     for(BlockPos connected: MultiblockUtil.getDependentPositions(world, pos, targetState))
@@ -259,10 +260,10 @@ public class RaidManagementLogic {
             if (placer instanceof EntityPlayerMP) {
                 Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
                 if (chunkClan != null) {
-                    if (RaidingParties.hasActiveRaid(chunkClan) && !ClansHelper.getConfig().isDisableRaidRollback()) {
+                    if (RaidingParties.hasActiveRaid(chunkClan) && !Clans.getConfig().isDisableRaidRollback()) {
                         ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();
                         out.setCount(1);
-                        if (!ClansHelper.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
+                        if (!Clans.getConfig().isNoReclaimTNT() || !(placedBlock instanceof BlockTNT))
                             RaidCollectionDatabase.getInstance().addCollectItem(placer.getUniqueID(), out);
                         RaidRestoreDatabase.addRemoveBlock(world.provider.getDimension(), c, pos);
                         //TODO After the block has been placed, something needs to check if a multiblock was created at that position and mark the dependent positions for removal as well.

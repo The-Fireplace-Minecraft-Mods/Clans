@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
@@ -34,17 +33,17 @@ public class TimerLogic {
         for (Clan clan : ClanDatabase.getClans())
             clan.decrementShield();
 
-        if (ClansHelper.getConfig().getClanUpkeepDays() > 0 || ClansHelper.getConfig().getChargeRentDays() > 0)
+        if (Clans.getConfig().getClanUpkeepDays() > 0 || Clans.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
                 if(clan.isServer())
                     continue;
-                if (ClansHelper.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
+                if (Clans.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
                     for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
-                        if (ClansHelper.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
-                            ClansHelper.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
-                        else if (ClansHelper.getConfig().isEvictNonpayers())
-                            if (member.getValue() != EnumRank.LEADER && (ClansHelper.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
+                        if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
+                            Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
+                        else if (Clans.getConfig().isEvictNonpayers())
+                            if (member.getValue() != EnumRank.LEADER && (Clans.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
                                 clan.removeMember(member.getKey());
                                 EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
                                 //noinspection ConstantConditions
@@ -56,11 +55,11 @@ public class TimerLogic {
                     }
                     clan.updateNextRentTimeStamp();
                 }
-                if (ClansHelper.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
+                if (Clans.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
-                    double upkeep = FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), clan, 0);
-                    if(ClansHelper.getConfig().isDisbandNoUpkeep() && upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId()) && upkeep <= ClansHelper.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
-                        while(upkeep > ClansHelper.getPaymentHandler().getBalance(clan.getId())) {
+                    double upkeep = FormulaParser.eval(Clans.getConfig().getClanUpkeepCostFormula(), clan, 0);
+                    if(Clans.getConfig().isDisbandNoUpkeep() && upkeep > Clans.getPaymentHandler().getBalance(clan.getId()) && upkeep <= Clans.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
+                        while(upkeep > Clans.getPaymentHandler().getBalance(clan.getId())) {
                             ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
                             if(chunks.isEmpty())//This _should_ always be false, but just in case...
                                 break;
@@ -68,7 +67,7 @@ public class TimerLogic {
                             ClanManagementLogic.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                         }
                     }
-                    if (ClansHelper.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && ClansHelper.getConfig().isDisbandNoUpkeep())
+                    if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
                         clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
                     else
                         clan.updateNextUpkeepTimeStamp();
@@ -116,7 +115,7 @@ public class TimerLogic {
         if(c != null) {
             if(Boolean.FALSE.equals(c.getMobSpawnOverride()))
                 mob.onKillCommand();
-            else if (ClansHelper.getConfig().isPreventMobsOnClaims() && (ClansHelper.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland()))
+            else if (Clans.getConfig().isPreventMobsOnClaims() && (Clans.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland()))
                 mob.onKillCommand();
         }
     }
@@ -162,7 +161,7 @@ public class TimerLogic {
             if(!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland))
                 handleTerritoryChangedMessage(player, chunkClan, playerClans, isInBorderland);
             PlayerCache.setPreviousY(player.getUniqueID(), (int) Math.round(player.posY));
-        } else if (chunkClanId == null && ClansHelper.getConfig().isProtectWilderness() && ClansHelper.getConfig().getMinWildernessY() > 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0 && !(PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness")))
+        } else if (chunkClanId == null && Clans.getConfig().isProtectWilderness() && Clans.getConfig().getMinWildernessY() > 0 && player.getEntityWorld().getTotalWorldTime() % 20 == 0 && !(PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness")))
             handleDepthChangedMessage(player);
         EntityPlayerMP playerMP = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
         if (playerMP != null) {
@@ -183,7 +182,7 @@ public class TimerLogic {
             return;
         int curY = (int) Math.round(player.posY);
         int prevY = PlayerCache.getPreviousY(player.getUniqueID());
-        int yBound = (ClansHelper.getConfig().getMinWildernessY() < 0 ? player.world.getSeaLevel() : ClansHelper.getConfig().getMinWildernessY());
+        int yBound = (Clans.getConfig().getMinWildernessY() < 0 ? player.world.getSeaLevel() : Clans.getConfig().getMinWildernessY());
         if (curY >= yBound && prevY < yBound) {
             player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW), mode.isAction());
             if(mode.showsDescription())
@@ -209,12 +208,12 @@ public class TimerLogic {
         String territoryDesc;
         if (chunkClan == null) {
             boolean canBuildInWilderness = PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness") && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness");
-            if (ClansHelper.getConfig().isProtectWilderness() && (ClansHelper.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < ClansHelper.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
+            if (Clans.getConfig().isProtectWilderness() && (Clans.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < Clans.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
                 territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
                 territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
             } else {
                 territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness");
-                if(ClansHelper.getConfig().isProtectWilderness() && !canBuildInWilderness) {
+                if(Clans.getConfig().isProtectWilderness() && !canBuildInWilderness) {
                     color = TextStyles.YELLOW;
                     territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected");
                 } else

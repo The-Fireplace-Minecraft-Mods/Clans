@@ -5,7 +5,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.transaction.ResultType;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IPaymentHandler;
 
 import javax.annotation.Nullable;
@@ -34,14 +34,14 @@ public class PaymentHandlerSponge implements IPaymentHandler {
     @Override
     public boolean addAmount(double amount, UUID uuid) {
         if(getEcon() != null && getEcon().getOrCreateAccount(uuid).isPresent())
-            return getEcon().getOrCreateAccount(uuid).get().deposit(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansHelper.MODID)).getResult().equals(ResultType.SUCCESS);
+            return getEcon().getOrCreateAccount(uuid).get().deposit(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), Clans.MODID)).getResult().equals(ResultType.SUCCESS);
         return false;
     }
 
     @Override
     public boolean deductAmount(double amount, UUID uuid) {
         if(getEcon() != null && getEcon().getOrCreateAccount(uuid).isPresent())
-            return getEcon().getOrCreateAccount(uuid).get().withdraw(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansHelper.MODID)).getResult().equals(ResultType.SUCCESS);
+            return getEcon().getOrCreateAccount(uuid).get().withdraw(getEcon().getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), Clans.MODID)).getResult().equals(ResultType.SUCCESS);
         return false;
     }
 

@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.ClaimData;
@@ -60,7 +60,7 @@ public class CommandFancyMap extends ClanSubCommand {
 			for(int z=center.z-26; z <= center.z + 26; z++) {
 				StringBuilder row = new StringBuilder();
 				for (int x = center.x - 26; x <= center.x + 26; x++) {
-					String wildernessColor = center.z == z && center.x == x ? "\u00A79" : ClansHelper.getConfig().isProtectWilderness() ? "\u00A7e" : "\u00A72";
+					String wildernessColor = center.z == z && center.x == x ? "\u00A79" : Clans.getConfig().isProtectWilderness() ? "\u00A7e" : "\u00A72";
 					ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, z, sender.getServerWorld().provider.getDimension());
 					Clan clan = ClaimData.getChunkClan(pos);
 					if(pos == null || clan == null)

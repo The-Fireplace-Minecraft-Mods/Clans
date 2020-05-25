@@ -4,7 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.apache.commons.io.IOUtils;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
@@ -22,7 +22,7 @@ public class ClansLanguageMap {
     private static final Pattern NUMERIC_VARIABLE_PATTERN = Pattern.compile("%(\\d+\\$)?[\\d\\.]*[df]");
     /** A Splitter that splits a string on the first "=".  For example, "a=b=c" would split into ["a", "b=c"]. */
     private static final Splitter EQUAL_SIGN_SPLITTER = Splitter.on('=').limit(2);
-    private static final ClansLanguageMap instance = new ClansLanguageMap(ClansHelper.getConfig().getLocale());
+    private static final ClansLanguageMap instance = new ClansLanguageMap(Clans.getConfig().getLocale());
     private final Map<String, String> languageList = Maps.newHashMap();
 
     ClansLanguageMap(String locale) {

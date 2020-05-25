@@ -6,13 +6,13 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = ClansHelper.MODID)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = Clans.MODID)
 public class ClientEvents {
     @SubscribeEvent
     public static void configChanged(ConfigChangedEvent event) {
-        if (event.getModID().equals(ClansHelper.MODID))
-            ConfigManager.sync(ClansHelper.MODID, Config.Type.INSTANCE);
+        if (event.getModID().equals(Clans.MODID))
+            ConfigManager.sync(Clans.MODID, Config.Type.INSTANCE);
     }
 }

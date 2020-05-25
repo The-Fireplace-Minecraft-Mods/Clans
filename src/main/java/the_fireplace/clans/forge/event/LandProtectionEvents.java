@@ -21,7 +21,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.logic.RaidManagementLogic;
@@ -29,7 +29,7 @@ import the_fireplace.clans.util.EntityUtil;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid= ClansHelper.MODID)
+@Mod.EventBusSubscriber(modid= Clans.MODID)
 public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(BlockEvent.BreakEvent event){

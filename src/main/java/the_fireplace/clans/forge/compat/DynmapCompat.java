@@ -13,9 +13,9 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.abstraction.IDynmapCompat;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.config.Config;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.model.*;
 
@@ -194,9 +194,9 @@ public class DynmapCompat implements IDynmapCompat {
 
             // Configure the marker style
             if (marker != null) {
-                int nStrokeWeight = ClansHelper.getConfig().getDynmapBorderWeight();
-                double dStrokeOpacity = ClansHelper.getConfig().getDynmapBorderOpacity();
-                double dFillOpacity = ClansHelper.getConfig().getDynmapFillOpacity();
+                int nStrokeWeight = Clans.getConfig().getDynmapBorderWeight();
+                double dStrokeOpacity = Clans.getConfig().getDynmapBorderOpacity();
+                double dFillOpacity = Clans.getConfig().getDynmapFillOpacity();
                 int nFillColor = clanDimInfo.getClanColor();
 
                 marker.setLineStyle(nStrokeWeight, dStrokeOpacity, nFillColor);
@@ -338,6 +338,6 @@ public class DynmapCompat implements IDynmapCompat {
     }
 
     public static String checkAndCensor(String text) {
-        return Clans.CensorConfig.censorDynmapDetails ? Clans.getChatCensorCompat().getCensoredString(text) : text;
+        return Config.getInstance().chatCensor.censorDynmapDetails ? Clans.getChatCensorCompat().getCensoredString(text) : text;
     }
 }

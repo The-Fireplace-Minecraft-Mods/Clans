@@ -20,7 +20,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IProtectionCompat;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.logic.LandProtectionEventLogic;
@@ -69,7 +69,7 @@ public class IceAndFireCompat implements IProtectionCompat {
                 @SuppressWarnings("ConstantConditions")
                 BlockPos pos = rayTraceResult != null ? rayTraceResult.getBlockPos() : event.getEntity().getPosition();
                 event.setCanceled(
-                    (player == null && (ClansHelper.getConfig().isProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(pos))) != null))
+                    (player == null && (Clans.getConfig().isProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(pos))) != null))
                         || LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, pos, player, false)
                         || LandProtectionEventLogic.shouldCancelBlockPlacement(event.getEntity().world, pos, player, null, false));
             }
@@ -82,7 +82,7 @@ public class IceAndFireCompat implements IProtectionCompat {
             if(event.getEntity() instanceof EntityDragonBase) {
                 Entity owner = LandProtectionEventLogic.getOwner(event.getEntity());
                 EntityPlayer player = owner instanceof EntityPlayer ? (EntityPlayer)owner : null;
-                if((player == null && (ClansHelper.getConfig().isProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
+                if((player == null && (Clans.getConfig().isProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
                     || LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), player, false))
                     event.setResult(Event.Result.DENY);
             }

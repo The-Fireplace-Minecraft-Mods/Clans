@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.Clan;
@@ -77,7 +77,7 @@ public class CommandUnlockChunk extends ClanSubCommand {
 					if (!all && selectedClan.isLocked(targetBlockPos) && !allowedUnlockPlayer.equals(selectedClan.getLockOwner(targetBlockPos)))
 						continue;
 					IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
-					if (ClansHelper.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
+					if (Clans.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
 						selectedClan.delLock(targetBlockPos);
 						for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
 							selectedClan.delLock(pos);

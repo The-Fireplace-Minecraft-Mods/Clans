@@ -4,9 +4,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
+import the_fireplace.clans.config.Config;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -39,10 +39,10 @@ public class CommandSetName extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String newName = args[0];
-		if(Clans.CensorConfig.censorClanNames)
+		if(Config.getInstance().chatCensor.censorClanNames)
 			newName = Clans.getChatCensorCompat().getCensoredString(newName);
-		if(ClansHelper.getConfig().getMaxNameLength() > 0 && newName.length() > ClansHelper.getConfig().getMaxNameLength())
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansHelper.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
+		if(Clans.getConfig().getMaxNameLength() > 0 && newName.length() > Clans.getConfig().getMaxNameLength())
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", Clans.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
 		else if(!ClanCache.clanNameTaken(newName)) {
 			String oldName = selectedClan.getName();
 			selectedClan.setName(newName);

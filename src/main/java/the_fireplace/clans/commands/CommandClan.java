@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.dummy.PaymentHandlerDummy;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.config.clan.*;
@@ -85,13 +85,13 @@ public class CommandClan extends CommandBase {
         //player config
         put("setdefault", new CommandSetDefault());
         put("territorymessagemode", new CommandTerritoryMessageMode());
-        if(ClansHelper.getConfig().isProtectWilderness())
+        if(Clans.getConfig().isProtectWilderness())
             put("undergroundmessages", new CommandUndergroundMessages());
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
         //clan finances
-        if(!(ClansHelper.getPaymentHandler() instanceof PaymentHandlerDummy)){
+        if(!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy)){
             put("balance", new CommandBalance());
             put("addfunds", new CommandAddFunds());
             put("takefunds", new CommandTakeFunds());
@@ -147,7 +147,7 @@ public class CommandClan extends CommandBase {
         aliases.put("setdesc", "setdescription");
         //player config
         aliases.put("tmm", "territorymessagemode");
-        if(ClansHelper.getConfig().isProtectWilderness())
+        if(Clans.getConfig().isProtectWilderness())
             aliases.put("um", "undergroundmessages");
         //teleportation related
         aliases.put("h", "home");
@@ -214,7 +214,7 @@ public class CommandClan extends CommandBase {
         }
         //Check permissions and run command
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
-            if (!(ClansHelper.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
+            if (!(Clans.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))
                     commands.get(processAlias(tag)).execute(server, sender, args);
                 else

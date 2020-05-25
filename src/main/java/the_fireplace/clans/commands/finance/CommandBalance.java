@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.finance;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -37,8 +37,8 @@ public class CommandBalance extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		if(!selectedClan.isServer()) {
-			double balance = ClansHelper.getPaymentHandler().getBalance(selectedClan.getId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getName(), ClansHelper.getPaymentHandler().getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
+			double balance = Clans.getPaymentHandler().getBalance(selectedClan.getId());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getName(), Clans.getPaymentHandler().getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "balance", selectedClan.getName()).setStyle(TextStyles.RED));
 	}

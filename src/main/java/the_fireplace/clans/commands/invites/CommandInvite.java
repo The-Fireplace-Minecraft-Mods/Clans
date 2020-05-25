@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
@@ -73,7 +73,7 @@ public class CommandInvite extends ClanSubCommand {
 			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		} catch(Exception ignored) {}
 		if(target != null) {
-			if (ClansHelper.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).stream().allMatch(Clan::isServer)) {
+			if (Clans.getConfig().isAllowMultiClanMembership() || ClanCache.getPlayerClans(target.getId()).stream().allMatch(Clan::isServer)) {
 				if (!ClanCache.getPlayerClans(target.getId()).contains(invitingClan)) {
 					if(PlayerData.getIsBlockingAllInvites(target.getId())) {
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking_all", target.getName()).setStyle(TextStyles.RED));
@@ -130,7 +130,7 @@ public class CommandInvite extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1 && (args[0].equalsIgnoreCase("send") || args[0].equalsIgnoreCase("s"))) {
 			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-			if (!ClansHelper.getConfig().isAllowMultiClanMembership())
+			if (!Clans.getConfig().isAllowMultiClanMembership())
 				players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).stream().anyMatch(c -> !c.isServer()));
 			players.removeIf(s -> ClanCache.getPlayerClans(s.getId()).contains(selectedClan));
 			ArrayList<String> playerNames = Lists.newArrayList();

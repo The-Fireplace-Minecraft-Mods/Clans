@@ -5,7 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
@@ -42,7 +42,7 @@ public class CommandHome extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(ClansHelper.getConfig().getClanHomeWarmupTime() <= -1)
+		if(Clans.getConfig().getClanHomeWarmupTime() <= -1)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.home.disabled"));
 		BlockPos home = selectedClan.getHome();
 		int playerDim = sender.dimension;
@@ -52,12 +52,12 @@ public class CommandHome extends ClanSubCommand {
 			if (!selectedClan.hasHome() || home == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", selectedClan.getName()).setStyle(TextStyles.RED));
 			else {
-				if(ClansHelper.getConfig().getClanHomeWarmupTime() > 0 && !sender.isCreative()) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getName(), ClansHelper.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
+				if(Clans.getConfig().getClanHomeWarmupTime() > 0 && !sender.isCreative()) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.warmup", selectedClan.getName(), Clans.getConfig().getClanHomeWarmupTime()).setStyle(TextStyles.GREEN));
 					PlayerCache.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
 					PlayerCache.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
 					PlayerCache.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
-					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(ClansHelper.getConfig().getClanHomeWarmupTime(), selectedClan.getId()));
+					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getId()));
 				} else
 					EntityUtil.teleportHome(sender, home, selectedClan.getHomeDim(), playerDim, false);
 			}

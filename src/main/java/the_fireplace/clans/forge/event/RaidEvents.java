@@ -8,10 +8,10 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.logic.RaidManagementLogic;
 
-@Mod.EventBusSubscriber(modid = ClansHelper.MODID)
+@Mod.EventBusSubscriber(modid = Clans.MODID)
 public class RaidEvents {
 	@SubscribeEvent
 	public static void onBlockDrops(BlockEvent.HarvestDropsEvent event) {

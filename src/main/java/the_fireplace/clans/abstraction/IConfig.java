@@ -2,7 +2,7 @@ package the_fireplace.clans.abstraction;
 
 import the_fireplace.clans.model.Clan;
 
-import java.util.List;
+import java.util.Collection;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface IConfig {
@@ -24,7 +24,7 @@ public interface IConfig {
 
     //General mod configuration
     String getLocale();
-    List<String> getTolerableFakePlayers();
+    Collection<String> getTolerableFakePlayers();
     boolean isFakePlayerDump();
     boolean isForgePermissionPrecedence();
 
@@ -41,12 +41,12 @@ public interface IConfig {
     boolean allowInjuryProtection();
     boolean allowInteractionProtection();
     boolean isChainTNT();
-    List<String> getLockableBlocks();
+    Collection<String> getLockableBlocks();
 
     //Wilderness guard
     boolean isProtectWilderness();
     int getMinWildernessY();
-    String[] getClaimableDimensions();
+    Collection<String> getClaimableDimensions();
 
     //Raid configuration
     int getMaxRaidersOffset();
@@ -61,7 +61,7 @@ public interface IConfig {
     boolean isDisableRaidRollback();
     boolean isEnableStealing();
     double getRaidBreakSpeedMultiplier();
-    List<String> getRaidItemList();
+    Collection<String> getRaidItemList();
     boolean isTeleportToRaidStart();
 
     //Costs, rewards, and multipliers

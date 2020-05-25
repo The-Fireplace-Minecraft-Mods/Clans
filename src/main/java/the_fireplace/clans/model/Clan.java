@@ -11,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.api.event.ClanFormedEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
@@ -48,8 +47,8 @@ public class Clan {
     private int homeDimension;
     private double rent;
     private int wins = 0, losses = 0;
-    private long shield = ClansHelper.getConfig().getInitialShield() * 60;
-    private long rentTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
+    private long shield = Clans.getConfig().getInitialShield() * 60;
+    private long rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L, upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
     private int color;
     private int textColor;
     private double multiplier = 1.0;
@@ -108,15 +107,15 @@ public class Clan {
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
 
         // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
-        if (ClansHelper.getPaymentHandler().getBalance(clanId) > 0)
-            ClansHelper.getPaymentHandler().deductAmount(ClansHelper.getPaymentHandler().getBalance(clanId),clanId);
+        if (Clans.getPaymentHandler().getBalance(clanId) > 0)
+            Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
 
-        ClansHelper.getPaymentHandler().addAmount(ClansHelper.getConfig().getFormClanBankAmount(), clanId);
+        Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
         ClanCache.addPlayerClan(leader, this);
-        if(!ClansHelper.getConfig().isAllowMultiClanMembership())
+        if(!Clans.getConfig().isAllowMultiClanMembership())
             for(Clan clan: ClanDatabase.getClans())
                 PlayerData.removeInvite(leader, clan.getId());
-        rent = Math.min(FormulaParser.eval(ClansHelper.getConfig().getMaxRentFormula(), this, 0)/ClansHelper.getConfig().getChargeRentDays(), FormulaParser.eval(ClansHelper.getConfig().getClanUpkeepCostFormula(), this, 0)/ClansHelper.getConfig().getClanUpkeepDays())*ClansHelper.getConfig().getChargeRentDays();
+        rent = Math.min(FormulaParser.eval(Clans.getConfig().getMaxRentFormula(), this, 0)/ Clans.getConfig().getChargeRentDays(), FormulaParser.eval(Clans.getConfig().getClanUpkeepCostFormula(), this, 0)/ Clans.getConfig().getClanUpkeepDays())* Clans.getConfig().getChargeRentDays();
         color = new Random().nextInt(0xffffff);
         textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
@@ -329,7 +328,7 @@ public class Clan {
             return totalAmount;
         totalAmount /= leaders.size();
         for(UUID leader: leaders)
-            ClansHelper.getPaymentHandler().addAmount(totalAmount, leader);
+            Clans.getPaymentHandler().addAmount(totalAmount, leader);
         return 0;
     }
 
@@ -414,7 +413,7 @@ public class Clan {
     public int getMaxClaimCount() {
         if(options.get("maxclaims") > -1)
             return options.get("maxclaims");
-        return ClansHelper.getConfig().isMultiplyMaxClaimsByPlayers() ? getMemberCount() * ClansHelper.getConfig().getMaxClaims() : ClansHelper.getConfig().getMaxClaims();
+        return Clans.getConfig().isMultiplyMaxClaimsByPlayers() ? getMemberCount() * Clans.getConfig().getMaxClaims() : Clans.getConfig().getMaxClaims();
     }
 
     public void setOption(String option, int value) {
@@ -463,7 +462,7 @@ public class Clan {
      * Gets the cost of one claim when the clan has a certain number of claims
      */
     public double getClaimCost(int currentClaimCount) {
-        return options.get("claimcost") < 0 ? (currentClaimCount < ClansHelper.getConfig().getReducedCostClaimCount() ? ClansHelper.getConfig().getReducedChunkClaimCost() : FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
+        return options.get("claimcost") < 0 ? (currentClaimCount < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
     }
 
     public boolean hasCustomClaimCost() {
@@ -495,7 +494,7 @@ public class Clan {
         this.members.put(player, EnumRank.MEMBER);
         ClanCache.addPlayerClan(player, this);
         PlayerData.removeInvite(player, getId());
-        if(!ClansHelper.getConfig().isAllowMultiClanMembership() && !isServer())
+        if(!Clans.getConfig().isAllowMultiClanMembership() && !isServer())
             for(Clan clan: ClanDatabase.getClans())
                 PlayerData.removeInvite(player, clan.getId());
         Clans.getDynmapCompat().refreshTooltip(this);
@@ -508,7 +507,7 @@ public class Clan {
         if(!prevHadMember) {
             ClanCache.addPlayerClan(player, this);
             PlayerData.removeInvite(player, getId());
-            if(!ClansHelper.getConfig().isAllowMultiClanMembership() && !isServer())
+            if(!Clans.getConfig().isAllowMultiClanMembership() && !isServer())
                 for(Clan clan: ClanDatabase.getClans())
                     PlayerData.removeInvite(player, clan.getId());
             Clans.getDynmapCompat().refreshTooltip(this);
@@ -551,7 +550,7 @@ public class Clan {
     public boolean promoteMember(UUID player) {
         if (members.containsKey(player)) {
             if(members.get(player) == EnumRank.ADMIN) {
-                if(!ClansHelper.getConfig().isMultipleClanLeaders()) {
+                if(!Clans.getConfig().isMultipleClanLeaders()) {
                     UUID leader = null;
                     for(UUID member: members.keySet())
                         if(members.get(member) == EnumRank.LEADER) {
@@ -588,7 +587,7 @@ public class Clan {
     }
 
     public void updateNextRentTimeStamp() {
-        this.rentTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L;
+        this.rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L;
         markChanged();
     }
 
@@ -597,7 +596,7 @@ public class Clan {
     }
 
     public void updateNextUpkeepTimeStamp() {
-        this.upkeepTimestamp = System.currentTimeMillis() + ClansHelper.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
+        this.upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
         markChanged();
     }
 
@@ -652,8 +651,8 @@ public class Clan {
 
     public void addWin(Raid raid) {
         wins++;
-        if(ClansHelper.getConfig().isIncreasingRewards()) {
-            if(raid.getPartyWlr() >= ClansHelper.getConfig().getWLRThreshold())
+        if(Clans.getConfig().isIncreasingRewards()) {
+            if(raid.getPartyWlr() >= Clans.getConfig().getWLRThreshold())
                 decreaseMultiplier();
         }
         markChanged();
@@ -661,17 +660,17 @@ public class Clan {
 
     public void addLoss() {
         losses++;
-        if(ClansHelper.getConfig().isIncreasingRewards())
+        if(Clans.getConfig().isIncreasingRewards())
             increaseMultiplier();
         markChanged();
     }
 
     private void decreaseMultiplier() {
-        setMultiplier(ClansHelper.getConfig().getDecreasedMultiplierFormula());
+        setMultiplier(Clans.getConfig().getDecreasedMultiplierFormula());
     }
 
     private void increaseMultiplier() {
-        setMultiplier(ClansHelper.getConfig().getIncreasedMultiplierFormula());
+        setMultiplier(Clans.getConfig().getIncreasedMultiplierFormula());
     }
 
     private void setMultiplier(String formula) {
@@ -681,7 +680,7 @@ public class Clan {
     }
 
     public double getDisbandCost() {
-        return FormulaParser.eval(ClansHelper.getConfig().getDisbandFeeFormula(), this, 1.0);
+        return FormulaParser.eval(Clans.getConfig().getDisbandFeeFormula(), this, 1.0);
     }
 
     public int getColor() {
@@ -703,11 +702,11 @@ public class Clan {
     }
 
     public void refundClaim() {
-        ClansHelper.getPaymentHandler().addAmount(getClaimCost(), getId());
+        Clans.getPaymentHandler().addAmount(getClaimCost(), getId());
     }
 
     public boolean payForClaim() {
-        return ClansHelper.getPaymentHandler().deductAmount(getClaimCost(), getId());
+        return Clans.getPaymentHandler().deductAmount(getClaimCost(), getId());
     }
 
     public void setPerm(String permission, EnumRank rank) {
@@ -847,13 +846,13 @@ public class Clan {
         if(isServer())
             return;
 
-        double distFunds = ClansHelper.getPaymentHandler().getBalance(this.getId());
-        distFunds += FormulaParser.eval(ClansHelper.getConfig().getClaimChunkCostFormula(), this, 0) * this.getClaimCount();
-        if (ClansHelper.getConfig().isLeaderRecieveDisbandFunds())
+        double distFunds = Clans.getPaymentHandler().getBalance(this.getId());
+        distFunds += FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), this, 0) * this.getClaimCount();
+        if (Clans.getConfig().isLeaderRecieveDisbandFunds())
             distFunds = this.payLeaders(distFunds);
         distFunds /= this.getMemberCount();
         for (UUID member : this.getMembers().keySet()) {
-            ClansHelper.getPaymentHandler().addAmount(distFunds, member);
+            Clans.getPaymentHandler().addAmount(distFunds, member);
             PlayerData.updateDefaultClan(member, getId());
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
@@ -862,7 +861,7 @@ public class Clan {
                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), disbandMessageTranslationKey, translationArgs).setStyle(TextStyles.YELLOW));
             }
         }
-        ClansHelper.getPaymentHandler().deductAmount(ClansHelper.getPaymentHandler().getBalance(this.getId()), this.getId());
+        Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getId()), this.getId());
     }
     //endregion
 

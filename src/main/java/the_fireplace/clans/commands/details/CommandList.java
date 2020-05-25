@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.ClanDatabase;
@@ -69,9 +69,9 @@ public class CommandList extends ClanSubCommand {
 					break;
 				case "money":
 				case "$":
-					clans.sort(Comparator.comparingDouble(clan -> ClansHelper.getPaymentHandler().getBalance(clan.getId())));
+					clans.sort(Comparator.comparingDouble(clan -> Clans.getPaymentHandler().getBalance(clan.getId())));
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansHelper.getPaymentHandler().getFormattedCurrency(ClansHelper.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", Clans.getPaymentHandler().getFormattedCurrency(Clans.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "land":
 				case "claims":

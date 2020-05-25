@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansHelper;
+import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
@@ -51,7 +51,7 @@ public class CommandJoinRaid extends RaidSubCommand {
 				if(!target.getMembers().containsKey(sender.getUniqueID())) {
 					if (!RaidingParties.getRaidedClans().contains(target)) {
 						if(!target.isShielded()) {
-							if (!target.getOnlineSurvivalMembers().isEmpty() && target.getOnlineSurvivalMembers().size() + ClansHelper.getConfig().getMaxRaidersOffset() > 0) {
+							if (!target.getOnlineSurvivalMembers().isEmpty() && target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > 0) {
 								new Raid(sender, target);
 								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.created", target.getName()).setStyle(TextStyles.GREEN));
 							} else
@@ -60,11 +60,11 @@ public class CommandJoinRaid extends RaidSubCommand {
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.shield", target.getName(), Math.round(100f*target.getShield()/60)/100f).setStyle(TextStyles.RED));
 					} else { //Join an existing raid
 						Raid raid = RaidingParties.getInactiveRaid(target);
-						if(target.getOnlineSurvivalMembers().size() + ClansHelper.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
+						if(target.getOnlineSurvivalMembers().size() + Clans.getConfig().getMaxRaidersOffset() > raid.getAttackerCount()) {
 							raid.addAttacker(sender);
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.limit", target.getName(), raid.getAttackerCount(), target.getOnlineMembers().size() + ClansHelper.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.limit", target.getName(), raid.getAttackerCount(), target.getOnlineMembers().size() + Clans.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
 					}
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.join.inclan").setStyle(TextStyles.RED));

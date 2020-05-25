@@ -1,7 +1,6 @@
 package the_fireplace.clans.util;
 
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.ClansHelper;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
@@ -40,8 +39,8 @@ public final class FormulaParser {
         //Deal with the old method of exponentiation
         formula = formula.replaceAll("\\*\\*", "\\^");
         formula = formula.replaceAll("c", String.valueOf(clan.getClaimCount()));
-        formula = formula.replaceAll("m", String.valueOf(ClansHelper.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
-        formula = formula.replaceAll("f", String.valueOf(ClansHelper.getPaymentHandler().getBalance(clan.getId())));
+        formula = formula.replaceAll("m", String.valueOf(Clans.getConfig().isIncreasingRewards() ? clan.getRaidRewardMultiplier() : 1));
+        formula = formula.replaceAll("f", String.valueOf(Clans.getPaymentHandler().getBalance(clan.getId())));
         formula = formula.replaceAll("p", String.valueOf(clan.getMemberCount()));
         formula = formula.replaceAll("d", String.valueOf(raid != null && raid.getInitDefenders() != null && !raid.getInitDefenders().isEmpty() ? raid.getInitDefenders().size() : clan.getOnlineSurvivalMembers().size()));
         formula = formula.replaceAll("w", String.valueOf(raid != null ? raid.getPartyWlr() : 1));
