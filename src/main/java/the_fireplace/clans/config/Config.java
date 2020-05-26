@@ -24,92 +24,6 @@ public class Config {
         return instance;
     }
 
-    public void load() {
-        if(!configFile.exists())
-            createDefaultConfigFile();
-        else {
-            try {
-                CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
-                cfg.load();
-                Map<Field, List<Field>> toAdd = new HashMap<>();
-                for(Field f: getClass().getFields()) {
-                    if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
-                        continue;
-                    Object obj = cfg.get(f.getName());
-                    com.electronwill.nightconfig.core.Config subcfg;
-                    if(obj instanceof com.electronwill.nightconfig.core.Config) {
-                        subcfg = (com.electronwill.nightconfig.core.Config) obj;
-                        for (Field f1 : f.getType().getFields()) {
-                            if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
-                                continue;
-                            Object value = subcfg.get(f1.getName());
-                            if(value != null)
-                                f1.set(f.get(this), f1.getType().equals(String.class) ? String.valueOf(value) : value);
-                            else {
-                                if(!toAdd.containsKey(f))
-                                    toAdd.put(f, new ArrayList<>());
-                                toAdd.get(f).add(f1);
-                            }
-                        }
-                    } else {
-                        toAdd.put(f, null);
-                    }
-                }
-                //Now add the missing fields from the default config, if any, then save
-                if(!toAdd.isEmpty()) {
-                    for(Field f: toAdd.keySet()) {
-                        CommentedConfig subcfg = cfg.get(f.getName());
-                        if(subcfg == null)
-                            subcfg = cfg.createSubConfig();
-                        for(Field f1: toAdd.get(f) != null ? toAdd.get(f) : Lists.newArrayList(f.getType().getFields())) {
-                            if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
-                                continue;
-                            Comment comment = f1.getAnnotation(Comment.class);
-                            if(comment != null)
-                                subcfg.setComment(f1.getName(), comment.value());
-                            subcfg.add(f1.getName(), f1.get(f.get(this)));
-                        }
-                        Comment comment = f.getAnnotation(Comment.class);
-                        if(comment != null)
-                            cfg.setComment(f.getName(), comment.value());
-                        cfg.set(f.getName(), subcfg.unmodifiable());
-                    }
-                    cfg.save();
-                }
-            } catch(IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void createDefaultConfigFile() {
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            configFile.getParentFile().mkdirs();
-            CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
-            for(Field f: getClass().getFields()) {
-                if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
-                    continue;
-                CommentedConfig subcfg = cfg.createSubConfig();
-                for(Field f1: f.getType().getFields()) {
-                    if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
-                        continue;
-                    Comment comment = f1.getAnnotation(Comment.class);
-                    if(comment != null)
-                        subcfg.setComment(f1.getName(), comment.value());
-                    subcfg.add(f1.getName(), f1.get(f.get(this)));
-                }
-                Comment comment = f.getAnnotation(Comment.class);
-                if(comment != null)
-                    cfg.setComment(f.getName(), comment.value());
-                cfg.set(f.getName(), subcfg.unmodifiable());
-            }
-            cfg.save();
-        } catch(IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Comment("General config values to control the mod as a whole.")
     public General general = new General();
     public static class General {
@@ -362,5 +276,117 @@ public class Config {
         @Comment("The opacity of the fill color for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
         @RangeDecimal(min=0, max=1)
         public double dynmapFillOpacity = 0.75;
+    }
+
+    public void load() {
+        if(!configFile.exists())
+            createDefaultConfigFile();
+        else {
+            try {
+                CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
+                cfg.load();
+                Map<Field, List<Field>> toAdd = new HashMap<>();
+                for(Field f: getClass().getFields()) {
+                    if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
+                        continue;
+                    Object obj = cfg.get(f.getName());
+                    com.electronwill.nightconfig.core.Config subcfg;
+                    if(obj instanceof com.electronwill.nightconfig.core.Config) {
+                        subcfg = (com.electronwill.nightconfig.core.Config) obj;
+                        for (Field f1 : f.getType().getFields()) {
+                            if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                                continue;
+                            Object value = subcfg.get(f1.getName());
+                            if(value != null) {
+                                //Ensure that values are in an acceptable range
+                                RangeDecimal decRange = f1.getAnnotation(RangeDecimal.class);
+                                RangeNumber numRange = f1.getAnnotation(RangeNumber.class);
+                                Object prevVal = value;
+                                if(numRange != null)
+                                    value = Math.max(numRange.min(), Math.min(numRange.max(), Long.parseLong(String.valueOf(value))));
+                                if(decRange != null)
+                                    value = Math.max(decRange.min(), Math.min(decRange.max(), Double.parseDouble(String.valueOf(value))));
+                                if((numRange != null || decRange != null) && Double.parseDouble(String.valueOf(value)) - Double.parseDouble(String.valueOf(prevVal)) != 0)
+                                    Clans.getLogger().warn("Adjusted value of {} from {} to {} due to Range constraint.", f1.getName(), prevVal, value);
+                                //Apply appropriate conversions to avoid ClassCastExceptions
+                                if(f1.getType().equals(String.class))
+                                    value = String.valueOf(value);
+                                else if(f1.getType().equals(double.class) || f1.getType().equals(Double.class))
+                                    value = Double.parseDouble(String.valueOf(value));
+                                else if(f1.getType().equals(float.class) || f1.getType().equals(Float.class))
+                                    value = Float.parseFloat(String.valueOf(value));
+                                else if(f1.getType().equals(long.class) || f1.getType().equals(Long.class))
+                                    value = Long.parseLong(String.valueOf(value));
+                                else if(f1.getType().equals(int.class) || f1.getType().equals(Integer.class))
+                                    value = Integer.parseInt(String.valueOf(value));
+                                else if(f1.getType().equals(short.class) || f1.getType().equals(Short.class))
+                                    value = Short.parseShort(String.valueOf(value));
+                                else if(f1.getType().equals(byte.class) || f1.getType().equals(Byte.class))
+                                    value = Byte.parseByte(String.valueOf(value));
+                                //Put the value in the field
+                                f1.set(f.get(this), value);
+                            } else {
+                                if(!toAdd.containsKey(f))
+                                    toAdd.put(f, new ArrayList<>());
+                                toAdd.get(f).add(f1);
+                            }
+                        }
+                    } else {
+                        toAdd.put(f, null);
+                    }
+                }
+                //Now add the missing fields from the default config, if any, then save
+                if(!toAdd.isEmpty()) {
+                    for(Field f: toAdd.keySet()) {
+                        CommentedConfig subcfg = cfg.get(f.getName());
+                        if(subcfg == null)
+                            subcfg = cfg.createSubConfig();
+                        for(Field f1: toAdd.get(f) != null ? toAdd.get(f) : Lists.newArrayList(f.getType().getFields())) {
+                            if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                                continue;
+                            Comment comment = f1.getAnnotation(Comment.class);
+                            if(comment != null)
+                                subcfg.setComment(f1.getName(), comment.value());
+                            subcfg.add(f1.getName(), f1.get(f.get(this)));
+                        }
+                        Comment comment = f.getAnnotation(Comment.class);
+                        if(comment != null)
+                            cfg.setComment(f.getName(), comment.value());
+                        cfg.set(f.getName(), subcfg.unmodifiable());
+                    }
+                    cfg.save();
+                }
+            } catch(IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void createDefaultConfigFile() {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            configFile.getParentFile().mkdirs();
+            CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
+            for(Field f: getClass().getFields()) {
+                if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
+                    continue;
+                CommentedConfig subcfg = cfg.createSubConfig();
+                for(Field f1: f.getType().getFields()) {
+                    if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                        continue;
+                    Comment comment = f1.getAnnotation(Comment.class);
+                    if(comment != null)
+                        subcfg.setComment(f1.getName(), comment.value());
+                    subcfg.add(f1.getName(), f1.get(f.get(this)));
+                }
+                Comment comment = f.getAnnotation(Comment.class);
+                if(comment != null)
+                    cfg.setComment(f.getName(), comment.value());
+                cfg.set(f.getName(), subcfg.unmodifiable());
+            }
+            cfg.save();
+        } catch(IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
