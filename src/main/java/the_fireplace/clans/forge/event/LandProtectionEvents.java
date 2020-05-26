@@ -7,6 +7,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
@@ -36,6 +37,13 @@ public class LandProtectionEvents {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), event.getPlayer()));
 		if(!event.isCanceled())
 			RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getState());
+	}
+
+	@SubscribeEvent
+	public static void onBreakBlock(EntityMobGriefingEvent event){
+		//Not a perfect check, but much better than before.
+		if(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), null))
+			event.setResult(Event.Result.DENY);
 	}
 
 	@SubscribeEvent
