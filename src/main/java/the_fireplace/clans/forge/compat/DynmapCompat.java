@@ -274,24 +274,11 @@ public class DynmapCompat implements IDynmapCompat {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
 
-            //int nMarkerID = 0;
-            //AreaMarker areaMarker;
-            //This works, if the naming convention for markers is consistent and there's no way an individual marker could be removed from the middle.
-            //TODO Investigate if it's possible a marker could be removed from the middle of this list, thus cancelling the clear early.
-            /*do {
-                String markerID = worldName + "_" + clanDimInfo.getClanIdString() + "_" + nMarkerID;
-                areaMarker = dynmapMarkerSet.findAreaMarker(markerID);
-
-                if (areaMarker != null && areaMarker.getWorld().equals(worldName))
-                    areaMarker.deleteMarker();
-
-                nMarkerID++;
-            } while (areaMarker != null);*/
-
-            //Performance is probably better this way anyways, it goes through the set once rather than searching for the marker id in the set each iteration of the loop.
             for(AreaMarker marker: dynmapMarkerSet.getAreaMarkers())
                 if(marker.getMarkerID().startsWith(worldName+"_"+clanDimInfo.getClanIdString()+"_") && marker.getWorld().equals(worldName))
                     marker.deleteMarker();
+                else if(marker.getMarkerID().contains(clanDimInfo.getClanIdString()))
+                    Clans.getLogger().debug("Marker ID not removed, but it probably should be: {}", marker.getMarkerID());
         }
     }
 
