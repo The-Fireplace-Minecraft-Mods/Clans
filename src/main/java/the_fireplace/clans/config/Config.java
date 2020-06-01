@@ -49,7 +49,9 @@ public class Config {
         @Comment("Allow players to be a member of multiple clans at once.")
         public boolean allowMultiClanMembership = true;
         @Comment("Default clan to put players in when they first join the server. Leave empty for no clan.")
-        public String serverDefaultClan = "";
+        // Don't use empty string because night-config's HOCON writer is borked
+        // https://github.com/TheElectronWill/night-config/issues/82
+        public String serverDefaultClan = "N/A";
         @Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
         @RangeDecimal(min=0)
         public double formClanCost = 0;

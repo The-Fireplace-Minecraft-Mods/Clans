@@ -29,6 +29,8 @@ public class PlayerEventLogic {
         Clan serverDefault = ClanCache.getClanByName(Clans.getConfig().getServerDefaultClan());
         if(serverDefault != null)
             serverDefault.addMember(playerId);
+        else if(!Clans.getConfig().getServerDefaultClan().equalsIgnoreCase("N/A"))
+            Clans.getLogger().warn("Invalid server default clan {}, players won't be added to it.", Clans.getConfig().getServerDefaultClan());
     }
 
     public static void checkUpdateDefaultClan(EntityPlayer player) {
