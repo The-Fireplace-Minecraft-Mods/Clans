@@ -9,7 +9,7 @@ Added Hungarian language support (Castiel)
 
 Changes:
 Updated to use Grand Economy 2.0.0+
-Changed to a new, more friendly config format - the old cfg format will no longer work.
+Changed to a new, more friendly config format - the old cfg format and file will no longer work.
 Raid start cost is now formula-based
 Rent now defaults to the cost of upkeep for 1 player or max rent, whichever is lower.
 /clan banner can now be used to decorate shields
