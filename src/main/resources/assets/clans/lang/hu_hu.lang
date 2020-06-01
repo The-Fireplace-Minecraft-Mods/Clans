@@ -1,0 +1,511 @@
+clan.default_description=Ez egy új klán.
+
+clans.error.no_clan_econ_acct=Internal Error: Nem található Klán Economy fiók, a szerver tulajok ezt jelentsétek.
+clans.error.no_player_econ_acct=Internal Error: Nem található Játékos Economy fiók, a szerver tulajok ezt jelentsétek.
+clans.error.nullserver=Internal Error: A szerver NULL adatot tartalmaz, a szerver tulajok ezt jelentsék
+
+commands.clan.usage=/clan [clan] <command> [parameters]
+
+commands.opclan.usage=/opclan <command> [parameters]
+
+commands.raid.usage=/raid <command> [parameters]
+commands.raid.disabled=A Raid kikapcsolt állapotban van.
+
+commands.clan.help.usage=/clan help [page|subcommand]
+commands.clan.help.description=Clan help parancs.
+
+commands.opclan.help.usage=/opclan help [page|subcommand]
+commands.opclan.help.description=OPclan help parancs.
+
+commands.raid.help.usage=/raid help [page|subcommand]
+commands.raid.help.description=Raid help parancs.
+
+commands.clan.common.player=Ehhez egy játékosnak kell lenned.
+commands.clan.common.not_in_clan=Az alábbi klánnak nem vagy tagja: %s.
+commands.clan.common.notfound=A %s klán nem található.
+commands.clan.common.playernotfound= %s nem található.
+commands.clan.common.insufficient_funds=Nincs elég összeged ehhez.
+commands.clan.common.insufficient_clan_funds=A/Az %s klánnak nincs elég összege ehhez .
+commands.clan.common.not_leader=Nem te vagy a vezetője a/az %s klánnak.
+commands.clan.common.not_admin=Nem vagy admin a/az %s klánban.
+commands.clan.common.player_not_in_clan= %s nincs a %s klánban.
+commands.clan.common.not_on_server=Nem használhatsz %s -t %s klánban mivel ez egy szerver klán.
+commands.clan.common.not_boolean=%s nem azonosítható boolean-változóként.
+commands.clan.common.not_locked=A megfigyelt blokk nem zárt.
+commands.clan.common.invalid_lock_type=Az alábbi zár-típus hibás '%s'.
+commands.clan.common.not_claimed_by=A chunk amin állsz nincs levédve a/az %s klán által.
+
+commands.clan.common.help_format=%s: %s
+commands.clan.common.invalid_help=Invalid help parameter: %s. Kérlek adj meg egy oldalszámot vagy alparancsot.
+
+commands.clan.banner.usage=/clan banner
+commands.clan.banner.description=Változtasd a kezedben lévő zászlót klán zászlóvé.
+commands.clan.banner.clan_nobanner=%s Nem található zászló.
+commands.clan.banner.player_nobanner=Nem tartasz zászlót.
+
+commands.clan.clanchat.usage=/clan clanchat
+commands.clan.clanchat.description=Állítsd át ha klán chatbe írsz.
+
+commands.clan.details.usage=/clan details [clan]
+commands.clan.details.description=Részleteket ad meg a klánról.
+commands.clan.details.noclan=Nem vagy egy klánban. Használd a %s parancsot hogy más klánokról információt szerezz.
+commands.clan.details.console=Meg kell adnod egy klánt ha részleteket akarsz megtudni a consoleból. Használd a %s parancsot hogy többet tudj meg egy klánról.
+commands.clan.details.notfound=A kijelölt %s klán nem található.
+commands.clan.details.name=Klán név: %s
+commands.clan.details.desc=Klán leírás: %s
+commands.clan.details.claimcount=Levédések száma: %s
+commands.clan.details.membercount=Tagok száma: %s
+commands.clan.details.members=Tagok:
+commands.clan.details.leader=Leader %s (WLR %s, last seen %s)
+commands.clan.details.admin=Admin %s (WLR %s, last seen %s)
+commands.clan.details.member=%s (WLR %s, last seen %s)
+commands.clan.details.no_members=%s klánnak nincsenek tagjai.
+commands.clan.details.upkeep=A klán kiadása (expenses)  %s %s naponta.
+commands.clan.details.rent=Klán bevétele (income)  %s  %s naponta.
+commands.clan.details.rent_individual=Egyéni bevétel %s  %s minden nap.
+commands.clan.details.trend=A gazdasági meghatározás megközelítőleg %s minden nap.
+commands.clan.details.increase_rent=Érdemes lenne a lakbéren emelni %s hogy mérsékeld a kiadásokat.
+commands.clan.details.reduce_upkeep=Érdemel lenne mérsékelned a kiadásokat.
+commands.clan.details.breaking_even=%s nem számít bevételnek de nem is veszteséges.
+commands.clan.details.rentdue=A lakbér %s órán belül kell kifizetni.
+commands.clan.details.upkeepdue=A kiadások %s órán belül kell kifizetni .
+commands.clan.details.server=Az adott klán egy szerver klán.
+commands.clan.details.multiplier=Raid jutalom szorzók: %s
+
+commands.clan.disband.usage=/clan disband
+commands.clan.disband.description=Ezzel a paranccsal feloszlathatod a klánod.
+commands.clan.disband.success=Feloszlattad a %s klánt.
+commands.clan.disband.disbanded=%s klán feloszlatásra került %s által.
+commands.clan.disband.server=Nem oszlathatod fel %1$s a /clan disband paranccsal mert ez egy szerver klán. Használd az /opclan disband %1$s parancsot feloszlatáshoz.
+commands.clan.disband.insufficient_funds=%s klánnak nincs elég összege a feloszlatáshoz. A jelenlegi követelmény összege: %s.
+
+commands.clan.form.usage=/clan form <name>
+commands.clan.form.description=Új klán alapítása.
+commands.clan.form.success=Klán megalapítva.
+commands.clan.form.insufficient_funds=Nem áll rendelkezésre a klán alapításához szükséges összeg. Az ehhez szükséges pénzmennyiség: %s.
+commands.clan.form.already_in_clan=Már egy klán tagja vagy.
+
+commands.clan.list.usage=/clan list [sort|invites] [page]
+commands.clan.list.description=Klánok kilistázát segíti. Használd az 'invites' parancsot hogy lásd mely klánok hívtak meg sorrendbe teheted [money|land|members|rewardmult] alapján, a többi ABC sorrendben kerül listázásra.
+commands.clan.list.clans=Klánok listája:
+commands.clan.list.listitem=(%s) %s - %s
+commands.clan.list.listitem_alphabetical=%s - %s
+commands.clan.list.noclans=Nincsenek klánok ezen a szerveren.
+commands.clan.list.no_invites=Nincs fennálló meghívásod.
+
+commands.clan.playerinfo.usage=/clan playerinfo [player]
+commands.clan.playerinfo.description=Megmutatja melyik klánban van a játékos.
+commands.clan.playerinfo.console=Meg kell adnod egy játékost ahhoz hogy részleteket adjon meg a console. Használd a %s parancsot bővebb információért.
+commands.clan.playerinfo.notfound=Kijelölt játékos %s néven nem található.
+commands.clan.playerinfo.name=Player name: %s
+commands.clan.playerinfo.clans=Clans:
+commands.clan.playerinfo.leader= %s Klán vezetője
+commands.clan.playerinfo.admin= %s Klán adminja
+commands.clan.playerinfo.member=Member of %s Klán tagja
+commands.clan.playerinfo.noclans=%s nem tagja egy klánnak sem.
+commands.clan.playerinfo.wlr=Win-Loss Ratio: %s
+commands.clan.playerinfo.last_seen=Last Seen: %s
+
+commands.clan.setbanner.usage=/clan setbanner [banner]
+commands.clan.setbanner.description=Állítsd be a klán zászlódat arra amelyiket tartod vagy gépeld be az NBT-kódját.
+commands.clan.setbanner.invalid=A klán zászló amit megadtál nem használható.
+commands.clan.setbanner.taken=A klán zászló amit megadtál már használja más klán.
+commands.clan.setbanner.success=Klán zászló beállítva az alábbi összegért %s .
+commands.clan.setbanner.notheld=Nem tartasz klán zászlót a kezedben.
+
+commands.clan.setcolor.usage=/clan setcolor <color>
+commands.clan.setcolor.description=Klán chathez beállíthatod a chat színét, fancymap, Dynmap, stb. Alap színkódok, Hex színkódok(0x######), és RGB színek támogatva.
+commands.clan.setcolor.success=%s szín beállítva.
+commands.clan.setcolor.invalid=A/Az %s szín hibás.
+
+commands.clan.setdefault.usage=/clan setdefault <clan>
+commands.clan.setdefault.description=Beállítja hogy a klán használja mikor nem ütöd be a /clan [clanname] <subcommand> [args...] parancsot.
+commands.clan.setdefault.success=A klánod át lett állítva %s erre.
+
+commands.clan.setdescription.usage=/clan setdescription <new description>
+commands.clan.setdescription.description=Megadhatod vele a klánod leírását.
+commands.clan.setdescription.success=Clan description for %s set.
+
+commands.clan.setname.usage=/clan setname <newname>
+commands.clan.setname.description=Megadja a klánod nevét.
+commands.clan.setname.toolong=A klán neve %s túl hosszú. A szerveren a klán nevek maximális hossza %s karakter.
+commands.clan.setname.taken=A/Az %s klán nevet más klán már használja.
+commands.clan.setname.success=Átnevezted klánodat %s erről %s erre a névre.
+
+commands.clan.addfunds.usage=/clan addfunds <amount>
+commands.clan.addfunds.description=Összeget ad az economy számládról a klán economy számlájára.
+commands.clan.addfunds.format=Hibásan megadott számadat.
+commands.clan.addfunds.success=Hozzáadtál %s -t %s egyenlegéhez.
+commands.clan.addfunds.added=%s hozzáadva %s %s egyenlegéhez.
+
+commands.clan.balance.usage=/clan balance
+commands.clan.balance.description=Megmutatja a klán számlájának vagyonák.
+commands.clan.balance.balance=%s klán balanceja: %s.
+
+commands.clan.setrent.usage=/clan setrent <amount>
+commands.clan.setrent.description=Beállítja mennyi lakbért kell fizetnie a klán tagoknak.
+commands.clan.setrent.success=Klán lakbér %s az adott összegre lett állítva %s.
+commands.clan.setrent.overmax=Cannot Klán lakbér %s a jelenlegi maximum fölé lett emelve(%s).
+commands.clan.setrent.negative=Nem lehet negatív összeget megadni.
+commands.clan.setrent.disabled=/clan setrent parancs ki van kapcsolva ezen a szerveren.
+
+commands.clan.takefunds.usage=/clan takefunds <amount>
+commands.clan.takefunds.description=Összeget vesz ki a clan economy számlájáról.
+commands.clan.takefunds.disabled=/clan takefunds ki van kapcsolva ezen a szerveren.
+commands.clan.takefunds.success=Elvettél %s összeget a/az %s klán számlájáról.
+commands.clan.takefunds.taken=%s elvett %s összeget a/az %s klán számlájáról.
+
+commands.clan.abandonclaim.usage=/clan abandonclaim
+commands.clan.abandonclaim.description=Megszűnteti ezen a chunkon a levédést.
+commands.clan.abandonclaim.success=Levédés törlésre került általa %s.
+commands.clan.abandonclaim.wrongclan=Ez a föld nem tartozik hozzá %s.
+commands.clan.abandonclaim.notclaimed=Ez a föld nincs levédve.
+commands.clan.abandonclaim.disconnected=Nem szűntetheted meg ezen a chunkon a levédést mert ez űrt generálna a levédésen belül.
+
+commands.clan.abandonall.usage=/clan abandonall
+commands.clan.abandonall.description=Törli a klánod összes levédett területét.
+
+commands.clan.claim.usage=/clan claim [radius]
+commands.clan.claim.description=Levédi a chunkot ahol jelenleg állsz.
+commands.clan.claim.taken=%s már levédte ezt a területet.
+commands.clan.claim.taken_other=Egy másik klán (%s) már levédte ezt a területet.
+commands.clan.claim.taken_other_r=Egy másik klán (%s) már levédte a területet ebben a sugárban ahol állsz.
+commands.clan.claim.proximity_error=Nem védhetsz itt le mert túl közel van más klánhoz. Légy biztos benne hogy legalább %s blokkra állsz más klán levédésétől. Próbáld használni a /clan fancymap parancsot hogy meghatározd a klánok pontos helyzetét.
+commands.clan.claim.proximity_error_r=Nem védhetsz itt le mert túl közel van más klánhoz. Légy biztos benne hogy legalább %s blokkra állsz más klán levédésének sugaráról. Próbáld használni a /clan fancymap parancsot hogy meghatározd a klánok pontos helyzetét.
+commands.clan.claim.proximity_warning=Nem ajánlott levédened itt le mert túl közel van más klánhoz. Légy biztos benne hogy legalább %s blokkra állsz más klán levédésétől. Próbáld használni a /clan fancymap parancsot hogy meghatározd a klánok pontos helyzetét.
+commands.clan.claim.proximity_warning_r=Nem ajánlott levédened itt le mert túl közel van más klánhoz. Légy biztos benne hogy legalább %s blokkra állsz más klán levédésének sugaráról. Próbáld használni a /clan fancymap parancsot hogy meghatározd a klánok pontos helyzetét.
+commands.clan.claim.maxed=%s is already at or above its current max claim count of %s.
+commands.clan.claim.maxed_r=%sEnnek a chunknak levédése %s a limit %s. Már %s chunk van levédve.
+commands.clan.claim.disconnected=Nem védheted le ezt a chunkot mert %s levédése mellett van.
+commands.clan.claim.disconnected_r=Nem védheted le ezt a chunkot %s mert nem kötődne össze a más levédéssel.
+commands.clan.claim.success=Terület levédve %s ennyiért.
+commands.clan.claim.insufficient_funds=Nincs elegendő összeg %s számláján hogy levédje ezt a chunkot %s a kívánt összeg.
+commands.clan.claim.insufficient_funds_r=Nincs elegendő összeg %s számláján hogy levédje ezt a chunkot %s a kívánt összeg.
+commands.clan.claim.start_r=Az adott sugáron belül minden levédésre kerül, türelmet kérek...
+commands.clan.claim.dimension=Ebben a dimenzióban nem védhetsz le területet.
+
+commands.clan.autoabandon.usage=/clan autoabandon
+commands.clan.autoabandon.description=Automatikusan törli a claimeket amint belépsz.
+commands.clan.autoabandon.start=Jelenleg automatikusan tudsz területet törölni az adott összegért %s.
+commands.clan.autoabandon.stop=Már nem törölsz automatikusan az adott összegért %s.
+
+commands.clan.autoclaim.usage=/clan autoclaim
+commands.clan.autoclaim.description=Automatikusan levédésre kerül a terület amint belépsz rá.
+commands.clan.autoclaim.start=Jelenleg automatikusan tudsz területet levédeni az adott összegért %s.
+commands.clan.autoclaim.stop=Már nem védessz le automatikusan az adott összegért %s.
+
+commands.clan.fancymap.usage=/clan fancymap
+commands.clan.fancymap.description=Egy hatalmas levédés mapot mutat a klánok színeivel.
+
+commands.clan.map.usage=/clan map
+commands.clan.map.description=Egy kis levédés mapot mutat a klán színkódjaival amiben benne vagy.
+
+commands.clan.seechunk.usage=/clan seechunk [on|off]
+commands.clan.seechunk.description=Megmutatja a levédett területet ha be van kapcsolva, on és off paranccsal állíthatsz rajta.
+
+commands.clan.accept.usage=/clan accept <clan>
+commands.clan.accept.description=Meghívás elfogadása az adott klánba.
+commands.clan.accept.success=Csatlakoztál a %s klánhoz.
+commands.clan.accept.accepted=%s csatlakozott %s a klánhoz.
+commands.clan.accept.not_invited=Nem lettél meghívva az adott klánba %s.
+
+commands.clan.decline.usage=/clan decline <clan> [block]
+commands.clan.decline.description=Meghívás elutasítása az adott klánba.
+commands.clan.decline.success=Nem csatlakoztál a %s klánhoz.
+commands.clan.decline.declined=%s nem csatlakozott %s a klánhoz.
+
+commands.clan.autodecline.usage=/clan autodecline [clan]
+commands.clan.autodecline.description=Automatikus elutasítja a kijelölt klánoktól a meghívást.
+commands.clan.autodecline.on=Automatikus elutasítja a klánoktól a meghívást.
+commands.clan.autodecline.on_clan=Már automatikusan elutasítod ennek a klánnak a meghívását: %s.
+commands.clan.autodecline.off=Már nem utasítod el automatikusan a meghívásokat.
+commands.clan.autodecline.off_clan=Már nem utasítod el ennek a klánnak a meghívását automatikusan: %s.
+
+commands.clan.demote.usage=/clan demote <player>
+commands.clan.demote.description=Lefokoz egy tagot a klánodban.
+commands.clan.demote.success=Lefokoztad %s játékost %s  %s klánban.
+commands.clan.demote.demoted=Lefokoztak %s klánban %s rangra %s által.
+commands.clan.demote.error= %s -t nem lehet lefokozni.
+
+commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[page]
+commands.clan.invite.description=Meghívhatsz egy játékost a klánodba vagy megújíthatod a meghívást, fel is sorolhatod ezzel a paranccsal az összes meghívottat.
+commands.clan.invite.success=Meghívtad %s játékost hogy csatlakozzon %s klánba.
+commands.clan.invite.invited=Meghívtak hogy csatlakozz %1$s klánba. Elfogadáshoz %1$s, használd a /clan accept parancsot. Elutasításhoz pedig a /clan decline parancsot.
+commands.clan.invite.pending= %s has már meg lett hívva a/az %s klánba.
+commands.clan.invite.already_in_this= %s már a/az %s klán tagja.
+commands.clan.invite.already_in_any= %s már egy klán tagja.
+commands.clan.invite.blocking= %s nem fogad el meghívásokat a/az %s klántól.
+commands.clan.invite.blocking_all= %s nem fogad el meghívásokat.
+commands.clan.invite.revoked=A/Az %s újraküldték a meghívójukat.
+commands.clan.invite.revoke_success=Újraküldtek %s játékosnak a meghívót hogy csatlakozzon %s klánba.
+
+commands.clan.kick.usage=/clan kick <player>
+commands.clan.kick.description=Kickel egy játékost a klánból.
+commands.clan.kick.leave=Használd a /clan leave parancsot hogy elhagyj egy klánt.
+commands.clan.kick.authority=Nincs jogosultságod %s kickelésére.
+commands.clan.kick.success= %s ki lett kickelve általad a %s klánból.
+commands.clan.kick.kicked=Ki lettél kikcelve a/az %s klánból %s által.
+commands.clan.kick.kicked_other=%s ki lett kickelve a/az %s klánból %s által.
+commands.clan.kick.fail=%s nem lehet kickelni a/az %s klánból. Ha %1$s az egyetlen vezető a/az %2$s klánban, új vezetőt kell kinevezni előtte aki kirúghatja %1$s.
+
+commands.clan.leave.usage=/clan leave
+commands.clan.leave.description=Klán elhagyása.
+commands.clan.leave.disband=Te vagy az utolsó tagja a/az %s klánnak. Hogy feloszlasd, használd a /clan disband parancsot.
+commands.clan.leave.promote=Nem hagyhatod el a/az %s klánt ha nincs más vezető, előtte újat kell kinevezned.
+commands.clan.leave.success=Elhagytad a/az %s klánt.
+commands.clan.leave.left=%s elhagyta a/az %s klánt.
+commands.clan.leave.error=Internal Error: Nem lehetett eltávolítani a/az %s klánból. Szerver tulajok, ezt jelentsétek.
+
+commands.clan.promote.usage=/clan promote <player>
+commands.clan.promote.description=Előléptet egy tagot a klánodban egy ranggal feljebb.
+commands.clan.promote.success=Előléptetted %s  %s rangba a/az %s klánban.
+commands.clan.promote.notify=%s Előléptették a %s nevű játékost a/az %s klánban %s által.
+commands.clan.promote.promoted=Előléptettek a/az %s klánban %s  %s által.
+commands.clan.promote.error=The player %s could not be promoted.
+
+commands.clan.home.usage=/clan home
+commands.clan.home.description=A klán homera teleportál.
+commands.clan.home.nohome=%s klánnak nincs homeja, a klán vezető a /clan sethome paranccsal állíthat be egyet.
+commands.clan.home.warmup=Készül fel hogy a %s klánhoz fogsz teleportálódni. Maradj mozdulatlanul %s másodpercig.
+commands.clan.home.cancelled=Meghiúsult teleport.
+commands.clan.home.cooldown=Nem használhatod ezt a parancsot további %s másodpercig.
+commands.clan.home.blocked=Nem lehetett teleportálni a Klánhoz. Bizonyosodj meg hogy nincs eltorlaszolva a teleport.
+commands.clan.home.return_dim=Hiba a visszateleportálásnál.
+commands.clan.home.dim_error=Hiba a klánhoz teleportálásnál.
+commands.clan.home.disabled=/clan home ki van kapcsolva ezen a szerveren.
+
+commands.clan.sethome.usage=/clan sethome
+commands.clan.sethome.description=Beállítja a klán teleportját.
+commands.clan.sethome.proximity=Túl közel vagy egy másik klán homejához. %s blokk távolságot kell tartanod legalább. Használd a /clan fancymap parancsot hogy láthasd a közeli klánokat.
+commands.clan.sethome.success=%s home beállítva.
+commands.clan.sethome.territory=Klán területen lehet csak klán otthon.
+
+commands.clan.unsethome.usage=/clan unsethome
+commands.clan.unsethome.description=Klán home eltávolítása.
+commands.clan.unsethome.success=%s klán home eltávolítva.
+commands.clan.unsethome.failed=%s klánnak nincs homeja.
+
+commands.clan.trapped.usage=/clan trapped
+commands.clan.trapped.description=Kiteleportál egy klán területéről ha beszorultál.
+commands.clan.trapped.fail=Nem akadtál be más klán területére.
+
+commands.clan.permissions.usage=/clan permissions [page]
+commands.clan.permissions.description=Klán permissionöket mutatja meg.
+commands.clan.permissions.format=%s: %s
+commands.clan.permissions.override=Player Override: %s: %s
+
+commands.clan.set.usage=/clan set <permission> [player] <value>
+commands.clan.set.description=Klán permissionöket állítja át. Játékosnál az érték igaz vagy hamis lehet. De beállíthatod ranghoz függően vagy ANY opciót is választhatsz amivel klánon kívűl is állíthatnak a  /clan permissions parancs segíthet
+commands.clan.set.invalid_perm=Invalid permission: %s
+commands.clan.set.success=Permission sikeresen átállítva
+
+commands.clan.lock.usage=/clan lock [private|clan|open]
+commands.clan.lock.description=Lezárja a blokkot amire nézel. Módok: privát(default): privát ha csak a játékosnak elérhető, klán ha az egész klánnak és nyílt ha mindenkinek
+commands.clan.lock.locked=Ez a blokk már le lett zárva %s által.
+commands.clan.lock.failed=Ezt nem zárhatod le, hiba történhetett, vedd fel a kapcsolatot a tulajokkal.
+commands.clan.lock.not_block=Nem nézel a blokkra vagy túl távol vagy a lezárásához.
+commands.clan.lock.wrong_owner=A blokk amire nézel nincs levédve %s által.
+commands.clan.lock.success=Sikeresen lezártad a blokkot amelyikre nézel.
+commands.clan.lock.permission=%s nem engedi neked hogy használd ezt a zár típust: %s.
+
+commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
+commands.clan.lockchunk.description=Lezár minden lehetséges blokkot a chunkban. Módok: privát(default): privát ha csak a játékosnak elérhető, klán ha az egész klánnak és nyílt ha mindenkinek
+commands.clan.lockchunk.success=Sikeresen lezártad a lezárható blokkokat.
+
+commands.clan.unlock.usage=/clan unlock
+commands.clan.unlock.description=Feloldja a blokkot amire nézel. Csak a levédő oldhatja fel vagy "lockadmin" permissionnel rendelkező játékos.
+commands.clan.unlock.locked=Nem oldhatod fel ezt a blokkot mert le van védve %s által.
+commands.clan.unlock.not_block=Nem nézel blokkra vagy túl távol állsz tőle.
+commands.clan.unlock.success=Sikeresen feloldottad a blokkot.
+
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|all]
+commands.clan.unlockchunk.description=Feloldja a blokkot amire nézel. Csak a levédő oldhatja fel vagy "lockadmin" permissionnal.
+commands.clan.unlockchunk.success=Feloldtál minden blokkot a chunkban.
+commands.clan.unlockchunk.success_player=Feloldtad %s' összes blokkját a chunkban.
+commands.clan.unlockchunk.success_all=Sikeresen feloldottad az összes lezárt blokkot a chunkban.
+commands.clan.unlockchunk.failed=Nincs felhatalmazásod hogy más játékosok lezárt blokkjait feloldd a klánban.
+
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Hozzáférést ad egy játékosnak a lezárt blokkodhoz. Csak ahhoz adhatsz hozzáférést amit te védtél le vagy ha "lockadmin" permission engedélyezve van.
+commands.clan.grantaccess.locked=Nem adhatsz hozzáférést a blokkhoz mert %s védte le.
+commands.clan.grantaccess.not_block=Nem nézel a blokkra vagy túl távol vagy tőle.
+commands.clan.grantaccess.success=Hozzáférést adtál %s -nek/nak ahhoz a blokkhoz amire épp nézel.
+
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Hozzáférést tagad meg egy játékostól a lezárt blokkodhoz. Csak attól vehetsz el hozzáférést amit te védtél le vagy ha "lockadmin" permission engedélyezve van.
+commands.clan.denyaccess.locked=Nem tagadhatsz meg hozzáférést mert %s által lett levédve a blokk.
+commands.clan.denyaccess.not_block=Nem nézel a blokkra vagy túl távol vagy tőle.
+commands.clan.denyaccess.success=Megtagadtad %s hozzáférését a blokkhoz
+commands.clan.lockinfo.usage=/clan lockinfo
+commands.clan.lockinfo.description=Zár információt mutat a blokkról amire nézel.
+commands.clan.lockinfo.locked_by=Tulaj: %s
+commands.clan.lockinfo.type=Típus: %s
+commands.clan.lockinfo.overrides=Felülírások:
+commands.clan.lockinfo.allowed=%s: engedélyezve
+commands.clan.lockinfo.denied=%s: elutasítva
+commands.clan.lockinfo.not_block=Nem nézel blokkra vagy távol vagy tőle blokk információ megtekintéséhez.
+
+commands.clan.territorymessagemode.usage=/clan territorymessagemode <chat|action_bar|off> [showdescription: true|false]
+commands.clan.territorymessagemode.description=Terület üzenetek beállítása.
+commands.clan.territorymessagemode.success=Sikeresen updatelted a terület üzeneteidet.
+
+commands.clan.undergroundmessages.usage=/clan undergroundmessages <on|off>
+commands.clan.undergroundmessages.description=Földalatti üzenet mód, ezzel beállíthatod hogy különböző chat legyen föld alatt vagy felett.
+commands.clan.undergroundmessages.success=Sikeresen updatelted a földalatti üzeneteidet.
+
+commands.opclan.abandonclaim.usage=/opclan abandonclaim
+commands.opclan.abandonclaim.description=Claim elhagyása attól függetlenül ki birtokolja.
+
+commands.opclan.addfunds.usage=/opclan addfunds <clan> <amount>
+commands.opclan.addfunds.description=Pénz hozzáadása bármelyik klánhoz.
+
+commands.opclan.autoabandon.usage=/opclan autoabandon
+commands.opclan.autoabandon.description=Automatikusan elhagyja a claimet amelyikre rálépsz.
+commands.opclan.autoabandon.start=Automatikusan elhagyja mindenki claimjét akiére rálépsz.
+commands.opclan.autoabandon.stop=Már nem hagyja el automatikusan mindenki claimjét akiére rálépsz.
+
+commands.opclan.autoclaim.usage=/opclan autoclaim <clan>
+commands.opclan.autoclaim.description=Automatikusan véd le területet amerre jársz egy adott klánnak függetlenül attól hogy valaki más birtokolja-e.
+
+commands.opclan.buildadmin.usage=/opclan buildadmin
+commands.opclan.buildadmin.description=Build Admin módba lépés, bármilyen tevékenységet végezhetsz más területén.
+commands.opclan.buildadmin.on=Build Admin módban vagy.
+commands.opclan.buildadmin.off=Már nem vagy Build Admin módban.
+
+commands.opclan.claim.usage=/opclan claim <clan>
+commands.opclan.claim.description=Levéd egy chunkot függetlenül attól hogy ki birtokolja.
+
+commands.opclan.setrank.usage=/opclan setrank <clan> <member|admin|leader> <player>
+commands.opclan.setrank.description=Játékos rangját állítja be.
+commands.opclan.setrank.success= %s játékost %s rangba tetted %s klánban.
+commands.opclan.setrank.set= %s rangot kaptál %s klánban %s által.
+
+commands.opclan.disband.usage=/opclan disband <clan>
+commands.opclan.disband.description=Bármelyik klánt feloszlatja.
+
+commands.opclan.kick.usage=/opclan kick <clan> <member>
+commands.opclan.kick.description=Bármelyik klánból kikickelhetsz.
+
+commands.opclan.setcolor.usage=/opclan setcolor <clan> <color>
+commands.opclan.setcolor.description=Megváltoztatja bármelyik klán színét.
+
+commands.opclan.setdescription.usage=/opclan setdescription <clan> <new description>
+commands.opclan.setdescription.description=Megváltoztatja bármelyik klán leírását.
+
+commands.opclan.setname.usage=/opclan setname <clan> <newname>
+commands.opclan.setname.description=Beállítja bármelyik klán nevét.
+
+commands.opclan.setshield.usage=/opclan setshield <clan> <duration>
+commands.opclan.setshield.description=Beállítja a védelem mennyiségét bármelyik klánban percekben megadva.
+commands.opclan.setshield.format=Hibásan megadott védelem formátum.
+commands.opclan.setshield.success=Klán védelem a/az %s klánnak be lett állítva %s percre.
+
+commands.opclan.setserver.usage=/opclan setserver <clan> <true|1|false|0>
+commands.opclan.setserver.description=Beállít egy klánt szerver klánná, ha szerver klán lesz egy klánból akkor nem lehet raidelni és a gazdaság/economy sem vonatkozik rá.
+commands.opclan.setserver.success_t= %s klánt szerver klánná tetted.
+commands.opclan.setserver.success_f=Elvetted a szerver státuszát a/az %s klánnak.
+
+commands.opclan.setoption.usage=/opclan set <clan> <option> <value>
+commands.opclan.setoption.description=Klán beállításokat változtatja. A lehetséges beállítások az alábbiakra vonatkoznak: maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server, pvp.
+commands.opclan.setoption.success=Sikeresen átállítottad a/az %s -t  %s -nek/nak %s -ra/re.
+commands.opclan.setoption.failed=A/Az %s beállítás nem található.
+
+commands.opclan.tp.usage=/opclan tp <clan>
+commands.opclan.tp.description=Klán otthonra teleportál.
+
+commands.raid.common.notinparty=Nem vagy raidelő partyban.
+commands.raid.common.not_raiding=Nem vagy aktív raidben.
+
+commands.raid.collect.usage=/raid collect
+commands.raid.collect.description=Összegyűjti a lerakott/tiltott blokkjaidat Raid során.
+commands.raid.collect.makespace=Az inventorydban nincs elegendő hely gyűjtéshez, kérlek szabadítsd fel helyet.
+commands.raid.collect.success=Gyűjtés sikeresen.
+commands.raid.collect.empty=Nincs mit gyűjtened.
+commands.raid.collect.raiding=Nem tudsz Raid közben gyűjtögetni.
+
+commands.raid.invite.usage=/raid invite <player>
+commands.raid.invite.description=Játékos meghívása Raidre.
+commands.raid.invite.invited=Meghívtak Raidre a %1$s ellen. csatlakozáshoz gépeld be a /raid join %1$s parancsot.
+commands.raid.invite.success= %s játékost sikeresen meghívtad Raidelni.
+commands.raid.invite.inclan=Nem hívhatsz olyasvalakit raidre egy klán ellen aminek tagja.
+commands.raid.invite.limit=A Raid csapatodban nem lehet több ember. Jelenleg %s raidelő van és a jelenlegi limit: %s.
+
+commands.raid.join.usage=/raid join <clan name>
+commands.raid.join.description=Csatlakozz egy Raid csoporthoz a célklán ellen, ha az egyik nincs akkor megalapításra kerül.
+commands.raid.join.created=Sikeres Raid/ostromló csoportot hoztál létre a/az %s klán ellen.
+commands.raid.join.create_fail=%s klánnak nincs elég online tagja hogy Raidelni lehessen.
+commands.raid.join.shield=%s klán védelem alatt áll. Próbáld újra %s óra múlva.
+commands.raid.join.success=Sikeresen csatlakoztál a/az %s klán elleni Raidhez.
+commands.raid.join.limit=A Raidel csapat a/az %s klán ellen már megtelt. Jelenleg %s tagja van és a limit: %s.
+commands.raid.join.inclan=Nem indíthasz Raidet a klán ellen aminek tagja vagy.
+commands.raid.join.inparty=Már egy Raid csapatban vagy, ha elhagyod akkor csatlakozhatsz csak másikhoz.
+commands.raid.join.unraidable=A szerver tulaj megakadályozta hogy %s klánt Raidelni lehessen.
+
+commands.raid.leave.usage=/raid leave
+commands.raid.leave.description=Elhagyja a Raidelő csapatot.
+commands.raid.leave.success=Sikeresen elhagytad a/az %s klán elleni Raid csapatot.
+
+commands.raid.start.usage=/raid start
+commands.raid.start.description=Elindítja a Raidet. A díja le lesz vonva ha van.
+commands.raid.start.success=Sikeres Raidet indítottál a/az %s klán ellen.
+commands.raid.start.insufficient_funds=Nincs elég összeged hogy a/az %s klán ellen Raidet indíts. Az elegendő összeg %s -ba kerül.
+commands.raid.start.raiding=A Raid már elkezdődött.
+commands.raid.start.error=Belső hiba: Egy másik klán már Raideli ezt a klánt. Próbáld újra %s órán belül. Szerver tulajok ezt jelentsétek.
+
+commands.raid.thru.usage=/raid thru
+commands.raid.thru.description=Védett blokkokon való áthaladás.
+commands.raid.thru.not_block=Nem nézel a blokkra vagy távol vagy tőle hogy hozzáférj az adatokhoz.
+commands.raid.thru.wrong_pos_owner=A blok amire nézel nincs %s területén.
+commands.raid.thru.failed=Nincs biztonságos hely a túloldalon teleportáláshoz.
+
+clans.protection.break.claimed=Nem rombolhatsz más klán területén.
+clans.protection.break.borderland=Nem rombolhatsz ilyen közel más klán területéhez.
+clans.protection.break.raid=Nem rombolhatsz Raid közben. Kérlek várd meg a Raid végét és próbáld újra.
+clans.protection.break.claimed_raid=Nem rombolhatsz míg ennek a klánnak a területén vagy.
+clans.protection.break.wilderness=Nem rombolhatsz a Vadonban.
+clans.protection.break.locked=Nem ütheted ki ezt a blokkot mert le van védve %s által.
+
+clans.protection.place.territory=You cannot place blocks in another clan's territory.
+clans.protection.place.borderland=You cannot place blocks this close to another clan's territory.
+clans.protection.place.wilderness=You cannot place blocks in Wilderness.
+
+clans.protection.interact.territory=You cannot interact with blocks in another clan's territory.
+clans.protection.interact.borderland=You cannot interact with blocks this close to another clan's territory.
+clans.protection.interact.locked=You cannot interact with this block because it is locked by %s.
+
+clans.rent.kicked=Ki lettél rúgva a/az %s klánból mert nem fizettél bérleti díjat.
+
+clans.upkeep.disbanded=%s klán fel lett oszlatva mert képtelen volt fenntartási díjat fizetni.
+
+clans.wilderness=Vadon
+clans.underground=Földalatti rész
+
+clans.territory.entry=Épp beléptél a/az %s klán területére.
+clans.territory.entrydesc=~%s
+clans.territory.unclaimed=Ez a terület nincs levédve.
+clans.territory.protected=Ez a terület védelem alatt áll de nincs levédve.
+clans.territory.clanterritory=%s klán területe
+clans.territory.borderland=%s klán határja
+
+clans.raid.glowing.defender=A Raid a/az %s klán ellen még %s percig fog tartani. Világítani fogsz amíg a Raid tart. Még %s raidelő van életben.
+clans.raid.glowing.attacker=A Raid a/az %s klán ellen még %s percig fog tartani. %s  védelmező maradt, világítani fogtok a Raid végéig .
+
+clans.raid.rmtimer.rm_attacker=El lettél távolítva a Raidből mert túl sok időt töltöttél a/az %s klán területén.
+clans.raid.rmtimer.rm_defender=Halottnak lettél nyilvánítva a/az %s klán elleni raidben mert túl sok időt töltöttél a területén kívül.
+clans.raid.rmtimer.warn_attacker=Nem vagy a/az %s klán területén.Ha tovább vagy kint mint  %s másodperc akkor el leszel távolítva a Raidből.
+clans.raid.rmtimer.warn_defender=Nem vagy a/az %s klán területén. Ha tovább vagy kint mint %s másodperc akkor halottnak leszel számítva Raid győzelem esetén.
+
+clans.raid.confiscated=Az alábbi item tiltott Riadek során: %s. Visszaigényelhet a Raid után a /raid collect paranccsal.
+
+clans.raid.init.defender=Egy Raid csapat %s taggal készül a/az %s klán Raidelésére. A Raid %s másodpercen belül kezdődik.
+clans.raid.init.attacker=A Raid csapatod %s taggal épp Raidelésre készül a/az %s klán ellen. A Raid %s másodpercen belül kezdődik.
+
+clans.raid.activate=A Raid a/az %s klán ellen elkezdődött!
+clans.raid.end=A Raid a/az %s klán ellen véget ért!
+clans.raid.victory.raider=A Raidelők legyőzték a/az %s klánt!
+clans.raid.victory.clan=%s klán sikeresen leverte a Raidelőket!
+
+clans.chat.prefix=<%s Chat>
+clans.chat.page.next=[Next]
+clans.chat.page.prev=[Previous]
+clans.chat.page.num=Page: %s/%s
