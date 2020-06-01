@@ -506,6 +506,6 @@ clans.raid.victory.raider=A Raidelők legyőzték a/az %s klánt!
 clans.raid.victory.clan=%s klán sikeresen leverte a Raidelőket!
 
 clans.chat.prefix=<%s Chat>
-clans.chat.page.next=[Next]
-clans.chat.page.prev=[Previous]
+clans.chat.page.next=[Következő]
+clans.chat.page.prev=[Elöző]
 clans.chat.page.num=Page: %s/%s
