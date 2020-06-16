@@ -78,6 +78,8 @@ public class IceAndFireCompat implements IProtectionCompat {
 
     @SubscribeEvent
     public void mobGrief(EntityMobGriefingEvent event) {
+        if(event.getEntity() == null || event.getEntity().world == null)
+            return;
         if(!event.getEntity().world.isRemote) {
             if(event.getEntity() instanceof EntityDragonBase) {
                 Entity owner = LandProtectionEventLogic.getOwner(event.getEntity());
