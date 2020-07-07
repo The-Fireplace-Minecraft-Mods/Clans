@@ -258,12 +258,12 @@ public final class ClaimData {
 
     public static class ClaimStoredData {
         //region Internal variables
-        private File chunkDataFile;
+        private final File chunkDataFile;
         private boolean isChanged, saving;
         //endregion
 
         //region Saved variables
-        private UUID clan;
+        private final UUID clan;
         private Set<ChunkPositionWithData> chunks;
         private boolean hasBorderlands;
         //endregion

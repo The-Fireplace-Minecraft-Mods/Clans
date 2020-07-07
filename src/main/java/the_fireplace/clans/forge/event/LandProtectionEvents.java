@@ -40,9 +40,9 @@ public class LandProtectionEvents {
 	}
 
 	@SubscribeEvent
-	public static void onBreakBlock(EntityMobGriefingEvent event){
+	public static void onBreakBlock(EntityMobGriefingEvent event) {
 		//Not a perfect check, but much better than before.
-		if(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), null))
+		if(event.getEntity() != null && LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), null))
 			event.setResult(Event.Result.DENY);
 	}
 
