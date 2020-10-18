@@ -10,7 +10,6 @@ import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.EntityUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -57,7 +56,7 @@ public class CommandHome extends ClanSubCommand {
 					PlayerCache.setClanHomeCheckX(sender.getUniqueID(), (float)sender.posX);
 					PlayerCache.setClanHomeCheckY(sender.getUniqueID(), (float)sender.posY);
 					PlayerCache.setClanHomeCheckZ(sender.getUniqueID(), (float)sender.posZ);
-					PlayerCache.clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), selectedClan.getId()));
+					PlayerCache.startHomeTeleportWarmup(sender, selectedClan.getId());
 				} else
 					EntityUtil.teleportHome(sender, home, selectedClan.getHomeDim(), playerDim, false);
 			}

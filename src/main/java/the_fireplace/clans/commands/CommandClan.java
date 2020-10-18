@@ -192,7 +192,7 @@ public class CommandClan extends CommandBase {
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
         //Remove the subcommand from the args
-        if(ClanCache.clanNameTaken(tag) && !ClanCache.forbiddenClanNames.contains(tag) && args.length >= 2) {
+        if(ClanCache.clanNameTaken(tag) && !ClanCache.isForbiddenClanName(tag) && args.length >= 2) {
             //Skip to the next arg because the first is a clan name
             tag = args[1];
             if (args.length > 2) {

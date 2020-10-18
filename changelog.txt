@@ -3,4 +3,4 @@ Additions:
 Changes:
 
 Fixes/Internal Changes:
-Fixed occasional crash
+Improved performance

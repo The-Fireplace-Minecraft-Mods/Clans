@@ -3,6 +3,7 @@ package the_fireplace.clans.forge.event;
 import net.minecraft.block.BlockFire;
 import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -106,8 +107,8 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onLivingDamage(LivingHurtEvent event) {
 		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource(), event.getSource().getTrueSource()));
-		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayer)
-			PlayerEventLogic.onPlayerDamage((EntityPlayer) event.getEntityLiving());
+		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayerMP)
+			PlayerEventLogic.onPlayerDamage((EntityPlayerMP) event.getEntityLiving());
 	}
 
 	@SubscribeEvent

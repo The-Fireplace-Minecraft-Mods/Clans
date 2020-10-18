@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.op.land;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.util.TextStyles;
@@ -31,8 +31,8 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(!ClanCache.opAutoAbandonClaims.remove(sender.getUniqueID())) {
-            ClanCache.opAutoAbandonClaims.add(sender.getUniqueID());
+        if(!PlayerAutoClaimData.cancelOpAutoAbandon(sender.getUniqueID())) {
+            PlayerAutoClaimData.activateOpAutoAbandon(sender.getUniqueID());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
 			ClanManagementLogic.checkAndAttemptAbandon(sender, null);
 		} else

@@ -93,10 +93,10 @@ public class RaidManagementLogic {
                     Comparable extended = state.getProperties().get(BlockPistonBase.EXTENDED);
                     BlockPos oldPos = pos;
                     BlockPos newPos = pos;
-                    if(!WorldTrackingCache.pistonPhases.containsKey(pos))
-                        WorldTrackingCache.pistonPhases.put(pos, !(Boolean) extended);
+                    if(!WorldTrackingCache.isTrackingPistonPhaseAt(pos))
+                        WorldTrackingCache.setPistonPhase(pos, !(Boolean) extended);
 
-                    if (facing instanceof EnumFacing && extended instanceof Boolean && WorldTrackingCache.pistonPhases.get(pos) == extended) {
+                    if (facing instanceof EnumFacing && extended instanceof Boolean && WorldTrackingCache.getPistonPhase(pos) == extended) {
                         if ((Boolean) extended) {
                             int pushRange = 0;
                             for(int i=1;i<14;i++)
@@ -157,7 +157,7 @@ public class RaidManagementLogic {
                                 }
                             }
                         }
-                        WorldTrackingCache.pistonPhases.put(pos, !WorldTrackingCache.pistonPhases.get(pos));
+                        WorldTrackingCache.invertPistonPhase(pos);
                     }
                 }
             }

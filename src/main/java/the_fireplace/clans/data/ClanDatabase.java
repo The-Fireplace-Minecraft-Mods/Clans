@@ -1,7 +1,6 @@
 package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.Clans;
@@ -11,6 +10,8 @@ import the_fireplace.clans.model.Clan;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public final class ClanDatabase {
     private static ClanDatabase instance = null;
@@ -22,10 +23,10 @@ public final class ClanDatabase {
         return instance;
     }
 
-    private HashMap<UUID, Clan> clans;
+    private final ConcurrentMap<UUID, Clan> clans;
 
     private ClanDatabase(){
-        clans = Maps.newHashMap();
+        clans = new ConcurrentHashMap<>();
     }
 
     @Nullable

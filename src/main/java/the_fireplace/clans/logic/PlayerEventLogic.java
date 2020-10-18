@@ -6,6 +6,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.ClaimData;
@@ -42,11 +43,7 @@ public class PlayerEventLogic {
     }
 
     public static void onPlayerLoggedOut(UUID playerId) {
-        ClanCache.opAutoClaimLands.remove(playerId);
-        ClanCache.opAutoAbandonClaims.remove(playerId);
-        ClanCache.autoAbandonClaims.remove(playerId);
-        ClanCache.autoClaimLands.remove(playerId);
-        ClanCache.clanChattingPlayers.remove(playerId);
+        PlayerAutoClaimData.uncacheClaimingSettings(playerId);
         RaidingParties.playerLoggedOut(playerId);
         PlayerData.updateLastSeen(playerId);
         PlayerData.setShouldDisposeReferences(playerId, true);
@@ -56,10 +53,10 @@ public class PlayerEventLogic {
     public static void onPlayerChangedDimension(EntityPlayer player) {
         if(!player.world.isRemote) {
             PlayerCache.setClaimWarning(player.getUniqueID(), false);
-            Clan ocAutoClaim = ClanCache.opAutoClaimLands.remove(player.getUniqueID());
-            boolean ocAutoAbandon = ClanCache.opAutoAbandonClaims.remove(player.getUniqueID());
-            Clan cAutoAbandon = ClanCache.autoAbandonClaims.remove(player.getUniqueID());
-            Clan cAutoClaim = ClanCache.autoClaimLands.remove(player.getUniqueID());
+            Clan ocAutoClaim = PlayerAutoClaimData.cancelOpAutoClaim(player.getUniqueID());
+            boolean ocAutoAbandon = PlayerAutoClaimData.cancelOpAutoAbandon(player.getUniqueID());
+            Clan cAutoAbandon = PlayerAutoClaimData.cancelAutoAbandon(player.getUniqueID());
+            Clan cAutoClaim = PlayerAutoClaimData.cancelAutoClaim(player.getUniqueID());
             if (ocAutoAbandon)
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
             if (cAutoAbandon != null)
@@ -95,7 +92,7 @@ public class PlayerEventLogic {
 
     public static void sendClanChat(EntityPlayer player, ITextComponent message) {
         if(!player.world.isRemote) {
-            Clan clanChat = ClanCache.clanChattingPlayers.get(player.getUniqueID());
+            Clan clanChat = PlayerCache.getChattingWithClan(player);
             for (EntityPlayerMP member : clanChat.getOnlineMembers().keySet())
                 member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
         }
@@ -108,9 +105,8 @@ public class PlayerEventLogic {
         return oldSpeed;
     }
     
-    public static void onPlayerDamage(EntityPlayer player) {
-        //noinspection SuspiciousMethodCalls
-        if(!player.world.isRemote && PlayerCache.clanHomeWarmups.remove(player) != null)
+    public static void onPlayerDamage(EntityPlayerMP player) {
+        if(PlayerCache.cancelClanHomeWarmup(player))
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
     }
 }

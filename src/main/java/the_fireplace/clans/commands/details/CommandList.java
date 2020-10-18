@@ -17,7 +17,7 @@ import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -104,7 +104,7 @@ public class CommandList extends ClanSubCommand {
 				page = parseInt(args[1]);
 			else
 				page = 1;
-			ChatPageUtil.showPaginatedChat(sender, String.format("/clan list %s", args.length > 0 ? args[0] : "abc") + " %s", listItems, page);
+			ChatUtil.showPaginatedChat(sender, String.format("/clan list %s", args.length > 0 ? args[0] : "abc") + " %s", listItems, page);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.noclans").setStyle(TextStyles.YELLOW));
 	}
@@ -120,7 +120,7 @@ public class CommandList extends ClanSubCommand {
 		if(args.length == 1)
 			ret.addAll(Lists.newArrayList("money", "land", "members", "abc"));
 		else if(args.length == 2)
-			for(int i = 1; i < ClanDatabase.getClans().size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
+			for(int i = 1; i < ClanDatabase.getClans().size()/ ChatUtil.RESULTS_PER_PAGE; i++)
 				ret.add(String.valueOf(i));
 		return getListOfStringsMatchingLastWord(args, ret);
 	}
@@ -138,7 +138,7 @@ public class CommandList extends ClanSubCommand {
 				shown = true;
 				texts.add(new TextComponentString(inviteClan.getName()).setStyle(new Style().setColor(inviteClan.getTextColor())));
 			}
-			ChatPageUtil.showPaginatedChat(sender, "/clan list invites %s", texts, page);
+			ChatUtil.showPaginatedChat(sender, "/clan list invites %s", texts, page);
 			//Deal with the edge case where all inviting clans have been disbanded
 			if(!shown)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.no_invites").setStyle(TextStyles.RED));

@@ -1,7 +1,6 @@
 package the_fireplace.clans.cache;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,13 +22,14 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class RaidingParties {
-	private static Map<Clan, Raid> inactiveRaids = Maps.newHashMap();
-	private static Map<UUID, Raid> raidingPlayers = Maps.newHashMap();
-	private static List<Clan> raidedClans = Lists.newArrayList();
-	private static Map<Clan, Raid> activeraids = Maps.newHashMap();
-	private static Map<Clan, Integer> bufferTimes = Maps.newHashMap();
+	private static final Map<Clan, Raid> inactiveRaids = new ConcurrentHashMap<>();
+	private static final Map<UUID, Raid> raidingPlayers = new ConcurrentHashMap<>();
+	private static final Set<Clan> raidedClans = new ConcurrentSet<>();
+	private static final Map<Clan, Raid> activeraids = new ConcurrentHashMap<>();
+	private static final Map<Clan, Integer> bufferTimes = new ConcurrentHashMap<>();
 
 	public static Map<Clan, Raid> getInactiveRaids() {
 		return Collections.unmodifiableMap(inactiveRaids);

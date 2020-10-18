@@ -10,7 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -38,7 +38,7 @@ public class OpCommandHelp extends OpClanSubCommand {
                         TranslationUtil.getStringTranslation(sender, "commands.opclan." + command.getKey() + ".description")));
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
-            ChatPageUtil.showPaginatedChat(sender, "/opclan help %s", helps, page);
+            ChatUtil.showPaginatedChat(sender, "/opclan help %s", helps, page);
         } else if(CommandOpClan.aliases.containsKey(args[0]) || CommandOpClan.commands.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                     TranslationUtil.getStringTranslation(sender, "commands.opclan." + CommandOpClan.processAlias(args[0]) + ".usage"),
@@ -68,7 +68,7 @@ public class OpCommandHelp extends OpClanSubCommand {
         List<String> comp = Lists.newArrayList();
         if(args.length != 1)
             return comp;
-        for(int i = 1; i < CommandOpClan.commands.size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
+        for(int i = 1; i < CommandOpClan.commands.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
             comp.add(String.valueOf(i));
         comp.addAll(CommandOpClan.aliases.keySet());
         comp.addAll(CommandOpClan.commands.keySet());

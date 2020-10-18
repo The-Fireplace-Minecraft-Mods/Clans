@@ -10,7 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ public class CommandClanHelp extends ClanSubCommand {
                         TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".description")));
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
-            ChatPageUtil.showPaginatedChat(sender, "/clan help %s", helps, page);
+            ChatUtil.showPaginatedChat(sender, "/clan help %s", helps, page);
         } else if(CommandClan.aliases.containsKey(args[0]) || CommandClan.commands.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                     TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".usage"),
@@ -77,7 +77,7 @@ public class CommandClanHelp extends ClanSubCommand {
         List<String> comp = Lists.newArrayList();
         if(args.length != 1)
             return comp;
-        for(int i=1;i<CommandClan.commands.size()/ChatPageUtil.RESULTS_PER_PAGE;i++)
+        for(int i = 1; i<CommandClan.commands.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
             comp.add(String.valueOf(i));
         comp.addAll(CommandClan.aliases.keySet());
         comp.addAll(CommandClan.commands.keySet());

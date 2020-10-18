@@ -9,11 +9,15 @@ import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.data.*;
 import the_fireplace.clans.model.*;
-import the_fireplace.clans.util.*;
+import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.FormulaParser;
+import the_fireplace.clans.util.PermissionManager;
+import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -77,26 +81,7 @@ public class TimerLogic {
 
     public static void runOneSecondLogic() {
         RaidingParties.decrementBuffers();
-        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : Sets.newHashSet(PlayerCache.clanHomeWarmups.entrySet())) {
-            if (entry.getValue().getValue1() > 0) {
-                if(Math.abs(entry.getKey().posX - PlayerCache.getClanHomeCheckX(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posZ - PlayerCache.getClanHomeCheckZ(entry.getKey().getUniqueID())) < 0.1f && Math.abs(entry.getKey().posY- PlayerCache.getClanHomeCheckY(entry.getKey().getUniqueID())) < 0.1f)
-                    PlayerCache.clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
-                else {
-                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
-                    PlayerCache.clanHomeWarmups.remove(entry.getKey());
-                }
-            } else
-                PlayerCache.clanHomeWarmups.remove(entry.getKey());
-
-            if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-                Clan c = ClanCache.getClanById(entry.getValue().getValue2());
-                //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
-                if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
-                    EntityUtil.teleportHome(entry.getKey(), c.getHome(), c.getHomeDim(), entry.getKey().dimension, false);
-                else
-                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
-            }
-        }
+        PlayerCache.decrementHomeWarmupTimers();
 
         for (Raid raid : RaidingParties.getActiveRaids())
             if (raid.checkRaidEndTimer())
@@ -130,7 +115,7 @@ public class TimerLogic {
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
         Chunk c = player.getEntityWorld().getChunk(player.getPosition());
         UUID chunkClanId = ChunkUtils.getChunkOwner(c);
-        List<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
+        Collection<Clan> playerClans = ClanCache.getPlayerClans(player.getUniqueID());
         UUID playerStoredClaimId = PlayerCache.getPreviousChunkOwner(player.getUniqueID());
         Clan chunkClan = ClanCache.getClanById(chunkClanId);
         ChunkPositionWithData data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
@@ -143,14 +128,14 @@ public class TimerLogic {
 
         if (!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
             boolean needsRecalc = false;
-            if(ClanCache.opAutoAbandonClaims.contains(player.getUniqueID()))
+            if(PlayerAutoClaimData.isOpAutoAbandoning(player.getUniqueID()))
                 needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, null);
-            if(ClanCache.autoAbandonClaims.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, ClanCache.autoAbandonClaims.get(player.getUniqueID())) || needsRecalc;
-            if(ClanCache.opAutoClaimLands.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.opAutoClaimLands.get(player.getUniqueID()), true) || needsRecalc;
-            if(ClanCache.autoClaimLands.containsKey(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, ClanCache.autoClaimLands.get(player.getUniqueID()), false) || needsRecalc;
+            if(PlayerAutoClaimData.isAutoAbandoning(player.getUniqueID()))
+                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, PlayerAutoClaimData.getAutoAbandoningClan(player.getUniqueID())) || needsRecalc;
+            if(PlayerAutoClaimData.isOpAutoClaiming(player.getUniqueID()))
+                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getOpAutoClaimingClan(player.getUniqueID()), true) || needsRecalc;
+            if(PlayerAutoClaimData.isAutoClaiming(player.getUniqueID()))
+                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getAutoClaimingClan(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);

@@ -11,7 +11,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import java.util.Collection;
 import java.util.List;
 
-public final class ChatPageUtil {
+public final class ChatUtil {
     public static final int RESULTS_PER_PAGE = 7;
 
     public static void showPaginatedChat(ICommandSender target, String command, Collection<ITextComponent> items, int page) {
@@ -46,5 +46,10 @@ public final class ChatPageUtil {
             target.sendMessage(item);
 
         target.sendMessage(bottom);
+    }
+
+    public static void sendMessage(ICommandSender messageTarget, ITextComponent... messages) {
+        for(ITextComponent msg: messages)
+            messageTarget.sendMessage(msg);
     }
 }

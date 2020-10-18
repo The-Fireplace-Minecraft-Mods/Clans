@@ -18,7 +18,7 @@ import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -123,7 +123,7 @@ public class CommandInvite extends ClanSubCommand {
 		List<ITextComponent> playerNames = Lists.newArrayList();
 		for(UUID playerId: ClanCache.getInvitedPlayers(invitingClanId))
 			playerNames.add(new TextComponentString(Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(playerId)).getName()));
-		ChatPageUtil.showPaginatedChat(sender, "/c i l %s", playerNames, page);
+		ChatUtil.showPaginatedChat(sender, "/c i l %s", playerNames, page);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.commands.OpClanSubCommand;
 import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.Clan;
@@ -37,18 +38,18 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		String clan = args[0];
-		Clan c = ClanCache.getClanByName(clan);
-		if(c != null) {
-            Clan rm = ClanCache.opAutoClaimLands.remove(sender.getUniqueID());
+		String attemptClanName = args[0];
+		Clan clan = ClanCache.getClanByName(attemptClanName);
+		if(clan != null) {
+            Clan rm = PlayerAutoClaimData.cancelOpAutoClaim(sender.getUniqueID());
 			if(rm == null) {
-                ClanCache.opAutoClaimLands.put(sender.getUniqueID(), c);
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", c.getName()).setStyle(TextStyles.GREEN));
-				ClanManagementLogic.checkAndAttemptClaim(sender, c, true);
+                PlayerAutoClaimData.activateOpAutoClaim(sender.getUniqueID(), clan);
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", clan.getName()).setStyle(TextStyles.GREEN));
+				ClanManagementLogic.checkAndAttemptClaim(sender, clan, true);
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", attemptClanName).setStyle(TextStyles.RED));
 	}
 
 	@Override

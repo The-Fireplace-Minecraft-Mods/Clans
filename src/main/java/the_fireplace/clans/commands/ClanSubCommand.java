@@ -22,6 +22,7 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,7 +80,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				if(args.length > 0) {
 					Clan playerClan = ClanCache.getClanByName(args[0]);
 					if (sender instanceof EntityPlayerMP) {
-						List<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
+						Collection<Clan> playerClans = ClanCache.getPlayerClans(((EntityPlayerMP) sender).getUniqueID());
 						if (playerClan != null && !playerClans.contains(playerClan)) {
 							sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), playerClan.getName()).setStyle(TextStyles.RED));
 							return;

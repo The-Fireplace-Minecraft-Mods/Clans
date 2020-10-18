@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
 
@@ -34,6 +34,6 @@ public class CommandClanChat extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanCache.updateChat(sender.getUniqueID(), selectedClan);
+		PlayerCache.toggleClanChat(sender.getUniqueID(), selectedClan);
 	}
 }

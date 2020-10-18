@@ -1,7 +1,7 @@
 package the_fireplace.clans.cache;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import io.netty.util.internal.ConcurrentSet;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -17,32 +17,23 @@ import the_fireplace.clans.util.TextStyles;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public final class ClanCache {
-	private static Map<UUID, List<Clan>> playerClans = Maps.newHashMap();
-	private static Map<String, Clan> clanNames = Maps.newHashMap();
-	private static List<String> clanBanners = Lists.newArrayList();
-	private static Map<Clan, BlockPos> clanHomes = Maps.newHashMap();
+	private static final Map<UUID, Set<Clan>> playerClans = new ConcurrentHashMap<>();
+	private static final Map<String, Clan> clanNames = new ConcurrentHashMap<>();
+	private static final Set<String> clanBanners = new ConcurrentSet<>();
+	private static final Map<Clan, BlockPos> clanHomes = new ConcurrentHashMap<>();
 
-	private static List<UUID> buildAdmins = Lists.newArrayList();
-	public static Map<UUID, Clan> clanChattingPlayers = Maps.newHashMap();
-
-	//Maps of (Player Unique ID) -> (Clan)
-	public static Map<UUID, Clan> autoAbandonClaims = Maps.newHashMap();
-	public static Map<UUID, Clan> autoClaimLands = Maps.newHashMap();
-	public static List<UUID> opAutoAbandonClaims = Lists.newArrayList();
-	public static Map<UUID, Clan> opAutoClaimLands = Maps.newHashMap();
+	private static final Set<UUID> buildAdmins = new ConcurrentSet<>();
 
 	//Map of Clan ID -> List of invited players
-	public static Map<UUID, List<UUID>> invitedPlayers = Maps.newHashMap();
+	private static final Map<UUID, Set<UUID>> invitedPlayers = new ConcurrentHashMap<>();
 
-	public static final List<String> forbiddenClanNames = Lists.newArrayList("wilderness", "underground", "opclan", "clan", "raid", "null");
+	private static final Set<String> forbiddenClanNames = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", "null");
 	static {
 		forbiddenClanNames.addAll(CommandClan.commands.keySet());
 		forbiddenClanNames.addAll(CommandClan.aliases.keySet());
@@ -52,6 +43,10 @@ public final class ClanCache {
 		forbiddenClanNames.addAll(CommandRaid.aliases.keySet());
 	}
 
+	public static boolean isForbiddenClanName(String name) {
+		return forbiddenClanNames.contains(name);
+	}
+
 	@Nullable
 	public static Clan getClanById(@Nullable UUID clanID){
 		return ClanDatabase.getClan(clanID);
@@ -59,19 +54,33 @@ public final class ClanCache {
 
 	@Nullable
 	public static Clan getClanByName(String clanName){
-		if(clanNames.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getName().toLowerCase(), clan);
+		ensureNameCacheLoaded();
 		return clanNames.get(clanName.toLowerCase());
 	}
 
-	public static List<Clan> getPlayerClans(@Nullable UUID player) {
+	public static Collection<Clan> getPlayerClans(@Nullable UUID player) {
 		if(player == null)
-			return Collections.unmodifiableList(Lists.newArrayList());
-		if(!playerClans.containsKey(player))
-		    //Use a new arraylist because we want the list in the map to be modifiable, and the result of the lookup is not.
-		    playerClans.put(player, Lists.newArrayList(ClanDatabase.lookupPlayerClans(player)));
-		return Collections.unmodifiableList(playerClans.get(player) != null ? playerClans.get(player) : Lists.newArrayList());
+			return Collections.unmodifiableCollection(Collections.emptySet());
+		ensurePlayerClansCached(player);
+		return Collections.unmodifiableSet(playerClans.get(player));
+	}
+
+	public static void addPlayerClan(UUID player, Clan clan) {
+		ensurePlayerClansCached(player);
+		playerClans.get(player).add(clan);
+	}
+
+	public static void removePlayerClan(UUID player, Clan clan) {
+		ensurePlayerClansCached(player);
+		playerClans.get(player).remove(clan);
+	}
+
+	private static void ensurePlayerClansCached(UUID player) {
+		if(!playerClans.containsKey(player)) {
+			Set<Clan> clansFromDb = new ConcurrentSet<>();
+			clansFromDb.addAll(ClanDatabase.lookupPlayerClans(player));
+			playerClans.put(player, clansFromDb);
+		}
 	}
 
 	public static EnumRank getPlayerRank(UUID player, Clan clan) {
@@ -80,26 +89,45 @@ public final class ClanCache {
 
 	public static boolean clanNameTaken(String clanName) {
 		clanName = clanName.toLowerCase();
-		if(clanNames.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getName().toLowerCase(), clan);
+		ensureNameCacheLoaded();
 		return forbiddenClanNames.contains(clanName) || clanNames.containsKey(clanName);
 	}
 
+	public static void addName(Clan nameClan){
+		ensureNameCacheLoaded();
+		clanNames.put(TextStyles.stripFormatting(nameClan.getName().toLowerCase()), nameClan);
+	}
+
+	public static Map<String, Clan> getClanNames() {
+		ensureNameCacheLoaded();
+		return Collections.unmodifiableMap(clanNames);
+	}
+
+	private static void ensureNameCacheLoaded() {
+		if (clanNames.isEmpty())
+			for (Clan clan : ClanDatabase.getClans())
+				clanNames.put(TextStyles.stripFormatting(clan.getName().toLowerCase()), clan);
+	}
+
+	public static void removeName(String name){
+		clanNames.remove(TextStyles.stripFormatting(name.toLowerCase()));
+	}
+
 	public static boolean clanBannerTaken(String clanBanner) {
-		if(clanBanners.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				if(clan.getBanner() != null)
-					clanBanners.add(clan.getBanner().toLowerCase());
+		ensureBannerCacheLoaded();
 		return clanBanners.contains(clanBanner.toLowerCase());
 	}
 
 	public static void addBanner(String banner) {
-		if(clanBanners.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				if(clan.getBanner() != null)
-					clanBanners.add(clan.getBanner().toLowerCase());
+		ensureBannerCacheLoaded();
 		clanBanners.add(banner.toLowerCase());
+	}
+
+	private static void ensureBannerCacheLoaded() {
+		if (clanBanners.isEmpty())
+			for (Clan clan : ClanDatabase.getClans())
+				if (clan.getBanner() != null)
+					clanBanners.add(clan.getBanner().toLowerCase());
 	}
 
 	public static void removeBanner(@Nullable String banner){
@@ -107,47 +135,21 @@ public final class ClanCache {
 			clanBanners.remove(banner.toLowerCase());
 	}
 
-	public static Map<String, Clan> getClanNames() {
-		if(clanNames.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(clan.getName().toLowerCase(), clan);
-		return Collections.unmodifiableMap(clanNames);
-	}
-
-	public static void addName(Clan nameClan){
-		if(clanNames.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				clanNames.put(TextStyles.stripFormatting(clan.getName().toLowerCase()), clan);
-		clanNames.put(TextStyles.stripFormatting(nameClan.getName().toLowerCase()), nameClan);
-	}
-
-	public static void removeName(String name){
-		clanNames.remove(TextStyles.stripFormatting(name.toLowerCase()));
-	}
-
-	public static void addPlayerClan(UUID player, Clan clan) {
-		getPlayerClans(player);
-		playerClans.get(player).add(clan);
-	}
-
-	public static void removePlayerClan(UUID player, Clan clan) {
-		getPlayerClans(player);
-		playerClans.get(player).remove(clan);
-	}
-
 	public static Map<Clan, BlockPos> getClanHomes() {
-		if(clanHomes.isEmpty())
-			for(Clan clan: ClanDatabase.getClans())
-				if(clan.hasHome())
-					clanHomes.put(clan, clan.getHome());
+		ensureClanHomeCacheLoaded();
 		return Collections.unmodifiableMap(clanHomes);
 	}
 
 	public static void setClanHome(Clan c, BlockPos home) {
+		ensureClanHomeCacheLoaded();
+		clanHomes.put(c, home);
+	}
+
+	private static void ensureClanHomeCacheLoaded() {
 		if(clanHomes.isEmpty())
 			for(Clan clan: ClanDatabase.getClans())
-				clanHomes.put(clan, clan.getHome());
-		clanHomes.put(c, home);
+				if(clan.hasHome())
+					clanHomes.put(clan, clan.getHome());
 	}
 
 	public static void clearClanHome(Clan c) {
@@ -163,28 +165,29 @@ public final class ClanCache {
 	}
 
 	public static boolean toggleClaimAdmin(EntityPlayerMP admin){
-		if(buildAdmins.contains(admin.getUniqueID())) {
-			buildAdmins.remove(admin.getUniqueID());
+		return toggleClaimAdmin(admin.getUniqueID());
+	}
+
+	public static boolean toggleClaimAdmin(UUID admin){
+		if(buildAdmins.contains(admin)) {
+			buildAdmins.remove(admin);
 			return false;
 		} else {
-			buildAdmins.add(admin.getUniqueID());
+			buildAdmins.add(admin);
 			return true;
 		}
 	}
 
 	public static boolean isClaimAdmin(EntityPlayerMP admin) {
-		return buildAdmins.contains(admin.getUniqueID());
+		return isClaimAdmin(admin.getUniqueID());
 	}
 
-	public static void updateChat(UUID uuid, Clan clan) {
-		if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
-			clanChattingPlayers.remove(uuid);
-		else
-			clanChattingPlayers.put(uuid, clan);
+	public static boolean isClaimAdmin(UUID admin) {
+		return buildAdmins.contains(admin);
 	}
 
-	public static List<UUID> getInvitedPlayers(UUID clanId) {
-		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+	public static Collection<UUID> getInvitedPlayers(UUID clanId) {
+		invitedPlayers.putIfAbsent(clanId, new ConcurrentSet<>());
 		return invitedPlayers.get(clanId);
 	}
 
@@ -206,18 +209,18 @@ public final class ClanCache {
 	}
 
 	/**
-	 * DO NOT USE. This will not actually add the invite, it just adds it to cache. PlayerData.addInvite takes care of actually adding it.
+	 * INTERNAL USE ONLY. This will not actually add the invite, it just adds it to cache. PlayerData.addInvite takes care of actually adding it.
 	 */
 	public static void cacheInvite(UUID clanId, UUID playerId) {
-		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+		invitedPlayers.putIfAbsent(clanId, new ConcurrentSet<>());
 		invitedPlayers.get(clanId).add(playerId);
 	}
 
 	/**
-	 * DO NOT USE. This will not actually revoke the invite, it just removes it from cache. PlayerData.removeInvite takes care of actually removing it.
+	 * INTERNAL USE ONLY. This will not actually revoke the invite, it just removes it from cache. PlayerData.removeInvite takes care of actually removing it.
 	 */
 	public static void uncacheInvite(UUID clanId, UUID playerId) {
-		invitedPlayers.putIfAbsent(clanId, Lists.newArrayList());
+		invitedPlayers.putIfAbsent(clanId, new ConcurrentSet<>());
 		invitedPlayers.get(clanId).remove(playerId);
 	}
 }

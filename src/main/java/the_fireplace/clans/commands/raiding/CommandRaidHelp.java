@@ -10,7 +10,7 @@ import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.commands.RaidSubCommand;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
@@ -38,7 +38,7 @@ public class CommandRaidHelp extends RaidSubCommand {
                         TranslationUtil.getStringTranslation(sender, "commands.raid." + command.getKey() + ".description")));
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
-            ChatPageUtil.showPaginatedChat(sender, "/raid help %s", helps, page);
+            ChatUtil.showPaginatedChat(sender, "/raid help %s", helps, page);
         } else if(CommandRaid.aliases.containsKey(args[0]) || CommandRaid.commands.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                     TranslationUtil.getStringTranslation(sender, "commands.raid." + CommandRaid.processAlias(args[0]) + ".usage"),
@@ -73,7 +73,7 @@ public class CommandRaidHelp extends RaidSubCommand {
         List<String> comp = Lists.newArrayList();
         if(args.length != 1)
             return comp;
-        for(int i = 1; i < CommandRaid.commands.size()/ChatPageUtil.RESULTS_PER_PAGE; i++)
+        for(int i = 1; i < CommandRaid.commands.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
             comp.add(String.valueOf(i));
         comp.addAll(CommandRaid.aliases.keySet());
         comp.addAll(CommandRaid.commands.keySet());

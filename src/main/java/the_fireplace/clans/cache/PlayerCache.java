@@ -3,21 +3,28 @@ package the_fireplace.clans.cache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.OrderedPair;
 import the_fireplace.clans.util.ChunkUtils;
+import the_fireplace.clans.util.EntityUtil;
+import the_fireplace.clans.util.TextStyles;
+import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerCache {
-    //Clan home warmup cache
-    public static Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
-    private static Map<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
+    private static final Map<UUID, Clan> clanChattingPlayers = new ConcurrentHashMap<>();
+    private static final Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
+    private static final Map<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
 
     @Nullable
     public static UUID getPreviousChunkOwner(UUID player) {
@@ -113,6 +120,8 @@ public final class PlayerCache {
 
     public static void setNeedsCleanup(UUID player, boolean isMarkedForCleanup) {
         getPlayerCache(player).isMarkedForCleanup = isMarkedForCleanup;
+        if(isMarkedForCleanup)
+            clanChattingPlayers.remove(player);
     }
 
     public static void cleanup() {
@@ -124,22 +133,69 @@ public final class PlayerCache {
 
     //region getPlayerData
     private static PlayerCachedData getPlayerCache(UUID player) {
-        if(!playerCache.containsKey(player))
-            playerCache.put(player, new PlayerCachedData());
+        playerCache.putIfAbsent(player, new PlayerCachedData());
         return playerCache.get(player);
     }
-    //endregion
+
+    public static boolean isClanChatting(UUID player) {
+        return clanChattingPlayers.containsKey(player);
+    }
+
+    public static Clan getChattingWithClan(EntityPlayer player) {
+        return clanChattingPlayers.get(player.getUniqueID());
+    }
+
+    public static void toggleClanChat(UUID uuid, Clan clan) {
+        if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
+            clanChattingPlayers.remove(uuid);
+        else
+            clanChattingPlayers.put(uuid, clan);
+    }
+
+    public static boolean hasPlayerMovedSinceTeleportStarted(UUID player, Vec3d position) {
+        return !(Math.abs(position.x - getClanHomeCheckX(player)) < 0.1f && Math.abs(position.z - getClanHomeCheckZ(player)) < 0.1f && Math.abs(position.y - getClanHomeCheckY(player)) < 0.1f);
+    }
+
+    public static void startHomeTeleportWarmup(EntityPlayerMP sender, UUID clan) {
+        clanHomeWarmups.put(sender, new OrderedPair<>(Clans.getConfig().getClanHomeWarmupTime(), clan));
+    }
+
+    public static void decrementHomeWarmupTimers() {
+        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : clanHomeWarmups.entrySet()) {
+            if (entry.getValue().getValue1() > 0) {
+                if(!hasPlayerMovedSinceTeleportStarted(entry.getKey().getUniqueID(), entry.getKey().getPositionVector()))
+                    clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
+                else {
+                    cancelClanHomeWarmup(entry.getKey());
+                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
+                    continue;
+                }
+            } else
+                clanHomeWarmups.remove(entry.getKey());
+
+            if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
+                Clan c = ClanCache.getClanById(entry.getValue().getValue2());
+                //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
+                if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
+                    EntityUtil.teleportHome(entry.getKey(), c.getHome(), c.getHomeDim(), entry.getKey().dimension, false);
+                else
+                    entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
+            }
+        }
+    }
+
+    public static boolean cancelClanHomeWarmup(EntityPlayerMP player) {
+        return clanHomeWarmups.remove(player) != null;
+    }
 
     private static class PlayerCachedData {
         private boolean isMarkedForCleanup = false;
 
-        //region Cache variables
         @Nullable
         private UUID prevChunkOwner;
         private boolean claimWarning, isInBorderland, isShowingChunkBorders;
         private int prevY, prevChunkX, prevChunkZ;
         private float clanHomeCheckX, clanHomeCheckY, clanHomeCheckZ;
         private List<BlockPos> chunkBorderDisplay = Lists.newArrayList();
-        //endregion
     }
 }

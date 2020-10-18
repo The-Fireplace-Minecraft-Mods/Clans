@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.model.EnumRank;
-import the_fireplace.clans.util.ChatPageUtil;
+import the_fireplace.clans.util.ChatUtil;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,6 +53,6 @@ public class CommandPermissions extends ClanSubCommand {
 			page = parseInt(args[0]);
 		else
 			page = 1;
-		ChatPageUtil.showPaginatedChat(sender, "/clan "+selectedClan.getName()+" permissions %s", texts, page);
+		ChatUtil.showPaginatedChat(sender, "/clan "+selectedClan.getName()+" permissions %s", texts, page);
 	}
 }

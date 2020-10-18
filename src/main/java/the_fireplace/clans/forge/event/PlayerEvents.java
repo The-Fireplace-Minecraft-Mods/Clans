@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
 
 @Mod.EventBusSubscriber(modid = Clans.MODID)
@@ -35,7 +35,7 @@ public class PlayerEvents {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerChat(ServerChatEvent event) {
         if(event.getPlayer() != null) {
-            if(ClanCache.clanChattingPlayers.containsKey(event.getPlayer().getUniqueID())) {
+            if(PlayerCache.isClanChatting(event.getPlayer().getUniqueID())) {
                 event.setCanceled(true);
                 PlayerEventLogic.sendClanChat(event.getPlayer(), event.getComponent());
             } else {

@@ -3,7 +3,7 @@ package the_fireplace.clans.commands.land;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.commands.ClanSubCommand;
 import the_fireplace.clans.logic.ClanManagementLogic;
 import the_fireplace.clans.model.Clan;
@@ -38,9 +38,9 @@ public class CommandAutoClaim extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        Clan rm = ClanCache.autoClaimLands.remove(sender.getUniqueID());
+        Clan rm = PlayerAutoClaimData.cancelAutoClaim(sender.getUniqueID());
 		if(rm == null) {
-            ClanCache.autoClaimLands.put(sender.getUniqueID(), selectedClan);
+            PlayerAutoClaimData.activateAutoClaim(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getName()).setStyle(TextStyles.GREEN));
 			ClanManagementLogic.checkAndAttemptClaim(sender, selectedClan, false);
 		} else

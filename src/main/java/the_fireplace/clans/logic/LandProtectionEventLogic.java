@@ -35,10 +35,7 @@ import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Logic for land protection events goes here.
@@ -109,7 +106,7 @@ public class LandProtectionEventLogic {
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null) {
                 if (breakingPlayer != null) {
-                    List<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
+                    Collection<Clan> playerClans = ClanCache.getPlayerClans(breakingPlayer.getUniqueID());
                     return (playerClans.isEmpty() || !playerClans.contains(chunkClan))
                             && !RaidingParties.isRaidedBy(chunkClan, breakingPlayer)
                             && !RaidingParties.preparingRaidOnBorderland(breakingPlayer, chunkClan, c);
@@ -286,7 +283,7 @@ public class LandProtectionEventLogic {
                         Chunk c = world.getChunk(entity.getPosition());
                         UUID chunkOwner = ChunkUtils.getChunkOwner(c);
                         Clan chunkClan = ClanCache.getClanById(chunkOwner);
-                        List<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(getOwnerId(entity));
+                        Collection<Clan> entityClans = entity instanceof EntityPlayer ? ClanCache.getPlayerClans(entity.getUniqueID()) : ClanCache.getPlayerClans(getOwnerId(entity));
                         if (chunkClan != null && !ChunkUtils.isBorderland(c) && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
                             removeEntities.add(entity);
                     }
@@ -332,7 +329,7 @@ public class LandProtectionEventLogic {
             } else {//Target is not a player and not owned by a player
                 if(attackingPlayer != null) {
                     UUID attackingPlayerId = attackingPlayer.getUniqueID();
-                    List<Clan> attackerEntityClans = ClanCache.getPlayerClans(attackingPlayerId);
+                    Collection<Clan> attackerEntityClans = ClanCache.getPlayerClans(attackingPlayerId);
                     //Players can harm things in their own claims as long as they have permission
                     if (attackerEntityClans.contains(chunkOwner))
                         return !hasPermissionToHarm(target, chunkOwner, attackingPlayerId);
@@ -354,7 +351,7 @@ public class LandProtectionEventLogic {
 
     private static boolean shouldCancelPVPDefault(Entity target, @Nullable Entity attacker, Clan chunkClan, @Nullable EntityPlayer attackingPlayer) {
         UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : getOwnerId(target);
-        List<Clan> targetEntityClans = ClanCache.getPlayerClans(targetPlayerId);
+        Collection<Clan> targetEntityClans = ClanCache.getPlayerClans(targetPlayerId);
         //Cancel if the target player/tameable is in its home territory, not being raided, and not getting hit by their own machines
         if (!targetEntityClans.isEmpty()
                 && targetEntityClans.contains(chunkClan)
