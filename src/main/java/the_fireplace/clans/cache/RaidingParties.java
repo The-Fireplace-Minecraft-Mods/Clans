@@ -147,7 +147,7 @@ public final class RaidingParties {
 		}
 	}
 
-	private static void activateRaid(Clan raidTarget) {
+	public static void activateRaid(Clan raidTarget) {
 		Raid startingRaid = inactiveRaids.remove(raidTarget);
 		startingRaid.activate();
 		activeraids.put(startingRaid.getTarget(), startingRaid);

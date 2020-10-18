@@ -37,6 +37,8 @@ public class Raid {
 	}
 
 	public void raiderVictory() {
+		if(!isActive)//Triggered if raiders start then the defenders log out before the raid activates
+			RaidingParties.activateRaid(target);
 		RaidingParties.endRaid(target, true);
 		double reward = FormulaParser.eval(Clans.getConfig().getWinRaidAmountFormula(), target, this, 0);
 		reward -= Clans.getPaymentHandler().deductPartialAmount(reward, target.getId());
@@ -53,6 +55,8 @@ public class Raid {
 	}
 
 	public void defenderVictory() {
+		if(!isActive)//Triggered if raiders start then log out before the raid activates
+			RaidingParties.activateRaid(target);
 		RaidingParties.endRaid(target, false);
 		//Reward the defenders the cost of the raid
 		Clans.getPaymentHandler().addAmount(cost, target.getId());
