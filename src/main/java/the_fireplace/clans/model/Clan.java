@@ -1,6 +1,5 @@
 package the_fireplace.clans.model;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
@@ -53,33 +52,33 @@ public class Clan {
     private int textColor;
     private double multiplier = 1.0;
 
-    public static final Map<String, EnumRank> defaultPermissions = Maps.newHashMap();
-    public static final Map<String, Integer> defaultOptions = Maps.newHashMap();
+    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = Maps.newHashMap();
+    public static final Map<String, Integer> DEFAULT_OPTIONS = Maps.newHashMap();
 
     static {
         for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
             if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN) && !entry.getValue().getRequiredClanRank().equals(EnumRank.ANY))
-                defaultPermissions.put(entry.getKey(), entry.getValue().getRequiredClanRank());
-        defaultPermissions.put("access", EnumRank.MEMBER);
-        defaultPermissions.put("interact", EnumRank.MEMBER);
-        defaultPermissions.put("build", EnumRank.MEMBER);
-        defaultPermissions.put("harmmob", EnumRank.MEMBER);
-        defaultPermissions.put("harmanimal", EnumRank.MEMBER);
-        defaultPermissions.put("lockadmin", EnumRank.LEADER);
-        defaultPermissions.put("lock.private", EnumRank.MEMBER);
-        defaultPermissions.put("lock.clan", EnumRank.MEMBER);
-        defaultPermissions.put("lock.open", EnumRank.MEMBER);
+                DEFAULT_PERMISSIONS.put(entry.getKey(), entry.getValue().getRequiredClanRank());
+        DEFAULT_PERMISSIONS.put("access", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("interact", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("build", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("harmmob", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("harmanimal", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("lockadmin", EnumRank.LEADER);
+        DEFAULT_PERMISSIONS.put("lock.private", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("lock.clan", EnumRank.MEMBER);
+        DEFAULT_PERMISSIONS.put("lock.open", EnumRank.MEMBER);
         
         //Config option overrides
-        defaultOptions.put("maxclaims", -1);
-        defaultOptions.put("mobspawning", -1);
-        defaultOptions.put("claimcost", -1);
+        DEFAULT_OPTIONS.put("maxclaims", -1);
+        DEFAULT_OPTIONS.put("mobspawning", -1);
+        DEFAULT_OPTIONS.put("claimcost", -1);
         //Custom properties
-        defaultOptions.put("mobdamage", 1);
-        defaultOptions.put("upkeepexemption", 0);
-        defaultOptions.put("dynmapvisible", 1);
-        defaultOptions.put("server", 0);
-        defaultOptions.put("pvp", -1);
+        DEFAULT_OPTIONS.put("mobdamage", 1);
+        DEFAULT_OPTIONS.put("upkeepexemption", 0);
+        DEFAULT_OPTIONS.put("dynmapvisible", 1);
+        DEFAULT_OPTIONS.put("server", 0);
+        DEFAULT_OPTIONS.put("pvp", -1);
     }
 
     private final Map<String, Integer> options = Maps.newHashMap();
@@ -95,11 +94,11 @@ public class Clan {
         this.clanName = TextStyles.stripFormatting(clanName);
         this.members = Maps.newHashMap();
         this.members.put(leader, EnumRank.LEADER);
-        for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
+        for(Map.Entry<String, EnumRank> perm: DEFAULT_PERMISSIONS.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
             permissionOverrides.put(perm.getKey(), Maps.newHashMap());
         }
-        for(Map.Entry<String, Integer> opt: defaultOptions.entrySet())
+        for(Map.Entry<String, Integer> opt: DEFAULT_OPTIONS.entrySet())
             options.put(opt.getKey(), opt.getValue());
         do{
             this.clanId = UUID.randomUUID();
@@ -229,14 +228,14 @@ public class Clan {
             this.color = obj.get("color").getAsInt();
             this.textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         }
-        for(Map.Entry<String, EnumRank> perm: defaultPermissions.entrySet()) {
+        for(Map.Entry<String, EnumRank> perm: DEFAULT_PERMISSIONS.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
             permissionOverrides.put(perm.getKey(), Maps.newHashMap());
         }
         if(obj.has("permissions")) {
             for(JsonElement e: obj.getAsJsonArray("permissions")) {
                 JsonObject perm = e.getAsJsonObject();
-                if(!defaultPermissions.containsKey(perm.get("name").getAsString()))
+                if(!DEFAULT_PERMISSIONS.containsKey(perm.get("name").getAsString()))
                     continue;
                 permissions.put(perm.get("name").getAsString(), EnumRank.valueOf(perm.get("value").getAsString()));
                 permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
@@ -254,12 +253,12 @@ public class Clan {
                     lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
         }
-        for(Map.Entry<String, Integer> opt: defaultOptions.entrySet())
+        for(Map.Entry<String, Integer> opt: DEFAULT_OPTIONS.entrySet())
             options.put(opt.getKey(), opt.getValue());
         if(obj.has("options")) {
             for(JsonElement e: obj.getAsJsonArray("options")) {
                 JsonObject perm = e.getAsJsonObject();
-                if(!defaultOptions.containsKey(perm.get("name").getAsString()))
+                if(!DEFAULT_OPTIONS.containsKey(perm.get("name").getAsString()))
                     continue;
                 options.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
             }
@@ -314,16 +313,20 @@ public class Clan {
         return Collections.unmodifiableMap(members);
     }
 
-    public List<UUID> getLeaders() {
-        ArrayList<UUID> leaders = Lists.newArrayList();
-        for(Map.Entry<UUID, EnumRank> member: members.entrySet())
-            if(member.getValue().equals(EnumRank.LEADER))
-                leaders.add(member.getKey());
-        return Collections.unmodifiableList(leaders);
+    public Collection<UUID> getLeaders() {
+        Set<UUID> leaders = members.entrySet().stream()
+            .filter(entry -> entry.getValue() == EnumRank.LEADER)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+        return Collections.unmodifiableCollection(leaders);
+    }
+
+    public long getLeaderCount() {
+        return members.entrySet().stream().filter(entry -> entry.getValue() == EnumRank.LEADER).count();
     }
 
     public double payLeaders(double totalAmount) {
-        List<UUID> leaders = getLeaders();
+        Collection<UUID> leaders = getLeaders();
         if(leaders.isEmpty())
             return totalAmount;
         totalAmount /= leaders.size();
@@ -413,7 +416,9 @@ public class Clan {
     public int getMaxClaimCount() {
         if(options.get("maxclaims") > -1)
             return options.get("maxclaims");
-        return Clans.getConfig().isMultiplyMaxClaimsByPlayers() ? getMemberCount() * Clans.getConfig().getMaxClaims() : Clans.getConfig().getMaxClaims();
+        return Clans.getConfig().isMultiplyMaxClaimsByPlayers()
+            ? getMemberCount() * Clans.getConfig().getMaxClaims()
+            : Clans.getConfig().getMaxClaims();
     }
 
     public void setOption(String option, int value) {
@@ -462,7 +467,12 @@ public class Clan {
      * Gets the cost of one claim when the clan has a certain number of claims
      */
     public double getClaimCost(int currentClaimCount) {
-        return options.get("claimcost") < 0 ? (currentClaimCount < Clans.getConfig().getReducedCostClaimCount() ? Clans.getConfig().getReducedChunkClaimCost() : FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), this, 0)) : options.get("claimcost");
+        int costOption = options.get("claimcost");
+        if(costOption >= 0)
+            return costOption;
+        return currentClaimCount < Clans.getConfig().getReducedCostClaimCount()
+                ? Clans.getConfig().getReducedChunkClaimCost()
+                : FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), this, 0);
     }
 
     public boolean hasCustomClaimCost() {
@@ -516,7 +526,7 @@ public class Clan {
     }
 
     public boolean removeMember(UUID player) {
-        if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1 && !isServer())
+        if(isEssentialMember(player))
             return false;
         boolean removed = this.members.remove(player) != null;
         if(removed) {
@@ -528,39 +538,32 @@ public class Clan {
         return removed;
     }
 
+    public boolean isEssentialMember(UUID player) {
+        return members.get(player).equals(EnumRank.LEADER)
+            && getLeaders().size() == 1
+            && !isServer();
+    }
+
     public boolean demoteMember(UUID player) {
-        if(!members.containsKey(player))
-            return false;
-        else {
-            if(members.get(player).equals(EnumRank.LEADER) && getLeaders().size() == 1)
-                return false;
-            if(members.get(player) == EnumRank.ADMIN){
-                members.put(player, EnumRank.MEMBER);
-                markChanged();
-                return true;
-            } else if(members.get(player) == EnumRank.LEADER){
-                members.put(player, EnumRank.ADMIN);
-                markChanged();
-                return true;
-            } else
-                return false;
+        if (canMemberBeDemoted(player)) {
+            EnumRank playerRank = members.get(player);
+            members.put(player, EnumRank.getNextLowerRankInClan(playerRank));
+            markChanged();
+            return true;
         }
+        return false;
+    }
+
+    public boolean canMemberBeDemoted(UUID player) {
+        return members.containsKey(player)
+            && EnumRank.isAboveMemberRank(members.get(player))
+            && !isEssentialMember(player);
     }
 
     public boolean promoteMember(UUID player) {
         if (members.containsKey(player)) {
             if(members.get(player) == EnumRank.ADMIN) {
-                if(!Clans.getConfig().isMultipleClanLeaders()) {
-                    UUID leader = null;
-                    for(UUID member: members.keySet())
-                        if(members.get(member) == EnumRank.LEADER) {
-                            leader = member;
-                            break;
-                        }
-                    if(leader != null) {
-                        members.put(leader, EnumRank.ADMIN);
-                    }
-                }
+                demotePreviousLeadersIfNeeded();
                 members.put(player, EnumRank.LEADER);
                 markChanged();
                 return true;
@@ -571,6 +574,12 @@ public class Clan {
             }
         }
         return false;
+    }
+
+    private void demotePreviousLeadersIfNeeded() {
+        if(!Clans.getConfig().allowsMultipleClanLeaders()) {
+            getLeaders().forEach(leader -> members.put(leader, EnumRank.ADMIN));
+        }
     }
 
     public double getRent() {
@@ -586,7 +595,7 @@ public class Clan {
         return rentTimestamp;
     }
 
-    public void updateNextRentTimeStamp() {
+    public void updateNextRentTimestamp() {
         this.rentTimestamp = System.currentTimeMillis() + Clans.getConfig().getChargeRentDays() * 1000L * 60L * 60L * 24L;
         markChanged();
     }
@@ -595,7 +604,7 @@ public class Clan {
         return upkeepTimestamp;
     }
 
-    public void updateNextUpkeepTimeStamp() {
+    public void updateNextUpkeepTimestamp() {
         this.upkeepTimestamp = System.currentTimeMillis() + Clans.getConfig().getClanUpkeepDays() * 1000L * 60L * 60L * 24L;
         markChanged();
     }

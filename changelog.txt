@@ -4,3 +4,4 @@ Changes:
 
 Fixes/Internal Changes:
 Improved performance
+Fixed a bug in the message clan members get when someone leaves the clan

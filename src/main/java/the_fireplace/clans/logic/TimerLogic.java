@@ -57,7 +57,7 @@ public class TimerLogic {
                                 }
                             }
                     }
-                    clan.updateNextRentTimeStamp();
+                    clan.updateNextRentTimestamp();
                 }
                 if (Clans.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
                     Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
@@ -74,7 +74,7 @@ public class TimerLogic {
                     if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
                         clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
                     else
-                        clan.updateNextUpkeepTimeStamp();
+                        clan.updateNextUpkeepTimestamp();
                 }
             }
     }

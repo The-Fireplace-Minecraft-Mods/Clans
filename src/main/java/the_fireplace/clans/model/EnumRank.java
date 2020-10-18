@@ -24,4 +24,19 @@ public enum EnumRank {
 				return !other.equals(NOCLAN);
 		}
 	}
+
+	public static boolean isAboveMemberRank(EnumRank rank) {
+		return rank == LEADER || rank == ADMIN;
+	}
+
+	public static EnumRank getNextLowerRankInClan(EnumRank rank) {
+		switch(rank) {
+			case LEADER:
+				return ADMIN;
+			case ADMIN:
+				return MEMBER;
+			default:
+				throw new IllegalArgumentException("There is no rank lower than "+rank.name()+"!");
+		}
+	}
 }

@@ -38,7 +38,7 @@ public final class Clans {
     public static final String VERSION = "${version}";
     private static final IConfig config = new IConfig() {
         @Override
-        public boolean isMultipleClanLeaders() {
+        public boolean allowsMultipleClanLeaders() {
             return Config.getInstance().clan.multipleClanLeaders;
         }
 

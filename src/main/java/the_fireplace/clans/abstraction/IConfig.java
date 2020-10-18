@@ -7,7 +7,7 @@ import java.util.Collection;
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface IConfig {
     //General clan config
-    boolean isMultipleClanLeaders();
+    boolean allowsMultipleClanLeaders();
     int getMaxNameLength();
     boolean isAllowMultiClanMembership();
     int getClanHomeWarmupTime();

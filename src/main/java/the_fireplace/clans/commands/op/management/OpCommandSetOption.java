@@ -40,7 +40,7 @@ public class OpCommandSetOption extends OpClanSubCommand {
 		Clan c = ClanCache.getClanByName(clan);
 		if(c != null) {
 			String option = args[1].toLowerCase();
-			if(Clan.defaultOptions.containsKey(option)) {
+			if(Clan.DEFAULT_OPTIONS.containsKey(option)) {
 				switch(option) {
 					//Value is an int
 					case "maxclaims":
@@ -69,7 +69,7 @@ public class OpCommandSetOption extends OpClanSubCommand {
 		if(args.length == 1)
 			return getListOfStringsMatchingLastWord(args, ClanCache.getClanNames().keySet());
 		else if(args.length == 2)
-			return getListOfStringsMatchingLastWord(args, Clan.defaultOptions.keySet());
+			return getListOfStringsMatchingLastWord(args, Clan.DEFAULT_OPTIONS.keySet());
 		return ret;
 	}
 }
