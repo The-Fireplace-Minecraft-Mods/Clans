@@ -85,7 +85,7 @@ public class CommandClan extends CommandBase {
         //player config
         put("setdefault", new CommandSetDefault());
         put("territorymessagemode", new CommandTerritoryMessageMode());
-        if(Clans.getConfig().isProtectWilderness())
+        if(Clans.getConfig().shouldProtectWilderness())
             put("undergroundmessages", new CommandUndergroundMessages());
         //teleportation related
         put("home", new CommandHome());
@@ -147,7 +147,7 @@ public class CommandClan extends CommandBase {
         aliases.put("setdesc", "setdescription");
         //player config
         aliases.put("tmm", "territorymessagemode");
-        if(Clans.getConfig().isProtectWilderness())
+        if(Clans.getConfig().shouldProtectWilderness())
             aliases.put("um", "undergroundmessages");
         //teleportation related
         aliases.put("h", "home");

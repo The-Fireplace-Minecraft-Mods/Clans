@@ -46,7 +46,7 @@ public class CommandTrapped extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP player, String[] args) {
 		Chunk origin = player.world.getChunk(player.getPosition());
 		Clan chunkOwner = ClanCache.getClanById(ChunkUtils.getChunkOwner(origin));
-		if(chunkOwner == null && Clans.getConfig().isProtectWilderness() && player.getPosition().getY() >= Clans.getConfig().getMinWildernessY()) {
+		if(chunkOwner == null && Clans.getConfig().shouldProtectWilderness() && player.getPosition().getY() >= Clans.getConfig().getMinWildernessY()) {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
 		} else if(chunkOwner != null && !chunkOwner.getMembers().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {

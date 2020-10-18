@@ -178,7 +178,7 @@ public final class Clans {
         }
 
         @Override
-        public boolean isProtectWilderness() {
+        public boolean shouldProtectWilderness() {
             return Config.getInstance().protection.protectWilderness;
         }
 

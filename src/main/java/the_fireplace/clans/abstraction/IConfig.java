@@ -44,7 +44,7 @@ public interface IConfig {
     Collection<String> getLockableBlocks();
 
     //Wilderness guard
-    boolean isProtectWilderness();
+    boolean shouldProtectWilderness();
     int getMinWildernessY();
     Collection<String> getClaimableDimensions();
 

@@ -58,7 +58,7 @@ public class ClaimMapToChat {
             executor.execute(() -> {
                 StringBuilder row = new StringBuilder();
                 for (int x = originChunk.x - 26; x <= originChunk.x + 26; x++) {
-                    String wildernessColor = originChunk.z == finalZ && originChunk.x == x ? "\u00A79" : Clans.getConfig().isProtectWilderness() ? "\u00A7e" : "\u00A72";
+                    String wildernessColor = originChunk.z == finalZ && originChunk.x == x ? "\u00A79" : Clans.getConfig().shouldProtectWilderness() ? "\u00A7e" : "\u00A72";
                     ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, finalZ, dimension);
                     Clan clan = ClaimData.getChunkClan(pos);
                     if(pos == null || clan == null)
