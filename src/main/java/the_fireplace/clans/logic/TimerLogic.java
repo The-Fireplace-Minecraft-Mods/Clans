@@ -68,7 +68,7 @@ public class TimerLogic {
                             if(chunks.isEmpty())//This _should_ always be false, but just in case...
                                 break;
                             ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
-                            ClanManagementLogic.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
+                            ClaimManagement.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                         }
                     }
                     if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
@@ -129,13 +129,13 @@ public class TimerLogic {
         if (!Objects.equals(chunkClanId, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
             boolean needsRecalc = false;
             if(PlayerAutoClaimData.isOpAutoAbandoning(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, null);
+                needsRecalc = ClaimManagement.checkAndAttemptAbandon((EntityPlayerMP) player, null);
             if(PlayerAutoClaimData.isAutoAbandoning(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptAbandon((EntityPlayerMP) player, PlayerAutoClaimData.getAutoAbandoningClan(player.getUniqueID())) || needsRecalc;
+                needsRecalc = ClaimManagement.checkAndAttemptAbandon((EntityPlayerMP) player, PlayerAutoClaimData.getAutoAbandoningClan(player.getUniqueID())) || needsRecalc;
             if(PlayerAutoClaimData.isOpAutoClaiming(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getOpAutoClaimingClan(player.getUniqueID()), true) || needsRecalc;
+                needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getOpAutoClaimingClan(player.getUniqueID()), true) || needsRecalc;
             if(PlayerAutoClaimData.isAutoClaiming(player.getUniqueID()))
-                needsRecalc = ClanManagementLogic.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getAutoClaimingClan(player.getUniqueID()), false) || needsRecalc;
+                needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, PlayerAutoClaimData.getAutoClaimingClan(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);

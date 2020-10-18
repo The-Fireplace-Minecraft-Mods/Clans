@@ -30,7 +30,7 @@ public final class ClanCache {
 
 	private static final Set<UUID> buildAdmins = new ConcurrentSet<>();
 
-	//Map of Clan ID -> List of invited players
+	//Map of Clan ID -> Set of invited players
 	private static final Map<UUID, Set<UUID>> invitedPlayers = new ConcurrentHashMap<>();
 
 	private static final Set<String> forbiddenClanNames = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", "null");
@@ -63,6 +63,13 @@ public final class ClanCache {
 			return Collections.unmodifiableCollection(Collections.emptySet());
 		ensurePlayerClansCached(player);
 		return Collections.unmodifiableSet(playerClans.get(player));
+	}
+
+	public static int getPlayerClanCount(@Nullable UUID player) {
+		if(player == null)
+			return 0;
+		ensurePlayerClansCached(player);
+		return playerClans.get(player).size();
 	}
 
 	public static void addPlayerClan(UUID player, Clan clan) {

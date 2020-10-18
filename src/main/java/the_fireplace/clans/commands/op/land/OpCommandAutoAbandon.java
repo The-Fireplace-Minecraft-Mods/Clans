@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClaimManagement;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -34,7 +34,7 @@ public class OpCommandAutoAbandon extends OpClanSubCommand {
         if(!PlayerAutoClaimData.cancelOpAutoAbandon(sender.getUniqueID())) {
             PlayerAutoClaimData.activateOpAutoAbandon(sender.getUniqueID());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
-			ClanManagementLogic.checkAndAttemptAbandon(sender, null);
+			ClaimManagement.checkAndAttemptAbandon(sender, null);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
 	}

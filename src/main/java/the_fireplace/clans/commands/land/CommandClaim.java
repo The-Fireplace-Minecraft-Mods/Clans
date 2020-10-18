@@ -5,7 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClaimManagement;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.PermissionManager;
 
@@ -39,9 +39,9 @@ public class CommandClaim extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
-			ClanManagementLogic.checkAndAttemptClaim(sender, selectedClan, false);
-		else if(hasClaimRadiusPermission(sender) && ClanManagementLogic.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
-			ClanManagementLogic.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
+			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
+		else if(hasClaimRadiusPermission(sender) && ClaimManagement.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
+			ClaimManagement.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
 		else if(!hasClaimRadiusPermission(sender))
 			throw new CommandException("commands.generic.permission");
 	}

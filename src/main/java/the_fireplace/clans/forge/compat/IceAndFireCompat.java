@@ -7,7 +7,6 @@ import com.github.alexthe666.iceandfire.entity.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.ProjectileHelper;
@@ -64,7 +63,7 @@ public class IceAndFireCompat implements IProtectionCompat {
         if(!event.getEntity().world.isRemote) {
             if(event.getEntity() instanceof EntityDragonFireCharge || event.getEntity() instanceof EntityDragonIceCharge || event.getEntity() instanceof EntityPixieCharge || event.getEntity() instanceof EntitySeaSerpentBubbles) {
                 Entity owner = LandProtectionLogic.getOwner(((EntityFireball)event.getEntity()).shootingEntity);
-                EntityPlayer player = owner instanceof EntityPlayer ? (EntityPlayer)owner : null;
+                EntityPlayerMP player = owner instanceof EntityPlayerMP ? (EntityPlayerMP)owner : null;
                 RayTraceResult rayTraceResult = ProjectileHelper.forwardsRaycast(event.getEntity(), false, true, ((EntityFireball)event.getEntity()).shootingEntity);
                 @SuppressWarnings("ConstantConditions")
                 BlockPos pos = rayTraceResult != null ? rayTraceResult.getBlockPos() : event.getEntity().getPosition();
@@ -83,7 +82,7 @@ public class IceAndFireCompat implements IProtectionCompat {
         if(!event.getEntity().world.isRemote) {
             if(event.getEntity() instanceof EntityDragonBase) {
                 Entity owner = LandProtectionLogic.getOwner(event.getEntity());
-                EntityPlayer player = owner instanceof EntityPlayer ? (EntityPlayer)owner : null;
+                EntityPlayerMP player = owner instanceof EntityPlayerMP ? (EntityPlayerMP)owner : null;
                 if((player == null && (Clans.getConfig().shouldProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
                     || LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), player, false))
                     event.setResult(Event.Result.DENY);
@@ -93,12 +92,12 @@ public class IceAndFireCompat implements IProtectionCompat {
 
     @SubscribeEvent
     public void dragonFire(DragonFireEvent event) {
-        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() instanceof EntityPlayerMP ? (EntityPlayerMP)event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
     }
 
     @SubscribeEvent
     public void dragonBreak(DragonFireDamageWorldEvent event) {
-        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() instanceof EntityPlayerMP ? (EntityPlayerMP)event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
     }
 
     @SubscribeEvent

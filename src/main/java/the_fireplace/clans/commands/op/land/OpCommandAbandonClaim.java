@@ -4,7 +4,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClaimManagement;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,7 +28,7 @@ public class OpCommandAbandonClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		ClanManagementLogic.checkAndAttemptAbandon(sender, null);
+		ClaimManagement.checkAndAttemptAbandon(sender, null);
 	}
 
 	@Override

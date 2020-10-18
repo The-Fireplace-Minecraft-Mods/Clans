@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClanMemberManagement;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
 import the_fireplace.clans.util.translation.TranslationUtil;
@@ -58,7 +58,7 @@ public class CommandKick extends ClanSubCommand {
 				EnumRank senderRank = selectedClan.getMembers().get(sender.getUniqueID());
 				EnumRank targetRank = selectedClan.getMembers().get(target.getId());
 				if (senderRank == EnumRank.LEADER || targetRank == EnumRank.MEMBER) {
-					ClanManagementLogic.kickMember(server, sender, selectedClan, target);
+					ClanMemberManagement.kickMember(server, sender, selectedClan, target);
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 			} else

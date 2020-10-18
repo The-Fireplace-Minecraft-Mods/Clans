@@ -51,7 +51,7 @@ public class CommandForm extends ClanSubCommand {
 			else {
 				if (Clans.getPaymentHandler().deductAmount(Clans.getConfig().getFormClanCost(), sender.getUniqueID())) {
 					Clan c = new Clan(newClanName, sender.getUniqueID());
-					if(ClanCache.getPlayerClans(sender.getUniqueID()).size() == 1)
+					if(ClanCache.getPlayerClanCount(sender.getUniqueID()) == 1)
 						PlayerData.setDefaultClan(sender.getUniqueID(), c.getId());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else

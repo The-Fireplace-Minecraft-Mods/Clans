@@ -51,6 +51,7 @@ public class Clan {
     private int color;
     private int textColor;
     private double multiplier = 1.0;
+    private long cachedClaimCount = -1;
 
     public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = Maps.newHashMap();
     public static final Map<String, Integer> DEFAULT_OPTIONS = Maps.newHashMap();
@@ -409,11 +410,34 @@ public class Clan {
         return homeDimension;
     }
 
-    public int getClaimCount() {
-        return ClaimData.getClaimedChunks(getId()).size();
+    public long getClaimCount() {
+        cacheClaimCountIfNeeded();
+        return cachedClaimCount;
     }
 
-    public int getMaxClaimCount() {
+    public void incrementCachedClaimCount() {
+        cacheClaimCountIfNeeded();
+        cachedClaimCount++;
+    }
+
+    public void decrementCachedClaimCount() {
+        cacheClaimCountIfNeeded();
+        cachedClaimCount--;
+    }
+
+    private void cacheClaimCountIfNeeded() {
+        if(cachedClaimCount < 0)
+            cacheClaimCount();
+    }
+
+    /**
+     * WARNING: Potentially costly
+     */
+    public void cacheClaimCount() {
+        cachedClaimCount = ClaimData.getClaimedChunkCount(getId());
+    }
+
+    public long getMaxClaimCount() {
         if(options.get("maxclaims") > -1)
             return options.get("maxclaims");
         return Clans.getConfig().isMultiplyMaxClaimsByPlayers()
@@ -466,7 +490,7 @@ public class Clan {
     /**
      * Gets the cost of one claim when the clan has a certain number of claims
      */
-    public double getClaimCost(int currentClaimCount) {
+    public double getClaimCost(long currentClaimCount) {
         int costOption = options.get("claimcost");
         if(costOption >= 0)
             return costOption;

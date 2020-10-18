@@ -75,7 +75,7 @@ public class CommandList extends ClanSubCommand {
 					break;
 				case "land":
 				case "claims":
-					clans.sort(Comparator.comparingInt(Clan::getClaimCount));
+					clans.sort(Comparator.comparingLong(Clan::getClaimCount));
 					for (Clan clan : clans)
 						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClaimCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
 					break;

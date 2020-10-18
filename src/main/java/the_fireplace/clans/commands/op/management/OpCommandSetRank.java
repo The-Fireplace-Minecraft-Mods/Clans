@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClanMemberManagement;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -45,7 +45,7 @@ public class OpCommandSetRank extends OpClanSubCommand {
 				if(args[1].equalsIgnoreCase("any") || args[1].equalsIgnoreCase("none"))
 					throwWrongUsage(sender);
 				EnumRank rank = EnumRank.valueOf(args[1].toUpperCase());
-				ClanManagementLogic.setRank(server, sender, args[2], c, rank);
+				ClanMemberManagement.setRank(server, sender, args[2], c, rank);
 			} catch(IllegalArgumentException e) {
 				throwWrongUsage(sender);
 			}

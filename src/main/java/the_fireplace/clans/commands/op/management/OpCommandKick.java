@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.commands.OpClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClanMemberManagement;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -51,7 +51,7 @@ public class OpCommandKick extends OpClanSubCommand {
 			if(target != null) {
 				if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
 					if (ClanCache.getPlayerClans(target.getId()).contains(c)) {
-						ClanManagementLogic.kickMember(server, sender, c, target);
+						ClanMemberManagement.kickMember(server, sender, c, target);
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getName()).setStyle(TextStyles.RED));
 				} else

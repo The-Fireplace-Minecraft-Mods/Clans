@@ -4,5 +4,6 @@ Changes:
 Opclan claim commands can now be used to force claims in dimensions that aren't normally allowed.
 
 Fixes/Internal Changes:
-Improved performance
+Massively improved performance
 Fixed a bug in the message clan members get when someone leaves the clan
+Fix crash when all raiders or clan members log out before a raid activates

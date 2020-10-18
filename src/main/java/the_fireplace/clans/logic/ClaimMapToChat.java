@@ -21,7 +21,7 @@ import java.util.concurrent.*;
 
 public class ClaimMapToChat {
     private static final char[] MAP_CHARS = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
-    private static final byte MAP_RADIUS = 26;
+    public static final byte MAP_RADIUS = 26;
     private final ChunkPos originChunk;
     private final ICommandSender messageTarget;
     private final int dimension;

@@ -415,12 +415,13 @@ public class LandProtectionLogic {
     }
 
     public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
-        ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
-        Clan c = ClaimData.getChunkClan(spawnChunkPosition);
-        return !world.isRemote
-            && isMob(entity)
-            && c != null
-            && (Clans.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
-            && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
+        if(!world.isRemote && isMob(entity)) {
+            ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
+            Clan c = ClaimData.getChunkClan(spawnChunkPosition);
+            return c != null
+                && (Clans.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
+                && (Clans.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
+        }
+        return false;
     }
 }

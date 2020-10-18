@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.cache.PlayerAutoClaimData;
 import the_fireplace.clans.commands.ClanSubCommand;
-import the_fireplace.clans.logic.ClanManagementLogic;
+import the_fireplace.clans.logic.ClaimManagement;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.TextStyles;
@@ -42,7 +42,7 @@ public class CommandAutoClaim extends ClanSubCommand {
 		if(rm == null) {
             PlayerAutoClaimData.activateAutoClaim(sender.getUniqueID(), selectedClan);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getName()).setStyle(TextStyles.GREEN));
-			ClanManagementLogic.checkAndAttemptClaim(sender, selectedClan, false);
+			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
 	}

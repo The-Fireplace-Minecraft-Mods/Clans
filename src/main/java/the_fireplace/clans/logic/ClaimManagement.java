@@ -1,27 +1,20 @@
 package the_fireplace.clans.logic;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
-import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.api.event.PreLandAbandonEvent;
 import the_fireplace.clans.api.event.PreLandClaimEvent;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.cache.PlayerCache;
 import the_fireplace.clans.data.ClaimData;
-import the_fireplace.clans.data.PlayerData;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
-import the_fireplace.clans.model.EnumRank;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
@@ -29,18 +22,18 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-public class ClanManagementLogic {
+public class ClaimManagement {
     public static boolean checkCanClaimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius, String radiusMode) {
         if(radiusMode.equalsIgnoreCase("square")) {
             int chunkCount = radius * radius;
-            int initClaimCount = claimingClan.getClaimCount();
+            long initClaimCount = claimingClan.getClaimCount();
             if(!claimingClan.isServer()) {
                 if(claimingClan.getMaxClaimCount() > 0 && chunkCount + initClaimCount > claimingClan.getMaxClaimCount()) {
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", chunkCount, claimingClan.getName(), claimingClan.getMaxClaimCount(), initClaimCount));
                     return false;
                 }
                 double cost;
-                int reducedCostCount = Clans.getConfig().getReducedCostClaimCount() - initClaimCount;
+                long reducedCostCount = Clans.getConfig().getReducedCostClaimCount() - initClaimCount;
                 double customCost = claimingClan.hasCustomClaimCost() ? claimingClan.getClaimCost() : -1;
 
                 if(customCost >= 0)
@@ -148,7 +141,7 @@ public class ClanManagementLogic {
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, Clan claimingClan, ChunkPositionWithData claimChunk, boolean force) {
-        if (!force && shouldCancelBecauseOfDimension(claimingPlayer)) {
+        if (!force && shouldCancelClaimingBecauseOfDimension(claimingPlayer)) {
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
             return false;
         }
@@ -200,7 +193,7 @@ public class ClanManagementLogic {
         return false;
     }
 
-    private static boolean shouldCancelBecauseOfDimension(EntityPlayerMP claimingPlayer) {
+    private static boolean shouldCancelClaimingBecauseOfDimension(EntityPlayerMP claimingPlayer) {
         if(Clans.getConfig().getClaimableDimensions().contains("*")) {
             for(String s: Clans.getConfig().getClaimableDimensions())
                 if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
@@ -237,11 +230,8 @@ public class ClanManagementLogic {
         if (noClaimCost || claimingClan.payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
             if(!event.isCancelled) {
-                ClaimData.swapChunk(claimChunk, null, claimingClan.getId());
-                if(!claimingClan.hasHome() && claimChunk.getPosX() == claimingPlayer.chunkCoordX && claimChunk.getPosZ() == claimingPlayer.chunkCoordZ && claimChunk.getDim() == claimingPlayer.dimension)
-                    //Make sure the player is allowed to sethome, both by the clan and the server
-                    if(claimingClan.hasPerm("sethome", claimingPlayer.getUniqueID()) && (!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(claimingPlayer, PermissionManager.CLAN_COMMAND_PREFIX+"sethome")))
-                        claimingClan.setHome(claimingPlayer.getPosition(), claimingPlayer.dimension);
+                ClaimData.updateChunkOwner(claimChunk, null, claimingClan.getId());
+                setClanHomeIfNeeded(claimingPlayer, claimChunk, claimingClan);
                 if(showMessage)
                     sendClaimSuccessMessage(claimingPlayer, claimingClan);
                 return true;
@@ -252,6 +242,21 @@ public class ClanManagementLogic {
         } else
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", claimingClan.getName(), Clans.getPaymentHandler().getFormattedCurrency(FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), claimingClan, 0))).setStyle(TextStyles.RED));
         return false;
+    }
+
+    private static void setClanHomeIfNeeded(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, Clan claimingClan) {
+        if(!claimingClan.hasHome() && entityIsInChunk(claimingPlayer, claimChunk) && hasPermissionToSetHome(claimingPlayer, claimingClan))
+            claimingClan.setHome(claimingPlayer.getPosition(), claimingPlayer.dimension);
+    }
+
+    private static boolean entityIsInChunk(Entity entity, ChunkPosition chunkPosition) {
+        return chunkPosition.getPosX() == entity.chunkCoordX
+            && chunkPosition.getPosZ() == entity.chunkCoordZ
+            && chunkPosition.getDim() == entity.dimension;
+    }
+
+    private static boolean hasPermissionToSetHome(EntityPlayerMP claimingPlayer, Clan claimingClan) {
+        return claimingClan.hasPerm("sethome", claimingPlayer.getUniqueID()) && (!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(claimingPlayer, PermissionManager.CLAN_COMMAND_PREFIX + "sethome"));
     }
 
     public static boolean checkAndAttemptAbandon(EntityPlayerMP abandoningPlayer, @Nullable Clan chunkOwner) {
@@ -328,83 +333,5 @@ public class ClanManagementLogic {
         } else
             abandoningPlayer.sendMessage(event.cancelledMessage);
         return false;
-    }
-
-    public static void promoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, Clan clan) throws CommandException {
-        GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
-
-        if(target != null) {
-            if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-                if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
-                    if (clan.promoteMember(target.getId())) {
-                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.promote.success", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getName()).setStyle(TextStyles.GREEN));
-                        for(Map.Entry<EntityPlayerMP, EnumRank> m : clan.getOnlineMembers().entrySet())
-                            if(m.getValue().greaterOrEquals(clan.getMembers().get(target.getId())))
-                                if(!m.getKey().getUniqueID().equals(target.getId()))
-                                    m.getKey().sendMessage(TranslationUtil.getTranslation(m.getKey().getUniqueID(), "commands.clan.promote.notify", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getName(), sender.getDisplayName().getFormattedText()).setStyle(TextStyles.GREEN));
-                        if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
-                            EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
-                            targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.promote.promoted", clan.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.GREEN));
-                        }
-                    } else
-                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.promote.error", target.getName()).setStyle(TextStyles.RED));
-                } else
-                    sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), clan.getName()).setStyle(TextStyles.RED));
-            } else
-                sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), clan.getName()).setStyle(TextStyles.RED));
-        } else
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
-    }
-
-    public static void demoteClanMember(MinecraftServer server, ICommandSender sender, String playerName, Clan clan) throws CommandException {
-        GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
-
-        if(target != null) {
-            if (!ClanCache.getPlayerClans(target.getId()).isEmpty()) {
-                if (ClanCache.getPlayerClans(target.getId()).contains(clan)) {
-                    if (clan.demoteMember(target.getId())) {
-                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.demote.success", target.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), clan.getName()).setStyle(TextStyles.GREEN));
-                        if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
-                            EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
-                            targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.demote.demoted", clan.getName(), clan.getMembers().get(target.getId()).toString().toLowerCase(), sender.getName()).setStyle(TextStyles.YELLOW));
-                        }
-                    } else
-                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.demote.error", target.getName()).setStyle(TextStyles.RED));
-                } else
-                    sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), clan.getName()).setStyle(TextStyles.RED));
-            } else
-                sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), clan.getName()).setStyle(TextStyles.RED));
-        } else
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
-    }
-
-    public static void setRank(MinecraftServer server, ICommandSender sender, String playerName, Clan clan, EnumRank rank) throws CommandException {
-        GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
-
-        if(target != null) {
-            clan.addMember(target.getId(), rank);
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setrank.success", target.getName(), rank.toString().toLowerCase(), clan.getName()).setStyle(TextStyles.GREEN));
-            if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
-                EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
-                if(targetPlayer != sender)
-                    targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.opclan.setrank.set", rank.toString().toLowerCase(), clan.getName(), sender.getName()).setStyle(TextStyles.YELLOW));
-            }
-        } else
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
-    }
-
-    public static void kickMember(MinecraftServer server, ICommandSender sender, Clan selectedClan, GameProfile target) throws CommandException {
-        if(selectedClan.removeMember(target.getId())) {
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.success", target.getName(), selectedClan.getName()).setStyle(TextStyles.GREEN));
-            selectedClan.messageAllOnline(sender instanceof EntityPlayerMP ? (EntityPlayerMP)sender : null, TextStyles.YELLOW, "commands.clan.kick.kicked_other", target.getName(), selectedClan.getName(), sender.getDisplayName().getFormattedText());
-            if(ArrayUtils.contains(server.getPlayerList().getOnlinePlayerProfiles(), target)) {
-                EntityPlayerMP targetPlayer = CommandBase.getPlayer(server, sender, target.getName());
-                if(sender instanceof EntityPlayerMP && !((EntityPlayerMP) sender).getUniqueID().equals(target.getId()))
-                    targetPlayer.sendMessage(TranslationUtil.getTranslation(targetPlayer.getUniqueID(), "commands.clan.kick.kicked", selectedClan.getName(), sender.getName()).setStyle(TextStyles.YELLOW));
-                if(selectedClan.getId().equals(PlayerData.getDefaultClan(targetPlayer.getUniqueID())))
-                    PlayerData.updateDefaultClan(targetPlayer.getUniqueID(), selectedClan.getId());
-            }
-        } else
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.kick.fail", target.getName(), selectedClan.getName()).setStyle(TextStyles.RED));
     }
 }
