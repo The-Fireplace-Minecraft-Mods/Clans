@@ -7,7 +7,6 @@ import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.Entity;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
-import the_fireplace.clans.logic.ClaimMapToChat;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.util.JsonHelper;
 
@@ -21,8 +20,11 @@ import java.util.stream.Collectors;
 public final class ClaimData {
     private static boolean isLoaded = false;
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
-    //The sections are the same size as the larger map
-    private static final byte CACHE_SECTION_SIZE = ClaimMapToChat.MAP_RADIUS*2+1;
+    //The map commands use this, so it should be divisible by 3 and not exceed 53.
+    // Divisible by 3 so the smaller map can take exactly a third of the section.
+    // 53 map-width characters is all the chat window can fit before going to a new line.
+    // 51 is ideal because it is the largest number that fits those conditions.
+    public static final byte CACHE_SECTION_SIZE = 51;
 
     //Main storage
     private static ConcurrentMap<UUID, ClaimStoredData> claimedChunks;

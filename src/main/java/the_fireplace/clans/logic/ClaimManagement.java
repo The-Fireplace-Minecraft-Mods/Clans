@@ -28,25 +28,12 @@ public class ClaimManagement {
             int chunkCount = radius * radius;
             long initClaimCount = claimingClan.getClaimCount();
             if(!claimingClan.isServer()) {
-                if(claimingClan.getMaxClaimCount() > 0 && chunkCount + initClaimCount > claimingClan.getMaxClaimCount()) {
+                if(exceedsMaxClaimCount(claimingClan, chunkCount + initClaimCount)) {
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", chunkCount, claimingClan.getName(), claimingClan.getMaxClaimCount(), initClaimCount));
                     return false;
                 }
-                double cost;
-                long reducedCostCount = Clans.getConfig().getReducedCostClaimCount() - initClaimCount;
-                double customCost = claimingClan.hasCustomClaimCost() ? claimingClan.getClaimCost() : -1;
-
-                if(customCost >= 0)
-                    cost = customCost;
-                else if (reducedCostCount > 0)
-                    cost = Clans.getConfig().getReducedChunkClaimCost() * reducedCostCount + FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * (chunkCount - reducedCostCount);
-                else
-                    cost = FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * chunkCount;
-
-                if (cost > 0 && Clans.getPaymentHandler().getBalance(claimingClan.getId()) < cost) {
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", claimingClan.getName(), chunkCount, Clans.getPaymentHandler().getFormattedCurrency(cost)));
+                if (unableToAffordClaims(claimingPlayer, claimingClan, chunkCount, initClaimCount))
                     return false;
-                }
             }
             //Do a connection check if connected claims are enforced, this is not the first claim, and the clan is not a server clan
             boolean doEdgeConnectionCheck = Clans.getConfig().isForceConnectedClaims() && initClaimCount != 0 && !claimingClan.isServer();
@@ -62,57 +49,91 @@ public class ClaimManagement {
                 }
             }
 
-            if(doEdgeConnectionCheck) {
-                boolean connected = false;
-                for(int x=claimingPlayer.chunkCoordX-radius;x<=claimingPlayer.chunkCoordX+radius && !connected;x++) {
-                    Clan chunkClan = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ+radius+1, claimingPlayer.dimension);
-                    boolean chunkIsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ+radius+1, claimingPlayer.dimension);
-                    Clan chunkClan2 = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ-radius-1, claimingPlayer.dimension);
-                    boolean chunk2IsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ-radius-1, claimingPlayer.dimension);
-                    if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
-                        connected = true;
-                }
-                for(int z=claimingPlayer.chunkCoordZ-radius;z<=claimingPlayer.chunkCoordZ+radius && !connected;z++) {
-                    Clan chunkClan = ClaimData.getChunkClan(claimingPlayer.chunkCoordX+radius+1, z, claimingPlayer.dimension);
-                    boolean chunkIsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX+radius+1, z, claimingPlayer.dimension);
-                    Clan chunkClan2 = ClaimData.getChunkClan(claimingPlayer.chunkCoordX-radius-1, z, claimingPlayer.dimension);
-                    boolean chunk2IsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX-radius-1, z, claimingPlayer.dimension);
-                    if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
-                        connected = true;
-                }
-                if(!connected) {
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected_r", claimingClan.getName()));
-                    return false;
-                }
-            }
+            if(doEdgeConnectionCheck && createsDisconnectedClaim(claimingPlayer, claimingClan, radius))
+                return false;
 
-            if(!claimingClan.isServer()) {
-                boolean inClanHomeRange = false;
-                for (Map.Entry<Clan, BlockPos> pos : ClanCache.getClanHomes().entrySet()) {
-                    if (!pos.getKey().getId().equals(claimingClan.getId()) && pos.getKey().hasHome() && pos.getValue() != null) {
-                        //No need to check every single chunk, every position on the outer edge would be ideal but checking what is roughly the four corners, we get a close enough estimation with much less performance cost
-                        if(pos.getValue().getDistance(claimingPlayer.getPosition().getX() + radius*16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() + radius*16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
-                        || pos.getValue().getDistance(claimingPlayer.getPosition().getX() + radius*16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() - radius*16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
-                        || pos.getValue().getDistance(claimingPlayer.getPosition().getX() - radius*16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() + radius*16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
-                        || pos.getValue().getDistance(claimingPlayer.getPosition().getX() - radius*16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() - radius*16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier())
-                        inClanHomeRange = true;
-                    }
-                }
-                if (inClanHomeRange) {
-                    if (Clans.getConfig().isEnforceInitialClaimSeparation()) {
-                        claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_error_r", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
-                        return false;
-                    } else if (!PlayerCache.getClaimWarning(claimingPlayer.getUniqueID())) {
-                        claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_warning_r", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
-                        PlayerCache.setClaimWarning(claimingPlayer.getUniqueID(), true);
-                        return false;
-                    }
-                }
-            }
+            if(inRangeOfAnotherClanHome(claimingPlayer, claimingClan, radius))
+                return false;
         } else {
             return false;
         }
         return true;
+    }
+
+    private static boolean unableToAffordClaims(EntityPlayerMP claimingPlayer, Clan claimingClan, int chunkCount, long previousClaimCount) {
+        double cost;
+        long reducedCostCount = Clans.getConfig().getReducedCostClaimCount() - previousClaimCount;
+        double customCost = claimingClan.hasCustomClaimCost() ? claimingClan.getClaimCost() : -1;
+
+        if(customCost >= 0)
+            cost = customCost;
+        else if (reducedCostCount > 0)
+            cost = Clans.getConfig().getReducedChunkClaimCost() * reducedCostCount + FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * (chunkCount - reducedCostCount);
+        else
+            cost = FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * chunkCount;
+
+        if (cost > 0 && Clans.getPaymentHandler().getBalance(claimingClan.getId()) < cost) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", claimingClan.getName(), chunkCount, Clans.getPaymentHandler().getFormattedCurrency(cost)));
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean exceedsMaxClaimCount(Clan claimingClan, long claimCount) {
+        long maxClaimCount = claimingClan.getMaxClaimCount();
+        return maxClaimCount > 0 && claimCount > maxClaimCount;
+    }
+
+    private static boolean createsDisconnectedClaim(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius) {
+        boolean connected = false;
+        for(int x = claimingPlayer.chunkCoordX- radius; x<= claimingPlayer.chunkCoordX+ radius && !connected; x++) {
+            Clan chunkClan = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
+            boolean chunkIsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
+            Clan chunkClan2 = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
+            boolean chunk2IsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
+            if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
+                connected = true;
+        }
+        for(int z = claimingPlayer.chunkCoordZ- radius; z<= claimingPlayer.chunkCoordZ+ radius && !connected; z++) {
+            Clan chunkClan = ClaimData.getChunkClan(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
+            boolean chunkIsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
+            Clan chunkClan2 = ClaimData.getChunkClan(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
+            boolean chunk2IsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
+            if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
+                connected = true;
+        }
+        if(!connected) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected_r", claimingClan.getName()));
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean inRangeOfAnotherClanHome(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius) {
+        if(!claimingClan.isServer()) {
+            boolean inClanHomeRange = false;
+            for (Map.Entry<Clan, BlockPos> pos : ClanCache.getClanHomes().entrySet()) {
+                if (!pos.getKey().getId().equals(claimingClan.getId()) && pos.getKey().hasHome() && pos.getValue() != null) {
+                    //No need to check every single chunk, every position on the outer edge would be ideal but checking what is roughly the four corners, we get a close enough estimation with much less performance cost
+                    if(pos.getValue().getDistance(claimingPlayer.getPosition().getX() + radius *16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() + radius *16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
+                    || pos.getValue().getDistance(claimingPlayer.getPosition().getX() + radius *16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() - radius *16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
+                    || pos.getValue().getDistance(claimingPlayer.getPosition().getX() - radius *16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() + radius *16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()
+                    || pos.getValue().getDistance(claimingPlayer.getPosition().getX() - radius *16, claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ() - radius *16) < Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier())
+                    inClanHomeRange = true;
+                }
+            }
+            if (inClanHomeRange) {
+                if (Clans.getConfig().isEnforceInitialClaimSeparation()) {
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_error_r", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
+                    return true;
+                } else if (!PlayerCache.getClaimWarning(claimingPlayer.getUniqueID())) {
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_warning_r", Clans.getConfig().getMinClanHomeDist() * Clans.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
+                    PlayerCache.setClaimWarning(claimingPlayer.getUniqueID(), true);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void claimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius, String radiusMode) {

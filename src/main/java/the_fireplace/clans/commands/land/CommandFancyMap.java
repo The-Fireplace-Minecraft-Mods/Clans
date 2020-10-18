@@ -34,12 +34,11 @@ public class CommandFancyMap extends ClanSubCommand {
 		return 0;
 	}
 
-	@SuppressWarnings("Duplicates")
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		World w = sender.getEntityWorld();
 		Chunk center = w.getChunk(sender.getPosition());
 
-		ClaimMapToChat.create(sender, center.getPos(), sender.dimension).prepareAndSend();
+		ClaimMapToChat.createFancyMap(sender, center.getPos(), sender.dimension).prepareAndSend();
 	}
 }
