@@ -41,7 +41,7 @@ import java.util.*;
 /**
  * Logic for land protection events goes here.
  */
-public class LandProtectionEventLogic {
+public class LandProtectionLogic {
     public static boolean shouldCancelBlockBroken(World world, BlockPos pos, @Nullable EntityPlayerMP breaker) {
         return shouldCancelBlockBroken(world, pos, breaker, true);
     }

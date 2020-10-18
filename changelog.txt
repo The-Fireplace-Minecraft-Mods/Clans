@@ -1,6 +1,7 @@
 Additions:
 
 Changes:
+Opclan claim commands can now be used to force claims in dimensions that aren't normally allowed.
 
 Fixes/Internal Changes:
 Improved performance

@@ -125,14 +125,22 @@ public class ClanManagementLogic {
     public static void claimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius, String radiusMode) {
         final int cX = claimingPlayer.chunkCoordX, cZ = claimingPlayer.chunkCoordZ;
         //This could take a long time with a large radius, do it on a different thread to prevent lag spike and server timeout
-        new Thread(() ->{
-            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.start_r").setStyle(TextStyles.GREEN));
+        new Thread(() -> {
+            sendStartRadiusClaimMessage(claimingPlayer);
             if (radiusMode.equalsIgnoreCase("square"))
                 for (int x = cX - radius; x <= cX + radius; x++)
                     for (int z = cZ - radius; z <= cZ + radius; z++)
                         claimChunk(claimingPlayer, new ChunkPositionWithData(x, z, claimingPlayer.dimension), claimingClan, claimingClan.isServer(), false);
-            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.success", claimingClan.getName()).setStyle(TextStyles.GREEN));
+            sendClaimSuccessMessage(claimingPlayer, claimingClan);
         }).start();
+    }
+
+    private static void sendClaimSuccessMessage(EntityPlayerMP claimingPlayer, Clan claimingClan) {
+        claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.success", claimingClan.getName()).setStyle(TextStyles.GREEN));
+    }
+
+    private static void sendStartRadiusClaimMessage(EntityPlayerMP claimingPlayer) {
+        claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.start_r").setStyle(TextStyles.GREEN));
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, Clan claimingClan, boolean force) {
@@ -140,39 +148,9 @@ public class ClanManagementLogic {
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, Clan claimingClan, ChunkPositionWithData claimChunk, boolean force) {
-        if(Clans.getConfig().getClaimableDimensions().contains("*")) {
-            for(String s: Clans.getConfig().getClaimableDimensions())
-                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
-                    return false;
-                } else {
-                    try {
-                        int dimId = Integer.parseInt(s);
-                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
-                            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
-                            return false;
-                        }
-                    } catch(NumberFormatException ignored) {}
-                }
-        } else {
-            boolean found = false;
-            for(String s: Clans.getConfig().getClaimableDimensions())
-                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
-                    found = true;
-                    break;
-                } else {
-                    try {
-                        int dimId = Integer.parseInt(s);
-                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
-                            found = true;
-                            break;
-                        }
-                    } catch(NumberFormatException ignored) {}
-                }
-            if(!found) {
-                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
-                return false;
-            }
+        if (!force && shouldCancelBecauseOfDimension(claimingPlayer)) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
+            return false;
         }
 
         UUID claimOwner = ClaimData.getChunkClanId(claimChunk);
@@ -222,6 +200,39 @@ public class ClanManagementLogic {
         return false;
     }
 
+    private static boolean shouldCancelBecauseOfDimension(EntityPlayerMP claimingPlayer) {
+        if(Clans.getConfig().getClaimableDimensions().contains("*")) {
+            for(String s: Clans.getConfig().getClaimableDimensions())
+                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
+                    return true;
+                } else {
+                    try {
+                        int dimId = Integer.parseInt(s);
+                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
+                            return true;
+                        }
+                    } catch(NumberFormatException ignored) {}
+                }
+        } else {
+            boolean found = false;
+            for(String s: Clans.getConfig().getClaimableDimensions())
+                if(s.toLowerCase().equals(claimingPlayer.getServerWorld().provider.getDimensionType().getName())) {
+                    found = true;
+                    break;
+                } else {
+                    try {
+                        int dimId = Integer.parseInt(s);
+                        if(dimId == claimingPlayer.getServerWorld().provider.getDimensionType().getId()) {
+                            found = true;
+                            break;
+                        }
+                    } catch(NumberFormatException ignored) {}
+                }
+            return !found;
+        }
+        return false;
+    }
+
     public static boolean claimChunk(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, Clan claimingClan, boolean noClaimCost, boolean showMessage) {
         if (noClaimCost || claimingClan.payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
@@ -232,7 +243,7 @@ public class ClanManagementLogic {
                     if(claimingClan.hasPerm("sethome", claimingPlayer.getUniqueID()) && (!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(claimingPlayer, PermissionManager.CLAN_COMMAND_PREFIX+"sethome")))
                         claimingClan.setHome(claimingPlayer.getPosition(), claimingPlayer.dimension);
                 if(showMessage)
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.success", claimingClan.getName()).setStyle(TextStyles.GREEN));
+                    sendClaimSuccessMessage(claimingPlayer, claimingClan);
                 return true;
             } else {
                 claimingPlayer.sendMessage(event.cancelledMessage);

@@ -40,9 +40,13 @@ public class CommandClaim extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
 			ClanManagementLogic.checkAndAttemptClaim(sender, selectedClan, false);
-		else if((!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius")) && ClanManagementLogic.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
+		else if(hasClaimRadiusPermission(sender) && ClanManagementLogic.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
 			ClanManagementLogic.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
-		else if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX+"claim.radius"))
+		else if(!hasClaimRadiusPermission(sender))
 			throw new CommandException("commands.generic.permission");
+	}
+
+	private static boolean hasClaimRadiusPermission(EntityPlayerMP sender) {
+		return !PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX + "claim.radius");
 	}
 }

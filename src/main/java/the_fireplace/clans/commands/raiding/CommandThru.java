@@ -8,7 +8,7 @@ import net.minecraft.util.math.RayTraceResult;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.RaidingParties;
 import the_fireplace.clans.commands.RaidSubCommand;
-import the_fireplace.clans.logic.LandProtectionEventLogic;
+import the_fireplace.clans.logic.LandProtectionLogic;
 import the_fireplace.clans.model.Clan;
 import the_fireplace.clans.model.Raid;
 import the_fireplace.clans.util.ChunkUtils;
@@ -55,7 +55,7 @@ public class CommandThru extends RaidSubCommand {
 			return;
 		}
 
-		if(r.getTarget().isLocked(targetBlockPos) || !Clans.getConfig().isEnableStealing() && LandProtectionEventLogic.isContainer(sender.world, targetBlockPos, null, null)){
+		if(r.getTarget().isLocked(targetBlockPos) || !Clans.getConfig().isEnableStealing() && LandProtectionLogic.isContainer(sender.world, targetBlockPos, null, null)){
 			for (int step = 2; step < 9; step++) {
 				BlockPos telePos = EntityUtil.getSafeLocation(sender.world, targetBlockPos.offset(lookRay.sideHit.getOpposite(), step), step-1);
 				if(telePos != null) {

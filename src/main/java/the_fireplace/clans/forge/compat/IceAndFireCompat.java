@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.abstraction.IProtectionCompat;
 import the_fireplace.clans.data.ClaimData;
-import the_fireplace.clans.logic.LandProtectionEventLogic;
+import the_fireplace.clans.logic.LandProtectionLogic;
 import the_fireplace.clans.model.ChunkPositionWithData;
 
 import javax.annotation.Nullable;
@@ -63,15 +63,15 @@ public class IceAndFireCompat implements IProtectionCompat {
     public void entityJoinWorld(EntityJoinWorldEvent event) {
         if(!event.getEntity().world.isRemote) {
             if(event.getEntity() instanceof EntityDragonFireCharge || event.getEntity() instanceof EntityDragonIceCharge || event.getEntity() instanceof EntityPixieCharge || event.getEntity() instanceof EntitySeaSerpentBubbles) {
-                Entity owner = LandProtectionEventLogic.getOwner(((EntityFireball)event.getEntity()).shootingEntity);
+                Entity owner = LandProtectionLogic.getOwner(((EntityFireball)event.getEntity()).shootingEntity);
                 EntityPlayer player = owner instanceof EntityPlayer ? (EntityPlayer)owner : null;
                 RayTraceResult rayTraceResult = ProjectileHelper.forwardsRaycast(event.getEntity(), false, true, ((EntityFireball)event.getEntity()).shootingEntity);
                 @SuppressWarnings("ConstantConditions")
                 BlockPos pos = rayTraceResult != null ? rayTraceResult.getBlockPos() : event.getEntity().getPosition();
                 event.setCanceled(
                     (player == null && (Clans.getConfig().shouldProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(pos))) != null))
-                        || LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, pos, player, false)
-                        || LandProtectionEventLogic.shouldCancelBlockPlacement(event.getEntity().world, pos, player, null, false));
+                        || LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, pos, player, false)
+                        || LandProtectionLogic.shouldCancelBlockPlacement(event.getEntity().world, pos, player, null, false));
             }
         }
     }
@@ -82,10 +82,10 @@ public class IceAndFireCompat implements IProtectionCompat {
             return;
         if(!event.getEntity().world.isRemote) {
             if(event.getEntity() instanceof EntityDragonBase) {
-                Entity owner = LandProtectionEventLogic.getOwner(event.getEntity());
+                Entity owner = LandProtectionLogic.getOwner(event.getEntity());
                 EntityPlayer player = owner instanceof EntityPlayer ? (EntityPlayer)owner : null;
                 if((player == null && (Clans.getConfig().shouldProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
-                    || LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), player, false))
+                    || LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), player, false))
                     event.setResult(Event.Result.DENY);
             }
         }
@@ -93,16 +93,16 @@ public class IceAndFireCompat implements IProtectionCompat {
 
     @SubscribeEvent
     public void dragonFire(DragonFireEvent event) {
-        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
     }
 
     @SubscribeEvent
     public void dragonBreak(DragonFireDamageWorldEvent event) {
-        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() != null ? event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
     }
 
     @SubscribeEvent
     public void nondragonBreak(GenericGriefEvent event) {
-        event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), (event.getEntity() instanceof EntityTameable && ((EntityTameable) event.getEntity()).getOwner() instanceof EntityPlayerMP) ? ((EntityPlayerMP)((EntityTameable) event.getEntity()).getOwner()) : null, false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), (event.getEntity() instanceof EntityTameable && ((EntityTameable) event.getEntity()).getOwner() instanceof EntityPlayerMP) ? ((EntityPlayerMP)((EntityTameable) event.getEntity()).getOwner()) : null, false));
     }
 }

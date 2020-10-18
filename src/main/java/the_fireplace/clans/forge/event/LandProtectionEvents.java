@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.Clans;
-import the_fireplace.clans.logic.LandProtectionEventLogic;
+import the_fireplace.clans.logic.LandProtectionLogic;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.logic.RaidManagementLogic;
 import the_fireplace.clans.util.EntityUtil;
@@ -37,7 +37,7 @@ public class LandProtectionEvents {
 	public static void onBreakBlock(BlockEvent.BreakEvent event) {
 		if(event.getWorld().isRemote)
 			return;
-		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getPlayer()));
+		event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getPlayer()));
 		if(!event.isCanceled())
 			RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getState());
 	}
@@ -45,27 +45,27 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onBreakBlock(EntityMobGriefingEvent event) {
 		//Not a perfect check, but much better than before.
-		if(event.getEntity() != null && LandProtectionEventLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), null))
+		if(event.getEntity() != null && LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), null))
 			event.setResult(Event.Result.DENY);
 	}
 
 	@SubscribeEvent
 	public static void onCropTrample(BlockEvent.FarmlandTrampleEvent event){
-		event.setCanceled(LandProtectionEventLogic.shouldCancelCropTrample(event.getWorld(), event.getPos(), event.getEntity() instanceof EntityPlayerMP ? (EntityPlayerMP)event.getEntity() : null));
+		event.setCanceled(LandProtectionLogic.shouldCancelCropTrample(event.getWorld(), event.getPos(), event.getEntity() instanceof EntityPlayerMP ? (EntityPlayerMP)event.getEntity() : null));
 	}
 
 	@SubscribeEvent
 	public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
 		if(!(event.getEntity() instanceof EntityPlayerMP))
 			return;
-		event.setCanceled(LandProtectionEventLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntity(), EnumHand.OFF_HAND.equals(((EntityPlayer) event.getEntity()).getActiveHand()) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND));
+		event.setCanceled(LandProtectionLogic.shouldCancelBlockPlacement(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntity(), EnumHand.OFF_HAND.equals(((EntityPlayer) event.getEntity()).getActiveHand()) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND));
 		if(!event.isCanceled())
 			RaidManagementLogic.onBlockPlaced(event.getWorld(), event.getPos(), (EntityPlayer) event.getEntity(), EnumHand.OFF_HAND.equals(((EntityPlayer) event.getEntity()).getActiveHand()) ? EntityEquipmentSlot.OFFHAND : EntityEquipmentSlot.MAINHAND, event.getBlockSnapshot().getCurrentBlock().getBlock());
 	}
 
 	@SubscribeEvent
 	public static void onFluidPlaceBlock(BlockEvent.FluidPlaceBlockEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelFluidPlaceBlock(event.getWorld(), event.getLiquidPos(), event.getPos()));
+		event.setCanceled(LandProtectionLogic.shouldCancelFluidPlaceBlock(event.getWorld(), event.getLiquidPos(), event.getPos()));
         if(!event.isCanceled())
             RaidManagementLogic.onBlockBroken(event.getWorld(), event.getPos(), event.getOriginalState());
 	}
@@ -74,7 +74,7 @@ public class LandProtectionEvents {
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		if(!(event.getEntityPlayer() instanceof EntityPlayerMP))
 			return;
-		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), event.getHand()));
+		event.setCanceled(LandProtectionLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), event.getHand()));
 	}
 
 	@SubscribeEvent
@@ -83,10 +83,10 @@ public class LandProtectionEvents {
 			return;
 		//Don't cancel all left click blocks in case player is allowed to build/destroy but not interact
 		//This prevents unauthorized interaction with Storage Drawers and stops players from putting out fires in others' territory
-		if(LandProtectionEventLogic.isContainer(event.getWorld(), event.getPos(), null, null))
-			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), event.getHand()));
+		if(LandProtectionLogic.isContainer(event.getWorld(), event.getPos(), null, null))
+			event.setCanceled(LandProtectionLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), event.getHand()));
 		else if(event.getWorld().getBlockState(event.getPos().offset(Objects.requireNonNull(event.getFace()))).getBlock() instanceof BlockFire)
-			event.setCanceled(LandProtectionEventLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer()));
+			event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer()));
 	}
 
 	@SubscribeEvent
@@ -94,29 +94,29 @@ public class LandProtectionEvents {
 		if(!(event.getEntityPlayer() instanceof EntityPlayerMP))
 			return;
 		if(event.getTarget() != null)
-			event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getTarget().typeOfHit == RayTraceResult.Type.ENTITY ? event.getTarget().entityHit.getPosition() : event.getTarget().getBlockPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getEmptyBucket(), event.getEntityPlayer().getActiveHand()));
+			event.setCanceled(LandProtectionLogic.shouldCancelRightClickBlock(event.getWorld(), event.getTarget().typeOfHit == RayTraceResult.Type.ENTITY ? event.getTarget().entityHit.getPosition() : event.getTarget().getBlockPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getEmptyBucket(), event.getEntityPlayer().getActiveHand()));
 	}
 
 	@SubscribeEvent
 	public static void useHoe(UseHoeEvent event) {
 		if(!(event.getEntityPlayer() instanceof EntityPlayerMP))
 			return;
-		event.setCanceled(LandProtectionEventLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getCurrent(), event.getEntityPlayer().getActiveHand()));
+		event.setCanceled(LandProtectionLogic.shouldCancelRightClickBlock(event.getWorld(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer(), event.getCurrent(), event.getEntityPlayer().getActiveHand()));
 	}
 
 	@SubscribeEvent
 	public static void minecartInteract(MinecartInteractEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityInteract(event.getEntity().getEntityWorld(), event.getMinecart(), event.getPlayer(), true));
+		event.setCanceled(LandProtectionLogic.shouldCancelEntityInteract(event.getEntity().getEntityWorld(), event.getMinecart(), event.getPlayer(), true));
 	}
 
 	@SubscribeEvent
 	public static void onDetonate(ExplosionEvent.Detonate event) {
-		LandProtectionEventLogic.onDetonate(event.getWorld(), event.getAffectedBlocks(), event.getAffectedEntities());
+		LandProtectionLogic.onDetonate(event.getWorld(), event.getAffectedBlocks(), event.getAffectedEntities());
 	}
 
 	@SubscribeEvent
 	public static void onLivingDamage(LivingHurtEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource(), event.getSource().getTrueSource()));
+		event.setCanceled(LandProtectionLogic.shouldCancelEntityDamage(event.getEntity(), event.getSource(), event.getSource().getTrueSource()));
 		if(!event.isCanceled() && event.getEntityLiving() instanceof EntityPlayerMP)
 			PlayerEventLogic.onPlayerDamage((EntityPlayerMP) event.getEntityLiving());
 	}
@@ -124,35 +124,35 @@ public class LandProtectionEvents {
 	@SubscribeEvent
 	public static void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getRayTraceResult().typeOfHit == RayTraceResult.Type.ENTITY)
-			event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, null, EntityUtil.tryFindSource(event.getEntity())));
+			event.setCanceled(LandProtectionLogic.shouldCancelEntityDamage(event.getRayTraceResult().entityHit, null, EntityUtil.tryFindSource(event.getEntity())));
 		//TODO protect from block interaction as well?
 	}
 
 	@SubscribeEvent
 	public static void onAttackEntity(AttackEntityEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getTarget(), null, event.getEntityPlayer()));
+		event.setCanceled(LandProtectionLogic.shouldCancelEntityDamage(event.getTarget(), null, event.getEntityPlayer()));
 	}
 
 	@SubscribeEvent
 	public static void onKnockback(LivingKnockBackEvent event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityDamage(event.getEntityLiving(), null, event.getAttacker()));
+		event.setCanceled(LandProtectionLogic.shouldCancelEntityDamage(event.getEntityLiving(), null, event.getAttacker()));
 	}
 
 	@SubscribeEvent
 	public static void onEntitySpawn(LivingSpawnEvent.CheckSpawn event) {
-		boolean cancel = LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+		boolean cancel = LandProtectionLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
 		event.setResult(cancel ? Event.Result.DENY : Event.Result.DEFAULT);
 	}
 
 	@SubscribeEvent
 	public static void onSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
-		boolean cancel = LandProtectionEventLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+		boolean cancel = LandProtectionLogic.shouldCancelEntitySpawn(event.getWorld(), event.getEntity(), new BlockPos(event.getX(), event.getY(), event.getZ()));
 		event.setResult(cancel ? Event.Result.DENY : Event.Result.DEFAULT);
 		event.setCanceled(cancel);
 	}
 
 	@SubscribeEvent
 	public static void entityInteract(PlayerInteractEvent.EntityInteractSpecific event) {
-		event.setCanceled(LandProtectionEventLogic.shouldCancelEntityInteract(event.getWorld(), event.getTarget(), event.getEntityPlayer(), event.getTarget() instanceof AbstractChestHorse));
+		event.setCanceled(LandProtectionLogic.shouldCancelEntityInteract(event.getWorld(), event.getTarget(), event.getEntityPlayer(), event.getTarget() instanceof AbstractChestHorse));
 	}
 }
