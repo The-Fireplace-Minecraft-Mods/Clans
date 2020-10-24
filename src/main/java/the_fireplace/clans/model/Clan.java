@@ -1,7 +1,5 @@
 package the_fireplace.clans.model;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +16,8 @@ import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
+import the_fireplace.clans.multithreading.ThreadedSaveHandler;
+import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.ClansEventManager;
 import the_fireplace.clans.util.FormulaParser;
 import the_fireplace.clans.util.JsonHelper;
@@ -31,15 +31,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class Clan {
-    private boolean isChanged = false;
+public class Clan implements ThreadedSaveable {
+    private final ThreadedSaveHandler<Clan> saveHandler = ThreadedSaveHandler.create(this);
     private final File clanDataFile;
 
     private String clanName, clanBanner;
     private String description = TranslationUtil.getStringTranslation("clan.default_description");
-    private final Map<UUID, EnumRank> members;
+    private final Map<UUID, EnumRank> members = new ConcurrentHashMap<>();
     private UUID clanId;
     private float homeX, homeY, homeZ;
     private boolean hasHome = false;
@@ -53,8 +54,8 @@ public class Clan {
     private double multiplier = 1.0;
     private long cachedClaimCount = -1;
 
-    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = Maps.newHashMap();
-    public static final Map<String, Integer> DEFAULT_OPTIONS = Maps.newHashMap();
+    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = new HashMap<>(CommandClan.commands.size()+9, 1);
+    public static final Map<String, Integer> DEFAULT_OPTIONS = new HashMap<>(8, 1);
 
     static {
         for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
@@ -82,22 +83,21 @@ public class Clan {
         DEFAULT_OPTIONS.put("pvp", -1);
     }
 
-    private final Map<String, Integer> options = Maps.newHashMap();
-    private final Map<String, EnumRank> permissions = Maps.newHashMap();
-    private final Map<String, Map<UUID, Boolean>> permissionOverrides = Maps.newHashMap();
+    private final Map<String, EnumRank> permissions = new ConcurrentHashMap<>(CommandClan.commands.size()+9, 1);
+    private final Map<String, Map<UUID, Boolean>> permissionOverrides = new ConcurrentHashMap<>();
+    private final Map<String, Integer> options = new ConcurrentHashMap<>(8, 1);
     
-    private final Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = Maps.newHashMap();
-    private final Map<BlockPos, Map<UUID, Boolean>> lockOverrides = Maps.newHashMap();
+    private final Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = new ConcurrentHashMap<>();
+    private final Map<BlockPos, Map<UUID, Boolean>> lockOverrides = new ConcurrentHashMap<>();
 
-    private Map<String, Object> addonData = Maps.newHashMap();
+    private Map<String, Object> addonData = new ConcurrentHashMap<>();
 
     public Clan(String clanName, UUID leader) {
         this.clanName = TextStyles.stripFormatting(clanName);
-        this.members = Maps.newHashMap();
         this.members.put(leader, EnumRank.LEADER);
         for(Map.Entry<String, EnumRank> perm: DEFAULT_PERMISSIONS.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
-            permissionOverrides.put(perm.getKey(), Maps.newHashMap());
+            permissionOverrides.put(perm.getKey(), new ConcurrentHashMap<>());
         }
         for(Map.Entry<String, Integer> opt: DEFAULT_OPTIONS.entrySet())
             options.put(opt.getKey(), opt.getValue());
@@ -108,7 +108,7 @@ public class Clan {
 
         // Ensure that the starting balance of the account is 0, to prevent "free money" from the creation of a new bank account
         if (Clans.getPaymentHandler().getBalance(clanId) > 0)
-            Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId),clanId);
+            Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(clanId), clanId);
 
         Clans.getPaymentHandler().addAmount(Clans.getConfig().getFormClanBankAmount(), clanId);
         ClanCache.addPlayerClan(leader, this);
@@ -119,7 +119,7 @@ public class Clan {
         color = new Random().nextInt(0xffffff);
         textColor = TextStyles.getNearestTextColor(color).getColorIndex();
         ClansEventManager.fireEvent(new ClanFormedEvent(leader, this));
-        isChanged = true;
+        markChanged();
     }
 
     //region JsonObject conversions
@@ -208,10 +208,8 @@ public class Clan {
         if(obj.has("clanBanner") && !(obj.get("clanBanner") instanceof JsonNull))
             this.clanBanner = obj.get("clanBanner").getAsString();
         this.description = TextStyles.stripFormatting(obj.get("clanDescription").getAsString());
-        HashMap<UUID, EnumRank> newMembers = Maps.newHashMap();
         for(JsonElement entry: obj.get("members").getAsJsonArray())
-            newMembers.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
-        this.members = newMembers;
+            members.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
         this.clanId = UUID.fromString(obj.get("clanId").getAsString());
         this.homeX = obj.get("homeX").getAsFloat();
         this.homeY = obj.get("homeY").getAsFloat();
@@ -231,7 +229,7 @@ public class Clan {
         }
         for(Map.Entry<String, EnumRank> perm: DEFAULT_PERMISSIONS.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
-            permissionOverrides.put(perm.getKey(), Maps.newHashMap());
+            permissionOverrides.put(perm.getKey(), new ConcurrentHashMap<>());
         }
         if(obj.has("permissions")) {
             for(JsonElement e: obj.getAsJsonArray("permissions")) {
@@ -239,7 +237,7 @@ public class Clan {
                 if(!DEFAULT_PERMISSIONS.containsKey(perm.get("name").getAsString()))
                     continue;
                 permissions.put(perm.get("name").getAsString(), EnumRank.valueOf(perm.get("value").getAsString()));
-                permissionOverrides.put(perm.get("name").getAsString(), Maps.newHashMap());
+                permissionOverrides.put(perm.get("name").getAsString(), new ConcurrentHashMap<>());
                 for(JsonElement o: perm.getAsJsonArray("overrides"))
                     permissionOverrides.get(perm.get("name").getAsString()).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
@@ -249,7 +247,7 @@ public class Clan {
                 JsonObject lock = e.getAsJsonObject();
                 BlockPos pos = JsonHelper.fromJsonObject(lock.get("position").getAsJsonObject());
                 locks.put(pos, new OrderedPair<>(EnumLockType.values()[lock.get("type").getAsInt()], UUID.fromString(lock.get("owner").getAsString())));
-                lockOverrides.put(pos, Maps.newHashMap());
+                lockOverrides.put(pos, new ConcurrentHashMap<>());
                 for(JsonElement o: lock.getAsJsonArray("overrides"))
                     lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
             }
@@ -283,28 +281,8 @@ public class Clan {
         return null;
     }
 
-    public void save() {
-        if(!isChanged)
-            return;
-
-        try {
-            FileWriter file = new FileWriter(clanDataFile);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(toJsonObject());
-            file.write(json);
-            file.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        isChanged = false;
-    }
-
     public File getClanDataFile() {
         return clanDataFile;
-    }
-
-    public void markChanged() {
-        isChanged = true;
     }
 
     public Map<UUID, EnumRank> getMembers() {
@@ -334,7 +312,7 @@ public class Clan {
     }
 
     public Map<EntityPlayerMP, EnumRank> getOnlineMembers() {
-        HashMap<EntityPlayerMP, EnumRank> online = Maps.newHashMap();
+        Map<EntityPlayerMP, EnumRank> online = new HashMap<>();
         for(Map.Entry<UUID, EnumRank> member: getMembers().entrySet()) {
             EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
             //noinspection ConstantConditions
@@ -444,6 +422,7 @@ public class Clan {
 
     public void setOption(String option, int value) {
         options.put(option, value);
+        markChanged();
     }
 
     public boolean isServer(){
@@ -463,7 +442,7 @@ public class Clan {
      * TRUE for all PVP allowed
      */
     @Nullable
-    public Boolean pvpAllowed() {
+    public Boolean getPVPOverride() {
         return options.get("pvp") < 0 || options.get("pvp") > 1
             //the PVP option is outside the Boolean range, so we want null for default behavior unless it is a server clan
             ? (isServer() ? Boolean.FALSE : null)
@@ -631,10 +610,9 @@ public class Clan {
     }
 
     public boolean isUnraidable() {
-        return isServer() || Boolean.FALSE.equals(pvpAllowed());
+        return isServer() || Boolean.FALSE.equals(getPVPOverride());
     }
 
-    //region shield
     /**
      * Add minutes to the clan's shield
      * @param shield
@@ -669,7 +647,6 @@ public class Clan {
     public long getShield() {
         return shield;
     }
-    //endregion
 
     public int getWins() {
         return wins;
@@ -761,7 +738,7 @@ public class Clan {
 
     public void addLockOverride(BlockPos pos, UUID playerId, boolean value) {
         if(!lockOverrides.containsKey(pos))
-            lockOverrides.put(pos, Maps.newHashMap());
+            lockOverrides.put(pos, new ConcurrentHashMap<>());
         lockOverrides.get(pos).put(playerId, value);
         markChanged();
     }
@@ -771,20 +748,29 @@ public class Clan {
             return false;
         if(hasPerm("lockadmin", playerId))
             return true;
-        if(lockOverrides.containsKey(pos) && lockOverrides.get(pos).containsKey(playerId))
+        if(hasLockOverride(pos, playerId))
             return lockOverrides.get(pos).get(playerId);
         else if(locks.containsKey(pos)) {
-            switch(locks.get(pos).getValue1()) {
-                case OPEN:
-                    return true;
-                case CLAN:
-                default:
-                    return members.containsKey(playerId);
-                case PRIVATE:
-                    return locks.get(pos).getValue2().equals(playerId);
-            }
+            OrderedPair<EnumLockType, UUID> lockData = locks.get(pos);
+            return getAccessByLockType(lockData.getValue1(), lockData.getValue2(), playerId);
         } else
             return hasPerm(defaultToPermission, playerId);
+    }
+
+    private boolean hasLockOverride(BlockPos pos, UUID testPlayerId) {
+        return lockOverrides.containsKey(pos) && lockOverrides.get(pos).containsKey(testPlayerId);
+    }
+
+    private boolean getAccessByLockType(EnumLockType type, UUID lockOwner, UUID testPlayerId) {
+        switch(type) {
+            case OPEN:
+                return true;
+            case CLAN:
+            default:
+                return members.containsKey(testPlayerId);
+            case PRIVATE:
+                return lockOwner.equals(testPlayerId);
+        }
     }
 
     public boolean isLocked(BlockPos pos) {
@@ -806,14 +792,14 @@ public class Clan {
     }
 
     public Map<UUID, Boolean> getLockOverrides(BlockPos pos) {
-        return Collections.unmodifiableMap(lockOverrides.getOrDefault(pos, Maps.newHashMap()));
+        return Collections.unmodifiableMap(lockOverrides.getOrDefault(pos, Collections.emptyMap()));
     }
 
     public void removeLockData(UUID player) {
-        for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: Sets.newHashSet(locks.entrySet()))
+        for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: locks.entrySet())
             if(entry.getValue().getValue2().equals(player))
                 locks.remove(entry.getKey());
-        for(Map.Entry<BlockPos, Map<UUID, Boolean>> entry: Sets.newHashSet(lockOverrides.entrySet()))
+        for(Map.Entry<BlockPos, Map<UUID, Boolean>> entry: lockOverrides.entrySet())
             if(entry.getValue().containsKey(player))
                 lockOverrides.get(entry.getKey()).remove(player);
     }
@@ -876,6 +862,10 @@ public class Clan {
         if(isServer())
             return;
 
+        distributeFunds(server, sender, disbandMessageTranslationKey, translationArgs);
+    }
+
+    private void distributeFunds(MinecraftServer server, ICommandSender sender, String disbandMessageTranslationKey, Object... translationArgs) {
         double distFunds = Clans.getPaymentHandler().getBalance(this.getId());
         distFunds += FormulaParser.eval(Clans.getConfig().getClaimChunkCostFormula(), this, 0) * this.getClaimCount();
         if (Clans.getConfig().isLeaderRecieveDisbandFunds())
@@ -887,7 +877,7 @@ public class Clan {
             EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
             if (player != null) {
-                if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP)sender).getUniqueID()))
+                if (!(sender instanceof EntityPlayerMP) || !player.getUniqueID().equals(((EntityPlayerMP) sender).getUniqueID()))
                     player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), disbandMessageTranslationKey, translationArgs).setStyle(TextStyles.YELLOW));
             }
         }
@@ -948,5 +938,23 @@ public class Clan {
     @Override
     public int hashCode() {
         return Objects.hash(clanId);
+    }
+
+    @Override
+    public void blockingSave() {
+        try {
+            FileWriter file = new FileWriter(clanDataFile);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(toJsonObject());
+            file.write(json);
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public ThreadedSaveHandler<?> getSaveHandler() {
+        return saveHandler;
     }
 }

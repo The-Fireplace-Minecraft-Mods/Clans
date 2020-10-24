@@ -319,7 +319,7 @@ public class LandProtectionLogic {
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if (target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                Boolean pvpAllowed = chunkOwner.pvpAllowed();
+                Boolean pvpAllowed = chunkOwner.getPVPOverride();
                 if (pvpAllowed == null)
                     return shouldCancelPVPDefault(target, attacker, chunkOwner, attackingPlayer);
                 else //Cancel if pvp is not allowed, don't cancel if pvp is allowed

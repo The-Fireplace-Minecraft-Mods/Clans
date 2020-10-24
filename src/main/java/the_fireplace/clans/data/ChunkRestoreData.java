@@ -1,10 +1,10 @@
 package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,10 +17,12 @@ import the_fireplace.clans.util.JsonHelper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ChunkRestoreData {
-	private Map<BlockPos, String> replaceBlocks = Maps.newHashMap();
-	private List<BlockPos> removeBlocks = Lists.newArrayList();
+	private final Map<BlockPos, String> replaceBlocks = new ConcurrentHashMap<>();
+	private final Set<BlockPos> removeBlocks = new ConcurrentSet<>();
 
 	public ChunkRestoreData(){}
 
@@ -49,6 +51,32 @@ public final class ChunkRestoreData {
 	}
 
 	public void restore(Chunk c) {
+		removePlayers(c);
+		removePrimedTNT(c);
+		removePlacedBlocks(c);
+		placeRemovedBlocks(c);
+	}
+
+	private void placeRemovedBlocks(Chunk c) {
+		for(Map.Entry<BlockPos, String> entry: replaceBlocks.entrySet())
+			c.getWorld().setBlockState(new BlockPos(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()), BlockSerializeUtil.blockFromString(entry.getValue()));
+	}
+
+	private void removePlacedBlocks(Chunk c) {
+		for(BlockPos entry: removeBlocks)
+			c.getWorld().setBlockToAir(new BlockPos(entry.getX(), entry.getY(), entry.getZ()));
+	}
+
+	private void removePrimedTNT(Chunk c) {
+		List<EntityTNTPrimed> tnts = Lists.newArrayList();
+		c.getEntitiesOfTypeWithinAABB(EntityTNTPrimed.class,
+			new AxisAlignedBB(new BlockPos(c.getPos().getXStart(), 0, c.getPos().getZStart()), new BlockPos(c.getPos().getXEnd(), (c.getTopFilledSegment()+1) * 16, c.getPos().getZEnd())),
+			tnts, p -> true);
+		for(EntityTNTPrimed tnt: tnts)
+			c.getWorld().removeEntity(tnt);
+	}
+
+	private void removePlayers(Chunk c) {
 		List<EntityPlayerMP> players = Lists.newArrayList();
 		c.getEntitiesOfTypeWithinAABB(EntityPlayerMP.class,
 			new AxisAlignedBB(new BlockPos(c.getPos().getXStart(), 0, c.getPos().getZStart()), new BlockPos(c.getPos().getXEnd(), (c.getTopFilledSegment()+1) * 16, c.getPos().getZEnd())),
@@ -56,16 +84,6 @@ public final class ChunkRestoreData {
 		//Teleport players out of the chunk before restoring the data, to help prevent them from suffocating
 		for(EntityPlayerMP p: players)
 			EntityUtil.teleportSafelyToChunk(p, EntityUtil.findSafeChunkFor(p, new ChunkPosition(c), true));
-		List<EntityTNTPrimed> tnts = Lists.newArrayList();
-		c.getEntitiesOfTypeWithinAABB(EntityTNTPrimed.class,
-			new AxisAlignedBB(new BlockPos(c.getPos().getXStart(), 0, c.getPos().getZStart()), new BlockPos(c.getPos().getXEnd(), (c.getTopFilledSegment()+1) * 16, c.getPos().getZEnd())),
-			tnts, p -> true);
-		for(EntityTNTPrimed tnt: tnts)
-			c.getWorld().removeEntity(tnt);
-		for(BlockPos entry: removeBlocks)
-			c.getWorld().setBlockToAir(new BlockPos(entry.getX(), entry.getY(), entry.getZ()));
-		for(Map.Entry<BlockPos, String> entry: replaceBlocks.entrySet())
-			c.getWorld().setBlockState(new BlockPos(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()), BlockSerializeUtil.blockFromString(entry.getValue()));
 	}
 
 	public JsonObject toJsonObject() {

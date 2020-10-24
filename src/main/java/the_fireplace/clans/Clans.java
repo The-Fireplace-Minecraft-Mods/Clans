@@ -425,8 +425,8 @@ public final class Clans {
             return false;
         }
     };
-    static IPaymentHandler paymentHandler = new PaymentHandlerDummy();
-    static IPermissionHandler permissionManager;
+    private static IPaymentHandler paymentHandler = new PaymentHandlerDummy();
+    private static IPermissionHandler permissionManager;
     private boolean validJar = true;
 
     public static Logger getLogger() {
@@ -441,7 +441,7 @@ public final class Clans {
         return paymentHandler;
     }
 
-    static void setPaymentHandler(IPaymentHandler paymentHandler) {
+    private static void setPaymentHandler(IPaymentHandler paymentHandler) {
         Clans.paymentHandler = paymentHandler;
     }
 
@@ -449,7 +449,7 @@ public final class Clans {
         return permissionManager;
     }
 
-    static void setPermissionManager(IPermissionHandler permissionManager) {
+    private static void setPermissionManager(IPermissionHandler permissionManager) {
         Clans.permissionManager = permissionManager;
     }
 

@@ -27,56 +27,72 @@ public class TimerLogic {
     public static void runFiveMinuteLogic() {
         ClaimData.save();
         ClanDatabase.save();
-        RaidCollectionDatabase.save();
-        RaidRestoreDatabase.save();
+        RaidCollectionDatabase.getInstance().save();
+        RaidRestoreDatabase.getInstance().save();
         PlayerData.save();
         PlayerCache.cleanup();
     }
 
     public static void runOneMinuteLogic() {
-        for (Clan clan : ClanDatabase.getClans())
-            clan.decrementShield();
+        decrementShields();
 
+        chargeRentAndUpkeep();
+    }
+
+    private static void chargeRentAndUpkeep() {
         if (Clans.getConfig().getClanUpkeepDays() > 0 || Clans.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
                 if(clan.isServer())
                     continue;
-                if (Clans.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
-                    Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
-                    for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
-                        if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
-                            Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
-                        else if (Clans.getConfig().isEvictNonpayers())
-                            if (member.getValue() != EnumRank.LEADER && (Clans.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
-                                clan.removeMember(member.getKey());
-                                EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
-                                //noinspection ConstantConditions
-                                if (player != null) {
-                                    PlayerData.updateDefaultClan(player.getUniqueID(), clan.getId());
-                                    player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getName()).setStyle(TextStyles.YELLOW));
-                                }
-                            }
-                    }
-                    clan.updateNextRentTimestamp();
-                }
-                if (Clans.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
-                    Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
-                    double upkeep = FormulaParser.eval(Clans.getConfig().getClanUpkeepCostFormula(), clan, 0);
-                    if(Clans.getConfig().isDisbandNoUpkeep() && upkeep > Clans.getPaymentHandler().getBalance(clan.getId()) && upkeep <= Clans.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
-                        while(upkeep > Clans.getPaymentHandler().getBalance(clan.getId())) {
-                            ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
-                            if(chunks.isEmpty())//This _should_ always be false, but just in case...
-                                break;
-                            ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
-                            ClaimManagement.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
-                        }
-                    }
-                    if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
-                        clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
-                    else
-                        clan.updateNextUpkeepTimestamp();
+                chargeRent(clan);
+                chargeUpkeep(clan);
+            }
+    }
+
+    private static void chargeUpkeep(Clan clan) {
+        if (Clans.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
+            Clans.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
+            double upkeep = FormulaParser.eval(Clans.getConfig().getClanUpkeepCostFormula(), clan, 0);
+            if(Clans.getConfig().isDisbandNoUpkeep() && upkeep > Clans.getPaymentHandler().getBalance(clan.getId()) && upkeep <= Clans.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
+                while(upkeep > Clans.getPaymentHandler().getBalance(clan.getId())) {
+                    ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
+                    if(chunks.isEmpty())//This _should_ always be false, but just in case...
+                        break;
+                    ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
+                    ClaimManagement.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                 }
             }
+            if (Clans.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && Clans.getConfig().isDisbandNoUpkeep())
+                clan.disband(Clans.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
+            else
+                clan.updateNextUpkeepTimestamp();
+        }
+    }
+
+    private static void chargeRent(Clan clan) {
+        if (Clans.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
+            Clans.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
+            for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
+                if (Clans.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
+                    Clans.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
+                else if (Clans.getConfig().isEvictNonpayers())
+                    if (member.getValue() != EnumRank.LEADER && (Clans.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
+                        clan.removeMember(member.getKey());
+                        EntityPlayerMP player = Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
+                        //noinspection ConstantConditions
+                        if (player != null) {
+                            PlayerData.updateDefaultClan(player.getUniqueID(), clan.getId());
+                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getName()).setStyle(TextStyles.YELLOW));
+                        }
+                    }
+            }
+            clan.updateNextRentTimestamp();
+        }
+    }
+
+    private static void decrementShields() {
+        for (Clan clan : ClanDatabase.getClans())
+            clan.decrementShield();
     }
 
     public static void runOneSecondLogic() {

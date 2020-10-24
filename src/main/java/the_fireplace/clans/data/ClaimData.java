@@ -8,6 +8,8 @@ import net.minecraft.entity.Entity;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.model.*;
+import the_fireplace.clans.multithreading.ThreadedSaveHandler;
+import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -88,7 +90,6 @@ public final class ClaimData {
             resetRegenBorderlandsTimer(clan.getId());
             clan.incrementCachedClaimCount();
         }
-        claimedChunks.get(clan.getId()).isChanged = true;
     }
 
     public static void addChunk(@Nullable UUID clanId, ChunkPositionWithData pos) {
@@ -286,32 +287,20 @@ public final class ClaimData {
             data.save();
     }
 
-    public static class ClaimStoredData {
-        //region Internal variables
+    public static class ClaimStoredData implements ThreadedSaveable {
         private final File chunkDataFile;
-        private boolean isChanged, saving;
-        //endregion
+        private final ThreadedSaveHandler<ClaimStoredData> saveHandler = ThreadedSaveHandler.create(this);
 
-        //region Saved variables
         private final UUID clan;
         private Set<ChunkPositionWithData> chunks;
         private boolean hasBorderlands;
-        //endregion
 
-        //region Constructor
         private ClaimStoredData(UUID clan) {
             chunkDataFile = new File(chunkDataLocation, clan.toString()+".json");
             this.clan = clan;
             this.chunks = new ConcurrentSet<>();
-            markChanged();
-        }
-        //endregion
-
-        public void markChanged() {
-            isChanged = true;
         }
 
-        //region load
         @Nullable
         private static ClaimStoredData load(File file) {
             JsonParser jsonParser = new JsonParser();
@@ -322,7 +311,6 @@ public final class ClaimData {
                     UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
                     Set<ChunkPositionWithData> positions = Sets.newHashSet();
                     ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
-                    loadClaimStoredData.isChanged = false;
                     for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
                         ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                         pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
@@ -341,54 +329,56 @@ public final class ClaimData {
             }
             return null;
         }
-        //endregion
 
-        //region save
-        private void save() {
-            if(!isChanged || saving)
-                return;
-            saving = true;
-            //TODO check if this completes when the server is shutting down
-            new Thread(() -> {
-                JsonObject obj = new JsonObject();
-                obj.addProperty("clan", clan.toString());
-                JsonArray positionArray = new JsonArray();
-                for (ChunkPositionWithData pos : getChunks()) {
-                    JsonObject chunkPositionObject = new JsonObject();
-                    chunkPositionObject.addProperty("x", pos.getPosX());
-                    chunkPositionObject.addProperty("z", pos.getPosZ());
-                    chunkPositionObject.addProperty("d", pos.getDim());
-                    chunkPositionObject.addProperty("isBorderland", pos.isBorderland());
-                    JsonHelper.attachAddonData(chunkPositionObject, pos.getAddonData());
-                    positionArray.add(chunkPositionObject);
-                }
-                obj.add("chunks", positionArray);
+        @Override
+        public void blockingSave() {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("clan", clan.toString());
+            JsonArray positionArray = new JsonArray();
+            for (ChunkPositionWithData pos : getChunks()) {
+                JsonObject chunkPositionObject = new JsonObject();
+                chunkPositionObject.addProperty("x", pos.getPosX());
+                chunkPositionObject.addProperty("z", pos.getPosZ());
+                chunkPositionObject.addProperty("d", pos.getDim());
+                chunkPositionObject.addProperty("isBorderland", pos.isBorderland());
+                JsonHelper.attachAddonData(chunkPositionObject, pos.getAddonData());
+                positionArray.add(chunkPositionObject);
+            }
+            obj.add("chunks", positionArray);
 
-                try {
-                    FileWriter file = new FileWriter(chunkDataFile);
-                    file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                saving = isChanged = false;
-            }).start();
+            try {
+                FileWriter file = new FileWriter(chunkDataFile);
+                file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
+                file.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        //endregion
+
+        @Override
+        public ThreadedSaveHandler<?> getSaveHandler() {
+            return saveHandler;
+        }
 
         public boolean addChunk(ChunkPositionWithData pos) {
-            markChanged();
-            return chunks.add(pos);
+            boolean added = chunks.add(pos);
+            if(added)
+                markChanged();
+            return added;
         }
 
         public boolean addAllChunks(Collection<? extends ChunkPositionWithData> positions) {
-            markChanged();
-            return chunks.addAll(positions);
+            boolean added = chunks.addAll(positions);
+            if(added)
+                markChanged();
+            return added;
         }
 
         public boolean delChunk(ChunkPositionWithData pos) {
-            markChanged();
-            return chunks.remove(pos);
+            boolean removed = chunks.remove(pos);
+            if(removed)
+                markChanged();
+            return removed;
         }
 
         public Set<ChunkPositionWithData> getChunks() {

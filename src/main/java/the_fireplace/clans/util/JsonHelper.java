@@ -7,10 +7,7 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class JsonHelper {
     public static void attachAddonData(JsonObject obj, Map<String, Object> addonDataMap) {
@@ -125,19 +122,19 @@ public class JsonHelper {
         return new BlockPos(obj.get("x").getAsInt(), obj.get("y").getAsInt(), obj.get("z").getAsInt());
     }
 
-    public static JsonArray toJsonArray(List<UUID> uuidList) {
+    public static JsonArray toJsonArray(Collection<UUID> uuids) {
         JsonArray arr = new JsonArray();
-        for(UUID uuid: uuidList) {
+        for(UUID uuid: uuids) {
             arr.add(uuid.toString());
         }
         return arr;
     }
 
-    public static List<UUID> uuidListFromJsonArray(JsonArray arr) {
-        List<UUID> uuids = Lists.newArrayList();
+    public static Collection<UUID> uuidsFromJsonArray(JsonArray arr) {
+        Collection<UUID> uuids = new HashSet<>();
         for(JsonElement elem : arr) {
             uuids.add(UUID.fromString(elem.getAsString()));
         }
-        return uuids;
+        return Collections.unmodifiableCollection(uuids);
     }
 }

@@ -1,25 +1,26 @@
 package the_fireplace.clans.data;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.netty.util.internal.ConcurrentSet;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.model.TerritoryDisplayMode;
+import the_fireplace.clans.multithreading.ThreadedSaveHandler;
+import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerData {
-    private static final HashMap<UUID, PlayerStoredData> playerData = Maps.newHashMap();
+    private static final Map<UUID, PlayerStoredData> playerData = new ConcurrentHashMap<>();
     public static final File playerDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
 
     @Nullable
@@ -31,12 +32,12 @@ public final class PlayerData {
         return getPlayerData(player).cooldown;
     }
 
-    public static List<UUID> getInvites(UUID player) {
-        return Collections.unmodifiableList(getPlayerData(player).invites);
+    public static Collection<UUID> getInvites(UUID player) {
+        return Collections.unmodifiableCollection(getPlayerData(player).invites);
     }
 
-    public static List<UUID> getBlockedClans(UUID player) {
-        return Collections.unmodifiableList(getPlayerData(player).blockedClans);
+    public static Collection<UUID> getBlockedClans(UUID player) {
+        return Collections.unmodifiableCollection(getPlayerData(player).blockedClans);
     }
 
     public static boolean getIsBlockingAllInvites(UUID player) {
@@ -163,32 +164,33 @@ public final class PlayerData {
     }
 
     public static void save() {
-        for(Map.Entry<UUID, PlayerStoredData> entry : Sets.newHashSet(playerData.entrySet())) {
+        for(Map.Entry<UUID, PlayerStoredData> entry : playerData.entrySet()) {
             entry.getValue().save();
-            if(entry.getValue().shouldDisposeReferences)
+            if(entry.getValue().shouldDisposeReferences) {
                 playerData.remove(entry.getKey());
+                entry.getValue().getSaveHandler().disposeReference();
+            }
         }
     }
 
-    private static class PlayerStoredData {
+    private static class PlayerStoredData implements ThreadedSaveable {
         private final File playerDataFile;
-        private boolean isChanged, saving, shouldDisposeReferences = false;
+        private final ThreadedSaveHandler<PlayerStoredData> saveHandler = ThreadedSaveHandler.create(this);
+        private boolean shouldDisposeReferences = false;
 
         @Nullable
         private UUID defaultClan;
         private int cooldown, raidWins, raidLosses;
         private boolean inviteBlock, showUndergroundMessages;
-        private List<UUID> invites, blockedClans;
+        private final Set<UUID> invites = new ConcurrentSet<>(), blockedClans = new ConcurrentSet<>();
         private TerritoryDisplayMode territoryDisplayMode;
         private long lastSeen;
 
-        private Map<String, Object> addonData = Maps.newHashMap();
+        private Map<String, Object> addonData = new ConcurrentHashMap<>();
 
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(playerDataLocation, playerId.toString()+".json");
             if(!load()) {
-                invites = Lists.newArrayList();
-                blockedClans = Lists.newArrayList();
                 inviteBlock = false;
                 raidWins = raidLosses = 0;
                 territoryDisplayMode = TerritoryDisplayMode.ACTION_BAR;
@@ -220,8 +222,10 @@ public final class PlayerData {
                     JsonObject jsonObject = (JsonObject) obj;
                     defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
                     cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
-                    invites = jsonObject.has("invites") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("invites")) : Lists.newArrayList();
-                    blockedClans = jsonObject.has("blockedClans") ? JsonHelper.uuidListFromJsonArray(jsonObject.getAsJsonArray("blockedClans")) : Lists.newArrayList();
+                    if(jsonObject.has("invites"))
+                        invites.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("invites")));
+                    if(jsonObject.has("blockedClans"))
+                        blockedClans.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("blockedClans")));
                     inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
                     raidWins = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
                     raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
@@ -238,111 +242,113 @@ public final class PlayerData {
             return false;
         }
 
-        private void save() {
-            if(!isChanged || saving)
-                return;
-            saving = true;
-            new Thread(() -> {
-                JsonObject obj = new JsonObject();
-                if (defaultClan != null)
-                    obj.addProperty("defaultClan", defaultClan.toString());
-                obj.addProperty("cooldown", cooldown);
-                obj.add("invites", JsonHelper.toJsonArray(invites));
-                obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
-                obj.addProperty("inviteBlock", inviteBlock);
-                obj.addProperty("raidKills", raidWins);
-                obj.addProperty("raidDeaths", raidLosses);
-                obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
-                obj.addProperty("showUndergroundMessages", showUndergroundMessages);
-                obj.addProperty("lastSeen", lastSeen);
+        @Override
+        public void blockingSave() {
+            JsonObject obj = new JsonObject();
+            if (defaultClan != null)
+                obj.addProperty("defaultClan", defaultClan.toString());
+            obj.addProperty("cooldown", cooldown);
+            obj.add("invites", JsonHelper.toJsonArray(invites));
+            obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
+            obj.addProperty("inviteBlock", inviteBlock);
+            obj.addProperty("raidKills", raidWins);
+            obj.addProperty("raidDeaths", raidLosses);
+            obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
+            obj.addProperty("showUndergroundMessages", showUndergroundMessages);
+            obj.addProperty("lastSeen", lastSeen);
 
-                JsonHelper.attachAddonData(obj, this.addonData);
+            JsonHelper.attachAddonData(obj, this.addonData);
 
-                try {
-                    FileWriter file = new FileWriter(playerDataFile);
-                    file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                saving = isChanged = false;
-            }).start();
+            try {
+                FileWriter file = new FileWriter(playerDataFile);
+                file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
+                file.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public ThreadedSaveHandler<?> getSaveHandler() {
+            return saveHandler;
         }
 
         public void setDefaultClan(@Nullable UUID defaultClan) {
             if(!Objects.equals(this.defaultClan, defaultClan)) {
                 this.defaultClan = defaultClan;
-                isChanged = true;
+                markChanged();
             }
         }
 
         public void setCooldown(int cooldown) {
             if(!Objects.equals(this.cooldown, cooldown)) {
                 this.cooldown = cooldown;
-                isChanged = true;
+                markChanged();
             }
         }
 
         public boolean addInvite(UUID clan) {
-            boolean ret = !invites.contains(clan);
-            invites.add(clan);
-            isChanged = ret;
+            boolean ret = invites.add(clan);
+            if(ret)
+                markChanged();
             return ret;
         }
 
         public boolean removeInvite(UUID clan) {
             boolean ret = invites.remove(clan);
-            isChanged = ret;
+            if(ret)
+                markChanged();
             return ret;
         }
 
         public boolean addInviteBlock(UUID clan) {
-            boolean ret = !blockedClans.contains(clan);
-            blockedClans.add(clan);
-            isChanged = ret;
+            boolean ret = blockedClans.add(clan);
+            if(ret)
+                markChanged();
             return ret;
         }
 
         public boolean removeInviteBlock(UUID clan) {
             boolean ret = blockedClans.remove(clan);
-            isChanged = ret;
+            if(ret)
+                markChanged();
             return ret;
         }
 
         public void setGlobalInviteBlock(boolean inviteBlock) {
             if(this.inviteBlock != inviteBlock) {
                 this.inviteBlock = inviteBlock;
-                isChanged = true;
+                markChanged();
             }
         }
 
         public void incrementRaidWins() {
             raidWins++;
-            isChanged = true;
+            markChanged();
         }
 
         public void incrementRaidLosses() {
             raidLosses++;
-            isChanged = true;
+            markChanged();
         }
 
         public void setTerritoryDisplayMode(TerritoryDisplayMode mode) {
             if(mode != territoryDisplayMode) {
                 territoryDisplayMode = mode;
-                isChanged = true;
+                markChanged();
             }
         }
 
         public void setShowUndergroundMessages(boolean show) {
             if(showUndergroundMessages != show) {
                 showUndergroundMessages = show;
-                isChanged = true;
+                markChanged();
             }
         }
 
         public void updateLastSeen() {
             lastSeen = System.currentTimeMillis();
-            isChanged = true;
+            markChanged();
         }
 
         /**
@@ -353,10 +359,18 @@ public final class PlayerData {
          * The data itself. This should be a primitive, string, a list or map containg only lists/maps/primitives/strings, or a JsonElement. If not, your data may not save/load properly. All lists will be loaded as ArrayLists. All maps will be loaded as HashMaps.
          */
         public void setCustomData(String key, Object value) {
-            if(!value.getClass().isPrimitive() && !value.getClass().isAssignableFrom(BigDecimal.class) && !value.getClass().isAssignableFrom(List.class) && !value.getClass().isAssignableFrom(Map.class) && !value.getClass().isAssignableFrom(JsonElement.class))
+            if(isUnserializable(value))
                 Clans.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
             addonData.put(key, value);
-            isChanged = true;
+            markChanged();
+        }
+
+        private boolean isUnserializable(Object value) {
+            return !value.getClass().isPrimitive()
+                && !value.getClass().isAssignableFrom(BigDecimal.class)
+                && !value.getClass().isAssignableFrom(List.class)
+                && !value.getClass().isAssignableFrom(Map.class)
+                && !value.getClass().isAssignableFrom(JsonElement.class);
         }
 
         @Nullable
