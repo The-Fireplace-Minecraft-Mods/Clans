@@ -39,6 +39,6 @@ public class CommandMap extends ClanSubCommand {
 		World w = sender.getEntityWorld();
 		Chunk senderChunk = w.getChunk(sender.getPosition());
 
-		ClaimMapToChat.createAllianceMap(sender, senderChunk.getPos(), sender.dimension);
+		ClaimMapToChat.createAllianceMap(sender, senderChunk.getPos(), sender.dimension).prepareAndSend();
 	}
 }

@@ -268,9 +268,7 @@ public class Clan {
         addonData = JsonHelper.getAddonData(obj);
         clanDataFile = new File(ClanDatabase.clanDataLocation, clanId.toString()+".json");
     }
-    //endregion
 
-    //region save/load
     @Nullable
     public static Clan load(File file) {
         JsonParser jsonParser = new JsonParser();
@@ -308,7 +306,6 @@ public class Clan {
     public void markChanged() {
         isChanged = true;
     }
-    //endregion
 
     public Map<UUID, EnumRank> getMembers() {
         return Collections.unmodifiableMap(members);
@@ -896,9 +893,7 @@ public class Clan {
         }
         Clans.getPaymentHandler().deductAmount(Clans.getPaymentHandler().getBalance(this.getId()), this.getId());
     }
-    //endregion
 
-    //region messageAllOnline
     public void messageAllOnline(Style textStyle, String translationKey, Object... args) {
         messageAllOnline(false, textStyle, translationKey, args);
     }
@@ -933,9 +928,7 @@ public class Clan {
             if(online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
                 member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar && member.isEntityAlive());
     }
-    //endregion
 
-    //region Equality
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == null)
@@ -956,5 +949,4 @@ public class Clan {
     public int hashCode() {
         return Objects.hash(clanId);
     }
-    //endregion
 }

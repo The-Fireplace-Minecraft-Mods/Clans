@@ -59,7 +59,7 @@ public class ClaimMapToChat {
     }
 
     private byte getHeight(boolean isSmall) {
-        return isSmall ? ClaimData.CACHE_SECTION_SIZE / 3 : ClaimData.CACHE_SECTION_SIZE;
+        return isSmall ? ClaimData.CACHE_SECTION_SIZE / 7 : ClaimData.CACHE_SECTION_SIZE;
     }
 
     @Nullable
@@ -68,14 +68,15 @@ public class ClaimMapToChat {
     }
 
     private ChunkPos calculateCenter() {
-        int centerOffsetX = getCenterOffset(width);
-        int centerOffsetZ = getCenterOffset(height);
-        //TODO adjust height for which third the short map is going to display
+        int centerOffsetX = getCenterOffset(width) * getQuadrant().getValue1();
+        int centerOffsetZ = getCenterOffset(height) * getQuadrant().getValue2();
+        int section = (playerChunk.z % ClaimData.CACHE_SECTION_SIZE) / 7;
+        centerOffsetZ += section * 7;
         return new ChunkPos(cacheSegment.getValue1()*ClaimData.CACHE_SECTION_SIZE + centerOffsetX, cacheSegment.getValue2()*ClaimData.CACHE_SECTION_SIZE + centerOffsetZ);
     }
 
     private int getCenterOffset(int size) {
-        return 1 + (size - 1) / 2;
+        return size / 2;
     }
 
     private OrderedPair<Integer, Integer> calculateCacheSegment(ChunkPos playerChunk) {
@@ -105,18 +106,25 @@ public class ClaimMapToChat {
     }
     
     private void prepareMapBodyAndKey(ExecutorService executor) {
-        for(int z = centerChunk.z-height/2; z <= centerChunk.z + height/2; z++) {
+        OrderedPair<Byte, Byte> quadrant = getQuadrant();
+        byte xOff = (byte) (quadrant.getValue1() < 0 ? -1 : 0);
+        int minX = centerChunk.x - width/2 + xOff;
+        int maxX = centerChunk.x + width/2 + xOff;
+        byte zOff = (byte) (quadrant.getValue2() < 0 ? -1 : 0);
+        int minZ = centerChunk.z - height/2 + zOff;
+        int maxZ = centerChunk.z + height/2 + zOff;
+        for(int z = minZ; z <= maxZ; z++) {
             int finalZ = z;
             executor.execute(() -> {
-                String row = buildRow(finalZ);
-                bodyMessages[finalZ - centerChunk.z + height/2] = new TextComponentString(row);
+                String row = buildRow(finalZ, minX, maxX);
+                bodyMessages[finalZ - centerChunk.z + height/2 - zOff] = new TextComponentString(row);
             });
         }
     }
 
-    private String buildRow(int finalZ) {
+    private String buildRow(int finalZ, int minX, int maxX) {
         StringBuilder row = new StringBuilder();
-        for (int x = centerChunk.x - width/2; x <= centerChunk.x + width/2; x++) {
+        for (int x = minX; x <= maxX; x++) {
             boolean isPlayerChunk = isPlayerChunk(x, finalZ);
             ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, finalZ, dimension);
             Clan clan = ClaimData.getChunkClan(pos);
@@ -152,6 +160,10 @@ public class ClaimMapToChat {
 
     private boolean isPlayerChunk(int x, int z) {
         return playerChunk.z == z && playerChunk.x == x;
+    }
+
+    private OrderedPair<Byte, Byte> getQuadrant() {
+        return new OrderedPair<>((byte)Math.copySign(1, playerChunk.x), (byte)Math.copySign(1, playerChunk.z));
     }
 
     private void send() {
@@ -192,7 +204,7 @@ public class ClaimMapToChat {
     }
 
     private ITextComponent getBorderComponent() {
-        return new TextComponentString("===================================================").setStyle(TextStyles.GREEN);
+        return new TextComponentString("=================================================").setStyle(TextStyles.GREEN);
     }
 
     private ITextComponent getCacheSegmentComponent() {

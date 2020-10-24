@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public final class ClaimData {
     private static boolean isLoaded = false;
     private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
-    //The map commands use this, so it should be divisible by 3 and not exceed 53.
-    // Divisible by 3 so the smaller map can take exactly a third of the section.
+    //The map commands use this, so it should be divisible by 7 and not exceed 53.
+    // Divisible by 7 so the smaller map can take exactly a seventh of the section.
     // 53 map-width characters is all the chat window can fit before going to a new line.
-    // 51 is ideal because it is the largest number that fits those conditions.
-    public static final byte CACHE_SECTION_SIZE = 51;
+    // 49 is ideal because it is the largest number that fits those conditions.
+    public static final byte CACHE_SECTION_SIZE = 49;
 
     //Main storage
     private static ConcurrentMap<UUID, ClaimStoredData> claimedChunks;

@@ -2,6 +2,7 @@ Additions:
 
 Changes:
 Opclan claim commands can now be used to force claims in dimensions that aren't normally allowed.
+Map commands are now faster and are now based on sections of the map instead of generating one centered on the player.
 
 Fixes/Internal Changes:
 Massively improved performance
