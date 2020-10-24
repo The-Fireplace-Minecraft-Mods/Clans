@@ -5,11 +5,11 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.Entity;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
@@ -18,8 +18,6 @@ import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -309,33 +307,22 @@ public final class ClaimData {
 
         @Nullable
         private static ClaimStoredData load(File file) {
-            JsonParser jsonParser = new JsonParser();
-            try {
-                try(FileReader fr = new FileReader(file)) {
-                    Object obj = jsonParser.parse(fr);
-                    if (obj instanceof JsonObject) {
-                        JsonObject jsonObject = (JsonObject) obj;
-                        UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
-                        Set<ChunkPositionWithData> positions = Sets.newHashSet();
-                        ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
-                        for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
-                            ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
-                            pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
-                            pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
-                            getCacheSection(pos).put(pos, loadClaimStoredData);
-                            positions.add(pos);
-                        }
-                        loadClaimStoredData.chunks = new ConcurrentSet<>();
-                        loadClaimStoredData.chunks.addAll(positions);
-                        return loadClaimStoredData;
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                //do nothing, it just hasn't been created yet
-            } catch (Exception e) {
-                e.printStackTrace();
+            JsonObject obj = JsonReader.readJson(file);
+            if(obj == null)
+                return null;
+            UUID clan = UUID.fromString(obj.getAsJsonPrimitive("clan").getAsString());
+            Set<ChunkPositionWithData> positions = Sets.newHashSet();
+            ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
+            for (JsonElement element : obj.get("chunks").getAsJsonArray()) {
+                ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
+                pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
+                pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
+                getCacheSection(pos).put(pos, loadClaimStoredData);
+                positions.add(pos);
             }
-            return null;
+            loadClaimStoredData.chunks = new ConcurrentSet<>();
+            loadClaimStoredData.chunks.addAll(positions);
+            return loadClaimStoredData;
         }
 
         @Override

@@ -1,6 +1,9 @@
 package the_fireplace.clans.model;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -16,6 +19,7 @@ import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
+import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
@@ -27,7 +31,6 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -267,17 +270,9 @@ public class Clan implements ThreadedSaveable, JsonWritable {
 
     @Nullable
     public static Clan load(File file) {
-        JsonParser jsonParser = new JsonParser();
-        try {
-            try(FileReader fr = new FileReader(file)) {
-                Object obj = jsonParser.parse(fr);
-                if (obj instanceof JsonObject) {
-                    return new Clan((JsonObject) obj);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JsonObject obj = JsonReader.readJson(file);
+        if(obj != null)
+            return new Clan(obj);
         return null;
     }
 

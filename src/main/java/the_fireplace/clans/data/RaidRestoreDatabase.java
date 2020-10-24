@@ -2,10 +2,10 @@ package the_fireplace.clans.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
@@ -14,8 +14,6 @@ import the_fireplace.clans.util.BlockSerializeUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,22 +79,12 @@ public final class RaidRestoreDatabase implements ThreadedSaveable, JsonWritable
 	private static void load() {
 		instance = new RaidRestoreDatabase();
 		raidDataFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json");
-		JsonParser jsonParser = new JsonParser();
-		try {
-			try(FileReader fr = new FileReader(raidDataFile)) {
-				Object obj = jsonParser.parse(fr);
-				if (obj instanceof JsonObject) {
-					JsonObject jsonObject = (JsonObject) obj;
-					JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
-					for (int i = 0; i < clanMap.size(); i++)
-						instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
-				}
-			}
-		} catch (FileNotFoundException e) {
-			//do nothing, it just hasn't been created yet
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		JsonObject jsonObject = JsonReader.readJson(raidDataFile);
+		if(jsonObject == null)
+			return;
+		JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
+		for (int i = 0; i < clanMap.size(); i++)
+			instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
 	}
 
 	@Override

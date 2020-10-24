@@ -2,10 +2,10 @@ package the_fireplace.clans.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.netty.util.internal.ConcurrentSet;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.model.TerritoryDisplayMode;
@@ -15,8 +15,6 @@ import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -216,31 +214,23 @@ public final class PlayerData {
                 return false;
             }
 
-            JsonParser jsonParser = new JsonParser();
-            try {
-                Object obj = jsonParser.parse(new FileReader(playerDataFile));
-                if(obj instanceof JsonObject) {
-                    JsonObject jsonObject = (JsonObject) obj;
-                    defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
-                    cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
-                    if(jsonObject.has("invites"))
-                        invites.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("invites")));
-                    if(jsonObject.has("blockedClans"))
-                        blockedClans.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("blockedClans")));
-                    inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
-                    raidWins = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
-                    raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
-                    territoryDisplayMode = jsonObject.has("territoryDisplayMode") ? TerritoryDisplayMode.valueOf(jsonObject.getAsJsonPrimitive("territoryDisplayMode").getAsString()) : TerritoryDisplayMode.ACTION_BAR;
-                    showUndergroundMessages = !jsonObject.has("showUndergroundMessages") || jsonObject.getAsJsonPrimitive("showUndergroundMessages").getAsBoolean();
-                    lastSeen = jsonObject.has("lastSeen") ? jsonObject.getAsJsonPrimitive("lastSeen").getAsLong() : 0;
-                    addonData = JsonHelper.getAddonData(jsonObject);
-                    return true;
-                }
-            } catch (FileNotFoundException ignored) {
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
+            JsonObject jsonObject = JsonReader.readJson(playerDataFile);
+            if(jsonObject == null)
+                return false;
+            defaultClan = jsonObject.has("defaultClan") ? UUID.fromString(jsonObject.getAsJsonPrimitive("defaultClan").getAsString()) : null;
+            cooldown = jsonObject.has("cooldown") ? jsonObject.getAsJsonPrimitive("cooldown").getAsInt() : 0;
+            if(jsonObject.has("invites"))
+                invites.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("invites")));
+            if(jsonObject.has("blockedClans"))
+                blockedClans.addAll(JsonHelper.uuidsFromJsonArray(jsonObject.getAsJsonArray("blockedClans")));
+            inviteBlock = jsonObject.has("inviteBlock") && jsonObject.getAsJsonPrimitive("inviteBlock").getAsBoolean();
+            raidWins = jsonObject.has("raidKills") ? jsonObject.getAsJsonPrimitive("raidKills").getAsInt() : 0;
+            raidLosses = jsonObject.has("raidDeaths") ? jsonObject.getAsJsonPrimitive("raidDeaths").getAsInt() : 0;
+            territoryDisplayMode = jsonObject.has("territoryDisplayMode") ? TerritoryDisplayMode.valueOf(jsonObject.getAsJsonPrimitive("territoryDisplayMode").getAsString()) : TerritoryDisplayMode.ACTION_BAR;
+            showUndergroundMessages = !jsonObject.has("showUndergroundMessages") || jsonObject.getAsJsonPrimitive("showUndergroundMessages").getAsBoolean();
+            lastSeen = jsonObject.has("lastSeen") ? jsonObject.getAsJsonPrimitive("lastSeen").getAsLong() : 0;
+            addonData = JsonHelper.getAddonData(jsonObject);
+            return true;
         }
 
         @Override

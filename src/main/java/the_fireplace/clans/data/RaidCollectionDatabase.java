@@ -3,18 +3,16 @@ package the_fireplace.clans.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,26 +56,16 @@ public final class RaidCollectionDatabase implements ThreadedSaveable, JsonWrita
 	private static void load() {
 		instance = new RaidCollectionDatabase();
 		raidCollectionDatabaseFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raidcollectitems.json");
-		JsonParser jsonParser = new JsonParser();
-		try {
-			try(FileReader fr = new FileReader(raidCollectionDatabaseFile)) {
-				Object obj = jsonParser.parse(fr);
-				if (obj instanceof JsonObject) {
-					JsonObject jsonObject = (JsonObject) obj;
-					JsonArray clanMap = jsonObject.get("collectItems").getAsJsonArray();
-					for (int i = 0; i < clanMap.size(); i++) {
-						JsonArray valueList = clanMap.get(i).getAsJsonObject().get("value").getAsJsonArray();
-						Set<String> values = new ConcurrentSet<>();
-						for (JsonElement v : valueList)
-							values.add(v.getAsString());
-						instance.collectItems.put(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), values);
-					}
-				}
-			}
-		} catch (FileNotFoundException e) {
-			//do nothing, it just hasn't been created yet
-		} catch (Exception e) {
-			e.printStackTrace();
+		JsonObject jsonObject = JsonReader.readJson(raidCollectionDatabaseFile);
+		if(jsonObject == null)
+			return;
+		JsonArray clanMap = jsonObject.get("collectItems").getAsJsonArray();
+		for (int i = 0; i < clanMap.size(); i++) {
+			JsonArray valueList = clanMap.get(i).getAsJsonObject().get("value").getAsJsonArray();
+			Set<String> values = new ConcurrentSet<>();
+			for (JsonElement v : valueList)
+				values.add(v.getAsString());
+			instance.collectItems.put(UUID.fromString(clanMap.get(i).getAsJsonObject().get("key").getAsString()), values);
 		}
 	}
 
