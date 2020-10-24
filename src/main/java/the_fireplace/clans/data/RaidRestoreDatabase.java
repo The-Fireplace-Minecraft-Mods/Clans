@@ -1,22 +1,28 @@
 package the_fireplace.clans.data;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.Clans;
+import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.BlockSerializeUtil;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class RaidRestoreDatabase implements ThreadedSaveable {
+public final class RaidRestoreDatabase implements ThreadedSaveable, JsonWritable {
 	private static RaidRestoreDatabase instance = null;
 	private final ThreadedSaveHandler<RaidRestoreDatabase> saveHandler = ThreadedSaveHandler.create(this);
+	private static File raidDataFile;
 
 	public static RaidRestoreDatabase getInstance() {
 		if(instance == null)
@@ -74,14 +80,17 @@ public final class RaidRestoreDatabase implements ThreadedSaveable {
 
 	private static void load() {
 		instance = new RaidRestoreDatabase();
+		raidDataFile = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json");
 		JsonParser jsonParser = new JsonParser();
 		try {
-			Object obj = jsonParser.parse(new FileReader(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json")));
-			if(obj instanceof JsonObject) {
-				JsonObject jsonObject = (JsonObject) obj;
-				JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
-				for (int i = 0; i < clanMap.size(); i++)
-					instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
+			try(FileReader fr = new FileReader(raidDataFile)) {
+				Object obj = jsonParser.parse(fr);
+				if (obj instanceof JsonObject) {
+					JsonObject jsonObject = (JsonObject) obj;
+					JsonArray clanMap = jsonObject.get("restoreChunks").getAsJsonArray();
+					for (int i = 0; i < clanMap.size(); i++)
+						instance.raidedChunks.put(new ChunkPosition(clanMap.get(i).getAsJsonObject().get("key").getAsJsonObject()), new ChunkRestoreData(clanMap.get(i).getAsJsonObject().get("value").getAsJsonObject()));
+				}
 			}
 		} catch (FileNotFoundException e) {
 			//do nothing, it just hasn't been created yet
@@ -92,6 +101,16 @@ public final class RaidRestoreDatabase implements ThreadedSaveable {
 
 	@Override
 	public void blockingSave() {
+		writeToJson(raidDataFile);
+	}
+
+	@Override
+	public ThreadedSaveHandler<?> getSaveHandler() {
+		return saveHandler;
+	}
+
+	@Override
+	public JsonObject toJson() {
 		JsonObject obj = new JsonObject();
 		JsonArray chunkRestoreMap = new JsonArray();
 		for(Map.Entry<ChunkPosition, ChunkRestoreData> entry: raidedChunks.entrySet()) {
@@ -101,19 +120,6 @@ public final class RaidRestoreDatabase implements ThreadedSaveable {
 			chunkRestoreMap.add(outputEntry);
 		}
 		obj.add("restoreChunks", chunkRestoreMap);
-		try {
-			FileWriter file = new FileWriter(new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "raids.json"));
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String json = gson.toJson(obj);
-			file.write(json);
-			file.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public ThreadedSaveHandler<?> getSaveHandler() {
-		return saveHandler;
+		return obj;
 	}
 }

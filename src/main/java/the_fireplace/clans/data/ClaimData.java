@@ -2,18 +2,24 @@ package the_fireplace.clans.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.Entity;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.model.*;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,7 +27,7 @@ import java.util.stream.Collectors;
 
 public final class ClaimData {
     private static boolean isLoaded = false;
-    private static final File chunkDataLocation = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
+    private static final File CHUNK_DATA_LOCATION = new File(Clans.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
     //The map commands use this, so it should be divisible by 7 and not exceed 53.
     // Divisible by 7 so the smaller map can take exactly a seventh of the section.
     // 53 map-width characters is all the chat window can fit before going to a new line.
@@ -254,12 +260,12 @@ public final class ClaimData {
     }
 
     private static void load() {
-        if(!chunkDataLocation.exists())
-            chunkDataLocation.mkdirs();
+        if(!CHUNK_DATA_LOCATION.exists())
+            CHUNK_DATA_LOCATION.mkdirs();
         claimedChunks = new ConcurrentHashMap<>();
         claimDataMap = new ConcurrentHashMap<>();
         regenBordersTimer = new ConcurrentHashMap<>();
-        File[] files = chunkDataLocation.listFiles();
+        File[] files = CHUNK_DATA_LOCATION.listFiles();
         if(files != null)
             for(File file: files) {
                 try {
@@ -287,7 +293,7 @@ public final class ClaimData {
             data.save();
     }
 
-    public static class ClaimStoredData implements ThreadedSaveable {
+    public static class ClaimStoredData implements ThreadedSaveable, JsonWritable {
         private final File chunkDataFile;
         private final ThreadedSaveHandler<ClaimStoredData> saveHandler = ThreadedSaveHandler.create(this);
 
@@ -296,7 +302,7 @@ public final class ClaimData {
         private boolean hasBorderlands;
 
         private ClaimStoredData(UUID clan) {
-            chunkDataFile = new File(chunkDataLocation, clan.toString()+".json");
+            chunkDataFile = new File(CHUNK_DATA_LOCATION, clan.toString()+".json");
             this.clan = clan;
             this.chunks = new ConcurrentSet<>();
         }
@@ -305,22 +311,24 @@ public final class ClaimData {
         private static ClaimStoredData load(File file) {
             JsonParser jsonParser = new JsonParser();
             try {
-                Object obj = jsonParser.parse(new FileReader(file));
-                if(obj instanceof JsonObject) {
-                    JsonObject jsonObject = (JsonObject) obj;
-                    UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
-                    Set<ChunkPositionWithData> positions = Sets.newHashSet();
-                    ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
-                    for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
-                        ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
-                        pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
-                        pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
-                        getCacheSection(pos).put(pos, loadClaimStoredData);
-                        positions.add(pos);
+                try(FileReader fr = new FileReader(file)) {
+                    Object obj = jsonParser.parse(fr);
+                    if (obj instanceof JsonObject) {
+                        JsonObject jsonObject = (JsonObject) obj;
+                        UUID clan = UUID.fromString(jsonObject.getAsJsonPrimitive("clan").getAsString());
+                        Set<ChunkPositionWithData> positions = Sets.newHashSet();
+                        ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
+                        for (JsonElement element : jsonObject.get("chunks").getAsJsonArray()) {
+                            ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
+                            pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
+                            pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
+                            getCacheSection(pos).put(pos, loadClaimStoredData);
+                            positions.add(pos);
+                        }
+                        loadClaimStoredData.chunks = new ConcurrentSet<>();
+                        loadClaimStoredData.chunks.addAll(positions);
+                        return loadClaimStoredData;
                     }
-                    loadClaimStoredData.chunks = new ConcurrentSet<>();
-                    loadClaimStoredData.chunks.addAll(positions);
-                    return loadClaimStoredData;
                 }
             } catch (FileNotFoundException e) {
                 //do nothing, it just hasn't been created yet
@@ -331,7 +339,7 @@ public final class ClaimData {
         }
 
         @Override
-        public void blockingSave() {
+        public JsonObject toJson() {
             JsonObject obj = new JsonObject();
             obj.addProperty("clan", clan.toString());
             JsonArray positionArray = new JsonArray();
@@ -346,13 +354,12 @@ public final class ClaimData {
             }
             obj.add("chunks", positionArray);
 
-            try {
-                FileWriter file = new FileWriter(chunkDataFile);
-                file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
-                file.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return obj;
+        }
+
+        @Override
+        public void blockingSave() {
+            writeToJson(chunkDataFile);
         }
 
         @Override

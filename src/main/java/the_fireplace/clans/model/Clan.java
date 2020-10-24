@@ -16,6 +16,7 @@ import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.data.ClanDatabase;
 import the_fireplace.clans.data.PlayerData;
+import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.ClansEventManager;
@@ -27,14 +28,12 @@ import the_fireplace.clans.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class Clan implements ThreadedSaveable {
+public class Clan implements ThreadedSaveable, JsonWritable {
     private final ThreadedSaveHandler<Clan> saveHandler = ThreadedSaveHandler.create(this);
     private final File clanDataFile;
 
@@ -122,9 +121,8 @@ public class Clan implements ThreadedSaveable {
         markChanged();
     }
 
-    //region JsonObject conversions
-    @SuppressWarnings("DuplicatedCode")
-    public JsonObject toJsonObject() {
+    @Override
+    public JsonObject toJson() {
         JsonObject ret = new JsonObject();
         ret.addProperty("clanName", TextStyles.stripFormatting(clanName));
         ret.addProperty("clanBanner", clanBanner);
@@ -271,9 +269,11 @@ public class Clan implements ThreadedSaveable {
     public static Clan load(File file) {
         JsonParser jsonParser = new JsonParser();
         try {
-            Object obj = jsonParser.parse(new FileReader(file));
-            if(obj instanceof JsonObject) {
-                return new Clan((JsonObject)obj);
+            try(FileReader fr = new FileReader(file)) {
+                Object obj = jsonParser.parse(fr);
+                if (obj instanceof JsonObject) {
+                    return new Clan((JsonObject) obj);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -942,15 +942,7 @@ public class Clan implements ThreadedSaveable {
 
     @Override
     public void blockingSave() {
-        try {
-            FileWriter file = new FileWriter(clanDataFile);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(toJsonObject());
-            file.write(json);
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writeToJson(clanDataFile);
     }
 
     @Override

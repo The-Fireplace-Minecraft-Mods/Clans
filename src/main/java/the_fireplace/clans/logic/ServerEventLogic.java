@@ -9,7 +9,7 @@ import the_fireplace.clans.commands.CommandClan;
 import the_fireplace.clans.commands.CommandOpClan;
 import the_fireplace.clans.commands.CommandRaid;
 import the_fireplace.clans.data.*;
-import the_fireplace.clans.multithreading.SaveExecutionManager;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 
 public class ServerEventLogic {
     public static void onServerStarting(MinecraftServer server) {
@@ -29,7 +29,7 @@ public class ServerEventLogic {
         RaidCollectionDatabase.getInstance().save();
         PlayerData.save();
         try {
-            SaveExecutionManager.waitForCompletion();
+            ConcurrentExecutionManager.waitForCompletion();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

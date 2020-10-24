@@ -41,7 +41,7 @@ public class CommandClaim extends ClanSubCommand {
 		if(args.length == 0)
 			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
 		else if(hasClaimRadiusPermission(sender) && ClaimManagement.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
-			ClaimManagement.claimRadius(sender, selectedClan, parseInt(args[0]), "square");
+			ClaimManagement.claimRadius(sender, selectedClan, parseInt(args[0]));
 		else if(!hasClaimRadiusPermission(sender))
 			throw new CommandException("commands.generic.permission");
 	}

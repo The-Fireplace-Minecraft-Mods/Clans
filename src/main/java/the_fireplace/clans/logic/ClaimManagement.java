@@ -15,12 +15,16 @@ import the_fireplace.clans.data.ClaimData;
 import the_fireplace.clans.model.ChunkPosition;
 import the_fireplace.clans.model.ChunkPositionWithData;
 import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 import the_fireplace.clans.util.*;
 import the_fireplace.clans.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ClaimManagement {
     public static boolean checkCanClaimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius, String radiusMode) {
@@ -136,17 +140,25 @@ public class ClaimManagement {
         return false;
     }
 
-    public static void claimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius, String radiusMode) {
+    public static void claimRadius(EntityPlayerMP claimingPlayer, Clan claimingClan, int radius) {
         final int cX = claimingPlayer.chunkCoordX, cZ = claimingPlayer.chunkCoordZ;
-        //This could take a long time with a large radius, do it on a different thread to prevent lag spike and server timeout
-        new Thread(() -> {
+        ConcurrentExecutionManager.runKillable(() -> {
             sendStartRadiusClaimMessage(claimingPlayer);
-            if (radiusMode.equalsIgnoreCase("square"))
-                for (int x = cX - radius; x <= cX + radius; x++)
-                    for (int z = cZ - radius; z <= cZ + radius; z++)
-                        claimChunk(claimingPlayer, new ChunkPositionWithData(x, z, claimingPlayer.dimension), claimingClan, claimingClan.isServer(), false);
+            ExecutorService claimExecutorService = Executors.newFixedThreadPool(128);
+            for (int x = cX - radius; x <= cX + radius; x++)
+                for (int z = cZ - radius; z <= cZ + radius; z++) {
+                    int finalX = x;
+                    int finalZ = z;
+                    claimExecutorService.execute(() ->
+                        claimChunk(claimingPlayer, new ChunkPositionWithData(finalX, finalZ, claimingPlayer.dimension), claimingClan, claimingClan.isServer(), false)
+                    );
+                }
+            claimExecutorService.shutdown();
+            try {
+                claimExecutorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+            } catch (InterruptedException ignored) {}
             sendClaimSuccessMessage(claimingPlayer, claimingClan);
-        }).start();
+        });
     }
 
     private static void sendClaimSuccessMessage(EntityPlayerMP claimingPlayer, Clan claimingClan) {

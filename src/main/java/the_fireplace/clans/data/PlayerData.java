@@ -1,12 +1,12 @@
 package the_fireplace.clans.data;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.util.internal.ConcurrentSet;
 import the_fireplace.clans.Clans;
 import the_fireplace.clans.cache.ClanCache;
+import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.logic.PlayerEventLogic;
 import the_fireplace.clans.model.TerritoryDisplayMode;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
@@ -14,7 +14,9 @@ import the_fireplace.clans.multithreading.ThreadedSaveable;
 import the_fireplace.clans.util.JsonHelper;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -168,12 +170,12 @@ public final class PlayerData {
             entry.getValue().save();
             if(entry.getValue().shouldDisposeReferences) {
                 playerData.remove(entry.getKey());
-                entry.getValue().getSaveHandler().disposeReference();
+                entry.getValue().getSaveHandler().disposeReferences();
             }
         }
     }
 
-    private static class PlayerStoredData implements ThreadedSaveable {
+    private static class PlayerStoredData implements ThreadedSaveable, JsonWritable {
         private final File playerDataFile;
         private final ThreadedSaveHandler<PlayerStoredData> saveHandler = ThreadedSaveHandler.create(this);
         private boolean shouldDisposeReferences = false;
@@ -199,12 +201,11 @@ public final class PlayerData {
             }
             //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
             //noinspection ConstantConditions
-            if(Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(playerId) == null)
+            if(Clans.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(playerId) == null) {
                 shouldDisposeReferences = true;
+                saveHandler.disposeReferences();
+            }
         }
-        //endregion
-
-        //region load
 
         /**
          * @return true if it loaded from a file successfully, false otherwise.
@@ -243,7 +244,7 @@ public final class PlayerData {
         }
 
         @Override
-        public void blockingSave() {
+        public JsonObject toJson() {
             JsonObject obj = new JsonObject();
             if (defaultClan != null)
                 obj.addProperty("defaultClan", defaultClan.toString());
@@ -259,13 +260,12 @@ public final class PlayerData {
 
             JsonHelper.attachAddonData(obj, this.addonData);
 
-            try {
-                FileWriter file = new FileWriter(playerDataFile);
-                file.write(new GsonBuilder().setPrettyPrinting().create().toJson(obj));
-                file.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return obj;
+        }
+
+        @Override
+        public void blockingSave() {
+            writeToJson(playerDataFile);
         }
 
         @Override

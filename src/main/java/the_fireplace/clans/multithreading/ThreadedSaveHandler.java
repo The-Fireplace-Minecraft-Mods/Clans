@@ -4,7 +4,7 @@ public class ThreadedSaveHandler<T extends ThreadedSaveable> {
     private T saveObject;
     private boolean isChanged = false;
     private boolean saving = false;
-    private boolean disposed = false;
+    private boolean markedForDisposal = false;
 
     private ThreadedSaveHandler(T saveObject) {
         this.saveObject = saveObject;
@@ -14,8 +14,8 @@ public class ThreadedSaveHandler<T extends ThreadedSaveable> {
         return new ThreadedSaveHandler<>(saveObject);
     }
 
-    public void disposeReference() {
-        disposed = true;
+    public void disposeReferences() {
+        markedForDisposal = true;
     }
 
     public void markNeedsSave() {
@@ -30,10 +30,10 @@ public class ThreadedSaveHandler<T extends ThreadedSaveable> {
             return;
         saving = true;
         isChanged = false;
-        SaveExecutionManager.run(() -> {
+        ConcurrentExecutionManager.run(() -> {
             saveObject.blockingSave();
             saving = false;
-            if(disposed) {
+            if(markedForDisposal) {
                 if(isChanged)
                     concurrentSave();
                 else //noinspection ConstantConditions
