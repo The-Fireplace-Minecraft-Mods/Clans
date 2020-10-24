@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class ConcurrentExecutionManager {
     //Limit the number of active threads so we don't run the machine out of memory
-    private static final ExecutorService EXECUTOR_SERVICE_ESSENTIAL = Executors.newFixedThreadPool(128);
-    private static final ExecutorService EXECUTOR_SERVICE_NONESSENTIAL = Executors.newFixedThreadPool(64);
+    private static final ExecutorService EXECUTOR_SERVICE_ESSENTIAL = Executors.newFixedThreadPool(256);
+    private static final ExecutorService EXECUTOR_SERVICE_NONESSENTIAL = Executors.newFixedThreadPool(128);
 
     public static void run(Runnable runnable) {
         if(!EXECUTOR_SERVICE_ESSENTIAL.isShutdown())
