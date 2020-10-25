@@ -2,8 +2,8 @@ package the_fireplace.clans.api.event;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import the_fireplace.clans.model.ChunkPosition;
-import the_fireplace.clans.model.Clan;
+import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.legacy.model.ChunkPosition;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -11,11 +11,11 @@ import java.util.UUID;
 public class PreLandClaimEvent {
     public boolean isCancelled = false;
     public ITextComponent cancelledMessage;
-    private World world;
-    private ChunkPosition chunkPosition;
+    private final World world;
+    private final ChunkPosition chunkPosition;
     @Nullable
-    private UUID claimingPlayer;
-    private Clan claimingClan;
+    private final UUID claimingPlayer;
+    private final Clan claimingClan;
 
     public PreLandClaimEvent(World world, ChunkPosition chunkPosition, @Nullable UUID claimingPlayer, Clan claimingClan) {
         this.world = world;

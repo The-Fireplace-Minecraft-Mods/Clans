@@ -1,26 +1,25 @@
 package the_fireplace.clans.api;
 
-import the_fireplace.clans.Clans;
-import the_fireplace.clans.abstraction.IConfig;
-import the_fireplace.clans.abstraction.IPaymentHandler;
+import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.api.event.IClansEventHandler;
-import the_fireplace.clans.data.ClaimData;
-import the_fireplace.clans.data.PlayerData;
-import the_fireplace.clans.util.ClansEventManager;
+import the_fireplace.clans.legacy.abstraction.IConfig;
+import the_fireplace.clans.legacy.abstraction.IPaymentHandler;
+import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.util.ClansEventManager;
 
 /**
- * Several useful files for accessing data are:
- * {@link the_fireplace.clans.cache.ClanCache}
- * {@link PlayerData}
+ * Several useful places to look for data are:
+ * {@link the_fireplace.clans.clan}
+ * {@link the_fireplace.clans.player}
  * {@link ClaimData}
  */
 public final class ClansAPI {
     public static IConfig getConfig() {
-        return Clans.getConfig();
+        return ClansModContainer.getConfig();
     }
 
     public static IPaymentHandler getPaymentHandler(){
-        return Clans.getPaymentHandler();
+        return ClansModContainer.getPaymentHandler();
     }
 
     public static boolean isClaimed(int chunkX, int chunkZ, int dimension) {

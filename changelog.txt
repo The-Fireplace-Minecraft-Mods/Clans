@@ -3,8 +3,11 @@ Additions:
 Changes:
 Opclan claim commands can now be used to force claims in dimensions that aren't normally allowed.
 Map commands are now faster and are now based on sections of the map instead of generating one centered on the player.
+A player's cooldown for /clan home will now count down even if the player is offline
 
 Fixes/Internal Changes:
-Massively improved performance
+Massively improved performance of just about everything the mod does
 Fixed a bug in the message clan members get when someone leaves the clan
-Fix crash when all raiders or clan members log out before a raid activates
+Fixed a crash when all raiders or clan members log out before a raid activates
+Fixed /opclan setname not changing the name
+Fixed claim data failing to save when there are a lot of claimed chunks
