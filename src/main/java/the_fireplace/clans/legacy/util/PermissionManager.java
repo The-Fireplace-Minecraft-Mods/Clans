@@ -2,7 +2,7 @@ package the_fireplace.clans.legacy.util;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 
 public final class PermissionManager {
 

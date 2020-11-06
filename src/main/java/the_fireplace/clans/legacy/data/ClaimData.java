@@ -7,16 +7,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.Entity;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.land.ClanClaims;
 import the_fireplace.clans.io.FileToJsonObject;
 import the_fireplace.clans.io.JsonWritable;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.ClanDimInfo;
 import the_fireplace.clans.legacy.model.CoordNodeTree;
-import the_fireplace.clans.legacy.util.JsonHelper;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 
@@ -75,62 +73,40 @@ public final class ClaimData {
         return Collections.unmodifiableSet(claimed != null ? claimed.getChunks().stream().filter(ChunkPositionWithData::isBorderland).collect(Collectors.toSet()) : Collections.emptySet());
     }
 
-    public static Set<Clan> clansWithClaims() {
+    public static Set<UUID> clansWithClaims() {
         loadIfNeeded();
-        Set<Clan> claimClans = Sets.newHashSet();
-        for(Map.Entry<UUID, ClaimStoredData> clanId: Sets.newHashSet(claimedChunks.entrySet())) {
-            Clan clan = ClanDatabase.getClanById(clanId.getKey());
-            if(clan != null) {
-                if (!clanId.getValue().getChunks().isEmpty())
-                    claimClans.add(clan);
-            } else
-                delClan(clanId.getKey());
+        Set<UUID> claimClans = Sets.newHashSet();
+        for(Map.Entry<UUID, ClaimStoredData> claimedChunkEntry: claimedChunks.entrySet()) {
+            UUID clan = claimedChunkEntry.getKey();
+            if (!claimedChunkEntry.getValue().getChunks().isEmpty())
+                claimClans.add(clan);
         }
         return Collections.unmodifiableSet(claimClans);
     }
 
-    public static void addChunk(Clan clan, ChunkPositionWithData pos) {
+    public static void addChunk(UUID clan, ChunkPositionWithData pos) {
         loadIfNeeded();
-        claimedChunks.putIfAbsent(clan.getId(), new ClaimStoredData(clan.getId()));
-        claimedChunks.get(clan.getId()).addChunk(pos);
-        getCacheSection(pos).put(pos, claimedChunks.get(clan.getId()));
+        claimedChunks.putIfAbsent(clan, new ClaimStoredData(clan));
+        claimedChunks.get(clan).addChunk(pos);
+        getCacheSection(pos).put(pos, claimedChunks.get(clan));
         if(!pos.isBorderland()) {
-            resetRegenBorderlandsTimer(clan.getId());
-            clan.incrementCachedClaimCount();
+            resetRegenBorderlandsTimer(clan);
+            ClanClaims.get(clan).incrementCachedClaimCount();
         }
     }
 
-    public static void addChunk(@Nullable UUID clanId, ChunkPositionWithData pos) {
-        Clan clan = ClanDatabase.getClanById(clanId);
-        if(clan == null)
-            delClan(clanId);
-        else
-            addChunk(clan, pos);
-    }
-
-    public static void delChunk(Clan clan, ChunkPositionWithData pos) {
+    public static void delChunk(UUID clan, ChunkPositionWithData pos) {
         loadIfNeeded();
-        claimedChunks.putIfAbsent(clan.getId(), new ClaimStoredData(clan.getId()));
+        claimedChunks.putIfAbsent(clan, new ClaimStoredData(clan));
         getCacheSection(pos).remove(pos);
-        if(claimedChunks.get(clan.getId()).delChunk(pos) && !pos.isBorderland()) {
-            resetRegenBorderlandsTimer(clan.getId());
-            clan.decrementCachedClaimCount();
+        if(claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
+            resetRegenBorderlandsTimer(clan);
+            ClanClaims.get(clan).decrementCachedClaimCount();
         }
     }
 
     public static void resetRegenBorderlandsTimer(UUID clanId) {
         regenBordersTimer.put(clanId, 5);
-    }
-
-    /**
-     * Delete a claim. If you already have the clan, use the delChunk method that takes it for efficiency.
-     */
-    public static void delChunk(@Nullable UUID clanId, ChunkPositionWithData pos) {
-        Clan clan = ClanDatabase.getClanById(clanId);
-        if(clan == null)
-            delClan(clanId);
-        else
-            delChunk(clan, pos);
     }
 
     public static List<Integer> getClaimDims(UUID clanId) {
@@ -163,29 +139,19 @@ public final class ClaimData {
     }
 
     @Nullable
-    public static Clan getChunkClan(@Nullable ChunkPositionWithData pos) {
-        return ClanDatabase.getClanById(getChunkClanId(pos));
+    public static UUID getChunkClan(Entity entity) {
+        return getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
     }
 
     @Nullable
-    public static Clan getChunkClan(int x, int z, int dim) {
-        return ClanDatabase.getClanById(getChunkClanId(x, z, dim));
-    }
-
-    @Nullable
-    public static Clan getChunkClan(Entity entity) {
-        return ClanDatabase.getClanById(getChunkClanId(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension));
-    }
-
-    @Nullable
-    public static UUID getChunkClanId(int x, int z, int dim) {
+    public static UUID getChunkClan(int x, int z, int dim) {
         loadIfNeeded();
         ClaimStoredData data = getCacheSection(new ChunkPosition(x, z, dim)).get(new ChunkPositionWithData(x, z, dim));
         return data != null ? data.clan : null;
     }
 
     @Nullable
-    public static UUID getChunkClanId(@Nullable ChunkPosition position) {
+    public static UUID getChunkClan(@Nullable ChunkPosition position) {
         loadIfNeeded();
         if(position == null)
             return null;
@@ -227,7 +193,7 @@ public final class ClaimData {
     }
 
     public static void updateChunkOwner(ChunkPositionWithData pos, @Nullable UUID oldOwner, UUID newOwner) {
-        delChunk(oldOwner != null ? oldOwner : getChunkClanId(pos), pos);
+        delChunk(oldOwner != null ? oldOwner : getChunkClan(pos), pos);
         //Create a new ChunkPositionWithData because the old one has addon data and borderland data attached
         addChunk(newOwner, new ChunkPositionWithData(pos));
     }
@@ -245,12 +211,9 @@ public final class ClaimData {
             for(Map.Entry<UUID, Integer> entry: Sets.newHashSet(regenBordersTimer.entrySet())) {
                 if(entry.getValue() <= 0) {
                     regenBordersTimer.remove(entry.getKey());
-                    Clan target = ClanDatabase.getClanById(entry.getKey());
-                    if(target == null)//Skip if clan has disbanded
-                        continue;
                     claimedChunks.get(entry.getKey()).regenBorderlands();
                     for(int dim: getClaimDims(entry.getKey()))
-                        ClansModContainer.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(target, dim));
+                        ClansModContainer.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(entry.getKey(), dim));
                 } else {
                     decrementRegenBorderlandsTimer(entry);
                 }
@@ -320,7 +283,6 @@ public final class ClaimData {
             for (JsonElement element : obj.get("chunks").getAsJsonArray()) {
                 ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
                 pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
-                pos.getAddonData().putAll(JsonHelper.getAddonData(element.getAsJsonObject()));
                 getCacheSection(pos).put(pos, loadClaimStoredData);
                 positions.add(pos);
             }
@@ -340,7 +302,6 @@ public final class ClaimData {
                 chunkPositionObject.addProperty("z", pos.getPosZ());
                 chunkPositionObject.addProperty("d", pos.getDim());
                 chunkPositionObject.addProperty("isBorderland", pos.isBorderland());
-                JsonHelper.attachAddonData(chunkPositionObject, pos.getAddonData());
                 positionArray.add(chunkPositionObject);
             }
             obj.add("chunks", positionArray);

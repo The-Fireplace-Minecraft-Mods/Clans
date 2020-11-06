@@ -8,9 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class ChunkUtils {
 	@Nullable
 	public static UUID getChunkOwner(Chunk c){
-		return ClaimData.getChunkClanId(c.x, c.z, c.getWorld().provider.getDimension());
+		return ClaimData.getChunkClan(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	@Nullable
@@ -58,7 +58,7 @@ public class ChunkUtils {
 
 	public static boolean hasConnectedClaim(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
-			checkOwner = ClaimData.getChunkClanId(c);
+			checkOwner = ClaimData.getChunkClan(c);
 		if(checkOwner == null)
 			return false;
 		return !getConnectedClaimPositions(c, checkOwner).isEmpty();
@@ -188,7 +188,7 @@ public class ChunkUtils {
 	public static ArrayList<ChunkPositionWithData> getConnectedClaimPositions(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		ArrayList<ChunkPositionWithData> adjacent = Lists.newArrayList();
 		if(checkOwner == null)
-			checkOwner = ClaimData.getChunkClanId(c);
+			checkOwner = ClaimData.getChunkClan(c);
 		if(checkOwner == null)
 			return adjacent;
 		final UUID checkOwnerFinal = checkOwner;
@@ -196,7 +196,7 @@ public class ChunkUtils {
 		adjacent.add(c.offset(-1, 0));
 		adjacent.add(c.offset(0, 1));
 		adjacent.add(c.offset(0, -1));
-		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimData.getChunkClanId(c2)) || ClaimData.getChunkPositionData(c2).isBorderland());
+		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimData.getChunkClan(c2)) || ClaimData.getChunkPositionData(c2).isBorderland());
 		return adjacent;
 	}
 

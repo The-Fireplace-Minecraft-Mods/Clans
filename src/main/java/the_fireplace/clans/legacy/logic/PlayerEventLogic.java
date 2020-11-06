@@ -4,11 +4,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.home.ClanHomes;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.PlayerAutoClaimData;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.cache.RaidingParties;
@@ -31,9 +33,9 @@ public class PlayerEventLogic {
     }
 
     public static void onFirstLogin(UUID playerId) {
-        Clan serverDefault = ClanNameCache.getClanByName(ClansModContainer.getConfig().getServerDefaultClan());
+        Clan serverDefault = ClanNames.getClanByName(ClansModContainer.getConfig().getServerDefaultClan());
         if(serverDefault != null)
-            serverDefault.addMember(playerId);
+            ClanMembers.get().addMember(playerId);
         else if(!ClansModContainer.getConfig().getServerDefaultClan().equalsIgnoreCase("N/A"))
             ClansModContainer.getLogger().warn("Invalid server default clan {}, players won't be added to it.", ClansModContainer.getConfig().getServerDefaultClan());
     }
@@ -41,7 +43,7 @@ public class PlayerEventLogic {
     public static void checkUpdateDefaultClan(EntityPlayer player) {
         if(!player.world.isRemote) {
             UUID defaultClan = PlayerClanSettings.getDefaultClan(player.getUniqueID());
-            if ((defaultClan != null && ClanDatabase.getClanById(defaultClan) == null) || (defaultClan == null && !ClanMemberCache.getClansPlayerIsIn(player.getUniqueID()).isEmpty()) || (defaultClan != null && !ClanMemberCache.getClansPlayerIsIn(player.getUniqueID()).contains(ClanDatabase.getClanById(defaultClan))))
+            if ((defaultClan != null && ClanDatabase.getClanById(defaultClan) == null) || (defaultClan == null && !PlayerClans.getClansPlayerIsIn(player.getUniqueID()).isEmpty()) || (defaultClan != null && !PlayerClans.getClansPlayerIsIn(player.getUniqueID()).contains(ClanDatabase.getClanById(defaultClan))))
                 PlayerClanSettings.updateDefaultClanIfNeeded(player.getUniqueID(), null);
         }
     }
@@ -64,11 +66,11 @@ public class PlayerEventLogic {
             if (ocAutoAbandon)
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
             if (cAutoAbandon != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoabandon.stop", cAutoAbandon.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
             if (ocAutoClaim != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", ocAutoClaim.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
             if (cAutoClaim != null)
-                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getName()).setStyle(TextStyles.GREEN));
+                player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "commands.clan.autoclaim.stop", cAutoClaim.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
         }
     }
 
@@ -78,7 +80,7 @@ public class PlayerEventLogic {
             if (defaultClanId != null) {
                 Clan playerDefaultClan = ClanDatabase.getClanById(defaultClanId);
                 if (playerDefaultClan != null)
-                    return TranslationUtil.getTranslation(ClansModContainer.getConfig().getDefaultClanPrefix(), playerDefaultClan.getName()).setStyle(new Style().setColor(playerDefaultClan.getTextColor())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
+                    return TranslationUtil.getTranslation(ClansModContainer.getConfig().getDefaultClanPrefix(), playerDefaultClan.getClanMetadata().getClanName()).setStyle(new Style().setColor(playerDefaultClan.getClanMetadata().getColorFormatting())).appendSibling(initialMessage.setStyle(TextStyles.RESET));
                 else
                     PlayerClanSettings.updateDefaultClanIfNeeded(player.getUniqueID(), null);
             }
@@ -89,16 +91,16 @@ public class PlayerEventLogic {
     public static void onPlayerRespawn(EntityPlayer player) {
         if(!player.world.isRemote && ClansModContainer.getConfig().isClanHomeFallbackSpawnpoint() && player.bedLocation == null) {
             Clan defClan = ClanDatabase.getClanById(PlayerClanSettings.getDefaultClan(player.getUniqueID()));
-            if (defClan != null && defClan.hasHome() && defClan.getHome() != null)
-                EntityUtil.teleportHome(player, defClan.getHome(), defClan.getHomeDim(), player.dimension, true);
+            if (defClan != null && ClanHomes.get().hasHome() && ClanHomes.get().getHome() != null)
+                EntityUtil.teleportHome(player, ClanHomes.get().getHome(), ClanHomes.get().getHomeDim(), player.dimension, true);
         }
     }
 
     public static void sendClanChat(EntityPlayer player, ITextComponent message) {
         if(!player.world.isRemote) {
             Clan clanChat = PlayerCache.getChattingWithClan(player);
-            for (EntityPlayerMP member : clanChat.getOnlineMembers().keySet())
-                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getName()).setStyle(new Style().setColor(clanChat.getTextColor())).appendSibling(message));
+            for (EntityPlayerMP member : ClanMembers.get().getOnlineMemberRanks().keySet())
+                member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.chat.prefix", clanChat.getClanMetadata().getClanName()).setStyle(new Style().setColor(clanChat.getClanMetadata().getColorFormatting())).appendSibling(message));
         }
     }
 

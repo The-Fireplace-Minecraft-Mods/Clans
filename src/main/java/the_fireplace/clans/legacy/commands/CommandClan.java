@@ -11,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
-import the_fireplace.clans.legacy.abstraction.dummy.PaymentHandlerDummy;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.economy.DummyEconomy;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.config.clan.*;
 import the_fireplace.clans.legacy.commands.config.player.CommandSetDefault;
 import the_fireplace.clans.legacy.commands.config.player.CommandTerritoryMessageMode;
@@ -93,7 +93,7 @@ public class CommandClan extends CommandBase {
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
         //clan finances
-        if(!(ClansModContainer.getPaymentHandler() instanceof PaymentHandlerDummy)){
+        if(!(Economy instanceof DummyEconomy)){
             put("balance", new CommandBalance());
             put("addfunds", new CommandAddFunds());
             put("takefunds", new CommandTakeFunds());
@@ -194,7 +194,7 @@ public class CommandClan extends CommandBase {
             throw new WrongUsageException(getUsage(sender));
         String tag = args[0].toLowerCase();
         //Remove the subcommand from the args
-        if(ClanNameCache.isClanNameUsed(tag) && args.length >= 2) {
+        if(ClanNames.isClanNameUsed(tag) && args.length >= 2) {
             //Skip to the next arg because the first is a clan name
             tag = args[1];
             if (args.length > 2) {
@@ -212,11 +212,11 @@ public class CommandClan extends CommandBase {
                     args = new String[]{};
             //Make the first arg the default clan name because a clan name was not specified
             Clan defaultClan = sender instanceof EntityPlayerMP ? ClanDatabase.getClanById(PlayerClanSettings.getDefaultClan(((EntityPlayerMP) sender).getUniqueID())) : null;
-            args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getName() : "null"}, args);
+            args = ArrayUtils.addAll(new String[]{defaultClan != null ? defaultClan.getClanMetadata().getClanName() : "null"}, args);
         }
         //Check permissions and run command
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag))) {
-            if (!(ClansModContainer.getPaymentHandler() instanceof PaymentHandlerDummy) || !financeCommands.contains(processAlias(tag))) {
+            if (!(Economy instanceof DummyEconomy) || !financeCommands.contains(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))
                     commands.get(processAlias(tag)).execute(server, sender, args);
                 else
@@ -254,12 +254,12 @@ public class CommandClan extends CommandBase {
             if(args.length == 1) {
                 List<String> arg1List = Lists.newArrayList(commands.keySet());
                 if (sender instanceof EntityPlayerMP)
-                    for (Clan c : ClanMemberCache.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
-                        arg1List.add(c.getName());
+                    for (Clan c : PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
+                        arg1List.add(c.getClanMetadata().getClanName());
                 return getListOfStringsMatchingLastWord(args, arg1List);
             } else if(commands.containsKey(processAlias(args[0]))) {
                 return commands.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos);
-            } else if(ClanNameCache.getClanNames().contains(args[0])) {
+            } else if(ClanNames.getClanNames().contains(args[0])) {
                 if(args.length == 2)
                     return getListOfStringsMatchingLastWord(args, commands.keySet());
                 else if(commands.get(args[1]) != null)

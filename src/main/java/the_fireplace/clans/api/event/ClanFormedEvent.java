@@ -1,22 +1,20 @@
 package the_fireplace.clans.api.event;
 
-import the_fireplace.clans.clan.Clan;
-
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class ClanFormedEvent {
     @Nullable
     private final UUID formingPlayer;
-    private final Clan newClan;
+    private final UUID newClan;
 
-    public ClanFormedEvent(@Nullable UUID formingPlayer, Clan newClan) {
+    public ClanFormedEvent(@Nullable UUID formingPlayer, UUID newClan) {
         this.formingPlayer = formingPlayer;
         this.newClan = newClan;
     }
 
     /**
-     * The player that is forming the clan, if any. This will be null if a player isn't the one forming the clan.
+     * The player that is forming the clan, if any. This will be null if a player isn't the one forming the clan, or the clan is a server clan.
      */
     @Nullable
     public UUID getFormingPlayer() {
@@ -24,9 +22,9 @@ public class ClanFormedEvent {
     }
 
     /**
-     * The newly formed clan
+     * The newly formed clan ID
      */
-    public Clan getNewClan() {
+    public UUID getNewClan() {
         return newClan;
     }
 }

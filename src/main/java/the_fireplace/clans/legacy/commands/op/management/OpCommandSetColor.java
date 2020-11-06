@@ -5,7 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -36,7 +36,7 @@ public class OpCommandSetColor extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			int color;
 			try {
@@ -48,8 +48,8 @@ public class OpCommandSetColor extends OpClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.invalid", args[1]).setStyle(TextStyles.RED));
 				return;
 			}
-			c.setColor(color);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", c.getName()).setStyle(TextStyles.GREEN));
+            c.getClanMetadata().setColor(color);
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
@@ -57,7 +57,7 @@ public class OpCommandSetColor extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames());
+			return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
 		else if(args.length == 2)
 			return getListOfStringsMatchingLastWord(args, TextStyles.colorStrings.keySet());
 		return Collections.emptyList();

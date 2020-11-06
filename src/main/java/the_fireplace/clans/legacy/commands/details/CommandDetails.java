@@ -8,9 +8,16 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.economics.ClanRent;
+import the_fireplace.clans.clan.economics.ClanUpkeep;
+import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
+import the_fireplace.clans.economy.Economy;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.FormulaParser;
@@ -61,7 +68,7 @@ public class CommandDetails extends ClanSubCommand {
 			} else
 				showDetails(server, sender, selectedClan);
 		} else {
-			Clan targetClan = ClanNameCache.getClanByName(args[0]);
+			Clan targetClan = ClanNames.getClanByName(args[0]);
 			if(targetClan == null)
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 			else
@@ -76,23 +83,23 @@ public class CommandDetails extends ClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? Lists.newArrayList(ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? Lists.newArrayList(ClanNames.getClanNames()) : Collections.emptyList();
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	private void showDetails(MinecraftServer server, ICommandSender sender, Clan clan) throws CommandException {
-		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", clan.getName()).setStyle(TextStyles.GREEN));
-		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", clan.getDescription()).setStyle(TextStyles.GREEN));
-		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", clan.getClaimCount()).setStyle(TextStyles.GREEN));
-		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", clan.getMemberCount()).setStyle(TextStyles.GREEN));
-		if(ClansModContainer.getConfig().isIncreasingRewards() && !clan.isServer())
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.multiplier", clan.getRaidRewardMultiplier()).setStyle(TextStyles.GREEN));
-		if(clan.isServer())
+        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", clan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", ClanClaims.get().getClaimCount()).setStyle(TextStyles.GREEN));
+        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", ClanMembers.get().getMemberCount()).setStyle(TextStyles.GREEN));
+        if(ClansModContainer.getConfig().isIncreasingRewards() && !AdminControlledClanSettings.get().isServerOwned())
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.multiplier", ClanWeaknessFactor.get().getWeaknessFactor()).setStyle(TextStyles.GREEN));
+        if(AdminControlledClanSettings.get().isServerOwned())
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.server").setStyle(TextStyles.GREEN));
 		List<UUID> leaders = Lists.newArrayList();
 		List<UUID> admins = Lists.newArrayList();
 		List<UUID> members = Lists.newArrayList();
-		for(Map.Entry<UUID, EnumRank> member: clan.getMembers().entrySet()) {
+        for(Map.Entry<UUID, EnumRank> member: ClanMembers.get().getMemberRanks().entrySet()) {
 			switch(member.getValue()){
 				case LEADER:
 					leaders.add(member.getKey());
@@ -123,40 +130,40 @@ public class CommandDetails extends ClanSubCommand {
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.member", m.getName(), PlayerRaidStats.getRaidWLR(m.getId()), TimeUtils.getFormattedTime(PlayerLastSeenData.getLastSeen(m.getId()))).setStyle(server.getPlayerList().getPlayerByUUID(member) != null ? TextStyles.GREEN : TextStyles.YELLOW));
 			}
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.no_members", clan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 		UUID senderId = sender instanceof EntityPlayerMP ? ((EntityPlayerMP) sender).getUniqueID() : null;
-		if((senderId != null && (members.contains(senderId) || admins.contains(senderId) || leaders.contains(senderId)) || sender instanceof MinecraftServer) && !clan.isServer()) {
+        if((senderId != null && (members.contains(senderId) || admins.contains(senderId) || leaders.contains(senderId)) || sender instanceof MinecraftServer) && !AdminControlledClanSettings.get().isServerOwned()) {
 			double upkeep = 0;
 			double rent = 0;
 			if(ClansModContainer.getConfig().getClanUpkeepDays() > 0) {
 				upkeep += FormulaParser.eval(ClansModContainer.getConfig().getClanUpkeepCostFormula(), clan, 0);
 				if(upkeep > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", ClansModContainer.getPaymentHandler().getFormattedCurrency(upkeep), ClansModContainer.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (selectedClan.getNextUpkeepTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
+					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeep", Economy.getFormattedCurrency(upkeep), ClansModContainer.getConfig().getClanUpkeepDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.upkeepdue", (ClanUpkeep.get().getNextUpkeepTimestamp() -System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(ClansModContainer.getConfig().getChargeRentDays() > 0) {
-				rent += selectedClan.getRent();
+                rent += ClanRent.get().getRent();
 				if(rent > 0) {
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", ClansModContainer.getPaymentHandler().getFormattedCurrency(rent*selectedClan.getMemberCount()), ClansModContainer.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
-                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", ClansModContainer.getPaymentHandler().getFormattedCurrency(rent), ClansModContainer.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
-					sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (selectedClan.getNextRentTimestamp()-System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent", Economy.getFormattedCurrency(rent* ClanMembers.get().getMemberCount()), ClansModContainer.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rent_individual", Economy.getFormattedCurrency(rent), ClansModContainer.getConfig().getChargeRentDays()).setStyle(TextStyles.GREEN));
+                    sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.rentdue", (ClanRent.get().getNextRentTimestamp() -System.currentTimeMillis())/1000/60/60).setStyle(TextStyles.GREEN));
 				}
 			}
 			if(upkeep > 0 && rent > 0 && leaders.contains(senderId)) {
 				upkeep /= ClansModContainer.getConfig().getClanUpkeepDays();
 				rent /= ClansModContainer.getConfig().getChargeRentDays();
-				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? ClansModContainer.getPaymentHandler().getFormattedCurrency(rent-upkeep) : '+'+ ClansModContainer.getPaymentHandler().getFormattedCurrency(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
+				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.trend", (rent-upkeep) <= 0 ? Economy.getFormattedCurrency(rent-upkeep) : '+'+ Economy.getFormattedCurrency(rent-upkeep)).setStyle(rent >= upkeep ? TextStyles.GREEN : TextStyles.YELLOW));
 				if(upkeep > rent) {
 					double maxRent = FormulaParser.eval(ClansModContainer.getConfig().getMaxRentFormula(), clan, 0);
-					if(selectedClan.getRent() < maxRent) {
-						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.increase_rent", maxRent/ ClansModContainer.getConfig().getChargeRentDays() < upkeep ? maxRent : ClansModContainer.getConfig().getChargeRentDays() *upkeep/selectedClan.getMemberCount()).setStyle(TextStyles.YELLOW));
+                    if(ClanRent.get().getRent() < maxRent) {
+                        sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.increase_rent", maxRent/ ClansModContainer.getConfig().getChargeRentDays() < upkeep ? maxRent : ClansModContainer.getConfig().getChargeRentDays() *upkeep/ ClanMembers.get().getMemberCount()).setStyle(TextStyles.YELLOW));
 					} else
 						sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.reduce_upkeep").setStyle(TextStyles.YELLOW));
 				}
 			}
 			if(rent <= 0 && upkeep <= 0 && leaders.contains(senderId))
-				sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.breaking_even", selectedClan.getName()).setStyle(TextStyles.GREEN));
+                sender.sendMessage(TranslationUtil.getTranslation(senderId, "commands.clan.details.breaking_even", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

@@ -6,11 +6,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.membership.ClanMemberMessager;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -50,16 +52,16 @@ public class CommandAccept extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan acceptClan = ClanNameCache.getClanByName(args[0]);
+		Clan acceptClan = ClanNames.getClanByName(args[0]);
 		if(acceptClan != null) {
-			if(InvitedPlayers.getReceivedInvites(sender.getUniqueID()).contains(acceptClan.getId())) {
-				acceptClan.addMember(sender.getUniqueID());
-				if (ClanMemberCache.getClansPlayerIsIn(sender.getUniqueID()).size() == 1)
-					PlayerClanSettings.setDefaultClan(sender.getUniqueID(), acceptClan.getId());
-				InvitedPlayers.removeInvite(sender.getUniqueID(), acceptClan.getId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getName()).setStyle(TextStyles.GREEN));
-				acceptClan.messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getName());
-			} else
+			if(InvitedPlayers.getReceivedInvites(sender.getUniqueID()).contains(acceptClan.getClanMetadata().getClanId())) {
+                ClanMembers.get().addMember(sender.getUniqueID());
+                if (PlayerClans.getClansPlayerIsIn(sender.getUniqueID()).size() == 1)
+					PlayerClanSettings.setDefaultClan(sender.getUniqueID(), acceptClan.getClanMetadata().getClanId());
+				InvitedPlayers.removeInvite(sender.getUniqueID(), acceptClan.getClanMetadata().getClanId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.accept.success", acceptClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+                ClanMemberMessager.get().messageAllOnline(sender, TextStyles.GREEN, "commands.clan.accept.accepted", sender.getDisplayNameString(), acceptClan.getClanMetadata().getClanName());
+            } else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_invited", args[0]).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
@@ -70,7 +72,7 @@ public class CommandAccept extends ClanSubCommand {
 		if(args.length == 1 && sender instanceof EntityPlayerMP) {
 			List<String> clanNames = Lists.newArrayList();
 			for(UUID c: InvitedPlayers.getReceivedInvites(((EntityPlayerMP) sender).getUniqueID()))
-				clanNames.add(Objects.requireNonNull(ClanDatabase.getClanById(c)).getName());
+				clanNames.add(Objects.requireNonNull(ClanDatabase.getClanById(c)).getClanMetadata().getClanName());
 			return getListOfStringsMatchingLastWord(args, clanNames);
 		}
 		return Collections.emptyList();

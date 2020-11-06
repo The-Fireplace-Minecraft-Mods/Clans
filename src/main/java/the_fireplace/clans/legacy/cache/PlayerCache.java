@@ -7,9 +7,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.home.ClanHomes;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.model.OrderedPair;
 import the_fireplace.clans.legacy.util.ChunkUtils;
 import the_fireplace.clans.legacy.util.EntityUtil;
@@ -177,8 +179,8 @@ public final class PlayerCache {
             if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
                 Clan c = ClanDatabase.getClanById(entry.getValue().getValue2());
                 //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
-                if(c != null && c.getHome() != null && c.getMembers().containsKey(entry.getKey().getUniqueID()))
-                    EntityUtil.teleportHome(entry.getKey(), c.getHome(), c.getHomeDim(), entry.getKey().dimension, false);
+                if(c != null && ClanHomes.get().getHome() != null && ClanMembers.get().getMemberRanks().containsKey(entry.getKey().getUniqueID()))
+                    EntityUtil.teleportHome(entry.getKey(), ClanHomes.get().getHome(), ClanHomes.get().getHomeDim(), entry.getKey().dimension, false);
                 else
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
             }

@@ -8,7 +8,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.logic.RaidManagementLogic;
 
 @Mod.EventBusSubscriber(modid = ClansModContainer.MODID)

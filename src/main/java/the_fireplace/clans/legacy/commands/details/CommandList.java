@@ -10,9 +10,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
+import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.ChatUtil;
@@ -62,32 +65,32 @@ public class CommandList extends ClanSubCommand {
 				case "alphabetical":
 				case "abc":
 				default:
-					clans.sort(Comparator.comparing(Clan::getName));
+					clans.sort(Comparator.comparing(clan1 -> clan1.getClanMetadata().getClanName()));
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "money":
 				case "$":
-					clans.sort(Comparator.comparingDouble(clan -> ClansModContainer.getPaymentHandler().getBalance(clan.getId())));
+					clans.sort(Comparator.comparingDouble(clan -> Economy.getBalance(clan.getClanMetadata().getClanId())));
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClansModContainer.getPaymentHandler().getFormattedCurrency(ClansModContainer.getPaymentHandler().getBalance(clan.getId())), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", Economy.getFormattedCurrency(Economy.getBalance(clan.getClanMetadata().getClanId())), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "land":
 				case "claims":
-					clans.sort(Comparator.comparingLong(Clan::getClaimCount));
+					clans.sort(Comparator.comparingLong(clan2 -> ClanClaims.get().getClaimCount()));
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getClaimCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanClaims.get().getClaimCount(), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "members":
-					clans.sort(Comparator.comparingInt(Clan::getMemberCount));
+					clans.sort(Comparator.comparingInt(clan1 -> ClanMembers.get().getMemberCount()));
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", clan.getMemberCount(), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanMembers.get().getMemberCount(), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "rewardmult":
-					clans.sort(Comparator.comparingDouble(Clan::getRaidRewardMultiplier));
+					clans.sort(Comparator.comparingDouble(clan1 -> ClanWeaknessFactor.get().getWeaknessFactor()));
 					DecimalFormat df = new DecimalFormat("#,###.00");
 					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(clan.getRaidRewardMultiplier()), clan.getName(), clan.getDescription()).setStyle(TextStyles.GREEN));
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(ClanWeaknessFactor.get().getWeaknessFactor()), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "invites":
 				case "invite":
@@ -135,7 +138,7 @@ public class CommandList extends ClanSubCommand {
 					continue;
 				}
 				shown = true;
-				texts.add(new TextComponentString(inviteClan.getName()).setStyle(new Style().setColor(inviteClan.getTextColor())));
+                texts.add(new TextComponentString(inviteClan.getClanMetadata().getClanName()).setStyle(new Style().setColor(inviteClan.getClanMetadata().getColorFormatting())));
 			}
 			ChatUtil.showPaginatedChat(sender, "/clan list invites %s", texts, page);
 			//Deal with the edge case where all inviting clans have been disbanded

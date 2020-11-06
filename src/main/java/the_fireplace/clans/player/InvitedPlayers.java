@@ -46,6 +46,12 @@ public final class InvitedPlayers {
         INVITED_PLAYERS_CACHE.get(clanId).remove(playerId);
     }
 
+    public static void clearReceivedInvites(UUID player) {
+        for (UUID clan: INVITED_PLAYERS_CACHE.keySet()) {
+            removeInvite(player, clan);
+        }
+    }
+
     /**
      * Adds an invite block for a clan to a player's data. This also deletes any existing invites from the clan being blocked.
      * @return true if the player did not already block that clan, false otherwise.

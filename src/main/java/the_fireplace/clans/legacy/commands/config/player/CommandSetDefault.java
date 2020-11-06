@@ -7,8 +7,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -44,13 +45,13 @@ public class CommandSetDefault extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan def = ClanNameCache.getClanByName(args[0]);
+		Clan def = ClanNames.getClanByName(args[0]);
 		if(def != null) {
-			if(def.getMembers().containsKey(sender.getUniqueID())) {
-				PlayerClanSettings.setDefaultClan(sender.getUniqueID(), def.getId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getName()).setStyle(TextStyles.GREEN));
+            if(ClanMembers.get().getMemberRanks().containsKey(sender.getUniqueID())) {
+				PlayerClanSettings.setDefaultClan(sender.getUniqueID(), def.getClanMetadata().getClanId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound").setStyle(TextStyles.RED));
 	}
@@ -59,8 +60,8 @@ public class CommandSetDefault extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		List<String> ret = Lists.newArrayList();
 		if(args.length == 1 && sender instanceof EntityPlayerMP)
-			for(Clan c: ClanMemberCache.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
-				ret.add(c.getName());
+			for(Clan c: PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
+				ret.add(c.getClanMetadata().getClanName());
 		return getListOfStringsMatchingLastWord(args, ret);
 	}
 }

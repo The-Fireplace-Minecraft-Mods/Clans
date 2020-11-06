@@ -8,8 +8,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClanMemberManagement;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -45,18 +46,18 @@ public class OpCommandKick extends OpClanSubCommand {
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
 		String player = args[1];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(player);
 
 			if(target != null) {
-				if (!ClanMemberCache.getClansPlayerIsIn(target.getId()).isEmpty()) {
-					if (ClanMemberCache.getClansPlayerIsIn(target.getId()).contains(c)) {
+				if (!PlayerClans.getClansPlayerIsIn(target.getId()).isEmpty()) {
+					if (PlayerClans.getClansPlayerIsIn(target.getId()).contains(c)) {
 						ClanMemberManagement.kickMember(server, sender, c, target);
 					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getName()).setStyle(TextStyles.RED));
+                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getName()).setStyle(TextStyles.RED));
+                    sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", player).setStyle(TextStyles.RED));
 		} else
@@ -67,13 +68,13 @@ public class OpCommandKick extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames());
-		Clan target = ClanNameCache.getClanByName(args[0]);
+			return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
+		Clan target = ClanNames.getClanByName(args[0]);
 		if(target != null && args.length == 2) {
 			ArrayList<String> playerNames = Lists.newArrayList();
-			for (UUID player : target.getMembers().keySet()) {
+            for (UUID player : ClanMembers.get().getMemberRanks().keySet()) {
 				GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-				if (playerProf != null && !target.getMembers().get(player).equals(EnumRank.LEADER))
+                if (playerProf != null && !ClanMembers.get().getMemberRanks().get(player).equals(EnumRank.LEADER))
 					playerNames.add(playerProf.getName());
 			}
 			return getListOfStringsMatchingLastWord(args, playerNames);

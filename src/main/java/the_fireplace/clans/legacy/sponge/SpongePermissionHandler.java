@@ -6,7 +6,7 @@ import org.spongepowered.api.service.permission.PermissionDescription;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IPermissionHandler;
 import the_fireplace.clans.legacy.commands.CommandClan;
 import the_fireplace.clans.legacy.commands.CommandOpClan;

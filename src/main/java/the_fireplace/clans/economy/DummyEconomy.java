@@ -1,10 +1,8 @@
-package the_fireplace.clans.legacy.abstraction.dummy;
-
-import the_fireplace.clans.legacy.abstraction.IPaymentHandler;
+package the_fireplace.clans.economy;
 
 import java.util.UUID;
 
-public class PaymentHandlerDummy implements IPaymentHandler {
+public class DummyEconomy implements ExternalEconomy {
 	@Override
 	public boolean deductAmount(double amount, UUID account) {
 		return true;
@@ -23,11 +21,6 @@ public class PaymentHandlerDummy implements IPaymentHandler {
 	@Override
 	public double getBalance(UUID account) {
 		return 0;
-	}
-
-	@Override
-	public String getCurrencyName(double amount) {
-		return "";
 	}
 
 	@Override

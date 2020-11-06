@@ -12,9 +12,9 @@ import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IDynmapCompat;
 import the_fireplace.clans.legacy.config.Config;
 import the_fireplace.clans.legacy.data.ClaimData;
@@ -70,7 +70,8 @@ public class DynmapCompat implements IDynmapCompat {
     public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {
         ClansModContainer.getMinecraftHelper().getLogger().debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
 
-        if(Objects.requireNonNull(ClanDatabase.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).isVisibleOnDynmap())
+        UUID clan = UUID.fromString(clanDimInfo.getClanIdString());
+        if(AdminControlledClanSettings.get(clan).isVisibleOnDynmap())
             claimUpdates.add(clanDimInfo);
     }
 
@@ -120,9 +121,9 @@ public class DynmapCompat implements IDynmapCompat {
     private void initializeMap() {
         Set<ClanDimInfo> clanDimList = Sets.newHashSet();
 
-        for(Clan clan: ClaimData.clansWithClaims()) {
+        for(UUID clan: ClaimData.clansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
+            for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
                 if(!addedDims.contains(chunk.getDim())) {
                     clanDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
@@ -212,9 +213,9 @@ public class DynmapCompat implements IDynmapCompat {
     }
 
     @Override
-    public void refreshTooltip(Clan clan) {
+    public void refreshTooltip(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
+        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
             if(!addedDims.contains(chunk.getDim())) {
                 refreshTooltip(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
@@ -240,7 +241,8 @@ public class DynmapCompat implements IDynmapCompat {
             stToolTip.append("<div style=\"text-align: center;\"><span>").append(checkAndCensor(clanDimInfo.getClanDescription())).append("</span></div>");
         }
 
-        Set<UUID> teamMembers = Objects.requireNonNull(ClanDatabase.getClanById(UUID.fromString(clanDimInfo.getClanIdString()))).getMembers().keySet();
+        UUID clan = UUID.fromString(clanDimInfo.getClanIdString());
+        Set<UUID> teamMembers = ClanMembers.get(clan).getMemberRanks().keySet();
 
         if (!teamMembers.isEmpty()) {
             stToolTip.append("<br><div style=\"text-align: center;\"><span style=\"font-weight:bold;\"><i>Clan Members</i></span></div>");
@@ -258,12 +260,12 @@ public class DynmapCompat implements IDynmapCompat {
 
     /**
      * Find all the markers for the specified clan and clear them.
-     * @param clan Name of clan you want to clear the markers for. Clears in all dimensions.
+     * @param clan clan you want to clear the markers for. Clears in all dimensions.
      */
     @Override
-    public void clearAllClanMarkers(Clan clan) {
+    public void clearAllClanMarkers(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan.getId()))
+        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
             if(!addedDims.contains(chunk.getDim())) {
                 clearAllClanMarkers(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
@@ -272,7 +274,7 @@ public class DynmapCompat implements IDynmapCompat {
 
     /**
      * Find all the markers for the specified clan and clear them.
-     * @param clanDimInfo Name of clan and dimension you want to clear the markers for.
+     * @param clanDimInfo clan and dimension you want to clear the markers for.
      */
     public void clearAllClanMarkers(ClanDimInfo clanDimInfo) {
         if (dynmapMarkerSet != null) {

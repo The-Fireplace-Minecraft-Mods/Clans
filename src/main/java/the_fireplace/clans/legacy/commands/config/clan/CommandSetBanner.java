@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanBanners;
+import the_fireplace.clans.clan.metadata.ClanBanners;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -53,8 +53,8 @@ public class CommandSetBanner extends ClanSubCommand {
 					return;
 				}
 				if(ClanBanners.isClanBannerAvailable(banner)) {
-					selectedClan.setBanner(banner);
-					sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+                    selectedClan.getClanMetadata().setClanBanner(banner);
+                    sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 			} catch(NBTException e){
@@ -73,8 +73,8 @@ public class CommandSetBanner extends ClanSubCommand {
 	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanBanners.isClanBannerAvailable(banner)) {
-			playerClan.setBanner(banner);
-			sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getName()).setStyle(TextStyles.GREEN));
+            playerClan.getClanMetadata().setClanBanner(banner);
+            sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 	}

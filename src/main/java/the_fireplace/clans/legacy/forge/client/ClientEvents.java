@@ -6,7 +6,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = ClansModContainer.MODID)
 public class ClientEvents {

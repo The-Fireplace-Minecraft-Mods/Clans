@@ -22,10 +22,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.accesscontrol.ClanLocks;
+import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.cache.player.ClaimAdminCache;
 import the_fireplace.clans.legacy.data.ClaimData;
@@ -56,12 +60,13 @@ public class LandProtectionLogic {
                 if (breaker != null) {
                     boolean isRaided = RaidingParties.isRaidedBy(chunkClan, breaker);
                     IBlockState targetState = world.getBlockState(pos);
-                    if (chunkClan.isLocked(pos) && !chunkClan.isLockOwner(pos, breaker.getUniqueID()) && !chunkClan.hasPerm("lockadmin", breaker.getUniqueID())) {
+                    if (ClanLocks.get().isLocked(pos) && !ClanLocks.get().isLockOwner(pos, breaker.getUniqueID()) && !ClanPermissions.get().hasPerm("lockadmin", breaker.getUniqueID())) {
                         if (showMessage)
                             //noinspection ConstantConditions
-                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(ClanLocks.get().getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                         return true;
                     }
+                    String defaultToPermission = isContainer(world, pos, targetState, null) ? "access" : "build";
                     if (shouldProtectAsNonRaided(breaker, c, chunkClan, isRaided)) {
                         if (showMessage)
                             breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), ChunkUtils.isBorderland(c) ? "clans.protection.break.borderland" : "clans.protection.break.claimed").setStyle(TextStyles.RED));
@@ -76,10 +81,10 @@ public class LandProtectionLogic {
                             }
                             return true;
                         }
-                    } else if (chunkClan.isLocked(pos) && !chunkClan.hasLockAccess(pos, breaker.getUniqueID(), isContainer(world, pos, targetState, null) ? "access" : "build")) {
+                    } else if (ClanLocks.get().isLocked(pos) && !ClanLocks.get().hasLockAccess(pos, breaker.getUniqueID(), defaultToPermission)) {
                         if (showMessage)
                             //noinspection ConstantConditions
-                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
+                            breaker.sendMessage(TranslationUtil.getTranslation(breaker.getUniqueID(), "clans.protection.break.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(ClanLocks.get().getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                         return true;
                     }
                 }
@@ -114,7 +119,7 @@ public class LandProtectionLogic {
             Chunk c = world.getChunk(pos);
             Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
             if (chunkClan != null && breakingPlayer != null) {
-                Collection<Clan> playerClans = ClanMemberCache.getClansPlayerIsIn(breakingPlayer.getUniqueID());
+                Collection<Clan> playerClans = PlayerClans.getClansPlayerIsIn(breakingPlayer.getUniqueID());
                 return (playerClans.isEmpty() || !playerClans.contains(chunkClan))
                     && !RaidingParties.isRaidedBy(chunkClan, breakingPlayer)
                     && !RaidingParties.preparingRaidOnBorderland(breakingPlayer, chunkClan, c);
@@ -155,7 +160,7 @@ public class LandProtectionLogic {
 
     private static boolean shouldProtectAsNonRaided(EntityPlayer placer, Chunk c, Clan chunkClan, boolean raidedBy) {
         return !ClaimAdminCache.isClaimAdmin((EntityPlayerMP) placer)
-            && !chunkClan.hasPerm("build", placer.getUniqueID())
+            && !ClanPermissions.get().hasPerm("build", placer.getUniqueID())
             && !raidedBy
             && !RaidingParties.preparingRaidOnBorderland(placer, chunkClan, c)
             && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(placer, false);
@@ -189,18 +194,19 @@ public class LandProtectionLogic {
                 boolean isContainer = isContainer(world, pos, targetState, targetTe);
                 boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
                 //Only bypass lock if there is an active raid, stealing is enabled, and the thief is either a raider or a member of the clan (It doesn't make sense to allow raiders to bypass the lock but not the clan members)
-                if (chunkClan.isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !ClansModContainer.getConfig().isEnableStealing() || !(isRaidedBy || chunkClan.getMembers().containsKey(player.getUniqueID())))) {
-                    if (!chunkClan.hasLockAccess(pos, player.getUniqueID(), isContainer ? "access" : "interact")) {
+                if (ClanLocks.get().isLocked(pos) && (!RaidingParties.hasActiveRaid(chunkClan) || !ClansModContainer.getConfig().isEnableStealing() || !(isRaidedBy || ClanMembers.get().getMemberRanks().containsKey(player.getUniqueID())))) {
+                    String defaultToPermission = isContainer ? "access" : "interact";
+                    if (!ClanLocks.get().hasLockAccess(pos, player.getUniqueID(), defaultToPermission)) {
                         //noinspection ConstantConditions
-                        player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(chunkClan.getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
+                        player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.protection.interact.locked", world.getMinecraftServer().getPlayerProfileCache().getProfileByUUID(ClanLocks.get().getLockOwner(pos)).getName()).setStyle(TextStyles.RED));
                         notifyClientOfCancelledInteract(world, pos, player, targetState, hand);
                         return true;
                     } else
                         return false;
                 }
                 if (!ClaimAdminCache.isClaimAdmin(player)
-                    && !chunkClan.hasPerm("interact", player.getUniqueID())
-                    && !(isContainer && chunkClan.hasPerm("access", player.getUniqueID()))
+                    && !ClanPermissions.get().hasPerm("interact", player.getUniqueID())
+                    && !(isContainer && ClanPermissions.get().hasPerm("access", player.getUniqueID()))
                     && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
                     && (!isRaidedBy
                     || !ClansModContainer.getConfig().isEnableStealing() && isContainer
@@ -235,8 +241,9 @@ public class LandProtectionLogic {
             if (chunkClan != null && !ChunkUtils.isBorderland(c)) {
                 if (player instanceof EntityPlayerMP) {
                     boolean isRaidedBy = RaidingParties.isRaidedBy(chunkClan, player);
+                    String permission = useAccessPermission ? "access" : "interact";
                     return !ClaimAdminCache.isClaimAdmin((EntityPlayerMP) player)
-                        && !chunkClan.hasPerm(useAccessPermission ? "access" : "interact", player.getUniqueID())
+                        && !ClanPermissions.get().hasPerm(permission, player.getUniqueID())
                         && !RaidingParties.preparingRaidOnBorderland(player, chunkClan, c)
                         && !isRaidedBy;
                 }
@@ -287,7 +294,7 @@ public class LandProtectionLogic {
                         Chunk c = world.getChunk(entity.getPosition());
                         UUID chunkOwner = ChunkUtils.getChunkOwner(c);
                         Clan chunkClan = ClanDatabase.getClanById(chunkOwner);
-                        Collection<Clan> entityClans = entity instanceof EntityPlayer ? ClanMemberCache.getClansPlayerIsIn(entity.getUniqueID()) : ClanMemberCache.getClansPlayerIsIn(getOwnerId(entity));
+                        Collection<Clan> entityClans = entity instanceof EntityPlayer ? PlayerClans.getClansPlayerIsIn(entity.getUniqueID()) : PlayerClans.getClansPlayerIsIn(getOwnerId(entity));
                         if (chunkClan != null && !ChunkUtils.isBorderland(c) && !entityClans.isEmpty() && entityClans.contains(chunkClan) && !RaidingParties.hasActiveRaid(chunkClan))
                             removeEntities.add(entity);
                     }
@@ -313,7 +320,7 @@ public class LandProtectionLogic {
             if (attacker instanceof EntityPlayerMP && ClaimAdminCache.isClaimAdmin((EntityPlayerMP) attacker) || chunkOwner == null || ChunkUtils.isBorderland(chunk))
                 return false;
             //Cancel if mobs cannot do damage and the attacker is a mob
-            if (!chunkOwner.isMobDamageAllowed() && isMob(attacker))
+            if (!AdminControlledClanSettings.get().isMobDamageAllowed() && isMob(attacker))
                 return true;
             //Do not cancel if it would be able to harm creative players or doesn't come from being attacked
             if (source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
@@ -321,7 +328,7 @@ public class LandProtectionLogic {
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if (target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                Boolean pvpAllowed = chunkOwner.getPVPOverride();
+                Boolean pvpAllowed = AdminControlledClanSettings.get().getPVPOverride();
                 if (pvpAllowed == null)
                     return shouldCancelPVPDefault(target, attacker, chunkOwner, attackingPlayer);
                 else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
@@ -329,7 +336,7 @@ public class LandProtectionLogic {
             } else {//Target is not a player and not owned by a player
                 if (attackingPlayer != null) {
                     UUID attackingPlayerId = attackingPlayer.getUniqueID();
-                    Collection<Clan> attackerEntityClans = ClanMemberCache.getClansPlayerIsIn(attackingPlayerId);
+                    Collection<Clan> attackerEntityClans = PlayerClans.getClansPlayerIsIn(attackingPlayerId);
                     //Players can harm things in their own claims as long as they have permission
                     if (attackerEntityClans.contains(chunkOwner))
                         return !hasPermissionToHarm(target, chunkOwner, attackingPlayerId);
@@ -340,7 +347,7 @@ public class LandProtectionLogic {
                     //Cancel if the chunk owner has not given permission to harm
                     return !hasPermissionToHarm(target, chunkOwner, attackingPlayerId)
                         //Allow anyone to kill mobs on server clan land
-                        && !(chunkOwner.isServer() && isMob(target))
+                        && !(AdminControlledClanSettings.get().isServerOwned() && isMob(target))
                         //Allow fake players to harm things if they are allowed to do so.
                         && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
                 }
@@ -351,7 +358,7 @@ public class LandProtectionLogic {
 
     private static boolean shouldCancelPVPDefault(Entity target, @Nullable Entity attacker, Clan chunkClan, @Nullable EntityPlayer attackingPlayer) {
         UUID targetPlayerId = target instanceof EntityPlayer ? target.getUniqueID() : getOwnerId(target);
-        Collection<Clan> targetEntityClans = ClanMemberCache.getClansPlayerIsIn(targetPlayerId);
+        Collection<Clan> targetEntityClans = PlayerClans.getClansPlayerIsIn(targetPlayerId);
         //Cancel if the target player/tameable is in its home territory, not being raided, and not getting hit by their own machines
         if (!targetEntityClans.isEmpty()
             && targetEntityClans.contains(chunkClan)
@@ -364,7 +371,7 @@ public class LandProtectionLogic {
             && attackingPlayer != null
             && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false)) {
             //Do not cancel if the attacker is in their home territory.
-            if (ClanMemberCache.getClansPlayerIsIn(attackingPlayer.getUniqueID()).contains(chunkClan))
+            if (PlayerClans.getClansPlayerIsIn(attackingPlayer.getUniqueID()).contains(chunkClan))
                 return false;
             //Cancel if the attacker is not a raider or a raider's tameable
             //Cycle through all the player's clans because we don't want a player to run and hide on a neighboring clan's territory to avoid damage
@@ -409,11 +416,11 @@ public class LandProtectionLogic {
 
     public static boolean hasPermissionToHarm(Entity targetEntity, Clan permissionClan, UUID attackingPlayerId) {
         if (isMob(targetEntity))
-            return permissionClan.hasPerm("harmmob", attackingPlayerId);
+            return ClanPermissions.get().hasPerm("harmmob", attackingPlayerId);
         else if (targetEntity instanceof IAnimals)
-            return permissionClan.hasPerm("harmanimal", attackingPlayerId);
+            return ClanPermissions.get().hasPerm("harmanimal", attackingPlayerId);
         else //Technically other living entities that are not mob or animal may be impacted if for some reason the player does not have build permissions, but what better way is there to handle it considering that item frames, armor stands, and other inanimate entities fall into this category?
-            return permissionClan.hasPerm("build", attackingPlayerId);
+            return ClanPermissions.get().hasPerm("build", attackingPlayerId);
     }
 
     public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
@@ -421,8 +428,8 @@ public class LandProtectionLogic {
             ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
             Clan c = ClaimData.getChunkClan(spawnChunkPosition);
             return c != null
-                && (ClansModContainer.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(c.getMobSpawnOverride()))
-                && (ClansModContainer.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(c.getMobSpawnOverride()));
+                && (ClansModContainer.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(AdminControlledClanSettings.get().getMobSpawnOverride()))
+                && (ClansModContainer.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(AdminControlledClanSettings.get().getMobSpawnOverride()));
         }
         return false;
     }

@@ -3,7 +3,7 @@ package the_fireplace.clans.legacy.commands.raiding;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.commands.RaidSubCommand;
 import the_fireplace.clans.legacy.model.Raid;
@@ -36,7 +36,7 @@ public class CommandLeaveRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 				raid.removeAttacker(sender.getUniqueID());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.leave.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.leave.success", raid.getTarget().getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 			} else {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
 				ClansModContainer.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");

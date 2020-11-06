@@ -41,9 +41,9 @@ public class CommandAutoClaim extends ClanSubCommand {
         Clan rm = PlayerAutoClaimData.cancelAutoClaim(sender.getUniqueID());
 		if(rm == null) {
             PlayerAutoClaimData.activateAutoClaim(sender.getUniqueID(), selectedClan);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getName()).setStyle(TextStyles.GREEN));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 	}
 }

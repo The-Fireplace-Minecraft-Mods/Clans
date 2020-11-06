@@ -1,6 +1,10 @@
 package the_fireplace.clans.legacy.model;
 
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.metadata.ClanColors;
+import the_fireplace.clans.clan.metadata.ClanDescriptions;
+import the_fireplace.clans.clan.metadata.ClanNames;
+
+import java.util.UUID;
 
 public class ClanDimInfo {
     private final String clanName;
@@ -18,8 +22,8 @@ public class ClanDimInfo {
         this.clanColor = rgbColor;
     }
 
-    public ClanDimInfo(Clan clan, int dim) {
-        this(clan.getId().toString(), dim, clan.getName(), clan.getDescription(), clan.getColor());
+    public ClanDimInfo(UUID clan, int dim) {
+        this(clan.toString(), dim, ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription(), ClanColors.get(clan).getColor());
     }
 
     public String getClanIdString() {

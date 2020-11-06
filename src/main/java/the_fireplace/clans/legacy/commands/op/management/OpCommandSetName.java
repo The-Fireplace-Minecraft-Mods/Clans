@@ -5,7 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -36,13 +36,13 @@ public class OpCommandSetName extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			String newName = args[1];
-			if (ClanNameCache.isClanNameAvailable(newName)) {
-				String oldName = c.getName();
-				c.setName(newName);
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
+			if (ClanNames.isClanNameAvailable(newName)) {
+                String oldName = c.getClanMetadata().getClanName();
+                c.getClanMetadata().setClanName(newName);
+                sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
 		} else
@@ -51,6 +51,6 @@ public class OpCommandSetName extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
 	}
 }

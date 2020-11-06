@@ -4,7 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.apache.commons.io.IOUtils;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;

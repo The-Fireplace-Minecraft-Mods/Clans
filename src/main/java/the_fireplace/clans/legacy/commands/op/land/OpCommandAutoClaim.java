@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.cache.PlayerAutoClaimData;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
@@ -39,15 +39,15 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String attemptClanName = args[0];
-		Clan clan = ClanNameCache.getClanByName(attemptClanName);
+		Clan clan = ClanNames.getClanByName(attemptClanName);
 		if(clan != null) {
             Clan rm = PlayerAutoClaimData.cancelOpAutoClaim(sender.getUniqueID());
 			if(rm == null) {
                 PlayerAutoClaimData.activateOpAutoClaim(sender.getUniqueID(), clan);
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", clan.getName()).setStyle(TextStyles.GREEN));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", clan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 				ClaimManagement.checkAndAttemptClaim(sender, clan, true);
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getName()).setStyle(TextStyles.GREEN));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", attemptClanName).setStyle(TextStyles.RED));
 	}
@@ -59,6 +59,6 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
 	}
 }

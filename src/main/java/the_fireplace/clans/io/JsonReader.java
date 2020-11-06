@@ -46,6 +46,14 @@ public class JsonReader {
         return obj.has(key) ? obj.get(key).getAsInt() : ifAbsent;
     }
 
+    public double readDouble(String key, double ifAbsent) {
+        return obj.has(key) ? obj.get(key).getAsDouble() : ifAbsent;
+    }
+
+    public float readFloat(String key, float ifAbsent) {
+        return obj.has(key) ? obj.get(key).getAsFloat() : ifAbsent;
+    }
+
     public boolean readBool(String key, boolean ifAbsent) {
         return obj.has(key) ? obj.get(key).getAsBoolean() : ifAbsent;
     }

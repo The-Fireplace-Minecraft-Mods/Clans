@@ -1,11 +1,10 @@
-package the_fireplace.clans.legacy.forge.compat;
+package the_fireplace.clans.economy;
 
-import the_fireplace.clans.legacy.abstraction.IPaymentHandler;
 import the_fireplace.grandeconomy.api.GrandEconomyApi;
 
 import java.util.UUID;
 
-public class PaymentHandlerGE implements IPaymentHandler {
+class GrandEconomyWrapper implements ExternalEconomy {
 
 	@Override
 	public boolean deductAmount(double amount, UUID account) {
@@ -32,11 +31,6 @@ public class PaymentHandlerGE implements IPaymentHandler {
 	@Override
 	public double getBalance(UUID account) {
 		return GrandEconomyApi.getBalance(account, null);
-	}
-
-	@Override
-	public String getCurrencyName(double amount) {
-		return GrandEconomyApi.getCurrencyName(amount);
 	}
 
 	@Override

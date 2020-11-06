@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClanMemberManagement;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -46,18 +47,18 @@ public class CommandDemote extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(selectedClan.getMembers().get(sender.getUniqueID()).equals(EnumRank.LEADER))
+        if(ClanMembers.get().getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER))
 			ClanMemberManagement.demoteClanMember(server, sender, args[0], selectedClan);
 		else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 	}
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> playerNames = Lists.newArrayList();
-		for(UUID player: selectedClan.getMembers().keySet()) {
+        for(UUID player: ClanMembers.get().getMemberRanks().keySet()) {
 			GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-			if(playerProf != null && !selectedClan.getMembers().get(player).equals(EnumRank.MEMBER))
+            if(playerProf != null && !ClanMembers.get().getMemberRanks().get(player).equals(EnumRank.MEMBER))
 				playerNames.add(playerProf.getName());
 		}
 		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();

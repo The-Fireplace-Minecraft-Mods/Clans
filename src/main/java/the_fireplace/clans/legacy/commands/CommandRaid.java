@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.raiding.*;
 import the_fireplace.clans.legacy.util.PermissionManager;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;

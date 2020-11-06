@@ -2,7 +2,6 @@ package the_fireplace.clans.api.event;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 
 import javax.annotation.Nullable;
@@ -15,9 +14,9 @@ public class PreLandClaimEvent {
     private final ChunkPosition chunkPosition;
     @Nullable
     private final UUID claimingPlayer;
-    private final Clan claimingClan;
+    private final UUID claimingClan;
 
-    public PreLandClaimEvent(World world, ChunkPosition chunkPosition, @Nullable UUID claimingPlayer, Clan claimingClan) {
+    public PreLandClaimEvent(World world, ChunkPosition chunkPosition, @Nullable UUID claimingPlayer, UUID claimingClan) {
         this.world = world;
         this.chunkPosition = chunkPosition;
         this.claimingPlayer = claimingPlayer;
@@ -42,7 +41,7 @@ public class PreLandClaimEvent {
     /**
      * The clan that is claiming the chunk.
      */
-    public Clan getClaimingClan() {
+    public UUID getClaimingClan() {
         return claimingClan;
     }
 

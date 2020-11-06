@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import the_fireplace.clans.clan.accesscontrol.ClanLocks;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.EntityUtil;
@@ -49,11 +50,11 @@ public class CommandLockInfo extends ClanSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-		if(selectedClan.isLocked(targetBlockPos)) {
-			GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(selectedClan.getLockOwner(targetBlockPos)));
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN)
-			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(selectedClan.getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
-			Map<UUID, Boolean> overrides = selectedClan.getLockOverrides(targetBlockPos);
+        if(ClanLocks.get().isLocked(targetBlockPos)) {
+            GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get().getLockOwner(targetBlockPos)));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN)
+			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(ClanLocks.get().getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
+            Map<UUID, Boolean> overrides = ClanLocks.get().getLockOverrides(targetBlockPos);
 			if(!overrides.isEmpty()) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.overrides"));
 				for(Map.Entry<UUID, Boolean> entry: overrides.entrySet()) {

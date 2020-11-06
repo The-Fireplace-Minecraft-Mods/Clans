@@ -3,7 +3,6 @@ package the_fireplace.clans.api.event;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 
 import javax.annotation.Nullable;
@@ -18,9 +17,9 @@ public class PreLandAbandonEvent {
     private final ChunkPosition chunkPosition;
     @Nullable
     private final UUID claimingPlayer;
-    private final Clan claimingClan;
+    private final UUID claimingClan;
 
-    public PreLandAbandonEvent(World world, @Nullable Chunk chunk, ChunkPosition chunkPosition, @Nullable UUID abandoningPlayer, Clan claimingClan) {
+    public PreLandAbandonEvent(World world, @Nullable Chunk chunk, ChunkPosition chunkPosition, @Nullable UUID abandoningPlayer, UUID claimingClan) {
         this.world = world;
         this.chunk = chunk;
         this.chunkPosition = chunkPosition;
@@ -54,7 +53,7 @@ public class PreLandAbandonEvent {
     /**
      * The clan that is claiming the chunk.
      */
-    public Clan getClaimingClan() {
+    public UUID getClaimingClan() {
         return claimingClan;
     }
 

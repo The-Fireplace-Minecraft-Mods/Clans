@@ -3,7 +3,7 @@ package the_fireplace.clans.legacy.config;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.collect.Lists;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.config.constraints.RangeDecimal;
 import the_fireplace.clans.legacy.config.constraints.RangeNumber;
 

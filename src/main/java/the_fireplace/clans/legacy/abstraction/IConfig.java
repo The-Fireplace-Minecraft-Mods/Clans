@@ -77,8 +77,8 @@ public interface IConfig {
     boolean isDisbandNoUpkeep();
     boolean isIncreasingRewards();
     double getWLRThreshold();
-    String getIncreasedMultiplierFormula();
-    String getDecreasedMultiplierFormula();
+    String getIncreasedWeaknessFactorFormula();
+    String getDecreasedWeaknessFactorFormula();
 
     //Clan finance management
     boolean isLeaderWithdrawFunds();

@@ -1,7 +1,6 @@
 package the_fireplace.clans.player;
 
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.membership.PlayerClans;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -27,9 +26,9 @@ public final class PlayerClanSettings {
     public static void updateDefaultClanIfNeeded(UUID player, @Nullable UUID checkForDefaultClan) {
         UUID currentDefaultClan = getDefaultClan(player);
         if(checkForDefaultClan == null || checkForDefaultClan.equals(currentDefaultClan)) {
-            Optional<Clan> newDefaultClan = ClanMemberCache.getClansPlayerIsIn(player).stream().findAny();
+            Optional<UUID> newDefaultClan = PlayerClans.getClansPlayerIsIn(player).stream().findAny();
 
-            setDefaultClan(player, newDefaultClan.map(Clan::getId).orElse(null));
+            setDefaultClan(player, newDefaultClan.orElse(null));
         }
     }
 }

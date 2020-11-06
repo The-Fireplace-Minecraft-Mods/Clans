@@ -22,10 +22,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.cache.WorldTrackingCache;
 import the_fireplace.clans.legacy.data.ChunkRestoreData;
@@ -66,7 +66,7 @@ public class RaidManagementLogic {
 
     public static void onPlayerDeath(EntityPlayerMP player, DamageSource source) {
         if(!player.getEntityWorld().isRemote) {
-            for(Clan clan: ClanMemberCache.getClansPlayerIsIn(player.getUniqueID())) {
+            for(Clan clan: PlayerClans.getClansPlayerIsIn(player.getUniqueID())) {
                 if (clan != null && RaidingParties.hasActiveRaid(clan))
                     RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
                 if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())

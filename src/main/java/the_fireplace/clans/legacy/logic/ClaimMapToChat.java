@@ -6,9 +6,10 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.OrderedPair;
@@ -133,8 +134,8 @@ public class ClaimMapToChat {
             else if(pos.isBorderland())
                 row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append('-');
             else {
-                symbolMap.putIfAbsent(clan.getId(), MAP_CHARS[symbolMap.size() % MAP_CHARS.length]);
-                row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(symbolMap.get(clan.getId()));
+                symbolMap.putIfAbsent(clan.getClanMetadata().getClanId(), MAP_CHARS[symbolMap.size() % MAP_CHARS.length]);
+                row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(symbolMap.get(clan.getClanMetadata().getClanId()));
             }
         }
         return row.toString();
@@ -147,11 +148,11 @@ public class ClaimMapToChat {
     private String getClanColor(Clan clan) {
         if(useAllianceColorScheme)
             return (isAlliedTo(clan) ? LIME_GREEN : RED);
-        return SECTION_SYMBOL + Integer.toHexString(clan.getTextColor().getColorIndex());
+        return SECTION_SYMBOL + Integer.toHexString(clan.getClanMetadata().getColorFormatting().getColorIndex());
     }
 
     private boolean isAlliedTo(Clan clan) {
-        return clan.getMembers().containsKey(playerId);
+        return ClanMembers.get().getMemberRanks().containsKey(playerId);
     }
 
     private String getWildernessColor() {
@@ -190,7 +191,7 @@ public class ClaimMapToChat {
     private void sendMapSymbolGuide() {
         for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
             Clan c = ClanDatabase.getClanById(symbol.getKey());
-            messageTarget.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getName() : TranslationUtil.getStringTranslation(messageTarget, "clans.wilderness"))).setStyle(getTextStyle(c)));
+            messageTarget.sendMessage(new TextComponentString(symbol.getValue() + ": " +(c != null ? c.getClanMetadata().getClanName() : TranslationUtil.getStringTranslation(messageTarget, "clans.wilderness"))).setStyle(getTextStyle(c)));
         }
     }
 
@@ -200,7 +201,7 @@ public class ClaimMapToChat {
         if(useAllianceColorScheme)
             return isAlliedTo(c) ? TextStyles.GREEN : TextStyles.RED;
         else
-            return new Style().setColor(c.getTextColor());
+            return new Style().setColor(c.getClanMetadata().getColorFormatting());
     }
 
     private ITextComponent getBorderComponent() {

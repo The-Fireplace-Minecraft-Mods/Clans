@@ -3,6 +3,7 @@ package the_fireplace.clans.legacy.commands.config.clan;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.clan.home.ClanHomes;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -35,10 +36,10 @@ public class CommandUnsetHome extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(selectedClan.hasHome()) {
-			selectedClan.unsetHome();
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+        if(ClanHomes.get().hasHome()) {
+            ClanHomes.get().unsetHome();
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.failed", selectedClan.getName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.failed", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 	}
 }

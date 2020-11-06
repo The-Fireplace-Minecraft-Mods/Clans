@@ -5,7 +5,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.clan.raids.ClanShield;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -36,7 +37,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			long duration;
 			try {
@@ -47,14 +48,14 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.format").setStyle(TextStyles.RED));
 				return;
 			}
-			c.setShield(duration);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getName(), duration).setStyle(TextStyles.GREEN));
+            ClanShield.get().setShield(duration);
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getClanMetadata().getClanName(), duration).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
 	}
 }

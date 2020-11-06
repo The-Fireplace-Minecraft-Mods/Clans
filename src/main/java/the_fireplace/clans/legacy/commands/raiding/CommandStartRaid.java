@@ -3,7 +3,9 @@ package the_fireplace.clans.legacy.commands.raiding;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.economy.Economy;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.commands.RaidSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -40,17 +42,17 @@ public class CommandStartRaid extends RaidSubCommand {
 			Raid raid = RaidingParties.getRaid(sender);
 			if (raid != null) {
 
-				Set<Map.Entry<EntityPlayerMP, EnumRank>> clanPlayers = raid.getTarget().getOnlineSurvivalMembers();
+                Set<Map.Entry<EntityPlayerMP, EnumRank>> clanPlayers = ClanMembers.get().getRaidDefenders();
 				if(clanPlayers.size() >= raid.getAttackerCount() - ClansModContainer.getConfig().getMaxRaidersOffset()) {
 					if(!RaidingParties.hasActiveRaid(raid.getTarget())) {
 						if(!RaidingParties.isPreparingRaid(raid.getTarget())) {
 							double raidCost = FormulaParser.eval(ClansModContainer.getConfig().getStartRaidCostFormula(), raid.getTarget(), raid, 0);
 							raid.setCost(raidCost);
-							if (ClansModContainer.getPaymentHandler().deductAmount(raidCost, sender.getUniqueID())) {
+							if (Economy.deductAmount(raidCost, sender.getUniqueID())) {
 								RaidingParties.initRaid(raid.getTarget());
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
+                                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.success", raid.getTarget().getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 							} else
-								sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getName(), ClansModContainer.getPaymentHandler().getFormattedCurrency(raidCost)).setStyle(TextStyles.RED));
+                                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.insufficient_funds", raid.getTarget().getClanMetadata().getClanName(), Economy.getFormattedCurrency(raidCost)).setStyle(TextStyles.RED));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.start.raiding").setStyle(TextStyles.RED));
 					} else //This should not be possible

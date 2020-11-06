@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -38,7 +38,7 @@ public class OpCommandClaim extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null)
 			ClaimManagement.checkAndAttemptClaim(sender, c, true);
 		else
@@ -52,6 +52,6 @@ public class OpCommandClaim extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
 	}
 }

@@ -10,8 +10,8 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.legacy.abstraction.dummy.PaymentHandlerDummy;
+import the_fireplace.clans.economy.DummyEconomy;
+import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.commands.op.OpCommandHelp;
 import the_fireplace.clans.legacy.commands.op.land.*;
 import the_fireplace.clans.legacy.commands.op.management.*;
@@ -37,7 +37,7 @@ public class CommandOpClan extends CommandBase {
         put("setdescription", new OpCommandSetDescription());
         put("setcolor", new OpCommandSetColor());
         put("setshield", new OpCommandSetShield());
-        if(!(ClansModContainer.getPaymentHandler() instanceof PaymentHandlerDummy))
+        if(!(Economy instanceof DummyEconomy))
             put("addfunds", new OpCommandAddFunds());
         put("setrank", new OpCommandSetRank());
         put("kick", new OpCommandKick());
@@ -95,7 +95,7 @@ public class CommandOpClan extends CommandBase {
         if(args.length > 1 && CommandClan.greedyCommands.contains(tag))
             args = ArrayUtils.addAll(new String[]{"opclan"}, args);
         if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX+processAlias(tag))) {
-            if (!(ClansModContainer.getPaymentHandler() instanceof PaymentHandlerDummy) || !"addfunds".equals(processAlias(tag))) {
+            if (!(Economy instanceof DummyEconomy) || !"addfunds".equals(processAlias(tag))) {
                 if(commands.containsKey(processAlias(tag)))
                     commands.get(processAlias(tag)).execute(server, sender, args);
                 else

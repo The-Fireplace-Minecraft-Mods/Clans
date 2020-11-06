@@ -4,8 +4,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.ClanHomes;
+import the_fireplace.clans.clan.home.ClanHomes;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
@@ -41,13 +41,13 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(selectedClan.getId().equals(ClaimData.getChunkClanId(new ChunkPositionWithData(c)))) {
-			if(ClanHomes.isHomeWithinRadiusExcluding(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist(), selectedClan.getHome())) {
+		if(selectedClan.getClanMetadata().getClanId().equals(ClaimData.getChunkClan(new ChunkPositionWithData(c)))) {
+            if(ClanHomes.isHomeWithinRadiusExcluding(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist(), ClanHomes.get().getHome())) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", ClansModContainer.getConfig().getMinClanHomeDist()).setStyle(TextStyles.RED));
 				return;
 			}
-			selectedClan.setHome(sender.getPosition(), sender.dimension);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.success", selectedClan.getName()).setStyle(TextStyles.GREEN));
+            ClanHomes.get().setHome(sender.getPosition(), sender.dimension);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.territory").setStyle(TextStyles.RED));
 	}

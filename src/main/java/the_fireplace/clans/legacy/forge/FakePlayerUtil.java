@@ -1,7 +1,7 @@
 package the_fireplace.clans.legacy.forge;
 
 import net.minecraftforge.common.util.FakePlayer;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 
 import javax.annotation.Nullable;
 

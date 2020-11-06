@@ -7,10 +7,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.ClanDatabase;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.economics.ClanClaimCosts;
+import the_fireplace.clans.clan.economics.ClanRent;
+import the_fireplace.clans.clan.economics.ClanUpkeep;
+import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.raids.ClanShield;
+import the_fireplace.clans.economy.Economy;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.PlayerAutoClaimData;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.cache.RaidingParties;
@@ -52,7 +60,7 @@ public class TimerLogic {
     private static void chargeRentAndUpkeep() {
         if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 || ClansModContainer.getConfig().getChargeRentDays() > 0)
             for (Clan clan : ClanDatabase.getClans()) {
-                if(clan.isServer())
+                if(AdminControlledClanSettings.get().isServerOwned())
                     continue;
                 chargeRent(clan);
                 chargeUpkeep(clan);
@@ -60,49 +68,49 @@ public class TimerLogic {
     }
 
     private static void chargeUpkeep(Clan clan) {
-        if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 && !clan.isUpkeepExempt() && System.currentTimeMillis() >= clan.getNextUpkeepTimestamp()) {
-            ClansModContainer.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getName());
+        if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 && !AdminControlledClanSettings.get().isUpkeepExempt() && System.currentTimeMillis() >= ClanUpkeep.get().getNextUpkeepTimestamp()) {
+            ClansModContainer.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", clan.getClanMetadata().getClanName());
             double upkeep = FormulaParser.eval(ClansModContainer.getConfig().getClanUpkeepCostFormula(), clan, 0);
-            if(ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > ClansModContainer.getPaymentHandler().getBalance(clan.getId()) && upkeep <= ClansModContainer.getPaymentHandler().getBalance(clan.getId()) + clan.getClaimCost() * clan.getClaimCount()) {
-                while(upkeep > ClansModContainer.getPaymentHandler().getBalance(clan.getId())) {
-                    ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getId()));
+            if(ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > Economy.getBalance(clan.getClanMetadata().getClanId()) && upkeep <= Economy.getBalance(clan.getClanMetadata().getClanId()) + ClanClaimCosts.get().getNextClaimCost(ClanClaims.get().getClaimCount()) * ClanClaims.get().getClaimCount()) {
+                while(upkeep > Economy.getBalance(clan.getClanMetadata().getClanId())) {
+                    ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan.getClanMetadata().getClanId()));
                     if(chunks.isEmpty())//This _should_ always be false, but just in case...
                         break;
                     ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
                     ClaimManagement.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                 }
             }
-            if (ClansModContainer.getPaymentHandler().deductPartialAmount(upkeep, clan.getId()) > 0 && ClansModContainer.getConfig().isDisbandNoUpkeep())
-                clan.disband(ClansModContainer.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getName());
+            if (Economy.deductPartialAmount(upkeep, clan.getClanMetadata().getClanId()) > 0 && ClansModContainer.getConfig().isDisbandNoUpkeep())
+                clan.disband(ClansModContainer.getMinecraftHelper().getServer(), null, "clans.upkeep.disbanded", clan.getClanMetadata().getClanName());
             else
-                clan.updateNextUpkeepTimestamp();
+                ClanUpkeep.get().updateNextUpkeepTimestamp();
         }
     }
 
     private static void chargeRent(Clan clan) {
-        if (ClansModContainer.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= clan.getNextRentTimestamp()) {
-            ClansModContainer.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getName());
-            for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(clan.getMembers().entrySet())) {
-                if (ClansModContainer.getPaymentHandler().deductAmount(clan.getRent(), member.getKey()))
-                    ClansModContainer.getPaymentHandler().addAmount(clan.getRent(), clan.getId());
+        if (ClansModContainer.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= ClanRent.get().getNextRentTimestamp()) {
+            ClansModContainer.getMinecraftHelper().getLogger().debug("Charging rent for {}.", clan.getClanMetadata().getClanName());
+            for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(ClanMembers.get().getMemberRanks().entrySet())) {
+                if (Economy.deductAmount(ClanRent.get().getRent(), member.getKey()))
+                    Economy.addAmount(ClanRent.get().getRent(), clan.getClanMetadata().getClanId());
                 else if (ClansModContainer.getConfig().isEvictNonpayers())
                     if (member.getValue() != EnumRank.LEADER && (ClansModContainer.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
-                        clan.removeMember(member.getKey());
+                        ClanMembers.get().removeMember(member.getKey());
                         EntityPlayerMP player = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
                         //noinspection ConstantConditions
                         if (player != null) {
-                            PlayerClanSettings.updateDefaultClanIfNeeded(player.getUniqueID(), clan.getId());
-                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getName()).setStyle(TextStyles.YELLOW));
+                            PlayerClanSettings.updateDefaultClanIfNeeded(player.getUniqueID(), clan.getClanMetadata().getClanId());
+                            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", clan.getClanMetadata().getClanName()).setStyle(TextStyles.YELLOW));
                         }
                     }
             }
-            clan.updateNextRentTimestamp();
+            ClanRent.get().updateNextRentTimestamp();
         }
     }
 
     private static void decrementShields() {
         for (Clan clan : ClanDatabase.getClans())
-            clan.decrementShield();
+            ClanShield.get().decrementShield();
     }
 
     public static void runOneSecondLogic() {
@@ -124,7 +132,7 @@ public class TimerLogic {
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
         Clan c = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
         if(c != null) {
-            if(Boolean.FALSE.equals(c.getMobSpawnOverride()))
+            if(Boolean.FALSE.equals(AdminControlledClanSettings.get().getMobSpawnOverride()))
                 mob.onKillCommand();
             else if (ClansModContainer.getConfig().isPreventMobsOnClaims() && (ClansModContainer.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland()))
                 mob.onKillCommand();
@@ -132,13 +140,13 @@ public class TimerLogic {
     }
 
     public static void runPlayerSecondLogic(EntityPlayer player) {
-        checkRaidAbandonmentTime(ClaimData.getChunkClanId(player.chunkCoordX, player.chunkCoordZ, player.dimension), ClanMemberCache.getClansPlayerIsIn(player.getUniqueID()), player);
+        checkRaidAbandonmentTime(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), PlayerClans.getClansPlayerIsIn(player.getUniqueID()), player);
     }
 
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
         Chunk c = player.getEntityWorld().getChunk(player.getPosition());
         UUID chunkClanId = ChunkUtils.getChunkOwner(c);
-        Collection<Clan> playerClans = ClanMemberCache.getClansPlayerIsIn(player.getUniqueID());
+        Collection<Clan> playerClans = PlayerClans.getClansPlayerIsIn(player.getUniqueID());
         UUID playerStoredClaimId = PlayerCache.getPreviousChunkOwner(player.getUniqueID());
         Clan chunkClan = ClanDatabase.getClanById(chunkClanId);
         ChunkPositionWithData data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
@@ -162,7 +170,7 @@ public class TimerLogic {
             if(needsRecalc) {
                 data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimData.getChunkClan(data);
-                chunkClanId = chunkClan != null ? chunkClan.getId() : null;
+                chunkClanId = chunkClan != null ? chunkClan.getClanMetadata().getClanId() : null;
                 isInBorderland = data != null && data.isBorderland();
             }
 
@@ -203,7 +211,7 @@ public class TimerLogic {
     }
 
     private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable Clan chunkClan, Collection<Clan> playerClans, boolean isBorderland) {
-        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getId() : null, isBorderland);
+        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan != null ? chunkClan.getClanMetadata().getClanId() : null, isBorderland);
         TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
         if(mode.equals(TerritoryDisplayMode.OFF))
             return;
@@ -228,11 +236,11 @@ public class TimerLogic {
                     territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
             }
         } else if(isBorderland) {
-            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", chunkClan.getName());
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", chunkClan.getClanMetadata().getClanName());
             territoryDesc = "";
         } else {
-            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", chunkClan.getName());
-            territoryDesc = chunkClan.getDescription();
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", chunkClan.getClanMetadata().getClanName());
+            territoryDesc = chunkClan.getClanMetadata().getDescription();
         }
 
         player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
@@ -251,7 +259,7 @@ public class TimerLogic {
                 Raid r = RaidingParties.getActiveRaid(pc);
                 assert r != null;
                 if(r.getDefenders().contains(player.getUniqueID()))
-                    if (pc.getId().equals(chunkClan))
+                    if (pc.getClanMetadata().getClanId().equals(chunkClan))
                         r.resetDefenderAbandonmentTime(player);
                     else
                         r.incrementDefenderAbandonmentTime(player);
@@ -261,7 +269,7 @@ public class TimerLogic {
             assert r != null;
             if (r.isActive()) {
                 if(r.getAttackers().contains(player.getUniqueID()))
-                    if (r.getTarget().getId().equals(chunkClan))
+                    if (r.getTarget().getClanMetadata().getClanId().equals(chunkClan))
                         r.resetAttackerAbandonmentTime(player);
                     else
                         r.incrementAttackerAbandonmentTime(player);

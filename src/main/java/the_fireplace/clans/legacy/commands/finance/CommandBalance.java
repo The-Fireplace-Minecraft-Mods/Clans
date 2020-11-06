@@ -3,7 +3,8 @@ package the_fireplace.clans.legacy.commands.finance;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -36,10 +37,10 @@ public class CommandBalance extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!selectedClan.isServer()) {
-			double balance = ClansModContainer.getPaymentHandler().getBalance(selectedClan.getId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getName(), ClansModContainer.getPaymentHandler().getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
+        if(!AdminControlledClanSettings.get().isServerOwned()) {
+			double balance = Economy.getBalance(selectedClan.getClanMetadata().getClanId());
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getClanMetadata().getClanName(), Economy.getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "balance", selectedClan.getName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "balance", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 	}
 }

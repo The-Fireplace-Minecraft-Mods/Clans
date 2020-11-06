@@ -1,11 +1,10 @@
 package the_fireplace.clans.player;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.io.JsonWritable;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.logic.PlayerEventLogic;
 import the_fireplace.clans.legacy.model.TerritoryDisplayMode;
 import the_fireplace.clans.legacy.util.JsonHelper;
@@ -14,8 +13,10 @@ import the_fireplace.clans.multithreading.ThreadedSaveable;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerDataStorage {
@@ -57,8 +58,6 @@ public final class PlayerDataStorage {
         private TerritoryDisplayMode territoryDisplayMode;
         private long lastSeen;
 
-        private Map<String, Object> addonData = new ConcurrentHashMap<>();
-
         private PlayerStoredData(UUID playerId) {
             playerDataFile = new File(PLAYER_DATA_LOCATION, playerId.toString()+".json");
             if(!load()) {
@@ -97,7 +96,6 @@ public final class PlayerDataStorage {
             territoryDisplayMode = TerritoryDisplayMode.valueOf(json.readString("territoryDisplayMode", TerritoryDisplayMode.ACTION_BAR.toString()));
             showUndergroundMessages = json.readBool("showUndergroundMessages", true);
             lastSeen = json.readLong("lastSeen", System.currentTimeMillis());
-            addonData = JsonHelper.getAddonData(json.getJsonObject());
             return true;
         }
 
@@ -114,8 +112,6 @@ public final class PlayerDataStorage {
             obj.addProperty("territoryDisplayMode", territoryDisplayMode.toString());
             obj.addProperty("showUndergroundMessages", showUndergroundMessages);
             obj.addProperty("lastSeen", lastSeen);
-
-            JsonHelper.attachAddonData(obj, this.addonData);
 
             return obj;
         }
@@ -236,33 +232,6 @@ public final class PlayerDataStorage {
         void updateLastSeen() {
             lastSeen = System.currentTimeMillis();
             markChanged();
-        }
-
-        /**
-         * Sets addon data for this player
-         * @param key
-         * The key you are giving this data. It should be unique
-         * @param value
-         * The data itself. This should be a primitive, string, a list or map containg only lists/maps/primitives/strings, or a JsonElement. If not, your data may not save/load properly. All lists will be loaded as ArrayLists. All maps will be loaded as HashMaps.
-         */
-        public void setCustomData(String key, Object value) {
-            if(isUnserializable(value))
-                ClansModContainer.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
-            addonData.put(key, value);
-            markChanged();
-        }
-
-        private boolean isUnserializable(Object value) {
-            return !value.getClass().isPrimitive()
-                && !value.getClass().isAssignableFrom(BigDecimal.class)
-                && !value.getClass().isAssignableFrom(List.class)
-                && !value.getClass().isAssignableFrom(Map.class)
-                && !value.getClass().isAssignableFrom(JsonElement.class);
-        }
-
-        @Nullable
-        public Object getCustomData(String key) {
-            return addonData.get(key);
         }
     }
 }

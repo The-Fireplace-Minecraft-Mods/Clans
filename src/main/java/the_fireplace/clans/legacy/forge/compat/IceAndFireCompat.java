@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IProtectionCompat;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.logic.LandProtectionLogic;

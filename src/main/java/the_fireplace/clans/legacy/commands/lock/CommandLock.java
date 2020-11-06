@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.clan.accesscontrol.ClanLocks;
+import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumLockType;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -56,23 +58,23 @@ public class CommandLock extends ClanSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-		if(!selectedClan.getId().equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClan.getName()).setStyle(TextStyles.RED));
+		if(!selectedClan.getClanMetadata().getClanId().equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 			return;
 		}
-		if(!selectedClan.hasPerm("lock."+mode.toString().toLowerCase(), sender.getUniqueID())) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
+        if(!ClanPermissions.get().hasPerm("lock." + mode.toString().toLowerCase(), sender.getUniqueID())) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getClanMetadata().getClanName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
 			return;
 		}
-		if(selectedClan.isLocked(targetBlockPos) && !selectedClan.isLockOwner(targetBlockPos, sender.getUniqueID())) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(selectedClan.getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
+        if(ClanLocks.get().isLocked(targetBlockPos) && !ClanLocks.get().isLockOwner(targetBlockPos, sender.getUniqueID())) {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get().getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
 			return;
 		}
 		IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
 		if(ClansModContainer.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
-			selectedClan.addLock(targetBlockPos, mode, sender.getUniqueID());
-			for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
-				selectedClan.addLock(pos, mode, sender.getUniqueID());
+            ClanLocks.get().addLock(targetBlockPos, mode, sender.getUniqueID());
+            for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
+                ClanLocks.get().addLock(pos, mode, sender.getUniqueID());
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.success").setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.failed").setStyle(TextStyles.RED));

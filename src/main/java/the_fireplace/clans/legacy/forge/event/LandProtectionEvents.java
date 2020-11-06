@@ -23,7 +23,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.logic.LandProtectionLogic;
 import the_fireplace.clans.legacy.logic.PlayerEventLogic;
 import the_fireplace.clans.legacy.logic.RaidManagementLogic;

@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.clan.accesscontrol.ClanLocks;
+import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumLockType;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -50,25 +52,25 @@ public class CommandLockChunk extends ClanSubCommand {
 		EnumLockType mode = parseLockType(args.length == 0 ? null : args[0]);
 
 		Chunk c = sender.world.getChunk(sender.getPosition());
-		if (!selectedClan.getId().equals(ChunkUtils.getChunkOwner(c))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getName()).setStyle(TextStyles.RED));
+		if (!selectedClan.getClanMetadata().getClanId().equals(ChunkUtils.getChunkOwner(c))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 			return;
 		}
-		if(!selectedClan.hasPerm("lock."+mode.toString().toLowerCase(), sender.getUniqueID())) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
+        if(!ClanPermissions.get().hasPerm("lock." + mode.toString().toLowerCase(), sender.getUniqueID())) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.permission", selectedClan.getClanMetadata().getClanName(), mode.toString().toLowerCase()).setStyle(TextStyles.RED));
 			return;
 		}
 		for(int y=0; y <= 255; y++)
 			for(int x=c.getPos().getXStart(); x <= c.getPos().getXEnd(); x++)
 				for(int z=c.getPos().getZStart(); z <= c.getPos().getZEnd(); z++) {
 					BlockPos targetBlockPos = new BlockPos(x, y, z);
-					if (selectedClan.isLocked(targetBlockPos) && !selectedClan.isLockOwner(targetBlockPos, sender.getUniqueID()))
+                    if (ClanLocks.get().isLocked(targetBlockPos) && !ClanLocks.get().isLockOwner(targetBlockPos, sender.getUniqueID()))
 						continue;
 					IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
 					if (ClansModContainer.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
-						selectedClan.addLock(targetBlockPos, mode, sender.getUniqueID());
-						for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
-							selectedClan.addLock(pos, mode, sender.getUniqueID());
+                        ClanLocks.get().addLock(targetBlockPos, mode, sender.getUniqueID());
+                        for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
+                            ClanLocks.get().addLock(pos, mode, sender.getUniqueID());
 					}
 				}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockchunk.success").setStyle(TextStyles.GREEN));

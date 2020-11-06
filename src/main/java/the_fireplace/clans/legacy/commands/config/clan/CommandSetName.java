@@ -3,8 +3,8 @@ package the_fireplace.clans.legacy.commands.config.clan;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.config.Config;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -43,10 +43,10 @@ public class CommandSetName extends ClanSubCommand {
 			newName = ClansModContainer.getChatCensorCompat().getCensoredString(newName);
 		if(ClansModContainer.getConfig().getMaxNameLength() > 0 && newName.length() > ClansModContainer.getConfig().getMaxNameLength())
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansModContainer.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
-		else if(ClanNameCache.isClanNameAvailable(newName)) {
-			String oldName = selectedClan.getName();
-			selectedClan.setName(newName);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
+		else if(ClanNames.isClanNameAvailable(newName)) {
+            String oldName = selectedClan.getClanMetadata().getClanName();
+            selectedClan.getClanMetadata().setClanName(newName);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
 	}

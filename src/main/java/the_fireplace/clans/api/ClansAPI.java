@@ -1,9 +1,8 @@
 package the_fireplace.clans.api;
 
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.api.event.IClansEventHandler;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IConfig;
-import the_fireplace.clans.legacy.abstraction.IPaymentHandler;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.util.ClansEventManager;
 
@@ -16,10 +15,6 @@ import the_fireplace.clans.legacy.util.ClansEventManager;
 public final class ClansAPI {
     public static IConfig getConfig() {
         return ClansModContainer.getConfig();
-    }
-
-    public static IPaymentHandler getPaymentHandler(){
-        return ClansModContainer.getPaymentHandler();
     }
 
     public static boolean isClaimed(int chunkX, int chunkZ, int dimension) {

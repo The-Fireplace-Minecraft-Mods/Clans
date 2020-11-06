@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.util.JsonHelper;
 

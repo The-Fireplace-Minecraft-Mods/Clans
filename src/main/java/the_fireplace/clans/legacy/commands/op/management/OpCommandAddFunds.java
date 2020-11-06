@@ -5,9 +5,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -38,9 +39,9 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
-			if(!c.isServer()) {
+            if(!AdminControlledClanSettings.get().isServerOwned()) {
 				double amount;
 				try {
 					amount = parseDouble(args[1]);
@@ -50,8 +51,8 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 					return;
 				}
-				if (ClansModContainer.getPaymentHandler().addAmount(amount, c.getId()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", ClansModContainer.getPaymentHandler().getFormattedCurrency(amount), c.getName()).setStyle(TextStyles.GREEN));
+				if (Economy.addAmount(amount, c.getClanMetadata().getClanId()))
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", Economy.getFormattedCurrency(amount), c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else
@@ -62,6 +63,6 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
 	}
 }

@@ -1,8 +1,8 @@
-package the_fireplace.clans.legacy.abstraction;
+package the_fireplace.clans.economy;
 
 import java.util.UUID;
 
-public interface IPaymentHandler {
+public interface ExternalEconomy {
 	/**
 	 * Deduct the full amount from the account, or return false if the account does not have that much money.
 	 * @param amount
@@ -44,8 +44,6 @@ public interface IPaymentHandler {
 	 * The account balance. Returns -1 if account not found.
 	 */
 	double getBalance(UUID account);
-
-	String getCurrencyName(double amount);
 
 	String getFormattedCurrency(double amount);
 }

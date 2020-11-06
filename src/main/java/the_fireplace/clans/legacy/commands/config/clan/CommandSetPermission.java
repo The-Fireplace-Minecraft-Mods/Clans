@@ -8,7 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -44,15 +44,15 @@ public class CommandSetPermission extends ClanSubCommand {
     @Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		String perm = args[0];
-		if(!Clan.DEFAULT_PERMISSIONS.containsKey(perm))
+		if(!ClanPermissions.DEFAULT_PERMISSIONS.containsKey(perm))
 			throw new IllegalArgumentException(TranslationUtil.getStringTranslation(sender.getUniqueID(), "commands.clan.set.invalid_perm", perm));
 		if(args.length == 3) {
 			GameProfile player = parsePlayerName(server, args[1]);
 			boolean value = parseBool(args[2]);
-			selectedClan.addPermissionOverride(perm, player.getId(), value);
+            ClanPermissions.get().addPermissionOverride(perm, player.getId(), value);
 		} else {
 			EnumRank rank = EnumRank.valueOf(args[1]);
-			selectedClan.setPerm(perm, rank);
+            ClanPermissions.get().setPerm(perm, rank);
 		}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.set.success").setStyle(TextStyles.GREEN));
 	}
@@ -61,7 +61,7 @@ public class CommandSetPermission extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		List<String> ret = Lists.newArrayList();
 		if(args.length == 1)
-			ret.addAll(Clan.DEFAULT_PERMISSIONS.keySet());
+			ret.addAll(ClanPermissions.DEFAULT_PERMISSIONS.keySet());
 		else if(args.length == 2) {
 			for(EnumRank rank: EnumRank.values())
 				if(!rank.equals(EnumRank.NOCLAN))

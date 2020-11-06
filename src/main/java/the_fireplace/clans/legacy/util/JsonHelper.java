@@ -2,7 +2,10 @@ package the_fireplace.clans.legacy.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
@@ -10,42 +13,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class JsonHelper {
-    public static void attachAddonData(JsonObject obj, Map<String, Object> addonDataMap) {
-        Gson gson = new Gson();
-        JsonArray addonData = new JsonArray();
-        for(Map.Entry<String, Object> entry : addonDataMap.entrySet()) {
-            JsonObject newEntry = new JsonObject();
-            newEntry.addProperty("key", entry.getKey());
-            newEntry.add("value", gson.toJsonTree(entry.getValue()));
-        }
-        obj.add("addonData", addonData);
-    }
-
-    public static Map<String, Object> getAddonData(JsonObject obj) {
-        Map<String, Object> addonDataMap = Maps.newHashMap();
-        if(!obj.has("addonData"))
-            return addonDataMap;
-
-        for(JsonElement entry : obj.getAsJsonArray("addonData")) {
-            JsonObject e = (JsonObject) entry;
-            String key = e.getAsJsonPrimitive("key").getAsString();
-            addonDataMap.put(key, deserialize(e.get("value")));
-        }
-
-        return addonDataMap;
-    }
-
-    @Nullable
-    private static Object deserialize(JsonElement e) {
-        if(e.isJsonPrimitive())
-            return toObject(e.getAsJsonPrimitive());
-        if(e.isJsonArray())
-            return toList(e.getAsJsonArray());
-        if(e.isJsonObject())
-            return toMap(e.getAsJsonObject());
-        return null;
-    }
-
     @Nullable
     private static Object toObject(JsonPrimitive jsonPrimitive) {
         if (jsonPrimitive.isBoolean())

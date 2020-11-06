@@ -12,9 +12,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.ChatUtil;
@@ -54,7 +54,7 @@ public class CommandInvite extends ClanSubCommand {
 		switch(args[0].toLowerCase()) {
 			case "list":
 			case "l":
-				listInvitedPlayers(server, sender, selectedClan.getId(), args.length == 1 ? 1 : parseInt(args[1]));
+				listInvitedPlayers(server, sender, selectedClan.getClanMetadata().getClanId(), args.length == 1 ? 1 : parseInt(args[1]));
 				break;
 			case "revoke":
 			case "r":
@@ -73,25 +73,25 @@ public class CommandInvite extends ClanSubCommand {
 			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		} catch(Exception ignored) {}
 		if(target != null) {
-			if (ClansModContainer.getConfig().isAllowMultiClanMembership() || ClanMemberCache.getClansPlayerIsIn(target.getId()).stream().allMatch(Clan::isServer)) {
-				if (!ClanMemberCache.getClansPlayerIsIn(target.getId()).contains(invitingClan)) {
+			if (ClansModContainer.getConfig().isAllowMultiClanMembership() || PlayerClans.getClansPlayerIsIn(target.getId()).stream().allMatch(clan -> clan.getClanSettings().isServer())) {
+				if (!PlayerClans.getClansPlayerIsIn(target.getId()).contains(invitingClan)) {
 					if(InvitedPlayers.isBlockingAllInvites(target.getId())) {
 						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking_all", target.getName()).setStyle(TextStyles.RED));
-					} else if(InvitedPlayers.getBlockedClans(target.getId()).contains(invitingClan.getId())) {
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking", target.getName(), invitingClan.getName()).setStyle(TextStyles.RED));
-					} else if(InvitedPlayers.getReceivedInvites(target.getId()).contains(invitingClan.getId())) {
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName(), invitingClan.getName()).setStyle(TextStyles.RED));
+					} else if(InvitedPlayers.getBlockedClans(target.getId()).contains(invitingClan.getClanMetadata().getClanId())) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.blocking", target.getName(), invitingClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+					} else if(InvitedPlayers.getReceivedInvites(target.getId()).contains(invitingClan.getClanMetadata().getClanId())) {
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.pending", target.getName(), invitingClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 					} else {
-						InvitedPlayers.addInvite(target.getId(), invitingClan.getId());
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getName(), invitingClan.getName()).setStyle(TextStyles.GREEN));
+						InvitedPlayers.addInvite(target.getId(), invitingClan.getClanMetadata().getClanId());
+						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.success", target.getName(), invitingClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 
 						if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target)) {
 							EntityPlayerMP targetEntity = server.getPlayerList().getPlayerByUUID(target.getId());
-							targetEntity.sendMessage(TranslationUtil.getTranslation(target.getId(), "commands.clan.invite.invited", invitingClan.getName()).setStyle(TextStyles.GREEN));
+							targetEntity.sendMessage(TranslationUtil.getTranslation(target.getId(), "commands.clan.invite.invited", invitingClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 						}
 					}
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), invitingClan.getName()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_this", target.getName(), invitingClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.already_in_any", target.getName()).setStyle(TextStyles.RED));
 		} else
@@ -104,15 +104,15 @@ public class CommandInvite extends ClanSubCommand {
 			target = server.getPlayerProfileCache().getGameProfileForUsername(inviteTarget);
 		} catch(Exception ignored) {}
 		if(target != null) {
-			if(!InvitedPlayers.getReceivedInvites(target.getId()).contains(revokingClan.getId())) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_pending", target.getName(), revokingClan.getName()).setStyle(TextStyles.RED));
+			if(!InvitedPlayers.getReceivedInvites(target.getId()).contains(revokingClan.getClanMetadata().getClanId())) {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_pending", target.getName(), revokingClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 			} else {
-				InvitedPlayers.removeInvite(target.getId(), revokingClan.getId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.revoke_success", target.getName(), revokingClan.getName()).setStyle(TextStyles.GREEN));
+				InvitedPlayers.removeInvite(target.getId(), revokingClan.getClanMetadata().getClanId());
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.revoke_success", target.getName(), revokingClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 
 				if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target)) {
 					EntityPlayerMP targetEntity = server.getPlayerList().getPlayerByUUID(target.getId());
-					targetEntity.sendMessage(TranslationUtil.getTranslation(target.getId(), "commands.clan.invite.revoked", revokingClan.getName()).setStyle(TextStyles.GREEN));
+					targetEntity.sendMessage(TranslationUtil.getTranslation(target.getId(), "commands.clan.invite.revoked", revokingClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 				}
 			}
 		} else
@@ -131,15 +131,15 @@ public class CommandInvite extends ClanSubCommand {
 		if(args.length == 1 && (args[0].equalsIgnoreCase("send") || args[0].equalsIgnoreCase("s"))) {
 			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
 			if (!ClansModContainer.getConfig().isAllowMultiClanMembership())
-				players.removeIf(s -> ClanMemberCache.getClansPlayerIsIn(s.getId()).stream().anyMatch(c -> !c.isServer()));
-			players.removeIf(s -> ClanMemberCache.getClansPlayerIsIn(s.getId()).contains(selectedClan));
+				players.removeIf(s -> PlayerClans.getClansPlayerIsIn(s.getId()).stream().anyMatch(c -> !c.getClanSettings().isServer()));
+			players.removeIf(s -> PlayerClans.getClansPlayerIsIn(s.getId()).contains(selectedClan));
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (GameProfile profile : players)
 				playerNames.add(profile.getName());
 			return getListOfStringsMatchingLastWord(args, playerNames);
 		} else if(args.length == 1 && (args[0].equalsIgnoreCase("revoke") || args[0].equalsIgnoreCase("r"))) {
 			ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-			players.removeIf(gameProfile -> !InvitedPlayers.getInvitedPlayers(selectedClan.getId()).contains(gameProfile.getId()));
+			players.removeIf(gameProfile -> !InvitedPlayers.getInvitedPlayers(selectedClan.getClanMetadata().getClanId()).contains(gameProfile.getId()));
 			ArrayList<String> playerNames = Lists.newArrayList();
 			for (GameProfile profile : players)
 				playerNames.add(profile.getName());

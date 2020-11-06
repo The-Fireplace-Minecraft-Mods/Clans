@@ -6,7 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.home.ClanHomes;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.EntityUtil;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -42,21 +43,21 @@ public class OpCommandTeleport extends OpClanSubCommand {
 
     @Override
     protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        Clan targetClan = ClanNameCache.getClanByName(args[0]);
+        Clan targetClan = ClanNames.getClanByName(args[0]);
         if(targetClan != null) {
-            BlockPos home = targetClan.getHome();
+            BlockPos home = ClanHomes.get().getHome();
             int playerDim = sender.dimension;
 
-            if (!targetClan.hasHome() || home == null)
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", targetClan.getName()).setStyle(TextStyles.RED));
+            if (!ClanHomes.get().hasHome() || home == null)
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", targetClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
             else
-                EntityUtil.teleportHome(sender, home, targetClan.getHomeDim(), playerDim, false);
+                EntityUtil.teleportHome(sender, home, ClanHomes.get().getHomeDim(), playerDim, false);
         } else
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames()) : Collections.emptyList();
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
     }
 }

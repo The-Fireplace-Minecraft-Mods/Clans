@@ -6,8 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.clan.raids.ClanRaidStats;
+import the_fireplace.clans.clan.raids.ClanShield;
+import the_fireplace.clans.economy.Economy;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.util.FormulaParser;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -22,12 +26,12 @@ import java.util.UUID;
 public class Raid {
 	private Set<UUID> initAttackers, initDefenders = null;
 	private final Map<UUID, Integer> attackers, defenders;
-	private final Clan target;
+	private final UUID target;
 	private int remainingSeconds = ClansModContainer.getConfig().getMaxRaidDuration() * 60;
 	private double cost;
 	private boolean isActive;
 
-	public Raid(EntityPlayerMP starter, Clan targetClan){
+	public Raid(EntityPlayerMP starter, UUID targetClan){
 		attackers = Maps.newHashMap();
 		initAttackers = Sets.newHashSet();
 		defenders = Maps.newHashMap();
@@ -42,12 +46,12 @@ public class Raid {
 			RaidingParties.activateRaid(target);
 		RaidingParties.endRaid(target, true);
 		double reward = FormulaParser.eval(ClansModContainer.getConfig().getWinRaidAmountFormula(), target, this, 0);
-		reward -= ClansModContainer.getPaymentHandler().deductPartialAmount(reward, target.getId());
+		reward -= Economy.deductPartialAmount(reward, target);
 		reward /= initAttackers.size();
 		for(UUID player: initAttackers)
-			ClansModContainer.getPaymentHandler().addAmount(reward, player);
-		target.addShield(ClansModContainer.getConfig().getDefenseShield() * 60);
-		target.addLoss();
+			Economy.addAmount(reward, player);
+        ClanShield.get(target).addShield(ClansModContainer.getConfig().getDefenseShield() * 60);
+        ClanRaidStats.get(target).addLoss();
 
 		for(UUID attacker: initAttackers)
 			PlayerRaidStats.incrementRaidWins(attacker);
@@ -60,11 +64,11 @@ public class Raid {
 			RaidingParties.activateRaid(target);
 		RaidingParties.endRaid(target, false);
 		//Reward the defenders the cost of the raid
-		ClansModContainer.getPaymentHandler().addAmount(cost, target.getId());
-		target.addShield(ClansModContainer.getConfig().getDefenseShield() * 60);
-		target.addWin(this);
+		Economy.addAmount(cost, target);
+        ClanShield.get(target).addShield(ClansModContainer.getConfig().getDefenseShield() * 60);
+        ClanRaidStats.get(target).addWin(this);
 
-		for(UUID attacker: initAttackers)
+        for(UUID attacker: initAttackers)
 			PlayerRaidStats.incrementRaidLosses(attacker);
 		for(UUID defender: initDefenders)
 			PlayerRaidStats.incrementRaidWins(defender);
@@ -82,7 +86,7 @@ public class Raid {
 	 * Returns the set of people currently defending against the raid.
 	 * Clan members who have died or deserted while defending against the raid are not included in this set.
 	 * This will be empty if called before the raid starts, because it is not yet certain who will be defending against the raid.
-	 * If you want to make a guess at who will be defending, use {@link Clan#getOnlineSurvivalMembers()}
+	 * If you want to make a guess at who will be defending, use {@link ClanMembers#getRaidDefenders()}
 	 */
 	public Set<UUID> getDefenders() {
 		return Collections.unmodifiableSet(defenders.keySet());
@@ -128,7 +132,7 @@ public class Raid {
 		return rm;
 	}
 
-	public Clan getTarget() {
+	public UUID getTarget() {
 		return target;
 	}
 
@@ -142,13 +146,13 @@ public class Raid {
 				EntityPlayerMP d2 = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
 				if (d2 != null)
-					d2.sendMessage(TranslationUtil.getTranslation(d2.getUniqueID(), "clans.raid.glowing.defender", target.getName(), ClansModContainer.getConfig().getRemainingTimeToGlow(), attackers.size()).setStyle(TextStyles.YELLOW));
+					d2.sendMessage(TranslationUtil.getTranslation(d2.getUniqueID(), "clans.raid.glowing.defender", ClanNames.get(target).getName(), ClansModContainer.getConfig().getRemainingTimeToGlow(), attackers.size()).setStyle(TextStyles.YELLOW));
 			}
 			for(UUID member: getAttackers()) {
 				EntityPlayerMP m2 = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member);
 				//noinspection ConstantConditions
 				if(m2 != null)
-					m2.sendMessage(TranslationUtil.getTranslation(m2.getUniqueID(), "clans.raid.glowing.attacker", target.getName(), ClansModContainer.getConfig().getRemainingTimeToGlow(), defenders.size()).setStyle(TextStyles.YELLOW));
+					m2.sendMessage(TranslationUtil.getTranslation(m2.getUniqueID(), "clans.raid.glowing.attacker", ClanNames.get(target).getName(), ClansModContainer.getConfig().getRemainingTimeToGlow(), defenders.size()).setStyle(TextStyles.YELLOW));
 			}
 		}
 		if(remainingSeconds-- <= ClansModContainer.getConfig().getRemainingTimeToGlow() * 60)
@@ -169,9 +173,9 @@ public class Raid {
 		attackers.put(member.getUniqueID(), attackers.get(member.getUniqueID()) + 1);
 		if(attackers.get(member.getUniqueID()) > ClansModContainer.getConfig().getMaxAttackerAbandonmentTime()) {
 			removeAttacker(member.getUniqueID());
-			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", target.getName()).setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.rm_attacker", ClanNames.get(target).getName()).setStyle(TextStyles.YELLOW));
 		} else if(attackers.get(member.getUniqueID()) == 1)
-			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", target.getName(), ClansModContainer.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
+			member.sendMessage(TranslationUtil.getTranslation(member.getUniqueID(), "clans.raid.rmtimer.warn_attacker", ClanNames.get(target).getName(), ClansModContainer.getConfig().getMaxAttackerAbandonmentTime()).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetAttackerAbandonmentTime(EntityPlayer member) {
@@ -188,9 +192,9 @@ public class Raid {
 		defenders.put(defender.getUniqueID(), defenders.get(defender.getUniqueID()) + 1);
 		if(defenders.get(defender.getUniqueID()) > ClansModContainer.getConfig().getMaxClanDesertionTime()) {
 			removeDefender(defender.getUniqueID());
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", target.getName()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.rm_defender", ClanNames.get(target).getName()).setStyle(TextStyles.YELLOW));
 		} else if(defenders.get(defender.getUniqueID()) == 1)
-			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", target.getName(), ClansModContainer.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
+			defender.sendMessage(TranslationUtil.getTranslation(defender.getUniqueID(), "clans.raid.rmtimer.warn_defender", ClanNames.get(target).getName(), ClansModContainer.getConfig().getMaxClanDesertionTime()).setStyle(TextStyles.YELLOW));
 	}
 
 	public void resetDefenderAbandonmentTime(EntityPlayer defender) {
@@ -218,7 +222,7 @@ public class Raid {
 
 	public void activate() {
 		isActive = true;
-		setDefenders(target.getOnlineMembers().keySet());
+        setDefenders(ClanMembers.get(target).getOnlineMemberRanks().keySet());
 		initAttackers = Collections.unmodifiableSet(initAttackers);
 		initDefenders = Collections.unmodifiableSet(defenders.keySet());
 	}

@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.io.FileToJsonObject;
 import the_fireplace.clans.io.JsonWritable;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 

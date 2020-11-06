@@ -1,7 +1,7 @@
 package the_fireplace.clans.legacy.model;
 
 import com.google.common.collect.Maps;
-import the_fireplace.clans.ClansModContainer;
+import the_fireplace.clans.legacy.ClansModContainer;
 
 import java.util.*;
 

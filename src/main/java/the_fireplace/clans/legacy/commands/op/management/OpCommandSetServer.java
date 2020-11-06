@@ -6,7 +6,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -37,12 +38,12 @@ public class OpCommandSetServer extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
-		Clan c = ClanNameCache.getClanByName(clan);
+		Clan c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			boolean serverClan;
 			serverClan = parseBool(args[1]);
-			c.setServer(serverClan);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getName()).setStyle(TextStyles.GREEN));
+            AdminControlledClanSettings.get().setServerOwned(serverClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}
@@ -50,7 +51,7 @@ public class OpCommandSetServer extends OpClanSubCommand {
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, ClanNameCache.getClanNames());
+			return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
 		else if(args.length == 2)
 			return getListOfStringsMatchingLastWord(args, "true", "false");
 		return Collections.emptyList();

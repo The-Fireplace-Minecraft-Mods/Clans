@@ -9,8 +9,9 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.ClansModContainer;
-import the_fireplace.clans.clan.ClanMemberCache;
+import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.commands.RaidSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
@@ -52,10 +53,10 @@ public class CommandInviteRaid extends RaidSubCommand {
 				GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
 				if(target != null) {
-					Map<EntityPlayerMP, EnumRank> clanPlayers = raid.getTarget().getOnlineMembers();
+                    Map<EntityPlayerMP, EnumRank> clanPlayers = ClanMembers.get().getOnlineMemberRanks();
 					if (clanPlayers.size() > raid.getAttackerCount() - ClansModContainer.getConfig().getMaxRaidersOffset()) {
 						if (!clanPlayers.containsKey(target)) {
-							target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getName()).setStyle(TextStyles.GREEN));
+                            target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
@@ -77,7 +78,7 @@ public class CommandInviteRaid extends RaidSubCommand {
 		if(sender instanceof EntityPlayerMP) {
 			Raid r = RaidingParties.getRaid((EntityPlayerMP)sender);
 			if (r != null)
-				players.removeIf(s -> ClanMemberCache.getClansPlayerIsIn(s.getId()).contains(r.getTarget()));
+				players.removeIf(s -> PlayerClans.getClansPlayerIsIn(s.getId()).contains(r.getTarget()));
 		}
 		ArrayList<String> playerNames = Lists.newArrayList();
 		for(GameProfile profile: players)

@@ -10,10 +10,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.ClansModContainer;
 import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanMemberCache;
-import the_fireplace.clans.clan.ClanNameCache;
+import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
+import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
+import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.model.EnumLockType;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.PermissionManager;
@@ -46,12 +47,12 @@ public abstract class ClanSubCommand extends CommandBase {
 			return true;
 		if(sender instanceof Entity) {
 			if(selectedClan != null) {
-				EnumRank playerRank = ClanMemberCache.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
+				EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
 				switch (getRequiredClanRank()) {
 					case LEADER:
 					case ADMIN:
-						return selectedClan.hasPerm(getName(), ((Entity) sender).getUniqueID());
-					case MEMBER:
+                        return ClanPermissions.get().hasPerm(getName(), ((Entity) sender).getUniqueID());
+                    case MEMBER:
 						return playerRank.greaterOrEquals(EnumRank.MEMBER);
 					case NOCLAN:
 						return playerRank.equals(EnumRank.NOCLAN);
@@ -79,11 +80,11 @@ public abstract class ClanSubCommand extends CommandBase {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs()+1 && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
 				if(args.length > 0) {
-					Clan playerClan = ClanNameCache.getClanByName(args[0]);
+					Clan playerClan = ClanNames.getClanByName(args[0]);
 					if (sender instanceof EntityPlayerMP) {
-						Collection<Clan> playerClans = ClanMemberCache.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
+						Collection<Clan> playerClans = PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
 						if (playerClan != null && !playerClans.contains(playerClan)) {
-							sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), playerClan.getName()).setStyle(TextStyles.RED));
+                            sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), playerClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
 							return;
 						}
 					}
