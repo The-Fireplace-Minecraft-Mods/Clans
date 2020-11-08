@@ -14,6 +14,7 @@ public class TextStyles {
     public static final Style YELLOW = new Style().setColor(TextFormatting.YELLOW);
     public static final Style GREEN = new Style().setColor(TextFormatting.GREEN);
     public static final Style DARK_GREEN = new Style().setColor(TextFormatting.DARK_GREEN);
+    public static final Style BLACK = new Style().setColor(TextFormatting.BLACK);
     public static final Style RESET = new Style().setColor(TextFormatting.RESET);
     public static final Style ONLINE_LEADER = new Style().setBold(Boolean.TRUE).setItalic(Boolean.TRUE).setColor(TextFormatting.GREEN);
     public static final Style ONLINE_ADMIN = new Style().setBold(Boolean.TRUE).setColor(TextFormatting.GREEN);

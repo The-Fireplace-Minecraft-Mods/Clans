@@ -11,10 +11,7 @@ import the_fireplace.clans.clan.land.ClanClaims;
 import the_fireplace.clans.io.FileToJsonObject;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.legacy.ClansModContainer;
-import the_fireplace.clans.legacy.model.ChunkPosition;
-import the_fireplace.clans.legacy.model.ChunkPositionWithData;
-import the_fireplace.clans.legacy.model.ClanDimInfo;
-import the_fireplace.clans.legacy.model.CoordNodeTree;
+import the_fireplace.clans.legacy.model.*;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import the_fireplace.clans.multithreading.ThreadedSaveable;
 
@@ -45,9 +42,16 @@ public final class ClaimData {
     private static ConcurrentMap<ChunkPositionWithData, ClaimStoredData> getCacheSection(ChunkPosition pos) {
         int sectionX = pos.getPosX() / CACHE_SECTION_SIZE;
         int sectionZ = pos.getPosZ() / CACHE_SECTION_SIZE;
-        claimDataMap.putIfAbsent(sectionX, new ConcurrentHashMap<>());
-        claimDataMap.get(sectionX).putIfAbsent(sectionZ, new ConcurrentHashMap<>());
+        claimDataMap.computeIfAbsent(sectionX, (unused) -> new ConcurrentHashMap<>());
+        claimDataMap.get(sectionX).computeIfAbsent(sectionZ, (unused) -> new ConcurrentHashMap<>());
         return claimDataMap.get(sectionX).get(sectionZ);
+    }
+
+    public static Collection<OrderedPair<Integer, Integer>> getOccupiedCacheSections() {
+        loadIfNeeded();
+        Set<OrderedPair<Integer, Integer>> cacheSections = Sets.newHashSet();
+        claimDataMap.forEach((x, zMap) -> zMap.forEach((z, data) -> cacheSections.add(new OrderedPair<>(x, z))));
+        return Collections.unmodifiableSet(cacheSections);
     }
 
     public static Set<ChunkPositionWithData> getClaimedChunks(UUID clan) {
@@ -86,7 +90,7 @@ public final class ClaimData {
 
     public static void addChunk(UUID clan, ChunkPositionWithData pos) {
         loadIfNeeded();
-        claimedChunks.putIfAbsent(clan, new ClaimStoredData(clan));
+        claimedChunks.computeIfAbsent(clan, ClaimStoredData::new);
         claimedChunks.get(clan).addChunk(pos);
         getCacheSection(pos).put(pos, claimedChunks.get(clan));
         if(!pos.isBorderland()) {
@@ -97,7 +101,7 @@ public final class ClaimData {
 
     public static void delChunk(UUID clan, ChunkPositionWithData pos) {
         loadIfNeeded();
-        claimedChunks.putIfAbsent(clan, new ClaimStoredData(clan));
+        claimedChunks.computeIfAbsent(clan, ClaimStoredData::new);
         getCacheSection(pos).remove(pos);
         if(claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);

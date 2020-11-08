@@ -22,7 +22,7 @@ public class ClanPermissions extends ClanData {
     private static final Map<UUID, ClanPermissions> PERMISSION_DATA_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanPermissions get(UUID clan) {
-        PERMISSION_DATA_INSTANCES.putIfAbsent(clan, new ClanPermissions(clan));
+        PERMISSION_DATA_INSTANCES.computeIfAbsent(clan, ClanPermissions::new);
         return PERMISSION_DATA_INSTANCES.get(clan);
     }
 

@@ -12,7 +12,7 @@ public final class InvitedPlayers {
     private static final Map<UUID, Set<UUID>> INVITED_PLAYERS_CACHE = new ConcurrentHashMap<>();
 
     public static Collection<UUID> getInvitedPlayers(UUID clanId) {
-        INVITED_PLAYERS_CACHE.putIfAbsent(clanId, new ConcurrentSet<>());
+        INVITED_PLAYERS_CACHE.computeIfAbsent(clanId, (unused) -> new ConcurrentSet<>());
         return INVITED_PLAYERS_CACHE.get(clanId);
     }
 
@@ -29,7 +29,7 @@ public final class InvitedPlayers {
         return PlayerDataStorage.getPlayerData(player).addInvite(clan);
     }
     private static void cacheInvite(UUID clanId, UUID playerId) {
-        INVITED_PLAYERS_CACHE.putIfAbsent(clanId, new ConcurrentSet<>());
+        INVITED_PLAYERS_CACHE.computeIfAbsent(clanId, (unused) -> new ConcurrentSet<>());
         INVITED_PLAYERS_CACHE.get(clanId).add(playerId);
     }
 
@@ -42,7 +42,7 @@ public final class InvitedPlayers {
         return PlayerDataStorage.getPlayerData(player).removeInvite(clan);
     }
     private static void uncacheInvite(UUID clanId, UUID playerId) {
-        INVITED_PLAYERS_CACHE.putIfAbsent(clanId, new ConcurrentSet<>());
+        INVITED_PLAYERS_CACHE.computeIfAbsent(clanId, (unused) -> new ConcurrentSet<>());
         INVITED_PLAYERS_CACHE.get(clanId).remove(playerId);
     }
 

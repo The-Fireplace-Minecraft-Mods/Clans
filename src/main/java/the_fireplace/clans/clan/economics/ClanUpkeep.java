@@ -14,7 +14,7 @@ public class ClanUpkeep extends ClanData {
     private static final Map<UUID, ClanUpkeep> UPKEEP_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanUpkeep get(UUID clan) {
-        UPKEEP_INSTANCES.putIfAbsent(clan, new ClanUpkeep(clan));
+        UPKEEP_INSTANCES.computeIfAbsent(clan, ClanUpkeep::new);
         return UPKEEP_INSTANCES.get(clan);
     }
 

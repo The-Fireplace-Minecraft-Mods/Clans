@@ -15,7 +15,7 @@ public class ClanColors extends ClanData {
     private static final Map<UUID, ClanColors> COLORS = new ConcurrentHashMap<>();
 
     public static ClanColors get(UUID clan) {
-        COLORS.putIfAbsent(clan, new ClanColors(clan));
+        COLORS.computeIfAbsent(clan, ClanColors::new);
         return COLORS.get(clan);
     }
 

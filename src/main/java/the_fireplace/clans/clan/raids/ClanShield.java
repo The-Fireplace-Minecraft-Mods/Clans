@@ -13,7 +13,7 @@ public class ClanShield extends ClanData {
     private static final Map<UUID, ClanShield> SHIELD_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanShield get(UUID clan) {
-        SHIELD_INSTANCES.putIfAbsent(clan, new ClanShield(clan));
+        SHIELD_INSTANCES.computeIfAbsent(clan, ClanShield::new);
         return SHIELD_INSTANCES.get(clan);
     }
 

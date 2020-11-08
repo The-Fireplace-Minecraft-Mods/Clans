@@ -21,7 +21,7 @@ public class ClanLocks extends ClanData {
     private static final Map<UUID, ClanLocks> LOCK_DATA_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanLocks get(UUID clan) {
-        LOCK_DATA_INSTANCES.putIfAbsent(clan, new ClanLocks(clan));
+        LOCK_DATA_INSTANCES.computeIfAbsent(clan, ClanLocks::new);
         return LOCK_DATA_INSTANCES.get(clan);
     }
 

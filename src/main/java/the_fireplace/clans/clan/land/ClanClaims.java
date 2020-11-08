@@ -13,7 +13,7 @@ public class ClanClaims {
     private static final Map<UUID, ClanClaims> CLAIMS = new ConcurrentHashMap<>();
 
     public static ClanClaims get(UUID clan) {
-        CLAIMS.putIfAbsent(clan, new ClanClaims(clan));
+        CLAIMS.computeIfAbsent(clan, ClanClaims::new);
         return CLAIMS.get(clan);
     }
 

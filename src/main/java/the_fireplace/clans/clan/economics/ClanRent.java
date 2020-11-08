@@ -15,7 +15,7 @@ public class ClanRent extends ClanData {
     private static final Map<UUID, ClanRent> RENT_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanRent get(UUID clan) {
-        RENT_INSTANCES.putIfAbsent(clan, new ClanRent(clan));
+        RENT_INSTANCES.computeIfAbsent(clan, ClanRent::new);
         return RENT_INSTANCES.get(clan);
     }
 

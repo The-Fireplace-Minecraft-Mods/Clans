@@ -39,7 +39,7 @@ public final class RaidCollectionDatabase implements ThreadedSaveable, JsonWrita
 	}
 
 	public void addCollectItem(UUID player, ItemStack payout){
-		collectItems.putIfAbsent(player, new ConcurrentSet<>());
+		collectItems.computeIfAbsent(player, (unused) -> new ConcurrentSet<>());
 		collectItems.get(player).add(payout.writeToNBT(new NBTTagCompound()).toString());
 		markChanged();
 	}

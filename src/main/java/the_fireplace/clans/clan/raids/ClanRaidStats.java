@@ -14,7 +14,7 @@ public class ClanRaidStats extends ClanData {
     private static final Map<UUID, ClanRaidStats> RAID_STATS_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanRaidStats get(UUID clan) {
-        RAID_STATS_INSTANCES.putIfAbsent(clan, new ClanRaidStats(clan));
+        RAID_STATS_INSTANCES.computeIfAbsent(clan, ClanRaidStats::new);
         return RAID_STATS_INSTANCES.get(clan);
     }
 

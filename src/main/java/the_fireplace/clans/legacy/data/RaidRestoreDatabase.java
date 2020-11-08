@@ -32,7 +32,7 @@ public final class RaidRestoreDatabase implements ThreadedSaveable, JsonWritable
 
 	public static void addRestoreBlock(int dim, Chunk c, BlockPos pos, String block) {
 		ChunkPosition coords = new ChunkPosition(c.x, c.z, dim);
-		getInstance().raidedChunks.putIfAbsent(coords, new ChunkRestoreData());
+		getInstance().raidedChunks.computeIfAbsent(coords, (unused) -> new ChunkRestoreData());
 		if(getInstance().raidedChunks.get(coords).hasRestoreBlock(pos.getX(), pos.getY(), pos.getZ()))
 			ClansModContainer.getMinecraftHelper().getLogger().error("Block restore cache being written when it already exists at position ({}, {}, {}). Block being written is: {}.", pos.getX(), pos.getY(), pos.getZ(), block);
 		getInstance().raidedChunks.get(coords).addRestoreBlock(pos.getX(), pos.getY(), pos.getZ(), block);

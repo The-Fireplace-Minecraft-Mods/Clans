@@ -11,15 +11,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClanWeaknessFactor extends ClanData {
-    private static final Map<UUID, ClanWeaknessFactor> SHIELD_INSTANCES = new ConcurrentHashMap<>();
+    private static final Map<UUID, ClanWeaknessFactor> WEAKNESS_FACTOR_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanWeaknessFactor get(UUID clan) {
-        SHIELD_INSTANCES.putIfAbsent(clan, new ClanWeaknessFactor(clan));
-        return SHIELD_INSTANCES.get(clan);
+        WEAKNESS_FACTOR_INSTANCES.computeIfAbsent(clan, ClanWeaknessFactor::new);
+        return WEAKNESS_FACTOR_INSTANCES.get(clan);
     }
 
     public static void delete(UUID clan) {
-        ClanWeaknessFactor weaknessFactor = SHIELD_INSTANCES.remove(clan);
+        ClanWeaknessFactor weaknessFactor = WEAKNESS_FACTOR_INSTANCES.remove(clan);
         if(weaknessFactor != null)
             weaknessFactor.delete();
     }

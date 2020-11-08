@@ -29,7 +29,7 @@ public class ClanNames extends ClanData {
     }
 
     public static ClanNames get(UUID clan) {
-        NAME_INSTANCES.putIfAbsent(clan, new ClanNames(clan));
+        NAME_INSTANCES.computeIfAbsent(clan, ClanNames::new);
         return NAME_INSTANCES.get(clan);
     }
 

@@ -22,7 +22,7 @@ public class ClanMembers extends ClanData {
     private static boolean allMembersLoaded = false;
 
     public static ClanMembers get(UUID clan) {
-        MEMBERS.putIfAbsent(clan, new ClanMembers(clan));
+        MEMBERS.computeIfAbsent(clan, ClanMembers::new);
         return MEMBERS.get(clan);
     }
 

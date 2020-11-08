@@ -16,7 +16,7 @@ public class AdminControlledClanSettings extends ClanData {
     private static final Map<UUID, AdminControlledClanSettings> ADMIN_CONTROLLED_SETTINGS_INSTANCES = new ConcurrentHashMap<>();
 
     public static AdminControlledClanSettings get(UUID clan) {
-        ADMIN_CONTROLLED_SETTINGS_INSTANCES.putIfAbsent(clan, new AdminControlledClanSettings(clan));
+        ADMIN_CONTROLLED_SETTINGS_INSTANCES.computeIfAbsent(clan, AdminControlledClanSettings::new);
         return ADMIN_CONTROLLED_SETTINGS_INSTANCES.get(clan);
     }
 

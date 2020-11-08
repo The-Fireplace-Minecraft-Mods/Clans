@@ -2,6 +2,7 @@ package the_fireplace.clans.legacy.logic;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -17,6 +18,7 @@ import the_fireplace.clans.legacy.model.OrderedPair;
 import the_fireplace.clans.legacy.util.ChatUtil;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class ClaimMapToChat {
     private static final String RED = SECTION_SYMBOL+"c";
     private static final String YELLOW = SECTION_SYMBOL+"e";
     private static final String CACHE_SEGMENT_SEPARATOR = "|";
+    private static final String END_KEY_SYMBOL = ";";
     private final ChunkPos playerChunk;
     private final ChunkPos centerChunk;
     private final ICommandSender messageTarget;
@@ -58,6 +61,17 @@ public class ClaimMapToChat {
         centerChunk = calculateCenter();
         useAllianceColorScheme = isSmall;
         playerId = getTargetId(messageTarget);
+    }
+
+    public static void sendSingleFancyMap(EntityPlayerMP targetPlayer) {
+        createFancyMap(targetPlayer, new ChunkPos(targetPlayer.getPosition()), targetPlayer.dimension).prepareAndSend();
+    }
+
+    public static void sendAllFancyMaps(EntityPlayerMP targetPlayer) {
+        ConcurrentExecutionManager.runKillable(() -> {
+            for (OrderedPair<Integer, Integer> section : ClaimData.getOccupiedCacheSections())
+                createFancyMap(targetPlayer, new ChunkPos(targetPlayer.getPosition()), targetPlayer.dimension, section).prepareAndSend();
+        });
     }
 
     private byte getHeight(boolean isSmall) {
@@ -89,12 +103,16 @@ public class ClaimMapToChat {
         return new ClaimMapToChat(messageTarget, originChunk, dimension, false, null);
     }
 
+    public static ClaimMapToChat createFancyMap(ICommandSender messageTarget, ChunkPos originChunk, int dimension, OrderedPair<Integer, Integer> cacheSegment) {
+        return new ClaimMapToChat(messageTarget, originChunk, dimension, false, cacheSegment);
+    }
+
     public static ClaimMapToChat createAllianceMap(ICommandSender messageTarget, ChunkPos originChunk, int dimension) {
         return new ClaimMapToChat(messageTarget, originChunk, dimension, true, null);
     }
 
     public void prepareAndSend() {
-        new Thread(() -> {
+        ConcurrentExecutionManager.runKillable(() -> {
             ExecutorService executor = Executors.newCachedThreadPool();
             prepareMapBodyAndKey(executor);
             executor.shutdown();
@@ -104,7 +122,7 @@ public class ClaimMapToChat {
                 e.printStackTrace();
             }
             send();
-        }).start();
+        });
     }
     
     private void prepareMapBodyAndKey(ExecutorService executor) {
@@ -175,6 +193,8 @@ public class ClaimMapToChat {
         sendMapBody();
         sendMapBorder();
         sendMapSymbolGuide();
+        if(showCacheSegment)
+            sendEndSegment();
     }
 
     private void sendCacheSegment() {
@@ -196,6 +216,10 @@ public class ClaimMapToChat {
         }
     }
 
+    private void sendEndSegment() {
+        ChatUtil.sendMessage(messageTarget, getEndSegmentComponent());
+    }
+
     private Style getTextStyle(UUID c) {
         if(c == null)
             return TextStyles.YELLOW;
@@ -210,6 +234,10 @@ public class ClaimMapToChat {
     }
 
     private ITextComponent getCacheSegmentComponent() {
-        return new TextComponentString(CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue1()+CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue2()+CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.YELLOW);
+        return new TextComponentString(CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue1()+CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue2()+CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.BLACK);
+    }
+
+    private ITextComponent getEndSegmentComponent() {
+        return new TextComponentString(END_KEY_SYMBOL).setStyle(TextStyles.BLACK);
     }
 }

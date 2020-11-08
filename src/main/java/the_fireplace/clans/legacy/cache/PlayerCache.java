@@ -134,7 +134,7 @@ public final class PlayerCache {
 
     //region getPlayerData
     private static PlayerCachedData getPlayerCache(UUID player) {
-        playerCache.putIfAbsent(player, new PlayerCachedData());
+        playerCache.computeIfAbsent(player, (unused) -> new PlayerCachedData());
         return playerCache.get(player);
     }
 

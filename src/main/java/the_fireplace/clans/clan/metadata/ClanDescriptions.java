@@ -14,7 +14,7 @@ public class ClanDescriptions extends ClanData {
     private static final Map<UUID, ClanDescriptions> DESCRIPTIONS = new ConcurrentHashMap<>();
 
     public static ClanDescriptions get(UUID clan) {
-        DESCRIPTIONS.putIfAbsent(clan, new ClanDescriptions(clan));
+        DESCRIPTIONS.computeIfAbsent(clan, ClanDescriptions::new);
         return DESCRIPTIONS.get(clan);
     }
 
