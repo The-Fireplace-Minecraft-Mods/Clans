@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class ClanMembers extends ClanData {
     private static final Map<UUID, ClanMembers> MEMBERS = new ConcurrentHashMap<>();
+    private static boolean allMembersLoaded = false;
 
     public static ClanMembers get(UUID clan) {
         MEMBERS.putIfAbsent(clan, new ClanMembers(clan));
@@ -31,12 +32,22 @@ public class ClanMembers extends ClanData {
             upkeep.delete();
     }
 
-    static Collection<UUID> lookupPlayerClans(UUID player){
+    static Collection<UUID> lookupPlayerClans(UUID player) {
+        ensureAllMembersLoaded();
         Set<UUID> clans = new HashSet<>();
         for(ClanMembers members : MEMBERS.values())
             if(members.getMemberRanks().containsKey(player))
                 clans.add(members.clan);
         return Collections.unmodifiableSet(clans);
+    }
+
+    private static void ensureAllMembersLoaded() {
+        if (!allMembersLoaded) {
+            for (UUID clan: ClanIdRegistry.getIds()) {
+                get(clan);
+            }
+            allMembersLoaded = true;
+        }
     }
 
     private final Map<UUID, EnumRank> members = new ConcurrentHashMap<>();

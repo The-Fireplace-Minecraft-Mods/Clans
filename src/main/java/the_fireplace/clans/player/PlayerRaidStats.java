@@ -12,7 +12,7 @@ public final class PlayerRaidStats {
     }
 
     public static double getRaidWLR(UUID player) {
-        return ((double) getRaidWins(player))/((double) getRaidLosses(player));
+        return ((double) getRaidWins(player))/(getRaidLosses(player) > 1 ? (double) getRaidLosses(player) : 1);
     }
 
     public static void incrementRaidLosses(UUID player) {

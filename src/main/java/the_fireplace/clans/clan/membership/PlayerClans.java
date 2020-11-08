@@ -34,7 +34,7 @@ public class PlayerClans {
     }
 
     private static void ensurePlayerClansCached(UUID player) {
-        if(!PLAYER_CLAN_CACHE.containsKey(player)) {
+        if (!PLAYER_CLAN_CACHE.containsKey(player)) {
             Set<UUID> clansFromDb = new ConcurrentSet<>();
             clansFromDb.addAll(ClanMembers.lookupPlayerClans(player));
             PLAYER_CLAN_CACHE.put(player, clansFromDb);

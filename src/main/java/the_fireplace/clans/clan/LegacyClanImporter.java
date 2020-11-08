@@ -23,10 +23,12 @@ import java.io.File;
 import java.util.UUID;
 
 @Deprecated
-public final class LegacyImporter {
+public final class LegacyClanImporter {
     public static void importLegacyClans() {
-        for(File file: FileNames.getUUIDJsonFolderContents(Directories.CLAN_DATA_LOCATION))
+        for(File file: FileNames.getUUIDJsonFolderContents(Directories.CLAN_DATA_LOCATION)) {
             importLegacyClan(file);
+            file.delete();
+        }
     }
 
     private static void importLegacyClan(File file) {

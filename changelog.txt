@@ -15,3 +15,5 @@ Fixed /opclan setname not changing the name
 Fixed claim data failing to save when there are a lot of claimed chunks
 Removed the ability for addons to attach generic data to clan data
 Economy-related commands will no longer register if Sponge is present without an actual economy present
+Fix Win-Loss ratio attempting to divide by 0 for players that haven't lost
+Clan save data is now stored more efficiently and takes up less space
