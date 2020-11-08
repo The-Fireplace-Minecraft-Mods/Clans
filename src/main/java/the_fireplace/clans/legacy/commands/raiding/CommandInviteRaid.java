@@ -11,10 +11,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.commands.RaidSubCommand;
-import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.model.Raid;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -22,9 +22,9 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,10 +53,10 @@ public class CommandInviteRaid extends RaidSubCommand {
 				GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
 				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
 				if(target != null) {
-                    Map<EntityPlayerMP, EnumRank> clanPlayers = ClanMembers.get().getOnlineMemberRanks();
+                    Collection<EntityPlayerMP> clanPlayers = ClanMembers.get(raid.getTarget()).getOnlineMembers();
 					if (clanPlayers.size() > raid.getAttackerCount() - ClansModContainer.getConfig().getMaxRaidersOffset()) {
-						if (!clanPlayers.containsKey(target)) {
-                            target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", raid.getTarget().getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+						if (!clanPlayers.contains(target)) {
+                            target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", ClanNames.get(raid.getTarget()).getName()).setStyle(TextStyles.GREEN));
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
 						} else
 							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));

@@ -20,11 +20,11 @@ public class ClanNames extends ClanData {
     private static boolean cacheLoaded = false;
     private static final Set<String> FORBIDDEN_CLAN_NAMES = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", "null");
     static {
-        FORBIDDEN_CLAN_NAMES.addAll(CommandClan.commands.keySet());
-        FORBIDDEN_CLAN_NAMES.addAll(CommandClan.aliases.keySet());
-        FORBIDDEN_CLAN_NAMES.addAll(CommandOpClan.commands.keySet());
-        FORBIDDEN_CLAN_NAMES.addAll(CommandOpClan.aliases.keySet());
-        FORBIDDEN_CLAN_NAMES.addAll(CommandRaid.commands.keySet());
+        FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMANDS.keySet());
+        FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMAND_ALIASES.keySet());
+        FORBIDDEN_CLAN_NAMES.addAll(CommandOpClan.COMMANDS.keySet());
+        FORBIDDEN_CLAN_NAMES.addAll(CommandOpClan.COMMAND_ALIASES.keySet());
+        FORBIDDEN_CLAN_NAMES.addAll(CommandRaid.COMMANDS.keySet());
         FORBIDDEN_CLAN_NAMES.addAll(CommandRaid.aliases.keySet());
     }
 

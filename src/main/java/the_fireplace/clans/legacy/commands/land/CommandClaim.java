@@ -47,6 +47,6 @@ public class CommandClaim extends ClanSubCommand {
 	}
 
 	private static boolean hasClaimRadiusPermission(EntityPlayerMP sender) {
-		return !PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX + "claim.radius");
+		return PermissionManager.hasPermission(sender, CLAN_COMMAND_PREFIX + "claim.radius", true);
 	}
 }

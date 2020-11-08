@@ -46,4 +46,6 @@ public interface ExternalEconomy {
 	double getBalance(UUID account);
 
 	String getFormattedCurrency(double amount);
+
+	boolean isPresent();
 }

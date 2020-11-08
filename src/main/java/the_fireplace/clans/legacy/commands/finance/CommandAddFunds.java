@@ -39,7 +39,7 @@ public class CommandAddFunds extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(!AdminControlledClanSettings.get().isServerOwned()) {
+        if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
 			double amount;
 			try {
 				amount = parseDouble(args[0]);
@@ -50,9 +50,9 @@ public class CommandAddFunds extends ClanSubCommand {
 				return;
 			}
 			if(Economy.deductAmount(amount, sender.getUniqueID())) {
-				if(Economy.addAmount(amount, selectedClan.getClanMetadata().getClanId())) {
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", Economy.getFormattedCurrency(amount), selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
-                    ClanMemberMessager.get().messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), Economy.getFormattedCurrency(amount), selectedClan.getClanMetadata().getClanName());
+				if(Economy.addAmount(amount, selectedClan)) {
+					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.addfunds.success", Economy.getFormattedCurrency(amount), selectedClanName).setStyle(TextStyles.GREEN));
+                    ClanMemberMessager.get(selectedClan).messageAllOnline(sender, TextStyles.GREEN, "commands.clan.addfunds.added", sender.getDisplayNameString(), Economy.getFormattedCurrency(amount), selectedClanName);
                 } else {
 					Economy.addAmount(amount, sender.getUniqueID());
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
@@ -60,6 +60,6 @@ public class CommandAddFunds extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.insufficient_funds").setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", selectedClanName).setStyle(TextStyles.RED));
 	}
 }

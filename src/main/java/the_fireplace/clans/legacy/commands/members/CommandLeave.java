@@ -39,24 +39,24 @@ public class CommandLeave extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        EnumRank senderRank = ClanMembers.get().getMemberRanks().get(sender.getUniqueID());
+        EnumRank senderRank = ClanMembers.get(selectedClan).getRank(sender.getUniqueID());
 		if (unableToLeave(sender, senderRank))
 			return;
-        if(ClanMembers.get().removeMember(sender.getUniqueID())) {
-			PlayerClanSettings.updateDefaultClanIfNeeded(sender.getUniqueID(), selectedClan.getClanMetadata().getClanId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
-            ClanMemberMessager.get().messageAllOnline(TextStyles.YELLOW, "commands.clan.leave.left", sender.getDisplayNameString(), selectedClan.getClanMetadata().getClanName());
+        if(ClanMembers.get(selectedClan).removeMember(sender.getUniqueID())) {
+			PlayerClanSettings.updateDefaultClanIfNeeded(sender.getUniqueID(), selectedClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.success", selectedClanName).setStyle(TextStyles.GREEN));
+            ClanMemberMessager.get(selectedClan).messageAllOnline(TextStyles.YELLOW, "commands.clan.leave.left", sender.getDisplayNameString(), selectedClanName);
         }
 	}
 
 	private boolean unableToLeave(EntityPlayerMP sender, EnumRank senderRank) {
-        if(senderRank == EnumRank.LEADER && !AdminControlledClanSettings.get().isServerOwned()) {
-            if(ClanMembers.get().getMemberRanks().size() == 1){
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+        if(senderRank == EnumRank.LEADER && !AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
+            if (ClanMembers.get(selectedClan).getMemberCount() == 1) {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.disband", selectedClanName).setStyle(TextStyles.RED));
 				return true;
 			}
-            if(ClanMembers.get().getLeaderCount() <= 1) {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.promote", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            if (ClanMembers.get(selectedClan).getLeaderCount() <= 1) {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.leave.promote", selectedClanName).setStyle(TextStyles.RED));
 				return true;
 			}
 		}

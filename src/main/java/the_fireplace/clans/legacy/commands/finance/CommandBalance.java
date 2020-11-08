@@ -37,10 +37,10 @@ public class CommandBalance extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(!AdminControlledClanSettings.get().isServerOwned()) {
-			double balance = Economy.getBalance(selectedClan.getClanMetadata().getClanId());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClan.getClanMetadata().getClanName(), Economy.getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
+        if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
+			double balance = Economy.getBalance(selectedClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.balance.balance", selectedClanName, Economy.getFormattedCurrency(balance)).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "balance", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "balance", selectedClanName).setStyle(TextStyles.RED));
 	}
 }

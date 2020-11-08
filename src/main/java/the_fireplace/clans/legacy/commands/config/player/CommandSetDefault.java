@@ -6,7 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanNames;
@@ -19,6 +18,7 @@ import the_fireplace.clans.player.PlayerClanSettings;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -45,13 +45,13 @@ public class CommandSetDefault extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan def = ClanNames.getClanByName(args[0]);
-		if(def != null) {
-            if(ClanMembers.get().getMemberRanks().containsKey(sender.getUniqueID())) {
-				PlayerClanSettings.setDefaultClan(sender.getUniqueID(), def.getClanMetadata().getClanId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", def.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+		UUID newDefaultClan = ClanNames.getClanByName(args[0]);
+		if(newDefaultClan != null) {
+            if(ClanMembers.get(newDefaultClan).isMember(sender.getUniqueID())) {
+				PlayerClanSettings.setDefaultClan(sender.getUniqueID(), newDefaultClan);
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdefault.success", ClanNames.get(newDefaultClan).getName()).setStyle(TextStyles.GREEN));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", def.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", ClanNames.get(newDefaultClan).getName()).setStyle(TextStyles.RED));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound").setStyle(TextStyles.RED));
 	}
@@ -60,8 +60,8 @@ public class CommandSetDefault extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		List<String> ret = Lists.newArrayList();
 		if(args.length == 1 && sender instanceof EntityPlayerMP)
-			for(Clan c: PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
-				ret.add(c.getClanMetadata().getClanName());
+			for(UUID c: PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
+				ret.add(ClanNames.get(c).getName());
 		return getListOfStringsMatchingLastWord(args, ret);
 	}
 }

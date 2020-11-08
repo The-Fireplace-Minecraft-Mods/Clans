@@ -3,10 +3,10 @@ package the_fireplace.clans.legacy.commands.op.land;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.legacy.cache.player.ClaimAdminCache;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
+import the_fireplace.clans.player.ClaimAdmins;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,7 +30,7 @@ public class OpCommandBuildAdmin extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(ClaimAdminCache.toggleClaimAdmin(sender))
+		if(ClaimAdmins.toggleClaimAdmin(sender))
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.buildadmin.on").setStyle(TextStyles.YELLOW));
 		else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.buildadmin.off").setStyle(TextStyles.GREEN));

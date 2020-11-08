@@ -5,8 +5,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
@@ -19,7 +17,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -55,9 +52,9 @@ public class CommandAutoDecline extends ClanSubCommand {
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autodecline.off").setStyle(TextStyles.GREEN));
 		} else {
-			Clan c = ClanNames.getClanByName(args[0]);
+			UUID c = ClanNames.getClanByName(args[0]);
 			if(c != null)
-				toggleClanInviteBlock(sender, c.getClanMetadata().getClanId());
+				toggleClanInviteBlock(sender, c);
 			else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 		}
@@ -73,10 +70,10 @@ public class CommandAutoDecline extends ClanSubCommand {
 		if(willNowBlock) {
 			InvitedPlayers.addInviteBlock(sender.getUniqueID(), clanId);
 			InvitedPlayers.removeInvite(sender.getUniqueID(), clanId);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autodecline.on_clan", Objects.requireNonNull(ClanDatabase.getClanById(clanId)).getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autodecline.on_clan", ClanNames.get(clanId).getName()).setStyle(TextStyles.GREEN));
 		} else {
 			InvitedPlayers.removeInviteBlock(sender.getUniqueID(), clanId);
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autodecline.off_clan", Objects.requireNonNull(ClanDatabase.getClanById(clanId)).getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autodecline.off_clan", ClanNames.get(clanId).getName()).setStyle(TextStyles.GREEN));
 		}
 	}
 }

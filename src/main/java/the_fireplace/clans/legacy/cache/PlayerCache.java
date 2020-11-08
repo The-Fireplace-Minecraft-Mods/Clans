@@ -7,8 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.home.ClanHomes;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
@@ -25,7 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerCache {
-    private static final Map<UUID, Clan> clanChattingPlayers = new ConcurrentHashMap<>();
+    private static final Map<UUID, UUID> clanChattingPlayers = new ConcurrentHashMap<>();
     private static final Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
     private static final Map<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
 
@@ -144,11 +142,11 @@ public final class PlayerCache {
         return clanChattingPlayers.containsKey(player);
     }
 
-    public static Clan getChattingWithClan(EntityPlayer player) {
+    public static UUID getChattingWithClan(EntityPlayer player) {
         return clanChattingPlayers.get(player.getUniqueID());
     }
 
-    public static void toggleClanChat(UUID uuid, Clan clan) {
+    public static void toggleClanChat(UUID uuid, UUID clan) {
         if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
             clanChattingPlayers.remove(uuid);
         else
@@ -177,10 +175,10 @@ public final class PlayerCache {
                 clanHomeWarmups.remove(entry.getKey());
 
             if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
-                Clan c = ClanDatabase.getClanById(entry.getValue().getValue2());
+                UUID clan = entry.getValue().getValue2();
                 //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
-                if(c != null && ClanHomes.get().getHome() != null && ClanMembers.get().getMemberRanks().containsKey(entry.getKey().getUniqueID()))
-                    EntityUtil.teleportHome(entry.getKey(), ClanHomes.get().getHome(), ClanHomes.get().getHomeDim(), entry.getKey().dimension, false);
+                if(clan != null && ClanHomes.hasHome(clan) && ClanMembers.get(clan).getMembers().contains(entry.getKey().getUniqueID()))
+                    EntityUtil.teleportHome(entry.getKey(), ClanHomes.get(clan).toBlockPos(), ClanHomes.get(clan).getHomeDim(), entry.getKey().dimension, false);
                 else
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
             }

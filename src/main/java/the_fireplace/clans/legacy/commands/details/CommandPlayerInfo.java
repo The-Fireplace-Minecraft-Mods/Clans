@@ -9,10 +9,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -26,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -77,34 +77,34 @@ public class CommandPlayerInfo extends ClanSubCommand {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.name", target.getName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.wlr", PlayerRaidStats.getRaidWLR(target.getId())).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.last_seen", TimeUtils.getFormattedTime(PlayerLastSeenData.getLastSeen(target.getId()))).setStyle(TextStyles.GREEN));
-		List<Clan> leaders = Lists.newArrayList();
-		List<Clan> admins = Lists.newArrayList();
-		List<Clan> members = Lists.newArrayList();
-		for(Clan clan: PlayerClans.getClansPlayerIsIn(target.getId())) {
-            EnumRank rank = ClanMembers.get().getMemberRanks().get(target.getId());
+		List<UUID> leaderInClans = Lists.newArrayList();
+		List<UUID> adminInClans = Lists.newArrayList();
+		List<UUID> memberInClans = Lists.newArrayList();
+		for(UUID clan: PlayerClans.getClansPlayerIsIn(target.getId())) {
+            EnumRank rank = ClanMembers.get(clan).getRank(target.getId());
 			switch(rank){
 				case LEADER:
-					leaders.add(clan);
+					leaderInClans.add(clan);
 					break;
 				case ADMIN:
-					admins.add(clan);
+					adminInClans.add(clan);
 					break;
 				case MEMBER:
-					members.add(clan);
+					memberInClans.add(clan);
 					break;
 			}
 		}
-		if(!leaders.isEmpty() || !admins.isEmpty() || !members.isEmpty()) {
-			Clan defaultClan = null;
+		if(!leaderInClans.isEmpty() || !adminInClans.isEmpty() || !memberInClans.isEmpty()) {
+			UUID defaultClan = null;
 			if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target))
-				defaultClan = ClanDatabase.getClanById(PlayerClanSettings.getDefaultClan(target.getId()));
+				defaultClan = PlayerClanSettings.getDefaultClan(target.getId());
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.clans").setStyle(TextStyles.GREEN));
-			for(Clan leader: leaders)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", leader.getClanMetadata().getClanName()).setStyle(defaultClan != null && leader.getClanMetadata().getClanId().equals(defaultClan.getClanMetadata().getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
-			for(Clan admin: admins)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.admin", admin.getClanMetadata().getClanName()).setStyle(defaultClan != null && admin.getClanMetadata().getClanId().equals(defaultClan.getClanMetadata().getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
-			for(Clan member: members)
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.member", member.getClanMetadata().getClanName()).setStyle(defaultClan != null && member.getClanMetadata().getClanId().equals(defaultClan.getClanMetadata().getClanId()) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+			for(UUID leader: leaderInClans)
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.leader", ClanNames.get(leader).getName()).setStyle(leader.equals(defaultClan) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+			for(UUID admin: adminInClans)
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.admin", ClanNames.get(admin).getName()).setStyle(admin.equals(defaultClan) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
+			for(UUID member: memberInClans)
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.member", ClanNames.get(member).getName()).setStyle(member.equals(defaultClan) ? TextStyles.ONLINE_ADMIN : TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.playerinfo.noclans", target.getName()).setStyle(TextStyles.GREEN));
 	}

@@ -5,7 +5,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.economy.Economy;
@@ -17,6 +16,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,10 +38,10 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-		String clan = args[0];
-		Clan c = ClanNames.getClanByName(clan);
-		if(c != null) {
-            if(!AdminControlledClanSettings.get().isServerOwned()) {
+		String clanName = args[0];
+		UUID clan = ClanNames.getClanByName(clanName);
+		if (clan != null) {
+            if (!AdminControlledClanSettings.get(clan).isServerOwned()) {
 				double amount;
 				try {
 					amount = parseDouble(args[1]);
@@ -51,14 +51,14 @@ public class OpCommandAddFunds extends OpClanSubCommand {
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.format").setStyle(TextStyles.RED));
 					return;
 				}
-				if (Economy.addAmount(amount, c.getClanMetadata().getClanId()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", Economy.getFormattedCurrency(amount), c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+				if (Economy.addAmount(amount, clan))
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.addfunds.success", Economy.getFormattedCurrency(amount), ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
 				else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "clans.error.no_clan_econ_acct").setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", clan).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "addfunds", clanName).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
 	}
 
 	@Override

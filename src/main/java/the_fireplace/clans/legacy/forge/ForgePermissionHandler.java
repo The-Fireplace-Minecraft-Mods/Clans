@@ -13,13 +13,13 @@ import static the_fireplace.clans.legacy.util.PermissionManager.*;
 public class ForgePermissionHandler implements IPermissionHandler {
 
     public ForgePermissionHandler() {
-        for(String subcommand: CommandClan.commands.keySet())
+        for(String subcommand: CommandClan.COMMANDS.keySet())
             registerPermission(CLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
 
-        for(String subcommand: CommandRaid.commands.keySet())
+        for(String subcommand: CommandRaid.COMMANDS.keySet())
             registerPermission(RAID_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
 
-        for(String subcommand: CommandOpClan.commands.keySet())
+        for(String subcommand: CommandOpClan.COMMANDS.keySet())
             registerPermission(OPCLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.OP, "");
 
         registerPermission(PROTECTION_PREFIX+"break.protected_wilderness", DefaultPermissionLevel.NONE, "");

@@ -47,19 +47,19 @@ public class CommandPromote extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-        if(ClanMembers.get().getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER))
+        if(ClanMembers.get(selectedClan).getRank(sender.getUniqueID()).equals(EnumRank.LEADER))
 			ClanMemberManagement.promoteClanMember(server, sender, args[0], selectedClan);
 		else
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClanName).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> playerNames = Lists.newArrayList();
-        for(UUID player: ClanMembers.get().getMemberRanks().keySet()) {
+        for(UUID player: ClanMembers.get(selectedClan).getMembers()) {
 			GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-            if(playerProf != null && !ClanMembers.get().getMemberRanks().get(player).equals(EnumRank.LEADER))
+            if(playerProf != null && !ClanMembers.get(selectedClan).getRank(player).equals(EnumRank.LEADER))
 				playerNames.add(playerProf.getName());
 		}
 		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();

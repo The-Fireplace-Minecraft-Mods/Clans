@@ -77,4 +77,8 @@ public class Economy {
             addAmount(amountToPayPerAccount, account);
         return 0;
     }
+
+    public static boolean isPresent() {
+        return externalEconomy.isPresent();
+    }
 }

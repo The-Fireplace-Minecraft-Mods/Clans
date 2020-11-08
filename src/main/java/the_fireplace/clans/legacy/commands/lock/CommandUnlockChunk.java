@@ -9,8 +9,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.accesscontrol.ClanLocks;
 import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
 import the_fireplace.clans.clan.membership.ClanMembers;
@@ -58,7 +56,7 @@ public class CommandUnlockChunk extends ClanSubCommand {
 		boolean all = false;
         if(args.length == 0)
 			allowedUnlockPlayer = sender.getUniqueID();
-		else if(ClanPermissions.get().hasPerm("lockadmin", sender.getUniqueID())) {
+		else if(ClanPermissions.get(selectedClan).hasPerm("lockadmin", sender.getUniqueID())) {
 			if (args[0].equalsIgnoreCase("all") || args[0].equals("*"))
 				all = true;
 			else
@@ -69,21 +67,21 @@ public class CommandUnlockChunk extends ClanSubCommand {
 		}
 
 		Chunk c = sender.world.getChunk(sender.getPosition());
-		if (!selectedClan.getClanMetadata().getClanId().equals(ChunkUtils.getChunkOwner(c))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+		if (!selectedClan.equals(ChunkUtils.getChunkOwner(c))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_claimed_by", selectedClanName).setStyle(TextStyles.RED));
 			return;
 		}
 		for(int y=0; y <= 255; y++)
 			for(int x=c.getPos().getXStart(); x <= c.getPos().getXEnd(); x++)
 				for(int z=c.getPos().getZStart(); z <= c.getPos().getZEnd(); z++) {
 					BlockPos targetBlockPos = new BlockPos(x, y, z);
-                    if (!all && ClanLocks.get().isLocked(targetBlockPos) && !allowedUnlockPlayer.equals(ClanLocks.get().getLockOwner(targetBlockPos)))
+                    if (!all && ClanLocks.get(selectedClan).isLocked(targetBlockPos) && !allowedUnlockPlayer.equals(ClanLocks.get(selectedClan).getLockOwner(targetBlockPos)))
 						continue;
 					IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
 					if (ClansModContainer.getConfig().getLockableBlocks().contains(state.getBlock().getRegistryName().toString())) {
-                        ClanLocks.get().delLock(targetBlockPos);
+                        ClanLocks.get(selectedClan).delLock(targetBlockPos);
                         for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
-                            ClanLocks.get().delLock(pos);
+                            ClanLocks.get(selectedClan).delLock(pos);
 					}
 				}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unlockchunk.success").setStyle(TextStyles.GREEN));
@@ -94,9 +92,9 @@ public class CommandUnlockChunk extends ClanSubCommand {
 		if(args.length == 1){
 			List<String> completions = Lists.newArrayList("all");
 			if(sender instanceof EntityPlayerMP) {
-				Clan chunkClan = ClanDatabase.getClanById(ChunkUtils.getChunkOwner(sender.getEntityWorld().getChunk(sender.getPosition())));
+				UUID chunkClan = ChunkUtils.getChunkOwner(sender.getEntityWorld().getChunk(sender.getPosition()));
                 if(chunkClan != null)
-					for (UUID member : ClanMembers.get().getMemberRanks().keySet())
+					for (UUID member : ClanMembers.get(chunkClan).getMemberRanks().keySet())
 						completions.add(Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(member)).getName());
 			}
 			return getListOfStringsMatchingLastWord(args, completions);

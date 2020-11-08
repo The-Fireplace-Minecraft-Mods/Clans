@@ -5,7 +5,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
@@ -16,6 +15,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -37,12 +37,12 @@ public class OpCommandClaim extends OpClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		String clan = args[0];
-		Clan c = ClanNames.getClanByName(clan);
-		if(c != null)
-			ClaimManagement.checkAndAttemptClaim(sender, c, true);
+		String clanName = args[0];
+		UUID clan = ClanNames.getClanByName(clanName);
+		if(clan != null)
+			ClaimManagement.checkAndAttemptClaim(sender, clan, true);
 		else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
 	}
 
 	@Override

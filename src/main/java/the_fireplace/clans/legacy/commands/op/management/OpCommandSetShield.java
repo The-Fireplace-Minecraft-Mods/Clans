@@ -4,7 +4,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.clan.raids.ClanShield;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
@@ -15,6 +14,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -37,7 +37,7 @@ public class OpCommandSetShield extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
 		String clan = args[0];
-		Clan c = ClanNames.getClanByName(clan);
+		UUID c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			long duration;
 			try {
@@ -48,8 +48,8 @@ public class OpCommandSetShield extends OpClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.format").setStyle(TextStyles.RED));
 				return;
 			}
-            ClanShield.get().setShield(duration);
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", c.getClanMetadata().getClanName(), duration).setStyle(TextStyles.GREEN));
+            ClanShield.get(c).setShield(duration);
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setshield.success", ClanNames.get(c).getName(), duration).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

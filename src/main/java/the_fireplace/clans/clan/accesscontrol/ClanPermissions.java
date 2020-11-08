@@ -32,9 +32,9 @@ public class ClanPermissions extends ClanData {
             permissions.delete();
     }
 
-    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = new HashMap<>(CommandClan.commands.size() + 9, 1);;
+    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = new HashMap<>(CommandClan.COMMANDS.size() + 9, 1);;
     static {
-        for(Map.Entry<String, ClanSubCommand> entry: CommandClan.commands.entrySet())
+        for(Map.Entry<String, ClanSubCommand> entry: CommandClan.COMMANDS.entrySet())
             if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN) && !entry.getValue().getRequiredClanRank().equals(EnumRank.ANY))
                 ClanPermissions.DEFAULT_PERMISSIONS.put(entry.getKey(), entry.getValue().getRequiredClanRank());
         ClanPermissions.DEFAULT_PERMISSIONS.put("access", EnumRank.MEMBER);
@@ -52,7 +52,7 @@ public class ClanPermissions extends ClanData {
 
     private ClanPermissions(UUID clan) {
         super(clan, "permissions");
-        this.permissions = new ConcurrentHashMap<>(CommandClan.commands.size() + 9, 1);
+        this.permissions = new ConcurrentHashMap<>(CommandClan.COMMANDS.size() + 9, 1);
         for(Map.Entry<String, EnumRank> perm: DEFAULT_PERMISSIONS.entrySet()) {
             permissions.put(perm.getKey(), perm.getValue());
             permissionOverrides.put(perm.getKey(), new ConcurrentHashMap<>());

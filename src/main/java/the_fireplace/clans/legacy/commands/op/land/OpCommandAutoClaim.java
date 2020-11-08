@@ -5,18 +5,18 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.metadata.ClanNames;
-import the_fireplace.clans.legacy.cache.PlayerAutoClaimData;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
+import the_fireplace.clans.player.autoland.OpAutoClaim;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -39,15 +39,15 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String attemptClanName = args[0];
-		Clan clan = ClanNames.getClanByName(attemptClanName);
+		UUID clan = ClanNames.getClanByName(attemptClanName);
 		if(clan != null) {
-            Clan rm = PlayerAutoClaimData.cancelOpAutoClaim(sender.getUniqueID());
+            UUID rm = OpAutoClaim.cancelAutoClaim(sender.getUniqueID());
 			if(rm == null) {
-                PlayerAutoClaimData.activateOpAutoClaim(sender.getUniqueID(), clan);
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", clan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+                OpAutoClaim.activateAutoClaim(sender.getUniqueID(), clan);
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
 				ClaimManagement.checkAndAttemptClaim(sender, clan, true);
 			} else
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", rm.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", attemptClanName).setStyle(TextStyles.RED));
 	}

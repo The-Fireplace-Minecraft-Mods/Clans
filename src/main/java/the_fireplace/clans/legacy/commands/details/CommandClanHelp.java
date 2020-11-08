@@ -31,14 +31,14 @@ public class CommandClanHelp extends ClanSubCommand {
         if(args == null || args.length == 0 || args[0].matches("\\d+")) {
             int page = args == null || args.length < 1 ? 1 : parseInt(args[0]);
             List<ITextComponent> helps = Lists.newArrayList();
-            for (Map.Entry<String, ClanSubCommand> command : CommandClan.commands.entrySet())
+            for (Map.Entry<String, ClanSubCommand> command : CommandClan.COMMANDS.entrySet())
                 helps.add(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                         TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".usage"),
                         TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".description")));
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
             ChatUtil.showPaginatedChat(sender, "/clan help %s", helps, page);
-        } else if(CommandClan.aliases.containsKey(args[0]) || CommandClan.commands.containsKey(args[0])) {
+        } else if(CommandClan.COMMAND_ALIASES.containsKey(args[0]) || CommandClan.COMMANDS.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                     TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".usage"),
                     TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".description")));
@@ -77,10 +77,10 @@ public class CommandClanHelp extends ClanSubCommand {
         List<String> comp = Lists.newArrayList();
         if(args.length != 1)
             return comp;
-        for(int i = 1; i<CommandClan.commands.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
+        for(int i = 1; i<CommandClan.COMMANDS.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
             comp.add(String.valueOf(i));
-        comp.addAll(CommandClan.aliases.keySet());
-        comp.addAll(CommandClan.commands.keySet());
+        comp.addAll(CommandClan.COMMAND_ALIASES.keySet());
+        comp.addAll(CommandClan.COMMANDS.keySet());
         return getListOfStringsMatchingLastWord(args, comp);
     }
 }

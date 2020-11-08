@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
-import the_fireplace.clans.legacy.util.JsonHelper;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -97,17 +96,8 @@ public class ChunkPositionWithData extends ChunkPosition {
         return 31 * (31 * this.getPosX() + this.getPosZ()) + this.getDim();
     }
 
-    @Override
-    public JsonObject toJsonObject() {
-        JsonObject ret = super.toJsonObject();
-        JsonHelper.attachAddonData(ret, addonData);
-
-        return ret;
-    }
-
     public ChunkPositionWithData(JsonObject obj){
         super(obj);
-        addonData = JsonHelper.getAddonData(obj);
     }
 
     public boolean isBorderland() {

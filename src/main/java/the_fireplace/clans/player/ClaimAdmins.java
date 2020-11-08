@@ -1,4 +1,4 @@
-package the_fireplace.clans.legacy.cache.player;
+package the_fireplace.clans.player;
 
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -6,19 +6,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import java.util.Set;
 import java.util.UUID;
 
-public class ClaimAdminCache {
-    private static final Set<UUID> claimAdmins = new ConcurrentSet<>();
+public class ClaimAdmins {
+    private static final Set<UUID> CLAIM_ADMINS = new ConcurrentSet<>();
 
     public static boolean toggleClaimAdmin(EntityPlayerMP admin){
         return toggleClaimAdmin(admin.getUniqueID());
     }
 
     public static boolean toggleClaimAdmin(UUID admin){
-        if(claimAdmins.contains(admin)) {
-            claimAdmins.remove(admin);
+        if(CLAIM_ADMINS.contains(admin)) {
+            CLAIM_ADMINS.remove(admin);
             return false;
         } else {
-            claimAdmins.add(admin);
+            CLAIM_ADMINS.add(admin);
             return true;
         }
     }
@@ -28,6 +28,6 @@ public class ClaimAdminCache {
     }
 
     public static boolean isClaimAdmin(UUID admin) {
-        return claimAdmins.contains(admin);
+        return CLAIM_ADMINS.contains(admin);
     }
 }

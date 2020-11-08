@@ -11,20 +11,21 @@ public final class PermissionManager {
     public static final String RAID_COMMAND_PREFIX = "command.clans.raid.";
     public static final String PROTECTION_PREFIX = "clans.protection.";
 
-    public static boolean hasPermission(EntityPlayerMP player, String permissionKey) {
-        if(ClansModContainer.getPermissionManager() != null)
+    public static boolean hasPermission(EntityPlayerMP player, String permissionKey, boolean ifNoPermissionManager) {
+        if(permissionManagementExists())
             return ClansModContainer.getPermissionManager().hasPermission(player, permissionKey);
         else
-            return true;
+            return ifNoPermissionManager;
     }
 
-    public static boolean hasPermission(ICommandSender sender, String permissionKey) {
+    public static boolean hasPermission(ICommandSender sender, String permissionKey, boolean ifNoPermissionManager) {
         if(sender instanceof EntityPlayerMP)
-            return hasPermission((EntityPlayerMP)sender, permissionKey);
-        return true;
+            return hasPermission((EntityPlayerMP)sender, permissionKey, ifNoPermissionManager);
+        return ifNoPermissionManager;
     }
 
     public static boolean permissionManagementExists() {
-        return ClansModContainer.getPermissionManager().permissionManagementExists();
+        return ClansModContainer.getPermissionManager() != null
+            && ClansModContainer.getPermissionManager().permissionManagementExists();
     }
 }

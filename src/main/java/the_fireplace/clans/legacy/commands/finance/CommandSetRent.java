@@ -43,18 +43,18 @@ public class CommandSetRent extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(ClansModContainer.getConfig().getChargeRentDays() <= 0)
 			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
-        if(!AdminControlledClanSettings.get().isServerOwned()) {
+        if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
 			double newRent = parseDouble(args[0]);
 			if (newRent >= 0) {
 				double maxRent = FormulaParser.eval(ClansModContainer.getConfig().getMaxRentFormula(), selectedClan, 0);
 				if (maxRent <= 0 || newRent <= maxRent) {
-                    ClanRent.get().setRent(newRent);
-                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClan.getClanMetadata().getClanName(), ClanRent.get().getRent()).setStyle(TextStyles.GREEN));
+                    ClanRent.get(selectedClan).setRent(newRent);
+                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClanName, ClanRent.get(selectedClan).getRent()).setStyle(TextStyles.GREEN));
 				} else
-                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClan.getClanMetadata().getClanName(), Economy.getFormattedCurrency(maxRent)).setStyle(TextStyles.RED));
+                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClanName, Economy.getFormattedCurrency(maxRent)).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
 		} else
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "setrent", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "setrent", selectedClanName).setStyle(TextStyles.RED));
 	}
 }

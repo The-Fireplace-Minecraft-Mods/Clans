@@ -6,8 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.membership.ClanMemberMessager;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
@@ -21,7 +19,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -49,16 +46,16 @@ public class CommandDecline extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		Clan declineClan = ClanNames.getClanByName(args[0]);
+		UUID declineClan = ClanNames.getClanByName(args[0]);
 		if(declineClan != null) {
-			if(InvitedPlayers.getReceivedInvites(sender.getUniqueID()).contains(declineClan.getClanMetadata().getClanId())) {
-				InvitedPlayers.removeInvite(sender.getUniqueID(), declineClan.getClanMetadata().getClanId());
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", declineClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
-                ClanMemberMessager.get().messageAllOnline(EnumRank.ADMIN, TextStyles.YELLOW, "commands.clan.decline.declined", sender.getDisplayNameString(), declineClan.getClanMetadata().getClanName());
+			if(InvitedPlayers.getReceivedInvites(sender.getUniqueID()).contains(declineClan)) {
+				InvitedPlayers.removeInvite(sender.getUniqueID(), declineClan);
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.decline.success", ClanNames.get(declineClan).getName()).setStyle(TextStyles.GREEN));
+                ClanMemberMessager.get(declineClan).messageAllOnline(EnumRank.ADMIN, TextStyles.YELLOW, "commands.clan.decline.declined", sender.getDisplayNameString(), ClanNames.get(declineClan).getName());
             } else if(args.length < 2)
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.invite.not_invited", args[0]).setStyle(TextStyles.RED));
 			else// if(args[1].equalsIgnoreCase("block"))//TODO add error message if they put an invalid argument, instead of accepting anything
-				CommandAutoDecline.toggleClanInviteBlock(sender, declineClan.getClanMetadata().getClanId());
+				CommandAutoDecline.toggleClanInviteBlock(sender, declineClan);
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 	}
@@ -67,8 +64,8 @@ public class CommandDecline extends ClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1 && sender instanceof EntityPlayerMP) {
 			List<String> clanNames = Lists.newArrayList();
-			for(UUID c: InvitedPlayers.getReceivedInvites(((EntityPlayerMP) sender).getUniqueID()))
-				clanNames.add(Objects.requireNonNull(ClanDatabase.getClanById(c)).getClanMetadata().getClanName());
+			for(UUID inviteClan: InvitedPlayers.getReceivedInvites(((EntityPlayerMP) sender).getUniqueID()))
+				clanNames.add(ClanNames.get(inviteClan).getName());
 			return getListOfStringsMatchingLastWord(args, clanNames);
 		} else if(args.length == 2)
 			return Collections.singletonList("block");

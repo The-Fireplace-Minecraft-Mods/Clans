@@ -11,8 +11,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.commons.lang3.ArrayUtils;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
@@ -22,6 +20,7 @@ import the_fireplace.clans.player.PlayerHomeCooldown;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.UUID;
 
 public class EntityUtil {
 
@@ -112,8 +111,8 @@ public class EntityUtil {
         int x = 0, z = 0, tmp, dx = 0, dz = -1;
         while(true) {//Spiral out until a player friendly chunk is found
             ChunkPosition test = new ChunkPosition(origin.getPosX() + x, origin.getPosZ() + z, origin.getDim());
-            Clan testChunkOwner = ClanDatabase.getClanById(ClaimData.getChunkClan(test));
-            if((testChunkOwner == null || ClanMembers.get().getMemberRanks().containsKey(player.getUniqueID())) && (!excludeOrigin || !test.equals(origin)))
+            UUID testChunkOwner = ClaimData.getChunkClan(test);
+            if((testChunkOwner == null || ClanMembers.get(testChunkOwner).isMember(player.getUniqueID())) && (!excludeOrigin || !test.equals(origin)))
                 return ClansModContainer.getMinecraftHelper().getServer().getWorld(origin.getDim()).getChunk(test.getPosX(), test.getPosZ());
             if(x == z || (x < 0 && x == -z) || (x > 0 && x == 1-z)) {
                 tmp = dx;

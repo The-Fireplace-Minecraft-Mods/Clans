@@ -23,15 +23,15 @@ public class SpongePermissionHandler implements IPermissionHandler {
             return;
         permissionService = Sponge.getServiceManager().provide(PermissionService.class).get();
 
-        for(String subcommand: CommandClan.commands.keySet())
+        for(String subcommand: CommandClan.COMMANDS.keySet())
             registerPermission(CLAN_COMMAND_PREFIX+subcommand, PermissionDescription.ROLE_USER, "");
         registerPermission(CLAN_COMMAND_PREFIX+"help", PermissionDescription.ROLE_USER, "");
 
-        for(String subcommand: CommandOpClan.commands.keySet())
+        for(String subcommand: CommandOpClan.COMMANDS.keySet())
             registerPermission(OPCLAN_COMMAND_PREFIX+subcommand, PermissionDescription.ROLE_ADMIN, "");
         registerPermission(OPCLAN_COMMAND_PREFIX+"help", PermissionDescription.ROLE_ADMIN, "");
 
-        for(String subcommand: CommandRaid.commands.keySet())
+        for(String subcommand: CommandRaid.COMMANDS.keySet())
             registerPermission(RAID_COMMAND_PREFIX+subcommand, PermissionDescription.ROLE_USER, "");
         registerPermission(RAID_COMMAND_PREFIX+"help", PermissionDescription.ROLE_USER, "");
 

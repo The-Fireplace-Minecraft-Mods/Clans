@@ -10,6 +10,7 @@ import net.minecraft.util.math.RayTraceResult;
 import the_fireplace.clans.clan.accesscontrol.ClanLocks;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
+import the_fireplace.clans.legacy.util.ChunkUtils;
 import the_fireplace.clans.legacy.util.EntityUtil;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -50,11 +51,13 @@ public class CommandLockInfo extends ClanSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-        if(ClanLocks.get().isLocked(targetBlockPos)) {
-            GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get().getLockOwner(targetBlockPos)));
+		UUID targetChunkClan = ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos));
+
+        if (targetChunkClan != null && ClanLocks.get(targetChunkClan).isLocked(targetBlockPos)) {
+            GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get(targetChunkClan).getLockOwner(targetBlockPos)));
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN)
-			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(ClanLocks.get().getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
-            Map<UUID, Boolean> overrides = ClanLocks.get().getLockOverrides(targetBlockPos);
+			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(ClanLocks.get(targetChunkClan).getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
+            Map<UUID, Boolean> overrides = ClanLocks.get(targetChunkClan).getLockOverrides(targetBlockPos);
 			if(!overrides.isEmpty()) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.overrides"));
 				for(Map.Entry<UUID, Boolean> entry: overrides.entrySet()) {

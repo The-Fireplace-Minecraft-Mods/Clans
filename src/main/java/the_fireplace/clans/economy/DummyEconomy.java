@@ -27,4 +27,9 @@ public class DummyEconomy implements ExternalEconomy {
 	public String getFormattedCurrency(double amount) {
 		return "";
 	}
+
+	@Override
+	public boolean isPresent() {
+		return false;
+	}
 }

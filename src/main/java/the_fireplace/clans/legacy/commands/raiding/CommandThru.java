@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.accesscontrol.ClanLocks;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.commands.RaidSubCommand;
@@ -18,6 +18,7 @@ import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -50,13 +51,13 @@ public class CommandThru extends RaidSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-		Clan targetPosClan = ChunkUtils.getChunkOwnerClan(sender.world.getChunk(targetBlockPos));
+		UUID targetPosClan = ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos));
 		if(!r.getTarget().equals(targetPosClan)) {
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.thru.wrong_pos_owner", r.getTarget().getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.thru.wrong_pos_owner", ClanNames.get(r.getTarget()).getName()).setStyle(TextStyles.RED));
 			return;
 		}
 
-        if(ClanLocks.get().isLocked(targetBlockPos) || !ClansModContainer.getConfig().isEnableStealing() && LandProtectionLogic.isContainer(sender.world, targetBlockPos, null, null)){
+        if(ClanLocks.get(targetPosClan).isLocked(targetBlockPos) || !ClansModContainer.getConfig().isEnableStealing() && LandProtectionLogic.isContainer(sender.world, targetBlockPos, null, null)){
 			for (int step = 2; step < 9; step++) {
 				BlockPos telePos = EntityUtil.getSafeLocation(sender.world, targetBlockPos.offset(lookRay.sideHit.getOpposite(), step), step-1);
 				if(telePos != null) {

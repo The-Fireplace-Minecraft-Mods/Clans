@@ -36,7 +36,7 @@ public class CommandAbandonAll extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		for(ChunkPositionWithData claim: ClaimData.getClaimedChunks(selectedClan.getClanMetadata().getClanId()))
+		for(ChunkPositionWithData claim: ClaimData.getClaimedChunks(selectedClan))
 			ClaimManagement.abandonClaim(claim.getPosX(), claim.getPosZ(), claim.getDim(), selectedClan);
 	}
 }

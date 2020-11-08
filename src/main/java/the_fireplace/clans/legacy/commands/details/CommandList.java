@@ -10,10 +10,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.ClanIdRegistry;
 import the_fireplace.clans.clan.land.ClanClaims;
 import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.metadata.ClanColors;
+import the_fireplace.clans.clan.metadata.ClanDescriptions;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
@@ -57,40 +59,40 @@ public class CommandList extends ClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.clans").setStyle(TextStyles.GREEN));
-		if(!ClanDatabase.getClans().isEmpty()) {
-			ArrayList<Clan> clans = Lists.newArrayList(ClanDatabase.getClans());
+		if(!ClanIdRegistry.getIds().isEmpty()) {
+			ArrayList<UUID> clans = Lists.newArrayList(ClanIdRegistry.getIds());
 			ArrayList<ITextComponent> listItems = Lists.newArrayList();
 			String sort = args.length > 0 ? args[0] : "abc";
 			switch (sort) {
 				case "alphabetical":
 				case "abc":
 				default:
-					clans.sort(Comparator.comparing(clan1 -> clan1.getClanMetadata().getClanName()));
-					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+					clans.sort(Comparator.comparing(clan1 -> ClanNames.get(clan1).getName()));
+					for (UUID clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem_alphabetical", ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "money":
 				case "$":
-					clans.sort(Comparator.comparingDouble(clan -> Economy.getBalance(clan.getClanMetadata().getClanId())));
-					for (Clan clan : clans)
-						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", Economy.getFormattedCurrency(Economy.getBalance(clan.getClanMetadata().getClanId())), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+					clans.sort(Comparator.comparingDouble(Economy::getBalance));
+					for (UUID clan : clans)
+						listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", Economy.getFormattedCurrency(Economy.getBalance(clan)), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "land":
 				case "claims":
-					clans.sort(Comparator.comparingLong(clan2 -> ClanClaims.get().getClaimCount()));
-					for (Clan clan : clans)
-                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanClaims.get().getClaimCount(), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+					clans.sort(Comparator.comparingLong(clan2 -> ClanClaims.get(clan2).getClaimCount()));
+					for (UUID clan : clans)
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanClaims.get(clan).getClaimCount(), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "members":
-					clans.sort(Comparator.comparingInt(clan1 -> ClanMembers.get().getMemberCount()));
-					for (Clan clan : clans)
-                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanMembers.get().getMemberCount(), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+					clans.sort(Comparator.comparingInt(clan1 -> ClanMembers.get(clan1).getMemberCount()));
+					for (UUID clan : clans)
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanMembers.get(clan).getMemberCount(), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "rewardmult":
-					clans.sort(Comparator.comparingDouble(clan1 -> ClanWeaknessFactor.get().getWeaknessFactor()));
+					clans.sort(Comparator.comparingDouble(clan1 -> ClanWeaknessFactor.get(clan1).getWeaknessFactor()));
 					DecimalFormat df = new DecimalFormat("#,###.00");
-					for (Clan clan : clans)
-                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(ClanWeaknessFactor.get().getWeaknessFactor()), clan.getClanMetadata().getClanName(), clan.getClanMetadata().getDescription()).setStyle(TextStyles.GREEN));
+					for (UUID clan : clans)
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", df.format(ClanWeaknessFactor.get(clan).getWeaknessFactor()), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "invites":
 				case "invite":
@@ -122,7 +124,7 @@ public class CommandList extends ClanSubCommand {
 		if(args.length == 1)
 			ret.addAll(Lists.newArrayList("money", "land", "members", "abc"));
 		else if(args.length == 2)
-			for(int i = 1; i < ClanDatabase.getClans().size()/ ChatUtil.RESULTS_PER_PAGE; i++)
+			for(int i = 1; i < ClanIdRegistry.getIds().size()/ ChatUtil.RESULTS_PER_PAGE; i++)
 				ret.add(String.valueOf(i));
 		return getListOfStringsMatchingLastWord(args, ret);
 	}
@@ -131,14 +133,13 @@ public class CommandList extends ClanSubCommand {
 		if(!InvitedPlayers.getReceivedInvites(sender.getUniqueID()).isEmpty()) {
 			boolean shown = false;
 			List<ITextComponent> texts = Lists.newArrayList();
-			for(UUID invite: InvitedPlayers.getReceivedInvites(sender.getUniqueID())) {
-				Clan inviteClan = ClanDatabase.getClanById(invite);
-				if(inviteClan == null) {
-					InvitedPlayers.removeInvite(sender.getUniqueID(), invite);
+			for(UUID inviteClan: InvitedPlayers.getReceivedInvites(sender.getUniqueID())) {
+				if(!ClanIdRegistry.isValidClan(inviteClan)) {
+					InvitedPlayers.removeInvite(sender.getUniqueID(), inviteClan);
 					continue;
 				}
 				shown = true;
-                texts.add(new TextComponentString(inviteClan.getClanMetadata().getClanName()).setStyle(new Style().setColor(inviteClan.getClanMetadata().getColorFormatting())));
+                texts.add(new TextComponentString(ClanNames.get(inviteClan).getName()).setStyle(new Style().setColor(ClanColors.get(inviteClan).getColorFormatting())));
 			}
 			ChatUtil.showPaginatedChat(sender, "/clan list invites %s", texts, page);
 			//Deal with the edge case where all inviting clans have been disbanded

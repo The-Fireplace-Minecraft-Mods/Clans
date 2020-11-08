@@ -7,7 +7,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanNames;
@@ -19,7 +18,6 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -44,24 +42,24 @@ public class OpCommandKick extends OpClanSubCommand {
 
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		String clan = args[0];
-		String player = args[1];
-		Clan c = ClanNames.getClanByName(clan);
-		if(c != null) {
-			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(player);
+		String clanName = args[0];
+		String playerName = args[1];
+		UUID clan = ClanNames.getClanByName(clanName);
+		if(clan != null) {
+			GameProfile target = server.getPlayerProfileCache().getGameProfileForUsername(playerName);
 
 			if(target != null) {
 				if (!PlayerClans.getClansPlayerIsIn(target.getId()).isEmpty()) {
-					if (PlayerClans.getClansPlayerIsIn(target.getId()).contains(c)) {
-						ClanMemberManagement.kickMember(server, sender, c, target);
+					if (PlayerClans.getClansPlayerIsIn(target.getId()).contains(clan)) {
+						ClanMemberManagement.kickMember(server, sender, clan, target);
 					} else
-                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+                        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), ClanNames.get(clan).getName()).setStyle(TextStyles.RED));
 				} else
-                    sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), c.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+                    sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.player_not_in_clan", target.getName(), ClanNames.get(clan).getName()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", player).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.playernotfound", playerName).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -69,12 +67,12 @@ public class OpCommandKick extends OpClanSubCommand {
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		if(args.length == 1)
 			return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
-		Clan target = ClanNames.getClanByName(args[0]);
-		if(target != null && args.length == 2) {
-			ArrayList<String> playerNames = Lists.newArrayList();
-            for (UUID player : ClanMembers.get().getMemberRanks().keySet()) {
+		UUID targetClan = ClanNames.getClanByName(args[0]);
+		if(targetClan != null && args.length == 2) {
+			List<String> playerNames = Lists.newArrayList();
+            for (UUID player : ClanMembers.get(targetClan).getMembers()) {
 				GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-                if (playerProf != null && !ClanMembers.get().getMemberRanks().get(player).equals(EnumRank.LEADER))
+                if (playerProf != null && !ClanMembers.get(targetClan).getRank(player).equals(EnumRank.LEADER))
 					playerNames.add(playerProf.getName());
 			}
 			return getListOfStringsMatchingLastWord(args, playerNames);

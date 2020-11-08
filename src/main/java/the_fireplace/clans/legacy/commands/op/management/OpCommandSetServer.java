@@ -5,7 +5,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
@@ -16,6 +15,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,12 +38,12 @@ public class OpCommandSetServer extends OpClanSubCommand {
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		String clan = args[0];
-		Clan c = ClanNames.getClanByName(clan);
+		UUID c = ClanNames.getClanByName(clan);
 		if(c != null) {
 			boolean serverClan;
 			serverClan = parseBool(args[1]);
-            AdminControlledClanSettings.get().setServerOwned(serverClan);
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+            AdminControlledClanSettings.get(c).setServerOwned(serverClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.opclan.setserver.success_"+(serverClan ? 't' : 'f'), ClanNames.get(c).getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
 	}

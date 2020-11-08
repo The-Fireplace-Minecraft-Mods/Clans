@@ -3,6 +3,7 @@ package the_fireplace.clans.legacy.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.clan.ClanDisbander;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.economy.Economy;
@@ -39,16 +40,17 @@ public class CommandDisband extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(ClanMembers.get().getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
-            if(!AdminControlledClanSettings.get().isServerOwned()) {
-				if(ClansModContainer.getConfig().getDisbandFeeFormula().isEmpty() || Economy.deductAmount(selectedClan.getDisbandCost(), selectedClan.getClanMetadata().getClanId())) {
-					selectedClan.disband(server, sender, "commands.clan.disband.disbanded", selectedClan.getClanMetadata().getClanName(), sender.getName());
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+        if(ClanMembers.get(selectedClan).getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
+            if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
+            	ClanDisbander disbander = ClanDisbander.create(selectedClan);
+				if(ClansModContainer.getConfig().getDisbandFeeFormula().isEmpty() || Economy.deductAmount(disbander.getDisbandCost(), selectedClan)) {
+					disbander.disband( sender, "commands.clan.disband.disbanded", selectedClanName, sender.getName());
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClanName).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.insufficient_funds", selectedClan.getClanMetadata().getClanName(), selectedClan.getDisbandCost()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.insufficient_funds", selectedClanName, disbander.getDisbandCost()).setStyle(TextStyles.RED));
 			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClanName).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_leader", selectedClanName).setStyle(TextStyles.RED));
 	}
 }

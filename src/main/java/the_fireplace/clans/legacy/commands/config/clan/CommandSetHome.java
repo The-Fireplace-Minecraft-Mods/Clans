@@ -41,13 +41,15 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(selectedClan.getClanMetadata().getClanId().equals(ClaimData.getChunkClan(new ChunkPositionWithData(c)))) {
-            if(ClanHomes.isHomeWithinRadiusExcluding(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist(), ClanHomes.get().getHome())) {
+		if(selectedClan.equals(ClaimData.getChunkClan(new ChunkPositionWithData(c)))) {
+            if(ClanHomes.hasHome(selectedClan)
+            	? ClanHomes.isHomeWithinRadiusExcluding(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist(), ClanHomes.get(selectedClan).toBlockPos())
+				: ClanHomes.isHomeWithinRadius(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist())) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.proximity", ClansModContainer.getConfig().getMinClanHomeDist()).setStyle(TextStyles.RED));
 				return;
 			}
-            ClanHomes.get().setHome(sender.getPosition(), sender.dimension);
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+            ClanHomes.set(selectedClan, sender.getPosition(), sender.dimension);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.success", selectedClanName).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.sethome.territory").setStyle(TextStyles.RED));
 	}

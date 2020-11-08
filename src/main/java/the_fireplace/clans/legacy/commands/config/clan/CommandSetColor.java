@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -46,8 +47,8 @@ public class CommandSetColor extends ClanSubCommand {
 				color = TextStyles.colorStrings.get(args[0].toLowerCase());
 			else
 				color = args[0].startsWith("0x") ? Integer.parseInt(args[0].substring(2), 16) : Integer.parseInt(args[0]);
-            selectedClan.getClanMetadata().setColor(color);
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+			ClanColors.get(selectedClan).setColor(color);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.success", selectedClanName).setStyle(TextStyles.GREEN));
 		} catch(NumberFormatException e) {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setcolor.invalid", args[0]).setStyle(TextStyles.RED));
 		}

@@ -32,14 +32,14 @@ public class CommandRaidHelp extends RaidSubCommand {
         if(args == null || args.length == 0 || args[0].matches("\\d+")) {
             int page = args == null || args.length < 1 ? 1 : parseInt(args[0]);
             List<ITextComponent> helps = Lists.newArrayList();
-            for (Map.Entry<String, ClanSubCommand> command : CommandRaid.commands.entrySet())
+            for (Map.Entry<String, ClanSubCommand> command : CommandRaid.COMMANDS.entrySet())
                 helps.add(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                         TranslationUtil.getStringTranslation(sender, "commands.raid." + command.getKey() + ".usage"),
                         TranslationUtil.getStringTranslation(sender, "commands.raid." + command.getKey() + ".description")));
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
             ChatUtil.showPaginatedChat(sender, "/raid help %s", helps, page);
-        } else if(CommandRaid.aliases.containsKey(args[0]) || CommandRaid.commands.containsKey(args[0])) {
+        } else if(CommandRaid.aliases.containsKey(args[0]) || CommandRaid.COMMANDS.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
                     TranslationUtil.getStringTranslation(sender, "commands.raid." + CommandRaid.processAlias(args[0]) + ".usage"),
                     TranslationUtil.getStringTranslation(sender, "commands.raid." + CommandRaid.processAlias(args[0]) + ".description")));
@@ -73,10 +73,10 @@ public class CommandRaidHelp extends RaidSubCommand {
         List<String> comp = Lists.newArrayList();
         if(args.length != 1)
             return comp;
-        for(int i = 1; i < CommandRaid.commands.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
+        for(int i = 1; i < CommandRaid.COMMANDS.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
             comp.add(String.valueOf(i));
         comp.addAll(CommandRaid.aliases.keySet());
-        comp.addAll(CommandRaid.commands.keySet());
+        comp.addAll(CommandRaid.COMMANDS.keySet());
         return getListOfStringsMatchingLastWord(args, comp);
     }
 }

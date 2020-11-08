@@ -5,8 +5,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
@@ -19,6 +17,7 @@ import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -46,11 +45,11 @@ public class CommandTrapped extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP player, String[] args) {
 		Chunk origin = player.world.getChunk(player.getPosition());
-		Clan chunkOwner = ClanDatabase.getClanById(ChunkUtils.getChunkOwner(origin));
+		UUID chunkOwner = ChunkUtils.getChunkOwner(origin);
         if(chunkOwner == null && ClansModContainer.getConfig().shouldProtectWilderness() && player.getPosition().getY() >= ClansModContainer.getConfig().getMinWildernessY()) {
 			BlockPos spawn = player.world.getSpawnPoint();
 			player.attemptTeleport(spawn.getX(), spawn.getY(), spawn.getZ());
-		} else if(chunkOwner != null && !ClanMembers.get().getMemberRanks().containsKey(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {
+		} else if(chunkOwner != null && !ClanMembers.get(chunkOwner).isMember(player.getUniqueID()) && (!RaidingParties.hasActiveRaid(chunkOwner) || !RaidingParties.getActiveRaid(chunkOwner).getAttackers().contains(player.getUniqueID()))) {
 			Chunk safeChunk = EntityUtil.findSafeChunkFor(player, new ChunkPosition(origin));
 			EntityUtil.teleportSafelyToChunk(player, safeChunk);
 		} else

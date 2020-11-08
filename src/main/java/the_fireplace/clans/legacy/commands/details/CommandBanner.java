@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
+import the_fireplace.clans.clan.metadata.ClanBanners;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -43,15 +44,15 @@ public class CommandBanner extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		NBTTagCompound banner;
-		if(selectedClan.getClanMetadata().getClanBanner() != null) {
+		if (ClanBanners.hasBanner(selectedClan)) {
 			try {
-				banner = JsonToNBT.getTagFromJson(selectedClan.getClanMetadata().getClanBanner());
+				banner = JsonToNBT.getTagFromJson(ClanBanners.get(selectedClan).getClanBanner());
 			} catch (NBTException e) {
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClanName).setStyle(TextStyles.RED));
 				return;
 			}
 		} else {
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClanName).setStyle(TextStyles.RED));
 			return;
 		}
 		if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {

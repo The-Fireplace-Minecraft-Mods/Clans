@@ -3,7 +3,7 @@ package the_fireplace.clans.legacy.commands.details;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.ClanCreator;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.economy.Economy;
@@ -16,6 +16,7 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import the_fireplace.clans.player.PlayerClanSettings;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -52,9 +53,9 @@ public class CommandForm extends ClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newClanName).setStyle(TextStyles.RED));
 			else {
 				if (Economy.deductAmount(ClansModContainer.getConfig().getFormClanCost(), sender.getUniqueID())) {
-					Clan c = new Clan(newClanName, sender.getUniqueID());
+					UUID c = ClanCreator.createStandardClan(newClanName, sender.getUniqueID());
 					if(PlayerClans.countClansPlayerIsIn(sender.getUniqueID()) == 1)
-						PlayerClanSettings.setDefaultClan(sender.getUniqueID(), c.getClanMetadata().getClanId());
+						PlayerClanSettings.setDefaultClan(sender.getUniqueID(), c);
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.success").setStyle(TextStyles.GREEN));
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.form.insufficient_funds", Economy.getFormattedCurrency(ClansModContainer.getConfig().getFormClanCost())).setStyle(TextStyles.RED));

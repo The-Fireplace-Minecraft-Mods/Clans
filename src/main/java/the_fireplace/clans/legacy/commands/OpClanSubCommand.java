@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class OpClanSubCommand extends ClanSubCommand {
 	@Override
 	public final boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return sender.canUseCommand(server.getOpPermissionLevel(), this.getName()) || PermissionManager.permissionManagementExists() && PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1]);
+		return PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1], sender.canUseCommand(server.getOpPermissionLevel(), this.getName()));
 	}
 
 	@Override

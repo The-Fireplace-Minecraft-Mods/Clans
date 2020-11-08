@@ -50,19 +50,19 @@ public class CommandUnlock extends ClanSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-		if(!selectedClan.getClanMetadata().getClanId().equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+		if(!selectedClan.equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClanName).setStyle(TextStyles.RED));
 			return;
 		}
-        if(ClanLocks.get().isLocked(targetBlockPos) && !ClanLocks.get().isLockOwner(targetBlockPos, sender.getUniqueID()) && !ClanPermissions.get().hasPerm("lockadmin", sender.getUniqueID())) {
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unlock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get().getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
+        if(ClanLocks.get(selectedClan).isLocked(targetBlockPos) && !ClanLocks.get(selectedClan).isLockOwner(targetBlockPos, sender.getUniqueID()) && !ClanPermissions.get(selectedClan).hasPerm("lockadmin", sender.getUniqueID())) {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unlock.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get(selectedClan).getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
 			return;
 		}
 		IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
-        if(ClanLocks.get().isLocked(targetBlockPos)) {
-            ClanLocks.get().delLock(targetBlockPos);
+        if(ClanLocks.get(selectedClan).isLocked(targetBlockPos)) {
+            ClanLocks.get(selectedClan).delLock(targetBlockPos);
             for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
-                ClanLocks.get().delLock(pos);
+                ClanLocks.get(selectedClan).delLock(pos);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unlock.success").setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_locked").setStyle(TextStyles.RED));

@@ -8,8 +8,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.data.ClaimData;
@@ -26,22 +24,10 @@ public class ChunkUtils {
 		return ClaimData.getChunkClan(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
-	@Nullable
-	public static Clan getChunkOwnerClan(Chunk c) {
-		UUID chunkOwner = ChunkUtils.getChunkOwner(c);
-		if (chunkOwner != null) {
-			Clan chunkClan = ClanDatabase.getClanById(chunkOwner);
-			if (chunkClan != null)
-				return chunkClan;
-			else
-				//Remove the uuid as the chunk owner since the uuid is not associated with a clan.
-				clearChunkOwner(c);
-		}
-		return null;
-	}
-
-	public static void clearChunkOwner(Chunk c){
-		ClaimData.delChunk(getChunkOwner(c), new ChunkPositionWithData(c));
+	public static void clearChunkOwner(Chunk c) {
+		UUID chunkOwner = getChunkOwner(c);
+		if(chunkOwner != null)
+			ClaimData.delChunk(chunkOwner, new ChunkPositionWithData(c));
 	}
 
 	public static boolean isBorderland(Chunk c) {

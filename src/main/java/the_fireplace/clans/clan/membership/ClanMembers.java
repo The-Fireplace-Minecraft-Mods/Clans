@@ -58,6 +58,10 @@ public class ClanMembers extends ClanData {
         return members.containsKey(playerId);
     }
 
+    public EnumRank getRank(UUID playerId) {
+        return members.get(playerId);
+    }
+
     public Collection<UUID> getLeaders() {
         Set<UUID> leaders = members.entrySet().stream()
             .filter(entry -> entry.getValue() == EnumRank.LEADER)

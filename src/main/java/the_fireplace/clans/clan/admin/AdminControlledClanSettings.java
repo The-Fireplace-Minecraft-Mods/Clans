@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import the_fireplace.clans.clan.ClanData;
 import the_fireplace.clans.io.JsonReader;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,33 +26,40 @@ public class AdminControlledClanSettings extends ClanData {
             adminControlledSettings.delete();
     }
 
+    public static final String MAX_CLAIMS = "maxclaims";
+    public static final String MOB_SPAWNING = "mobspawning";
+    public static final String CLAIM_COST = "claimcost";
+
+    public static final String MOB_DAMAGE = "mobdamage";
+    public static final String UPKEEP_EXEMPTION = "upkeepexemption";
+    public static final String DYNMAP_VISIBLE = "dynmapvisible";
+    public static final String SERVER = "server";
+    public static final String PVP = "pvp";
+
     //TODO this desperately needs an overhaul. A new system should probably do a better job at handling the different
     // setting types, since right now it's a mix of integers (which in some cases should really be longs or doubles),
     // tristates, and booleans
-    private static final Map<String, Integer> DEFAULT_SETTINGS = new HashMap<>(8, 1);
-
-    private static final String MAX_CLAIMS = "maxclaims";
-    private static final String MOB_SPAWNING = "mobspawning";
-    private static final String CLAIM_COST = "claimcost";
-
-    private static final String MOB_DAMAGE = "mobdamage";
-    private static final String UPKEEP_EXEMPTION = "upkeepexemption";
-    private static final String DYNMAP_VISIBLE = "dynmapvisible";
-    private static final String SERVER = "server";
-    private static final String PVP = "pvp";
-
-    static {
+    private static final Map<String, Integer> DEFAULT_SETTINGS = new HashMap<String, Integer>(8, 1) {{
         //Config option overrides
-        DEFAULT_SETTINGS.put(MAX_CLAIMS, -1);
-        DEFAULT_SETTINGS.put(MOB_SPAWNING, -1);
-        DEFAULT_SETTINGS.put(CLAIM_COST, -1);
+        put(MAX_CLAIMS, -1);
+        put(MOB_SPAWNING, -1);
+        put(CLAIM_COST, -1);
         //Custom properties
-        DEFAULT_SETTINGS.put(MOB_DAMAGE, 1);
-        DEFAULT_SETTINGS.put(UPKEEP_EXEMPTION, 0);
-        DEFAULT_SETTINGS.put(DYNMAP_VISIBLE, 1);
-        DEFAULT_SETTINGS.put(SERVER, 0);
-        DEFAULT_SETTINGS.put(PVP, -1);
+        put(MOB_DAMAGE, 1);
+        put(UPKEEP_EXEMPTION, 0);
+        put(DYNMAP_VISIBLE, 1);
+        put(SERVER, 0);
+        put(PVP, -1);
+    }};
+
+    public static boolean isValidSettingName(String name) {
+        return DEFAULT_SETTINGS.containsKey(name);
     }
+
+    public static Collection<String> getSettingNames() {
+        return DEFAULT_SETTINGS.keySet();
+    }
+
     public final Map<String, Integer> settings = new ConcurrentHashMap<>(8, 1);
 
     private AdminControlledClanSettings(UUID clan) {
@@ -162,7 +170,7 @@ public class AdminControlledClanSettings extends ClanData {
     public void readFromJson(JsonReader reader) {
         for(JsonElement e: reader.readArray("options")) {
             JsonObject perm = e.getAsJsonObject();
-            if(!DEFAULT_SETTINGS.containsKey(perm.get("name").getAsString()))
+            if(!isValidSettingName(perm.get("name").getAsString()))
                 continue;
             settings.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
         }

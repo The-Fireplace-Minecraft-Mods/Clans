@@ -56,25 +56,25 @@ public class CommandKick extends ClanSubCommand {
 		}
 		if (!PlayerClans.getClansPlayerIsIn(target.getId()).isEmpty()) {
 			if (PlayerClans.getClansPlayerIsIn(target.getId()).contains(selectedClan)) {
-                EnumRank senderRank = ClanMembers.get().getMemberRanks().get(sender.getUniqueID());
-                EnumRank targetRank = ClanMembers.get().getMemberRanks().get(target.getId());
+                EnumRank senderRank = ClanMembers.get(selectedClan).getRank(sender.getUniqueID());
+                EnumRank targetRank = ClanMembers.get(selectedClan).getRank(target.getId());
 				if (senderRank == EnumRank.LEADER || targetRank == EnumRank.MEMBER) {
 					ClanMemberManagement.kickMember(server, sender, selectedClan, target);
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.authority", target.getName()).setStyle(TextStyles.RED));
 			} else
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.not_in_clan", target.getName(), selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.kick.not_in_clan", target.getName(), selectedClanName).setStyle(TextStyles.RED));
 		} else
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.player_not_in_clan", target.getName(), selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.player_not_in_clan", target.getName(), selectedClanName).setStyle(TextStyles.RED));
 	}
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 		ArrayList<String> playerNames = Lists.newArrayList();
         if(selectedClan != null)
-			for(UUID player: ClanMembers.get().getMemberRanks().keySet()) {
+			for(UUID player: ClanMembers.get(selectedClan).getMembers()) {
 				GameProfile playerProf = server.getPlayerProfileCache().getProfileByUUID(player);
-                if(playerProf != null && (ClanMembers.get().getMemberRanks().get(player).equals(EnumRank.MEMBER) || (sender instanceof EntityPlayerMP && ClanMembers.get().getMemberRanks().get(((EntityPlayerMP) sender).getUniqueID()).equals(EnumRank.LEADER))))
+                if(playerProf != null && (ClanMembers.get(selectedClan).getRank(player).equals(EnumRank.MEMBER) || (sender instanceof EntityPlayerMP && ClanMembers.get(selectedClan).getRank(((EntityPlayerMP) sender).getUniqueID()).equals(EnumRank.LEADER))))
 					playerNames.add(playerProf.getName());
 			}
 		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();

@@ -71,6 +71,11 @@ class SpongeWrapper implements ExternalEconomy {
         return getEcon() == null ? "" : getDefaultCurrency().format(BigDecimal.valueOf(amount)).toPlain();
     }
 
+    @Override
+    public boolean isPresent() {
+        return getEcon() != null;
+    }
+
     private Currency getDefaultCurrency() {
         return getEcon().getDefaultCurrency();
     }

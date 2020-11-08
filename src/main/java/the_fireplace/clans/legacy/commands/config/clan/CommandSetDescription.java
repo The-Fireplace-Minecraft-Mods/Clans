@@ -3,6 +3,7 @@ package the_fireplace.clans.legacy.commands.config.clan;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import the_fireplace.clans.clan.metadata.ClanDescriptions;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.config.Config;
@@ -43,7 +44,7 @@ public class CommandSetDescription extends ClanSubCommand {
 		String descString = newTagline.toString();
 		if(Config.getInstance().chatCensor.censorClanDescriptions)
 			descString = ClansModContainer.getChatCensorCompat().getCensoredString(descString);
-        selectedClan.getClanMetadata().setDescription(descString);
-        sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+        ClanDescriptions.get(selectedClan).setDescription(descString);
+        sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClanName).setStyle(TextStyles.GREEN));
 	}
 }

@@ -4,7 +4,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
+import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -35,9 +36,9 @@ public class OpCommandSetColor extends OpClanSubCommand {
 
 	@Override
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-		String clan = args[0];
-		Clan c = ClanNames.getClanByName(clan);
-		if(c != null) {
+		String clanName = args[0];
+		UUID clan = ClanNames.getClanByName(clanName);
+		if (clan != null) {
 			int color;
 			try {
 				if(TextStyles.colorStrings.containsKey(args[1].toLowerCase()))
@@ -48,10 +49,10 @@ public class OpCommandSetColor extends OpClanSubCommand {
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.invalid", args[1]).setStyle(TextStyles.RED));
 				return;
 			}
-            c.getClanMetadata().setColor(color);
-            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", c.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+			ClanColors.get(clan).setColor(color);
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setcolor.success", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
 	}
 
 	@Override

@@ -3,15 +3,16 @@ package the_fireplace.clans.legacy.commands.land;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.legacy.cache.PlayerAutoClaimData;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
+import the_fireplace.clans.player.autoland.AutoAbandon;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,12 +39,12 @@ public class CommandAutoAbandon extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        Clan rm = PlayerAutoClaimData.cancelAutoAbandon(sender.getUniqueID());
+        UUID rm = AutoAbandon.cancelAutoAbandon(sender.getUniqueID());
 		if(rm == null) {
-			PlayerAutoClaimData.activateAutoAbandon(sender.getUniqueID(), selectedClan);
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+			AutoAbandon.activateAutoAbandon(sender.getUniqueID(), selectedClan);
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.start", selectedClanName).setStyle(TextStyles.GREEN));
 			ClaimManagement.checkAndAttemptAbandon(sender, selectedClan);
 		} else
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.stop", rm.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoabandon.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
 	}
 }

@@ -10,8 +10,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.metadata.ClanBanners;
+import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -19,6 +19,7 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,8 +54,8 @@ public class CommandSetBanner extends ClanSubCommand {
 					return;
 				}
 				if(ClanBanners.isClanBannerAvailable(banner)) {
-                    selectedClan.getClanMetadata().setClanBanner(banner);
-                    sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+                    ClanBanners.set(selectedClan, banner);
+                    sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", selectedClanName).setStyle(TextStyles.GREEN));
 				} else
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 			} catch(NBTException e){
@@ -70,11 +71,11 @@ public class CommandSetBanner extends ClanSubCommand {
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.notheld").setStyle(TextStyles.RED));
 	}
 
-	private void setClanBannerFromItem(EntityPlayerMP sender, Clan playerClan, @Nullable NBTTagCompound tags) {
+	private void setClanBannerFromItem(EntityPlayerMP sender, UUID clan, @Nullable NBTTagCompound tags) {
 		String banner = tags != null ? tags.toString() : "";
 		if(ClanBanners.isClanBannerAvailable(banner)) {
-            playerClan.getClanMetadata().setClanBanner(banner);
-            sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", playerClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+            ClanBanners.set(clan, banner);
+            sender.sendMessage(TranslationUtil.getTranslation("commands.clan.setbanner.success", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setbanner.taken").setStyle(TextStyles.RED));
 	}

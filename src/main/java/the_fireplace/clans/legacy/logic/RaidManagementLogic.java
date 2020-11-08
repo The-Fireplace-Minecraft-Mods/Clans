@@ -22,12 +22,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import the_fireplace.clans.clan.Clan;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.ClanIdRegistry;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.cache.RaidingParties;
-import the_fireplace.clans.legacy.cache.WorldTrackingCache;
 import the_fireplace.clans.legacy.data.ChunkRestoreData;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.data.RaidCollectionDatabase;
@@ -37,6 +35,7 @@ import the_fireplace.clans.legacy.util.BlockSerializeUtil;
 import the_fireplace.clans.legacy.util.ChunkUtils;
 import the_fireplace.clans.legacy.util.MultiblockUtil;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
+import the_fireplace.clans.raid.PistonPhaseTracker;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -52,9 +51,8 @@ public class RaidManagementLogic {
             if (chunkOwner != null) {
                 if(ChunkUtils.isBorderland(c))
                     return false;
-                Clan chunkClan = ClanDatabase.getClanById(chunkOwner);
-                if (chunkClan != null) {
-                    return RaidingParties.hasActiveRaid(chunkClan);
+                if (ClanIdRegistry.isValidClan(chunkOwner)) {
+                    return RaidingParties.hasActiveRaid(chunkOwner);
                 } else {
                     //Remove the uuid as the chunk owner since the uuid is not associated with a clan.
                     ChunkUtils.clearChunkOwner(c);
@@ -66,7 +64,7 @@ public class RaidManagementLogic {
 
     public static void onPlayerDeath(EntityPlayerMP player, DamageSource source) {
         if(!player.getEntityWorld().isRemote) {
-            for(Clan clan: PlayerClans.getClansPlayerIsIn(player.getUniqueID())) {
+            for(UUID clan: PlayerClans.getClansPlayerIsIn(player.getUniqueID())) {
                 if (clan != null && RaidingParties.hasActiveRaid(clan))
                     RaidingParties.getActiveRaid(clan).removeDefender(player.getUniqueID());
                 if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID()) && RaidingParties.getRaid(player).isActive())
@@ -77,7 +75,7 @@ public class RaidManagementLogic {
 
     public static void checkAndRestoreChunk(Chunk chunk) {
         if(!chunk.getWorld().isRemote) {
-            Clan chunkOwner = ClanDatabase.getClanById(ChunkUtils.getChunkOwner(chunk));
+            UUID chunkOwner = ChunkUtils.getChunkOwner(chunk);
             if (chunkOwner == null || !RaidingParties.hasActiveRaid(chunkOwner)) {
                 ChunkRestoreData data = RaidRestoreDatabase.popChunkRestoreData(chunk.getWorld().provider.getDimension(), chunk);
                 if (data != null)
@@ -90,14 +88,14 @@ public class RaidManagementLogic {
         if(!world.isRemote && !ClansModContainer.getConfig().isDisableRaidRollback()) {
             if (state.getBlock() instanceof BlockPistonBase) {
                 if (state.getProperties().containsKey(BlockPistonBase.FACING) && state.getProperties().containsKey(BlockPistonBase.EXTENDED)) {
-                    Comparable facing = state.getProperties().get(BlockPistonBase.FACING);
-                    Comparable extended = state.getProperties().get(BlockPistonBase.EXTENDED);
+                    Comparable<?> facing = state.getProperties().get(BlockPistonBase.FACING);
+                    Comparable<?> extended = state.getProperties().get(BlockPistonBase.EXTENDED);
                     BlockPos oldPos = pos;
                     BlockPos newPos = pos;
-                    if(!WorldTrackingCache.isTrackingPistonPhaseAt(pos))
-                        WorldTrackingCache.setPistonPhase(pos, !(Boolean) extended);
+                    if(!PistonPhaseTracker.isTrackingPistonPhaseAt(pos))
+                        PistonPhaseTracker.setPistonPhase(pos, !(Boolean) extended);
 
-                    if (facing instanceof EnumFacing && extended instanceof Boolean && WorldTrackingCache.getPistonPhase(pos) == extended) {
+                    if (facing instanceof EnumFacing && extended instanceof Boolean && PistonPhaseTracker.getPistonPhase(pos) == extended) {
                         if ((Boolean) extended) {
                             int pushRange = 0;
                             for(int i=1;i<14;i++)
@@ -158,7 +156,7 @@ public class RaidManagementLogic {
                                 }
                             }
                         }
-                        WorldTrackingCache.invertPistonPhase(pos);
+                        PistonPhaseTracker.invertPistonPhase(pos);
                     }
                 }
             }
@@ -168,7 +166,7 @@ public class RaidManagementLogic {
     public static boolean shouldCancelFallingBlockCreation(EntityFallingBlock entity) {
         if(entity.world.isRemote)
             return false;
-        Clan owningClan = ClaimData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
+        UUID owningClan = ClaimData.getChunkClan(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension);
         return owningClan != null && RaidingParties.hasActiveRaid(owningClan) && !ClaimData.getChunkPositionData(entity.chunkCoordX, entity.chunkCoordZ, entity.dimension).isBorderland() && !ClansModContainer.getConfig().isDisableRaidRollback();//TODO monitor where it goes rather than just preventing it from falling
     }
 
@@ -243,7 +241,7 @@ public class RaidManagementLogic {
     public static void onBlockBroken(World world, BlockPos pos, @Nullable IBlockState state) {
         if (!world.isRemote) {
             Chunk c = world.getChunk(pos);
-            Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+            UUID chunkClan = ChunkUtils.getChunkOwner(c);
             if (chunkClan != null) {
                 if (RaidingParties.hasActiveRaid(chunkClan) && !ClansModContainer.getConfig().isDisableRaidRollback()) {
                     IBlockState targetState = state != null ? state : world.getBlockState(pos);
@@ -259,7 +257,7 @@ public class RaidManagementLogic {
         if(!world.isRemote) {
             Chunk c = world.getChunk(pos);
             if (placer instanceof EntityPlayerMP) {
-                Clan chunkClan = ChunkUtils.getChunkOwnerClan(c);
+                UUID chunkClan = ChunkUtils.getChunkOwner(c);
                 if (chunkClan != null) {
                     if (RaidingParties.hasActiveRaid(chunkClan) && !ClansModContainer.getConfig().isDisableRaidRollback()) {
                         ItemStack out = placer.getHeldItem(hand.getSlotType().equals(EntityEquipmentSlot.Type.HAND) && hand.equals(EntityEquipmentSlot.OFFHAND) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND).copy();

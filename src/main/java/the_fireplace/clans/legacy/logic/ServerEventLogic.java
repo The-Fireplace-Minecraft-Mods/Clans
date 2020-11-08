@@ -3,7 +3,7 @@ package the_fireplace.clans.legacy.logic;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
-import the_fireplace.clans.clan.ClanDatabase;
+import the_fireplace.clans.clan.ClanSaver;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.commands.CommandClan;
 import the_fireplace.clans.legacy.commands.CommandOpClan;
@@ -28,7 +28,7 @@ public class ServerEventLogic {
 
     public static void onServerStopping() {
         ClaimData.save();
-        ClanDatabase.save();
+        ClanSaver.saveAll();
         RaidRestoreDatabase.getInstance().save();
         RaidCollectionDatabase.getInstance().save();
         PlayerDataStorage.save();

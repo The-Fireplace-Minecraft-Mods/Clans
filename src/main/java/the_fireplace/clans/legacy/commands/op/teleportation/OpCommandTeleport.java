@@ -5,7 +5,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.home.ClanHomes;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.commands.OpClanSubCommand;
@@ -17,6 +16,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,15 +43,16 @@ public class OpCommandTeleport extends OpClanSubCommand {
 
     @Override
     protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        Clan targetClan = ClanNames.getClanByName(args[0]);
+        UUID targetClan = ClanNames.getClanByName(args[0]);
         if(targetClan != null) {
-            BlockPos home = ClanHomes.get().getHome();
-            int playerDim = sender.dimension;
+            if (!ClanHomes.hasHome(targetClan))
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", ClanNames.get(targetClan).getName()).setStyle(TextStyles.RED));
+            else {
+                BlockPos home = ClanHomes.get(targetClan).toBlockPos();
+                int playerDim = sender.dimension;
 
-            if (!ClanHomes.get().hasHome() || home == null)
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", targetClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
-            else
-                EntityUtil.teleportHome(sender, home, ClanHomes.get().getHomeDim(), playerDim, false);
+                EntityUtil.teleportHome(sender, home, ClanHomes.get(targetClan).getHomeDim(), playerDim, false);
+            }
         } else
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
     }

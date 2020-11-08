@@ -37,4 +37,9 @@ class GrandEconomyWrapper implements ExternalEconomy {
 	public String getFormattedCurrency(double amount) {
 		return GrandEconomyApi.getFormattedCurrency(amount);
 	}
+
+	@Override
+	public boolean isPresent() {
+		return true;
+	}
 }

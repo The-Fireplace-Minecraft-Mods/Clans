@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import the_fireplace.clans.clan.Clan;
 import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanNames;
@@ -23,10 +22,7 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,11 +33,12 @@ public abstract class ClanSubCommand extends CommandBase {
 		return TranslationUtil.getRawTranslationString(sender, "commands.clan."+getName()+".usage");
 	}
 
-	protected Clan selectedClan;
+	protected UUID selectedClan;
+	protected String selectedClanName;
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		if(PermissionManager.permissionManagementExists() && !PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getName()))
+		if(!PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getName(), true))
 			return false;
 		if(getRequiredClanRank() == EnumRank.ANY || getRequiredClanRank() == EnumRank.NOCLAN && allowConsoleUsage() && !(sender instanceof Entity))
 			return true;
@@ -51,7 +48,7 @@ public abstract class ClanSubCommand extends CommandBase {
 				switch (getRequiredClanRank()) {
 					case LEADER:
 					case ADMIN:
-                        return ClanPermissions.get().hasPerm(getName(), ((Entity) sender).getUniqueID());
+                        return ClanPermissions.get(selectedClan).hasPerm(getName(), ((Entity) sender).getUniqueID());
                     case MEMBER:
 						return playerRank.greaterOrEquals(EnumRank.MEMBER);
 					case NOCLAN:
@@ -74,22 +71,23 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if(server == null)
+		if (server == null)
 			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "clans.error.nullserver"));
-		if(allowConsoleUsage() || sender instanceof EntityPlayerMP) {
+		if (allowConsoleUsage() || sender instanceof EntityPlayerMP) {
 			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
 			if(args.length >= getMinArgs()+1 && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
 				if(args.length > 0) {
-					Clan playerClan = ClanNames.getClanByName(args[0]);
+					UUID playerClan = ClanNames.getClanByName(args[0]);
 					if (sender instanceof EntityPlayerMP) {
-						Collection<Clan> playerClans = PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
+						Collection<UUID> playerClans = PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
 						if (playerClan != null && !playerClans.contains(playerClan)) {
-                            sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), playerClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+                            sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), ClanNames.get(playerClan).getName()).setStyle(TextStyles.RED));
 							return;
 						}
 					}
 					//noinspection ConstantConditions
 					this.selectedClan = playerClan;
+					this.selectedClanName = args[0];
 				}
 				String[] args2;
 				//If this is a clan command, remove clan name from the args, and if the command is greedy, remove the subcommand tag as well

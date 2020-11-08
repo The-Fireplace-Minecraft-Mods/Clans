@@ -26,6 +26,12 @@ public class ClanBanners extends ClanData {
         return BANNERS.get(clan);
     }
 
+    public static void set(UUID clan, String banner) {
+        if(!hasBanner(clan))
+            BANNERS.put(clan, new ClanBanners(clan));
+        get(clan).setClanBanner(banner);
+    }
+
     public static void delete(UUID clan) {
         ClanBanners banner = BANNERS.remove(clan);
         if(banner != null)
@@ -74,8 +80,9 @@ public class ClanBanners extends ClanData {
         return clanBanner;
     }
 
-    public void setClanBanner(String clanBanner) {
-        uncacheBanner(this.clanBanner);
+    private void setClanBanner(String clanBanner) {
+        if(this.clanBanner != null)
+            uncacheBanner(this.clanBanner);
         this.clanBanner = clanBanner;
         cacheBanner(clanBanner);
         markChanged();

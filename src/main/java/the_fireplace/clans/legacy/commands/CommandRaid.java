@@ -1,7 +1,6 @@
 package the_fireplace.clans.legacy.commands;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,7 +20,7 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CommandRaid extends CommandBase {
-    public static final HashMap<String, ClanSubCommand> commands = new HashMap<String, ClanSubCommand>() {{
+    public static final HashMap<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>() {{
         //raiding parties
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
@@ -34,17 +33,15 @@ public class CommandRaid extends CommandBase {
         put("help", new CommandRaidHelp());
 	}};
 
-    public static final Map<String, String> aliases = Maps.newHashMap();
+    public static final Map<String, String> aliases = new HashMap<String, String>() {{
+        put("j", "join");
+        put("form", "join");
+        put("l", "leave");
+        put("i", "invite");
+        put("c", "collect");
 
-    static {
-        aliases.put("j", "join");
-        aliases.put("form", "join");
-        aliases.put("l", "leave");
-        aliases.put("i", "invite");
-        aliases.put("c", "collect");
-
-        aliases.put("t", "thru");
-    }
+        put("t", "thru");
+    }};
 
     public static String processAlias(String subCommand) {
         return aliases.getOrDefault(subCommand, subCommand);
@@ -67,12 +64,12 @@ public class CommandRaid extends CommandBase {
         String tag = args[0].toLowerCase();
         if(ClansModContainer.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
-        if(!PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag))) {
-            if(commands.containsKey(processAlias(tag)))
-                commands.get(processAlias(tag)).execute(server, sender, args);
+        if(PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag), true)) {
+            if(COMMANDS.containsKey(processAlias(tag)))
+                COMMANDS.get(processAlias(tag)).execute(server, sender, args);
             else
                 throw new WrongUsageException(getUsage(sender));
-        } else if(commands.containsKey(tag) || aliases.containsKey(tag))
+        } else if(COMMANDS.containsKey(tag) || aliases.containsKey(tag))
             throw new CommandException("commands.generic.permission");
     }
 
@@ -95,7 +92,7 @@ public class CommandRaid extends CommandBase {
             args2 = Arrays.copyOfRange(args, 1, args.length);
         else
             args2 = new String[]{};
-        return args.length >= 1 && commands.containsKey(processAlias(args[0])) ? args.length == 1 ? getListOfStringsMatchingLastWord(args, commands.keySet()) : commands.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
+        return args.length >= 1 && COMMANDS.containsKey(processAlias(args[0])) ? args.length == 1 ? getListOfStringsMatchingLastWord(args, COMMANDS.keySet()) : COMMANDS.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
     }
 
     @Override

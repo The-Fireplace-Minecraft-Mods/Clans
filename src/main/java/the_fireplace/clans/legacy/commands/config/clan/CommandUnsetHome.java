@@ -36,10 +36,10 @@ public class CommandUnsetHome extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(ClanHomes.get().hasHome()) {
-            ClanHomes.get().unsetHome();
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.success", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.GREEN));
+        if(ClanHomes.hasHome(selectedClan)) {
+            ClanHomes.delete(selectedClan);
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.success", selectedClanName).setStyle(TextStyles.GREEN));
 		} else
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.failed", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.unsethome.failed", selectedClanName).setStyle(TextStyles.RED));
 	}
 }

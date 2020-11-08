@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class RaidSubCommand extends ClanSubCommand {
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return !PermissionManager.permissionManagementExists() || PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + getUsage(server).split(" ")[1]);
+		return PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + getUsage(server).split(" ")[1], true);
 	}
 
 	@Override

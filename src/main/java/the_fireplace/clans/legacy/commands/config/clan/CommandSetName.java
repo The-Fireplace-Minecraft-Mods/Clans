@@ -44,8 +44,8 @@ public class CommandSetName extends ClanSubCommand {
 		if(ClansModContainer.getConfig().getMaxNameLength() > 0 && newName.length() > ClansModContainer.getConfig().getMaxNameLength())
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansModContainer.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
 		else if(ClanNames.isClanNameAvailable(newName)) {
-            String oldName = selectedClan.getClanMetadata().getClanName();
-            selectedClan.getClanMetadata().setClanName(newName);
+            String oldName = selectedClanName;
+            ClanNames.get(selectedClan).setName(newName);
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));

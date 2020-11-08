@@ -1,7 +1,5 @@
 package the_fireplace.clans.legacy.abstraction;
 
-import the_fireplace.clans.clan.Clan;
-
 import java.util.Collection;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")

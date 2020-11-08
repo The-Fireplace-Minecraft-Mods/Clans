@@ -6,7 +6,6 @@ import the_fireplace.clans.clan.ClanData;
 import the_fireplace.clans.clan.ClanIdRegistry;
 import the_fireplace.clans.io.JsonReader;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class ClanHomes extends ClanData {
         return Collections.unmodifiableMap(HOME_INSTANCES);
     }
 
-    public static boolean isHomeWithinRadiusExcluding(BlockPos centerPoint, long radius, @Nullable BlockPos excludePos) {
+    public static boolean isHomeWithinRadiusExcluding(BlockPos centerPoint, long radius, BlockPos excludePos) {
         return HOME_INSTANCES.values().stream().anyMatch(clanHome -> !clanHome.toBlockPos().equals(excludePos) && clanHome.toBlockPos().getDistance(centerPoint.getX(), centerPoint.getY(), centerPoint.getZ()) < radius);
     }
 
@@ -44,7 +43,7 @@ public class ClanHomes extends ClanData {
         return HOME_INSTANCES.values().stream().anyMatch(clanHome -> clanHome.toBlockPos().getDistance(centerPoint.getX(), centerPoint.getY(), centerPoint.getZ()) < radius);
     }
 
-    public static void setClanHome(UUID clan, BlockPos home, int dimension) {
+    public static void set(UUID clan, BlockPos home, int dimension) {
         if(!hasHome(clan))
             HOME_INSTANCES.put(clan, new ClanHomes(clan));
         get(clan).setHome(home, dimension);
@@ -76,7 +75,7 @@ public class ClanHomes extends ClanData {
         super(clan, "home");
     }
 
-    public void setHome(BlockPos pos, int dimension) {
+    private void setHome(BlockPos pos, int dimension) {
         this.homeX = pos.getX();
         this.homeY = pos.getY();
         this.homeZ = pos.getZ();

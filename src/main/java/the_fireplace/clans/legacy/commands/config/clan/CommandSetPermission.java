@@ -49,10 +49,10 @@ public class CommandSetPermission extends ClanSubCommand {
 		if(args.length == 3) {
 			GameProfile player = parsePlayerName(server, args[1]);
 			boolean value = parseBool(args[2]);
-            ClanPermissions.get().addPermissionOverride(perm, player.getId(), value);
+            ClanPermissions.get(selectedClan).addPermissionOverride(perm, player.getId(), value);
 		} else {
 			EnumRank rank = EnumRank.valueOf(args[1]);
-            ClanPermissions.get().setPerm(perm, rank);
+            ClanPermissions.get(selectedClan).setPerm(perm, rank);
 		}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.set.success").setStyle(TextStyles.GREEN));
 	}

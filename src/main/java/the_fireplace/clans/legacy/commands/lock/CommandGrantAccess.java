@@ -56,20 +56,20 @@ public class CommandGrantAccess extends ClanSubCommand {
 			return;
 		}
 		BlockPos targetBlockPos = lookRay.getBlockPos();
-		if(!selectedClan.getClanMetadata().getClanId().equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClan.getClanMetadata().getClanName()).setStyle(TextStyles.RED));
+		if(!selectedClan.equals(ChunkUtils.getChunkOwner(sender.world.getChunk(targetBlockPos)))) {
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lock.wrong_owner", selectedClanName).setStyle(TextStyles.RED));
 			return;
 		}
-        if(ClanLocks.get().isLocked(targetBlockPos) && !ClanLocks.get().isLockOwner(targetBlockPos, sender.getUniqueID()) && !ClanPermissions.get().hasPerm("lockadmin", sender.getUniqueID())) {
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.grantaccess.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get().getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
+        if(ClanLocks.get(selectedClan).isLocked(targetBlockPos) && !ClanLocks.get(selectedClan).isLockOwner(targetBlockPos, sender.getUniqueID()) && !ClanPermissions.get(selectedClan).hasPerm("lockadmin", sender.getUniqueID())) {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.grantaccess.locked", Objects.requireNonNull(server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get(selectedClan).getLockOwner(targetBlockPos)))).getName()).setStyle(TextStyles.RED));
 			return;
 		}
 		UUID targetPlayerId = parsePlayerName(server, args[0]).getId();
 		IBlockState state = sender.getEntityWorld().getBlockState(targetBlockPos);
-        if(ClanLocks.get().isLocked(targetBlockPos)) {
-            ClanLocks.get().addLockOverride(targetBlockPos, targetPlayerId, true);
+        if(ClanLocks.get(selectedClan).isLocked(targetBlockPos)) {
+            ClanLocks.get(selectedClan).addLockOverride(targetBlockPos, targetPlayerId, true);
             for(BlockPos pos: MultiblockUtil.getLockingConnectedPositions(sender.world, targetBlockPos, state))
-                ClanLocks.get().addLockOverride(pos, targetPlayerId, true);
+                ClanLocks.get(selectedClan).addLockOverride(pos, targetPlayerId, true);
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.grantaccess.success", args[0]).setStyle(TextStyles.GREEN));
 		} else
 			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.common.not_locked").setStyle(TextStyles.RED));

@@ -41,6 +41,10 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
         return Collections.unmodifiableCollection(getInstance().clanIds);
     }
 
+    public static boolean isValidClan(UUID uuid) {
+        return getInstance().clanIds.contains(uuid);
+    }
+
     public static void deleteClanId(UUID uuid) {
         getInstance().clanIds.remove(uuid);
     }
