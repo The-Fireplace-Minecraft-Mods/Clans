@@ -1,10 +1,7 @@
 package the_fireplace.clans.clan.land;
 
-import com.google.gson.JsonObject;
-import the_fireplace.clans.clan.ClanData;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.membership.ClanMembers;
-import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
 
@@ -12,7 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanClaims extends ClanData {
+public class ClanClaims {
     private static final Map<UUID, ClanClaims> CLAIMS = new ConcurrentHashMap<>();
 
     public static ClanClaims get(UUID clan) {
@@ -21,15 +18,14 @@ public class ClanClaims extends ClanData {
     }
 
     public static void delete(UUID clan) {
-        ClanClaims claims = CLAIMS.remove(clan);
-        if(claims != null)
-            claims.delete();
+        CLAIMS.remove(clan);
     }
 
     private long cachedClaimCount = -1;
+    private final UUID clan;
 
     public ClanClaims(UUID clan) {
-        super(clan, "claims");
+        this.clan = clan;
     }
 
     public long getClaimCount() {
@@ -47,7 +43,7 @@ public class ClanClaims extends ClanData {
         cachedClaimCount--;
     }
 
-    void cacheClaimCountIfNeeded() {
+    private void cacheClaimCountIfNeeded() {
         if (cachedClaimCount < 0)
             cacheClaimCount();
     }
@@ -67,15 +63,5 @@ public class ClanClaims extends ClanData {
         return ClansModContainer.getConfig().isMultiplyMaxClaimsByPlayers()
             ? ClanMembers.get(clan).getMemberCount() * ClansModContainer.getConfig().getMaxClaims()
             : ClansModContainer.getConfig().getMaxClaims();
-    }
-
-    @Override
-    public void readFromJson(JsonReader reader) {
-        //Do nothing
-    }
-
-    @Override
-    public JsonObject toJson() {
-        return new JsonObject();
     }
 }

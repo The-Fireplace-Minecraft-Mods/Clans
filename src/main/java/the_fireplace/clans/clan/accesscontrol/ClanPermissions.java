@@ -32,21 +32,20 @@ public class ClanPermissions extends ClanData {
             permissions.delete();
     }
 
-    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = new HashMap<>(CommandClan.COMMANDS.size() + 9, 1);;
-    static {
+    public static final Map<String, EnumRank> DEFAULT_PERMISSIONS = new HashMap<String, EnumRank>(CommandClan.COMMANDS.size() + 9, 1) {{
         for(Map.Entry<String, ClanSubCommand> entry: CommandClan.COMMANDS.entrySet())
             if(entry.getValue().getRequiredClanRank().greaterOrEquals(EnumRank.ADMIN) && !entry.getValue().getRequiredClanRank().equals(EnumRank.ANY))
-                ClanPermissions.DEFAULT_PERMISSIONS.put(entry.getKey(), entry.getValue().getRequiredClanRank());
-        ClanPermissions.DEFAULT_PERMISSIONS.put("access", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("interact", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("build", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("harmmob", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("harmanimal", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("lockadmin", EnumRank.LEADER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("lock.private", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("lock.clan", EnumRank.MEMBER);
-        ClanPermissions.DEFAULT_PERMISSIONS.put("lock.open", EnumRank.MEMBER);
-    }
+                put(entry.getKey(), entry.getValue().getRequiredClanRank());
+        put("access", EnumRank.MEMBER);
+        put("interact", EnumRank.MEMBER);
+        put("build", EnumRank.MEMBER);
+        put("harmmob", EnumRank.MEMBER);
+        put("harmanimal", EnumRank.MEMBER);
+        put("lockadmin", EnumRank.LEADER);
+        put("lock.private", EnumRank.MEMBER);
+        put("lock.clan", EnumRank.MEMBER);
+        put("lock.open", EnumRank.MEMBER);
+    }};
     public final Map<String, EnumRank> permissions;
     public final Map<String, Map<UUID, Boolean>> permissionOverrides = new ConcurrentHashMap<String, Map<UUID, Boolean>>();
 
@@ -122,5 +121,24 @@ public class ClanPermissions extends ClanData {
         }
         obj.add("permissions", permissions);
         return obj;
+    }
+
+    @Override
+    protected boolean isDefaultData() {
+        return !hasOverrides() && !hasNonDefaultPermission();
+    }
+
+    private boolean hasOverrides() {
+        for (Map<UUID, Boolean> overrides: permissionOverrides.values())
+            if(!overrides.isEmpty())
+                return true;
+        return false;
+    }
+
+    private boolean hasNonDefaultPermission() {
+        for (Map.Entry<String, EnumRank> permission: permissions.entrySet())
+            if(!permission.getValue().equals(DEFAULT_PERMISSIONS.get(permission.getKey())))
+                return true;
+        return false;
     }
 }

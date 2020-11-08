@@ -191,4 +191,12 @@ public class AdminControlledClanSettings extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        for (Map.Entry<String, Integer> setting: settings.entrySet())
+            if(!setting.getValue().equals(DEFAULT_SETTINGS.get(setting.getKey())))
+                return false;
+        return true;
+    }
 }

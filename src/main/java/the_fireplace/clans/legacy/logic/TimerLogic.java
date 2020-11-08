@@ -49,6 +49,7 @@ import java.util.*;
 
 public class TimerLogic {
     public static void runFiveMinuteLogic() {
+        ClanIdRegistry.saveInstance();
         ClaimData.save();
         ClanSaver.saveAll();
         RaidCollectionDatabase.getInstance().save();

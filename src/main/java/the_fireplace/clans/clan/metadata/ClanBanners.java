@@ -69,7 +69,7 @@ public class ClanBanners extends ClanData {
             BANNER_CACHE.remove(banner.toLowerCase());
     }
 
-    private String clanBanner;
+    private String clanBanner = null;
 
     private ClanBanners(UUID clan) {
         super(clan, "banner");
@@ -92,7 +92,7 @@ public class ClanBanners extends ClanData {
     public void readFromJson(JsonReader reader) {
         //noinspection ConstantConditions
         String banner = reader.readString("clanBanner", null);
-        if(banner != null)
+        if(banner != null && !banner.isEmpty())
             setClanBanner(banner);
     }
 
@@ -103,5 +103,10 @@ public class ClanBanners extends ClanData {
         obj.addProperty("clanBanner", clanBanner);
 
         return obj;
+    }
+
+    @Override
+    protected boolean isDefaultData() {
+        return clanBanner == null || clanBanner.isEmpty();
     }
 }

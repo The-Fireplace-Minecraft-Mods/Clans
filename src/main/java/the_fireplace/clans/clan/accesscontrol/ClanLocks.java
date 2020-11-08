@@ -154,4 +154,9 @@ public class ClanLocks extends ClanData {
                 lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
         }
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return locks.isEmpty() && lockOverrides.isEmpty();
+    }
 }

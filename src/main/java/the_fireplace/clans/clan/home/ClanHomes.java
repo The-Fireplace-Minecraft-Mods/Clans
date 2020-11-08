@@ -69,7 +69,7 @@ public class ClanHomes extends ClanData {
     private float homeX;
     private float homeY;
     private float homeZ;
-    private int homeDimension;
+    private int homeDimension = Integer.MIN_VALUE;
 
     private ClanHomes(UUID clan) {
         super(clan, "home");
@@ -97,7 +97,7 @@ public class ClanHomes extends ClanData {
             homeX = reader.readFloat("homeX", 0);
             homeY = reader.readFloat("homeY", 0);
             homeZ = reader.readFloat("homeZ", 0);
-            homeDimension = reader.readInt("homeDimension", 0);
+            homeDimension = reader.readInt("homeDimension", Integer.MIN_VALUE);
         }
     }
 
@@ -111,5 +111,10 @@ public class ClanHomes extends ClanData {
         obj.addProperty("homeDimension", homeDimension);
 
         return obj;
+    }
+
+    @Override
+    protected boolean isDefaultData() {
+        return homeDimension == Integer.MIN_VALUE;
     }
 }

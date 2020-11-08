@@ -15,7 +15,18 @@ public abstract class ClanData implements ThreadedJsonSerializable {
 
     protected ClanData(UUID clan, String saveFolder) {
         this.clan = clan;
-        saveFile = new File(new File(Directories.CLAN_DATA_LOCATION, saveFolder), FileNames.jsonFileNameFromUUID(clan));
+        File folder = new File(Directories.CLAN_DATA_LOCATION, saveFolder);
+        folder.mkdirs();
+        saveFile = new File(folder, FileNames.jsonFileNameFromUUID(clan));
+    }
+
+    @Override
+    public void save() {
+        if (!isDefaultData()) {
+            ThreadedJsonSerializable.super.save();
+        } else if(saveFile.exists()) {
+            saveFile.delete();
+        }
     }
 
     @Override
@@ -44,5 +55,9 @@ public abstract class ClanData implements ThreadedJsonSerializable {
         //noinspection ResultOfMethodCallIgnored
         saveFile.delete();
         saveHandler.disposeReferences();
+    }
+
+    protected boolean isDefaultData() {
+        return false;
     }
 }

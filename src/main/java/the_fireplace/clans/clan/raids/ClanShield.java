@@ -77,4 +77,9 @@ public class ClanShield extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return shield == 0;
+    }
 }

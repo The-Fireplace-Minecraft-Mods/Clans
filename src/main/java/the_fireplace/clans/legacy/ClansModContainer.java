@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
-import the_fireplace.clans.clan.LegacyImporter;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.abstraction.*;
 import the_fireplace.clans.legacy.abstraction.dummy.ChatCensorCompatDummy;
@@ -133,8 +132,6 @@ public final class ClansModContainer {
 
     @Mod.EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
-        //noinspection deprecation
-        LegacyImporter.importLegacyClans();
         ServerEventLogic.onServerStarting(event.getServer());
     }
 

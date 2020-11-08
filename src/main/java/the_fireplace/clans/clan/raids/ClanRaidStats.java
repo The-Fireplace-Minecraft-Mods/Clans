@@ -73,4 +73,9 @@ public class ClanRaidStats extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return wins == 0 && losses == 0;
+    }
 }

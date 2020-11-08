@@ -37,6 +37,10 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
         getInstance().addId(uuid);
     }
 
+    public static void saveInstance() {
+        getInstance().save();
+    }
+
     public static Collection<UUID> getIds() {
         return Collections.unmodifiableCollection(getInstance().clanIds);
     }
@@ -46,7 +50,7 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
     }
 
     public static void deleteClanId(UUID uuid) {
-        getInstance().clanIds.remove(uuid);
+        getInstance().removeId(uuid);
     }
 
     private final ThreadedSaveHandler<ClanIdRegistry> saveHandler = ThreadedSaveHandler.create(this);
@@ -62,7 +66,13 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
     }
 
     private void addId(UUID uuid) {
-        clanIds.add(uuid);
+        if (clanIds.add(uuid))
+            markChanged();
+    }
+
+    private void removeId(UUID uuid) {
+        if (clanIds.remove(uuid))
+            markChanged();
     }
 
     @Override

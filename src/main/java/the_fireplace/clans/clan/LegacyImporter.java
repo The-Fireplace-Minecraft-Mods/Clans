@@ -1,11 +1,12 @@
 package the_fireplace.clans.clan;
 
+import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.accesscontrol.ClanLocks;
 import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.economics.ClanRent;
 import the_fireplace.clans.clan.economics.ClanUpkeep;
 import the_fireplace.clans.clan.home.ClanHomes;
-import the_fireplace.clans.clan.land.ClanClaims;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.metadata.ClanBanners;
 import the_fireplace.clans.clan.metadata.ClanColors;
@@ -13,6 +14,7 @@ import the_fireplace.clans.clan.metadata.ClanDescriptions;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.clan.raids.ClanRaidStats;
 import the_fireplace.clans.clan.raids.ClanShield;
+import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
 import the_fireplace.clans.io.Directories;
 import the_fireplace.clans.io.FileNames;
 import the_fireplace.clans.io.JsonReader;
@@ -45,12 +47,12 @@ public final class LegacyImporter {
         ClanRent.get(clanId).markChanged();
         ClanUpkeep.get(clanId).readFromJson(reader);
         ClanUpkeep.get(clanId).markChanged();
+        ClanHomes.set(clanId, BlockPos.ORIGIN, Integer.MIN_VALUE);
         ClanHomes.get(clanId).readFromJson(reader);
         ClanHomes.get(clanId).markChanged();
-        ClanClaims.get(clanId).readFromJson(reader);
-        ClanClaims.get(clanId).markChanged();
         ClanMembers.get(clanId).readFromJson(reader);
         ClanMembers.get(clanId).markChanged();
+        ClanBanners.set(clanId, "");
         ClanBanners.get(clanId).readFromJson(reader);
         ClanBanners.get(clanId).markChanged();
         ClanNames.get(clanId).readFromJson(reader);
@@ -63,6 +65,10 @@ public final class LegacyImporter {
         ClanRaidStats.get(clanId).markChanged();
         ClanShield.get(clanId).readFromJson(reader);
         ClanShield.get(clanId).markChanged();
+        AdminControlledClanSettings.get(clanId).readFromJson(reader);
+        AdminControlledClanSettings.get(clanId).markChanged();
+        ClanWeaknessFactor.get(clanId).readFromJson(reader);
+        ClanWeaknessFactor.get(clanId).markChanged();
     }
 
     private static UUID getUUIDFromFileName(File file) {

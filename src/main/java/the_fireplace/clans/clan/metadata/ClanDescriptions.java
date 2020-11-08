@@ -55,4 +55,9 @@ public class ClanDescriptions extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return description.equals(TranslationUtil.getStringTranslation("clan.default_description"));
+    }
 }

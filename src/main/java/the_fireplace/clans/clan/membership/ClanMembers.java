@@ -210,4 +210,9 @@ public class ClanMembers extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return members.isEmpty();
+    }
 }

@@ -61,4 +61,9 @@ public class ClanWeaknessFactor extends ClanData {
 
         return obj;
     }
+
+    @Override
+    protected boolean isDefaultData() {
+        return Double.valueOf(weaknessFactor).equals(1.0);
+    }
 }

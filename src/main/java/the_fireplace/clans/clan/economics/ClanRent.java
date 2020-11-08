@@ -2,6 +2,7 @@ package the_fireplace.clans.clan.economics;
 
 import com.google.gson.JsonObject;
 import the_fireplace.clans.clan.ClanData;
+import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.util.FormulaParser;
@@ -84,5 +85,10 @@ public class ClanRent extends ClanData {
         double upkeepPerDay = upkeep / upkeepDays;
 
         return Math.min(maxRentPerDay, upkeepPerDay) * rentDays;
+    }
+
+    @Override
+    protected boolean isDefaultData() {
+        return AdminControlledClanSettings.get(clan).isServerOwned();
     }
 }
