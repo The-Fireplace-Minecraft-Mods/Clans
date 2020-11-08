@@ -15,15 +15,15 @@ import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.OrderedPair;
-import the_fireplace.clans.legacy.util.ChatUtil;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
+import the_fireplace.clans.networking.SynchronizedMessageQueue;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class ClaimMapToChat {
     private static final char[] MAP_CHARS = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
@@ -187,37 +187,32 @@ public class ClaimMapToChat {
     }
 
     private void send() {
+        ArrayList<ITextComponent> messages = new ArrayList<>();
         if(showCacheSegment)
-            sendCacheSegment();
-        sendMapBorder();
-        sendMapBody();
-        sendMapBorder();
-        sendMapSymbolGuide();
+            messages.add(getCacheSegmentComponent());
+        messages.add(getBorderComponent());
+        messages.addAll(Arrays.asList(bodyMessages));
+        messages.add(getBorderComponent());
+        messages.addAll(getMapSymbolGuide());
         if(showCacheSegment)
-            sendEndSegment();
+            messages.add(getEndSegmentComponent());
+
+        SynchronizedMessageQueue.queueMessages(messageTarget, messages.toArray(new ITextComponent[0]));
     }
 
-    private void sendCacheSegment() {
-        ChatUtil.sendMessage(messageTarget, getCacheSegmentComponent());
+    private List<ITextComponent> getMapSymbolGuide() {
+        return symbolMap.entrySet().stream().map(this::getSymbolMapEntry).collect(Collectors.toList());
     }
 
-    private void sendMapBody() {
-        ChatUtil.sendMessage(messageTarget, bodyMessages);
+    private ITextComponent getSymbolMapEntry(Map.Entry<UUID, Character> symbol) {
+        UUID c = symbol.getKey();
+        return new TextComponentString(symbol.getValue() + ": " + getSymbolName(c)).setStyle(getTextStyle(c));
     }
 
-    private void sendMapBorder() {
-        ChatUtil.sendMessage(messageTarget, getBorderComponent());
-    }
-
-    private void sendMapSymbolGuide() {
-        for(Map.Entry<UUID, Character> symbol: symbolMap.entrySet()) {
-            UUID c = symbol.getKey();
-            messageTarget.sendMessage(new TextComponentString(symbol.getValue() + ": " +(ClanIdRegistry.isValidClan(c) ? ClanNames.get(c).getName() : TranslationUtil.getStringTranslation(messageTarget, "clans.wilderness"))).setStyle(getTextStyle(c)));
-        }
-    }
-
-    private void sendEndSegment() {
-        ChatUtil.sendMessage(messageTarget, getEndSegmentComponent());
+    private String getSymbolName(UUID clan) {
+        return ClanIdRegistry.isValidClan(clan)
+            ? ClanNames.get(clan).getName()
+            : TranslationUtil.getStringTranslation(messageTarget, "clans.wilderness");
     }
 
     private Style getTextStyle(UUID c) {

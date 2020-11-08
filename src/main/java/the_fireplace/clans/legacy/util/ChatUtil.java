@@ -47,9 +47,4 @@ public final class ChatUtil {
 
         target.sendMessage(bottom);
     }
-
-    public static void sendMessage(ICommandSender messageTarget, ITextComponent... messages) {
-        for(ITextComponent msg: messages)
-            messageTarget.sendMessage(msg);
-    }
 }
