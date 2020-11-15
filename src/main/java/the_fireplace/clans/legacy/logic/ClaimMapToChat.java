@@ -25,40 +25,38 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class ClaimMapToChat {
-    private static final char[] MAP_CHARS = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
-    private static final char SECTION_SYMBOL = '\u00A7';
+public class ClaimMapToChat extends VirtualClaimMap {
+    public static final char[] MAP_CHARS = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
+    public static final char SECTION_SYMBOL = '\u00A7';
     private static final String DARK_GREEN = SECTION_SYMBOL+"2";
     private static final String BLUE = SECTION_SYMBOL+"9";
     private static final String LIME_GREEN = SECTION_SYMBOL+"a";
     private static final String RED = SECTION_SYMBOL+"c";
     private static final String YELLOW = SECTION_SYMBOL+"e";
-    private static final String CACHE_SEGMENT_SEPARATOR = "|";
-    private static final String END_KEY_SYMBOL = ";";
+    public static final String END_KEY_SYMBOL = ";";
+    public static final String BORDER_STRING = "=================================================";
+    public static final String WILDERNESS_SYMBOL = "-";
     private final ChunkPos playerChunk;
-    private final ChunkPos centerChunk;
     private final ICommandSender messageTarget;
     private final int dimension;
     private final ConcurrentMap<UUID, Character> symbolMap = new ConcurrentHashMap<>();
     private final ITextComponent[] bodyMessages;
     private final boolean useAllianceColorScheme;
-    private final int width, height;
     private final UUID playerId;
     private final boolean showCacheSegment;
-    private final OrderedPair<Integer, Integer> cacheSegment;
-    
+    protected final OrderedPair<Integer, Integer> cacheSegment;
+
     private ClaimMapToChat(ICommandSender messageTarget, ChunkPos playerChunk, int dimension, boolean isSmall, @Nullable OrderedPair<Integer, Integer> cacheSegment) {
+        super();
         this.playerChunk = playerChunk;
         this.messageTarget = messageTarget;
         this.dimension = dimension;
-        this.width = ClaimData.CACHE_SECTION_SIZE;
         this.height = getHeight(isSmall);
         this.bodyMessages = new ITextComponent[height];
         this.showCacheSegment = cacheSegment != null;
         if(cacheSegment == null)
             cacheSegment = calculateCacheSegment(playerChunk);
         this.cacheSegment = cacheSegment;
-        centerChunk = calculateCenter();
         useAllianceColorScheme = isSmall;
         playerId = getTargetId(messageTarget);
     }
@@ -83,16 +81,18 @@ public class ClaimMapToChat {
         return messageTarget instanceof Entity ? ((Entity) messageTarget).getUniqueID() : null;
     }
 
-    private ChunkPos calculateCenter() {
-        int centerOffsetX = getCenterOffset(width) * getQuadrant().getValue1();
-        int centerOffsetZ = getCenterOffset(height) * getQuadrant().getValue2();
+    @Override
+    protected ChunkPos calculateCenter() {
+        int centerOffsetX = getCenterOffsetX();
+        int centerOffsetZ = getCenterOffsetZ();
         int section = (playerChunk.z % ClaimData.CACHE_SECTION_SIZE) / 7;
         centerOffsetZ += section * 7;
-        return new ChunkPos(cacheSegment.getValue1()*ClaimData.CACHE_SECTION_SIZE + centerOffsetX, cacheSegment.getValue2()*ClaimData.CACHE_SECTION_SIZE + centerOffsetZ);
+        return new ChunkPos(cacheSegment.getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX, cacheSegment.getValue2() * ClaimData.CACHE_SECTION_SIZE + centerOffsetZ);
     }
 
-    private int getCenterOffset(int size) {
-        return size / 2;
+    @Override
+    protected OrderedPair<Integer, Integer> getCacheSegment() {
+        return cacheSegment;
     }
 
     private OrderedPair<Integer, Integer> calculateCacheSegment(ChunkPos playerChunk) {
@@ -126,18 +126,16 @@ public class ClaimMapToChat {
     }
     
     private void prepareMapBodyAndKey(ExecutorService executor) {
-        OrderedPair<Byte, Byte> quadrant = getQuadrant();
-        byte xOff = (byte) (quadrant.getValue1() < 0 ? -1 : 0);
-        int minX = centerChunk.x - width/2 + xOff;
-        int maxX = centerChunk.x + width/2 + xOff;
-        byte zOff = (byte) (quadrant.getValue2() < 0 ? -1 : 0);
-        int minZ = centerChunk.z - height/2 + zOff;
-        int maxZ = centerChunk.z + height/2 + zOff;
+        int minX = getMinX();
+        int maxX = getMaxX();
+        int minZ = getMinZ();
+        int maxZ = getMaxZ();
+        byte zOff = getQuadrantZOffset();
         for(int z = minZ; z <= maxZ; z++) {
             int finalZ = z;
             executor.execute(() -> {
                 String row = buildRow(finalZ, minX, maxX);
-                bodyMessages[finalZ - centerChunk.z + height/2 - zOff] = new TextComponentString(row);
+                bodyMessages[finalZ - getCenterChunk().z + height/2 - zOff] = new TextComponentString(row);
             });
         }
     }
@@ -149,9 +147,9 @@ public class ClaimMapToChat {
             ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, finalZ, dimension);
             UUID clan = ClaimData.getChunkClan(pos);
             if(pos == null || clan == null)
-                row.append(getChunkColor(isPlayerChunk, getWildernessColor())).append('-');
+                row.append(getChunkColor(isPlayerChunk, getWildernessColor())).append(WILDERNESS_SYMBOL);
             else if(pos.isBorderland())
-                row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append('-');
+                row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(WILDERNESS_SYMBOL);
             else {
                 symbolMap.putIfAbsent(clan, MAP_CHARS[symbolMap.size() % MAP_CHARS.length]);
                 row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(symbolMap.get(clan));
@@ -180,10 +178,6 @@ public class ClaimMapToChat {
 
     private boolean isPlayerChunk(int x, int z) {
         return playerChunk.z == z && playerChunk.x == x;
-    }
-
-    private OrderedPair<Byte, Byte> getQuadrant() {
-        return new OrderedPair<>((byte)Math.copySign(1, playerChunk.x), (byte)Math.copySign(1, playerChunk.z));
     }
 
     private void send() {
@@ -225,7 +219,7 @@ public class ClaimMapToChat {
     }
 
     private ITextComponent getBorderComponent() {
-        return new TextComponentString("=================================================").setStyle(TextStyles.GREEN);
+        return new TextComponentString(BORDER_STRING).setStyle(TextStyles.GREEN);
     }
 
     private ITextComponent getCacheSegmentComponent() {

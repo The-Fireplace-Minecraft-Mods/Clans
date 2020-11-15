@@ -36,7 +36,7 @@ public final class SynchronizedMessageQueue {
             ConcurrentExecutionManager.runKillable(this::sendMessages);
     }
 
-    private void sendMessages() {
+    private synchronized void sendMessages() {
         sendingMessages = true;
         while (!messages.isEmpty()) {
             messageTarget.sendMessage(messages.remove());
