@@ -197,7 +197,10 @@ public final class ClaimData {
     }
 
     public static void updateChunkOwner(ChunkPositionWithData pos, @Nullable UUID oldOwner, UUID newOwner) {
-        delChunk(oldOwner != null ? oldOwner : getChunkClan(pos), pos);
+        if(oldOwner == null)
+            oldOwner = getChunkClan(pos);
+        if(oldOwner != null)
+            delChunk(oldOwner, pos);
         //Create a new ChunkPositionWithData because the old one has addon data and borderland data attached
         addChunk(newOwner, new ChunkPositionWithData(pos));
     }

@@ -44,6 +44,7 @@ import the_fireplace.clans.player.autoland.AutoClaim;
 import the_fireplace.clans.player.autoland.OpAutoAbandon;
 import the_fireplace.clans.player.autoland.OpAutoClaim;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -179,8 +180,12 @@ public class TimerLogic {
                 isInBorderland = data != null && data.isBorderland();
             }
 
-            if(!Objects.equals(chunkClan, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland))
-                handleTerritoryChangedMessage(player, chunkClan, playerClans, isInBorderland);
+            if(!Objects.equals(chunkClan, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
+                if(chunkClan != null)
+                    handleTerritoryEnteredMessage(player, chunkClan, playerClans, isInBorderland);
+                else
+                    handleWildernessEnteredMessage(player);
+            }
             PlayerCache.setPreviousY(player.getUniqueID(), (int) Math.round(player.posY));
         } else if (chunkClan == null
             && ClansModContainer.getConfig().shouldProtectWilderness()
@@ -221,38 +226,49 @@ public class TimerLogic {
         PlayerCache.setPreviousY(player.getUniqueID(), curY);
     }
 
-    private static void handleTerritoryChangedMessage(EntityPlayer player, @Nullable UUID chunkClan, Collection<UUID> playerClans, boolean isBorderland) {
+    private static void handleTerritoryEnteredMessage(EntityPlayer player, @Nonnull UUID chunkClan, Collection<UUID> playerClans, boolean isBorderland) {
         PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan, isBorderland);
         TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
         if(mode.equals(TerritoryDisplayMode.OFF))
             return;
         Style color = TextStyles.GREEN;
-        if ((!playerClans.isEmpty() && !playerClans.contains(chunkClan)) || (playerClans.isEmpty() && chunkClan != null))
+        if (playerClans.isEmpty() || !playerClans.contains(chunkClan))
             color = TextStyles.YELLOW;
-        if (chunkClan == null)
-            color = TextStyles.DARK_GREEN;
         String territoryName;
         String territoryDesc;
-        if (chunkClan == null) {
-            boolean canBuildInWilderness = PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness", false)
-                && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness", false);
-            if (ClansModContainer.getConfig().shouldProtectWilderness() && (ClansModContainer.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < ClansModContainer.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
-                territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
-                territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
-            } else {
-                territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness");
-                if(ClansModContainer.getConfig().shouldProtectWilderness() && !canBuildInWilderness) {
-                    color = TextStyles.YELLOW;
-                    territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected");
-                } else
-                    territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
-            }
-        } else if(isBorderland) {
+        if(isBorderland) {
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", ClanNames.get(chunkClan).getName());
             territoryDesc = "";
         } else {
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.clanterritory", ClanNames.get(chunkClan).getName());
             territoryDesc = ClanDescriptions.get(chunkClan).getDescription();
+        }
+
+        player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
+        if(!territoryDesc.isEmpty() && mode.showsDescription())
+            player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
+    }
+
+    private static void handleWildernessEnteredMessage(EntityPlayer player) {
+        PlayerCache.setPreviousChunkOwner(player.getUniqueID(), null, false);
+        TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
+        if(mode.equals(TerritoryDisplayMode.OFF))
+            return;
+        Style color = TextStyles.DARK_GREEN;
+        String territoryName;
+        String territoryDesc;
+        boolean canBuildInWilderness = PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness", false)
+            && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness", false);
+        if (ClansModContainer.getConfig().shouldProtectWilderness() && (ClansModContainer.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < ClansModContainer.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
+            territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
+        } else {
+            territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness");
+            if(ClansModContainer.getConfig().shouldProtectWilderness() && !canBuildInWilderness) {
+                color = TextStyles.YELLOW;
+                territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected");
+            } else
+                territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
         }
 
         player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
