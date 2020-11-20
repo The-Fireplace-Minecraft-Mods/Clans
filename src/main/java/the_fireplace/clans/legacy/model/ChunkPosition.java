@@ -70,6 +70,11 @@ public class ChunkPosition {
         return 31 * (31 * this.posX + this.posZ) + this.dim;
     }
 
+    @Override
+    public String toString() {
+        return toJsonObject().toString();
+    }
+
     public JsonObject toJsonObject() {
         JsonObject ret = new JsonObject();
         ret.addProperty("posX", posX);
