@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.mapinterceptor;
+package the_fireplace.clans.client.listener;
 
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -7,10 +7,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import the_fireplace.clans.client.ClansClientModContainer;
+import the_fireplace.clans.client.mapprocessing.FancyMapProcessor;
 import the_fireplace.clans.legacy.logic.ClaimMapToChat;
 
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber(modid = ClansClientModContainer.MODID)
+@Mod.EventBusSubscriber(modid = ClansClientModContainer.MODID, value = Side.CLIENT)
 public final class FancyMapInterceptor {
 
     @SubscribeEvent(priority = EventPriority.LOW)

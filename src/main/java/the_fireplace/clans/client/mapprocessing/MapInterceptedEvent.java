@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.mapinterceptor;
+package the_fireplace.clans.client.mapprocessing;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;

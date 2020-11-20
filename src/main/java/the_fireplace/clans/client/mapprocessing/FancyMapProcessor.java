@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.mapinterceptor;
+package the_fireplace.clans.client.mapprocessing;
 
 import com.google.common.collect.Maps;
 import the_fireplace.clans.legacy.data.ClaimData;

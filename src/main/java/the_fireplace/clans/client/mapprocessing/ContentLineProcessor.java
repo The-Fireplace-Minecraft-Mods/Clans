@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.mapinterceptor;
+package the_fireplace.clans.client.mapprocessing;
 
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
@@ -32,7 +32,7 @@ public class ContentLineProcessor extends VirtualClaimMap {
 
         int dim = Minecraft.getMinecraft().player.dimension;
         int topZ = Math.max(getMinZ(), getMaxZ());
-        int z = topZ - lineNumber;
+        int z = getLineZ(topZ);
         int leftX = Math.min(getMinX(), getMaxX());
 
         for (int x=0; x<line.length(); x++) {
@@ -40,5 +40,9 @@ public class ContentLineProcessor extends VirtualClaimMap {
         }
 
         return positionCharacters;
+    }
+
+    private int getLineZ(int topZ) {
+        return topZ - lineNumber;
     }
 }

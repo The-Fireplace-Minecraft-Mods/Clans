@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.mapinterceptor;
+package the_fireplace.clans.client.mapprocessing;
 
 import org.intellij.lang.annotations.Language;
 import the_fireplace.clans.legacy.logic.ClaimMapToChat;
