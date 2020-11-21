@@ -15,7 +15,6 @@ import the_fireplace.clans.legacy.model.ChunkPosition;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.geom.Point2D;
-import java.util.Random;
 
 public class ClaimedChunkOverlayFactory {
     public static PolygonOverlay create(ChunkPosition chunkPosition, String clanName) {
@@ -38,7 +37,7 @@ public class ClaimedChunkOverlayFactory {
             .setFontShadow(true);
 
         // Define the shape
-        MapPolygon polygon = PolygonHelper.createChunkPolygon(chunkPosition.getPosX(), 70, chunkPosition.getPosZ());
+        MapPolygon polygon = PolygonHelper.createChunkPolygon(chunkPosition.getPosX(), 120, chunkPosition.getPosZ());
 
         // Create the overlay
         PolygonOverlay claimOverlay = new PolygonOverlay(ClansClientModContainer.MODID, displayId, chunkPosition.getDim(), shapeProps, polygon);
@@ -85,8 +84,6 @@ public class ClaimedChunkOverlayFactory {
 
         @Override
         public void onMouseMove(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition) {
-            // Random stroke and make it opaque just to prove this works
-            sp.setStrokeColor(new Random().nextInt(0xffffff));
             sp.setStrokeOpacity(1f);
 
             // Update title
@@ -105,9 +102,7 @@ public class ClaimedChunkOverlayFactory {
 
         @Override
         public boolean onMouseClick(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition, int button, boolean doubleClick) {
-            // Random color on click just to prove the event works.
-            sp.setFillColor(new Random().nextInt(0xffffff));
-
+            System.out.println(button);
             // Returning false will stop the click event from being used by other overlays,
             // including JM's invisible overlay for creating/selecting waypoints
             return false;

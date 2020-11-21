@@ -101,11 +101,9 @@ public final class FancyMapProcessor {
 
     private static void updateContentLineCounter() {
         if (previousState == MapFragmentType.CONTENT) {
-            if (currentState == previousState) {
-                contentLineNumber++;
-            } else {
-                contentLineNumber = 0;
-            }
+            contentLineNumber++;
+        } else {
+            contentLineNumber = 0;
         }
     }
 

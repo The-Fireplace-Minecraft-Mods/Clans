@@ -26,8 +26,8 @@ public class OverlayTracker {
     @SubscribeEvent
     public void onMapDataReceived(MapInterceptedEvent event) {
         if (jmAPI.playerAccepts(ClansClientModContainer.MODID, DisplayType.Polygon)) {
-            ConcurrentExecutionManager.runKillable(() -> {
-                event.getInterceptedMapData().forEach((chunkPosition, clanName) -> {
+            event.getInterceptedMapData().forEach((chunkPosition, clanName) -> {
+                ConcurrentExecutionManager.runKillable(() -> {
                     if (clanName != null) {
                         updatePositionOwner(chunkPosition, clanName);
                     } else {

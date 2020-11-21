@@ -31,7 +31,8 @@ public class ContentLineProcessor extends VirtualClaimMap {
         Map<ChunkPosition, Character> positionCharacters = Maps.newHashMap();
 
         int dim = Minecraft.getMinecraft().player.dimension;
-        int topZ = Math.max(getMinZ(), getMaxZ());
+        //Positive Z is DOWN, the top is at the lowest Z value not the highest
+        int topZ = Math.min(getMinZ(), getMaxZ());
         int z = getLineZ(topZ);
         int leftX = Math.min(getMinX(), getMaxX());
 
@@ -42,7 +43,10 @@ public class ContentLineProcessor extends VirtualClaimMap {
         return positionCharacters;
     }
 
+    /**
+     * Positive Z is DOWN not UP
+     */
     private int getLineZ(int topZ) {
-        return topZ - lineNumber;
+        return topZ + lineNumber;
     }
 }

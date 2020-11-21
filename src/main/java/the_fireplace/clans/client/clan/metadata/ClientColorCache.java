@@ -11,6 +11,6 @@ public final class ClientColorCache {
     }
 
     public static int getColor(String clanName) {
-        return clanColors.getOrDefault(clanName, 0x888888);
+        return clanColors.getOrDefault(clanName, 0xFF0000);
     }
 }
