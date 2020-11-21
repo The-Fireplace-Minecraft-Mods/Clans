@@ -17,8 +17,12 @@ public final class FancyMapInterceptor {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onChatReceived(ClientChatReceivedEvent event) {
         String line = event.getMessage().getUnformattedText();
-        line = line.replaceAll(ClaimMapToChat.SECTION_SYMBOL+"[0-9a-g]", "");
+        line = removeFormattingCodes(line);
         boolean processedLine = FancyMapProcessor.processLine(line);
         event.setCanceled(processedLine);
+    }
+
+    private static String removeFormattingCodes(String line) {
+        return line.replaceAll(ClaimMapToChat.SECTION_SYMBOL + "[0-9a-g]", "");
     }
 }

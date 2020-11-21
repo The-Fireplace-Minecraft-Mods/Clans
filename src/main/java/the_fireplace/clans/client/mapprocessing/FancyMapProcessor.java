@@ -13,27 +13,33 @@ public final class FancyMapProcessor {
     private static MapFragmentType previousState = MapFragmentType.END;
     private static byte contentLineNumber = 0;
 
-    private static Map<ChunkPosition, Character> positionCharacters = Maps.newHashMap();
-    private static Map<Character, String> characterClans = Maps.newHashMap();
+    private static final Map<ChunkPosition, Character> positionCharacters = Maps.newHashMap();
+    private static final Map<Character, String> characterClans = Maps.newHashMap();
     private static int cacheX, cacheZ;
 
     public static boolean processLine(String line) {
         if (!isExpectedState(line))
             return false;
         processStateForLine(line);
+        if (isSkippingSymbolGuide(line))
+            updateState();
         if (!isContinuingSymbolGuide(line))
             updateState();
         return true;
     }
 
     private static boolean isExpectedState(String line) {
-        if (isContinuingSymbolGuide(line))
+        if (isContinuingSymbolGuide(line) || isSkippingSymbolGuide(line))
             return true;
         return line.matches(currentState.getRegex());
     }
 
     private static boolean isContinuingSymbolGuide(String line) {
         return previousState == MapFragmentType.SYMBOL_GUIDE && line.matches(MapFragmentType.SYMBOL_GUIDE.getRegex());
+    }
+
+    private static boolean isSkippingSymbolGuide(String line) {
+        return previousState == MapFragmentType.END_BORDER && line.matches(MapFragmentType.END.getRegex());
     }
 
     private static void processStateForLine(String line) {
@@ -45,7 +51,8 @@ public final class FancyMapProcessor {
                 processContent(line);
                 break;
             case SYMBOL_GUIDE:
-                processSymbolInformation(line);
+                if (!isSkippingSymbolGuide(line))
+                    processSymbolInformation(line);
                 break;
             case END:
                 if (isContinuingSymbolGuide(line))
@@ -110,7 +117,7 @@ public final class FancyMapProcessor {
     }
 
     private static void reset() {
-        positionCharacters = Maps.newHashMap();
-        characterClans = Maps.newHashMap();
+        positionCharacters.clear();
+        characterClans.clear();
     }
 }

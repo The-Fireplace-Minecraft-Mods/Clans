@@ -25,8 +25,8 @@ public class ClaimedChunkOverlayFactory {
         // Style the polygon
         ShapeProperties shapeProps = new ShapeProperties()
             .setStrokeWidth(2)
-            .setStrokeColor(clanColor).setStrokeOpacity(.7f)
-            .setFillColor(clanColor).setFillOpacity(.4f);
+            .setStrokeColor(clanColor).setStrokeOpacity(.9f)
+            .setFillColor(clanColor).setFillOpacity(.7f);
 
         // Style the text
         TextProperties textProps = new TextProperties()
@@ -49,21 +49,21 @@ public class ClaimedChunkOverlayFactory {
             .setTextProperties(textProps);
 
         // Add a listener for mouse events
-        IOverlayListener overlayListener = new SlimeChunkListener(claimOverlay);
+        IOverlayListener overlayListener = new ClaimOverlayListener(claimOverlay);
         claimOverlay.setOverlayListener(overlayListener);
 
         return claimOverlay;
     }
 
     @ParametersAreNonnullByDefault
-    static class SlimeChunkListener implements IOverlayListener {
+    static class ClaimOverlayListener implements IOverlayListener {
         final PolygonOverlay overlay;
         final ShapeProperties sp;
         final int fillColor;
         final int strokeColor;
         final float strokeOpacity;
 
-        SlimeChunkListener(final PolygonOverlay overlay) {
+        ClaimOverlayListener(final PolygonOverlay overlay) {
             this.overlay = overlay;
             sp = overlay.getShapeProperties();
             fillColor = sp.getFillColor();

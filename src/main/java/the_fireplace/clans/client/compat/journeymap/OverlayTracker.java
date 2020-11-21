@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import the_fireplace.clans.client.ClansClientModContainer;
 import the_fireplace.clans.client.mapprocessing.MapInterceptedEvent;
 import the_fireplace.clans.legacy.model.ChunkPosition;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +26,7 @@ public class OverlayTracker {
     @SubscribeEvent
     public void onMapDataReceived(MapInterceptedEvent event) {
         if (jmAPI.playerAccepts(ClansClientModContainer.MODID, DisplayType.Polygon)) {
-            new Thread(() -> {
+            ConcurrentExecutionManager.runKillable(() -> {
                 event.getInterceptedMapData().forEach((chunkPosition, clanName) -> {
                     if (clanName != null) {
                         updatePositionOwner(chunkPosition, clanName);
@@ -33,7 +34,7 @@ public class OverlayTracker {
                         clearPositionOwner(chunkPosition);
                     }
                 });
-            }).start();
+            });
         }
     }
 

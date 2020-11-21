@@ -5,12 +5,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 
 @SideOnly(Side.CLIENT)
 public class ClaimRequester {
     @SubscribeEvent
     public void onLoggedIn(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        new Thread(() -> {
+        ConcurrentExecutionManager.runKillable(() -> {
             while (Minecraft.getMinecraft().player == null)
                 try {
                     Thread.sleep(1000);
@@ -18,6 +19,6 @@ public class ClaimRequester {
                     e.printStackTrace();
                 }
             Minecraft.getMinecraft().player.sendChatMessage("/c fm a");
-        }).start();
+        });
     }
 }
