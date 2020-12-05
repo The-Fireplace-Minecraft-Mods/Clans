@@ -1,7 +1,6 @@
 package the_fireplace.clans.legacy.cache;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerCache {
     private static final Map<UUID, UUID> clanChattingPlayers = new ConcurrentHashMap<>();
-    private static final Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = Maps.newHashMap();
-    private static final Map<UUID, PlayerCachedData> playerCache = Maps.newHashMap();
+    private static final Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = new ConcurrentHashMap<>();
+    private static final Map<UUID, PlayerCachedData> playerCache = new ConcurrentHashMap<>();
 
     @Nullable
     public static UUID getPreviousChunkOwner(UUID player) {
@@ -68,7 +67,6 @@ public final class PlayerCache {
         return getPlayerCache(player).prevChunkZ;
     }
 
-    //region cached data setters
     public static void setPreviousChunkOwner(UUID player, @Nullable UUID prevChunkOwner, boolean isBorderland) {
         PlayerCachedData data = getPlayerCache(player);
         data.prevChunkOwner = prevChunkOwner;
@@ -132,7 +130,6 @@ public final class PlayerCache {
         }
     }
 
-    //region getPlayerData
     private static PlayerCachedData getPlayerCache(UUID player) {
         playerCache.computeIfAbsent(player, (unused) -> new PlayerCachedData());
         return playerCache.get(player);

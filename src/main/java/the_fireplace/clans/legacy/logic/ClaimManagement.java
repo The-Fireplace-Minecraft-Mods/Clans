@@ -305,7 +305,7 @@ public class ClaimManagement {
         if(claimOwner != null && !claimChunk.isBorderland()) {
             if(!ClanIdRegistry.isValidClan(claimOwner)) {
                 ChunkUtils.clearChunkOwner(c);
-                abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.clan.abandonclaim.success", "null").setStyle(TextStyles.GREEN));
+                abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.clan.abandonclaim.success", ClanNames.get(claimOwner).getName()).setStyle(TextStyles.GREEN));
                 return true;
             }
             if(chunkOwner == null || claimOwner.equals(chunkOwner)) {
@@ -362,7 +362,7 @@ public class ClaimManagement {
         PreLandAbandonEvent event = ClansEventManager.fireEvent(new PreLandAbandonEvent(abandoningPlayer.world, c, new ChunkPosition(c), abandoningPlayer.getUniqueID(), chunkOwner));
         if(!event.isCancelled) {
             abandonClaim(abandoningPlayer, c, chunkOwner);
-            abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.clan.abandonclaim.success", ClanNames.get(chunkOwner)).setStyle(TextStyles.GREEN));
+            abandoningPlayer.sendMessage(TranslationUtil.getTranslation(abandoningPlayer.getUniqueID(), "commands.clan.abandonclaim.success", ClanNames.get(chunkOwner).getName()).setStyle(TextStyles.GREEN));
             return true;
         } else
             abandoningPlayer.sendMessage(event.cancelledMessage);

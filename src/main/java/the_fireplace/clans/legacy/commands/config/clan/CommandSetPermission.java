@@ -17,6 +17,7 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Locale;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -51,8 +52,13 @@ public class CommandSetPermission extends ClanSubCommand {
 			boolean value = parseBool(args[2]);
             ClanPermissions.get(selectedClan).addPermissionOverride(perm, player.getId(), value);
 		} else {
-			EnumRank rank = EnumRank.valueOf(args[1]);
-            ClanPermissions.get(selectedClan).setPerm(perm, rank);
+			String rankName = args[1].toUpperCase(Locale.getDefault());
+			try {
+				EnumRank rank = EnumRank.valueOf(rankName);
+				ClanPermissions.get(selectedClan).setPerm(perm, rank);
+			} catch(IllegalArgumentException e) {
+				throw new IllegalArgumentException(TranslationUtil.getStringTranslation(sender.getUniqueID(), "commands.clan.set.invalid_rank", args[1]));
+			}
 		}
 		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.set.success").setStyle(TextStyles.GREEN));
 	}

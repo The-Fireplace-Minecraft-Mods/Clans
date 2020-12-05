@@ -25,9 +25,12 @@ import java.util.UUID;
 @Deprecated
 public final class LegacyClanImporter {
     public static void importLegacyClans() {
-        for(File file: FileNames.getUUIDJsonFolderContents(Directories.CLAN_DATA_LOCATION)) {
-            importLegacyClan(file);
-            file.delete();
+        File[] oldClanDataFiles = FileNames.getUUIDJsonFolderContents(Directories.CLAN_DATA_LOCATION);
+        if (oldClanDataFiles != null) {
+            for (File file : oldClanDataFiles) {
+                importLegacyClan(file);
+                file.delete();
+            }
         }
     }
 

@@ -40,7 +40,7 @@ public class ClanBanners extends ClanData {
 
     public static boolean isClanBannerAvailable(String clanBanner) {
         ensureBannerCacheLoaded();
-        return BANNER_CACHE.contains(clanBanner.toLowerCase());
+        return !BANNER_CACHE.contains(clanBanner.toLowerCase());
     }
 
     private static void ensureBannerCacheLoaded() {

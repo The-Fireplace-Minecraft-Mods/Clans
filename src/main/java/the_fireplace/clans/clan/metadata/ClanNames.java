@@ -8,6 +8,7 @@ import the_fireplace.clans.io.JsonReader;
 import the_fireplace.clans.legacy.commands.CommandClan;
 import the_fireplace.clans.legacy.commands.CommandOpClan;
 import the_fireplace.clans.legacy.commands.CommandRaid;
+import the_fireplace.clans.legacy.logic.ClaimMapToChat;
 import the_fireplace.clans.legacy.util.TextStyles;
 
 import javax.annotation.Nullable;
@@ -18,7 +19,8 @@ public class ClanNames extends ClanData {
     private static final Map<UUID, ClanNames> NAME_INSTANCES = new ConcurrentHashMap<>();
     private static final Map<String, UUID> NAME_TO_UUID_CACHE = new ConcurrentHashMap<>();
     private static boolean cacheLoaded = false;
-    private static final Set<String> FORBIDDEN_CLAN_NAMES = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", "null");
+    public static final String NULL_CLAN_NAME = ClaimMapToChat.SECTION_SYMBOL+"knull"+ClaimMapToChat.SECTION_SYMBOL+'r';
+    private static final Set<String> FORBIDDEN_CLAN_NAMES = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", NULL_CLAN_NAME);
     static {
         FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMANDS.keySet());
         FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMAND_ALIASES.keySet());
@@ -82,7 +84,7 @@ public class ClanNames extends ClanData {
         return TextStyles.stripFormatting(name.toLowerCase());
     }
 
-    private String clanName;
+    private String clanName = NULL_CLAN_NAME;
 
     private ClanNames(UUID clan) {
         super(clan, "name");
@@ -103,7 +105,7 @@ public class ClanNames extends ClanData {
 
     @Override
     public void readFromJson(JsonReader reader) {
-        clanName = reader.readString("clanName", null);
+        clanName = reader.readString("clanName", NULL_CLAN_NAME);
     }
 
     @Override

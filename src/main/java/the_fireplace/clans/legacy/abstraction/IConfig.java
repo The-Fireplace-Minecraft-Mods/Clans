@@ -1,5 +1,7 @@
 package the_fireplace.clans.legacy.abstraction;
 
+import the_fireplace.clans.clan.land.ClanClaims;
+
 import java.util.Collection;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -11,7 +13,7 @@ public interface IConfig {
     int getClanHomeWarmupTime();
     int getClanHomeCooldownTime();
     /**
-     * This should not be directly used, use {@link Clan#getMaxClaimCount()} instead.
+     * This should not be directly used, use {@link ClanClaims#getMaxClaimCount()} instead.
      */
     int getMaxClaims();
     boolean isMultiplyMaxClaimsByPlayers();

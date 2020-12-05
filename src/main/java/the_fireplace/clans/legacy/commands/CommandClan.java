@@ -211,7 +211,7 @@ public class CommandClan extends CommandBase {
                     args = new String[]{};
             //Make the first arg the default clan name because a clan name was not specified
             UUID defaultClan = sender instanceof EntityPlayerMP ? PlayerClanSettings.getDefaultClan(((EntityPlayerMP) sender).getUniqueID()) : null;
-            args = ArrayUtils.addAll(new String[]{defaultClan != null ? ClanNames.get(defaultClan).getName() : "null"}, args);
+            args = ArrayUtils.addAll(new String[]{defaultClan != null ? ClanNames.get(defaultClan).getName() : ClanNames.NULL_CLAN_NAME}, args);
         }
         //Check permissions and run command
         if(PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag), true)) {

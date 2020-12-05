@@ -70,7 +70,7 @@ commands.clan.details.breaking_even=%s is not earning or losing money.
 commands.clan.details.rentdue=Rent is due in %s hours.
 commands.clan.details.upkeepdue=Upkeep is due in %s hours.
 commands.clan.details.server=This clan is a server clan.
-commands.clan.details.multiplier=Raid Rewards Multiplier: %s
+commands.clan.details.multiplier=Raid Weakness Factor: %s
 
 commands.clan.disband.usage=/clan disband
 commands.clan.disband.description=Disband your clan.
@@ -164,6 +164,7 @@ commands.clan.abandonclaim.disconnected=You cannot abandon this chunk of land be
 
 commands.clan.abandonall.usage=/clan abandonall
 commands.clan.abandonall.description=Abandon all of your clan's claimed land.
+commands.clan.abandonall.success=Successfully abandoned all land for %s.
 
 commands.clan.claim.usage=/clan claim [radius]
 commands.clan.claim.description=Claim the 16x16 chunk of land you are currently standing in.
@@ -297,6 +298,7 @@ commands.clan.permissions.override=Player Override: %s: %s
 commands.clan.set.usage=/clan set <permission> [player] <value>
 commands.clan.set.description=Set values for your clan's permissions. With a player, the value is true or false. Otherwise, you are setting the rank that has access, and your options are MEMBER, ADMIN, LEADER, or ANY. Note that each rank includes higher ranks, and ANY allows players that aren't in the clan. To see your current permissions, use /clan permissions.
 commands.clan.set.invalid_perm=Invalid permission: %s
+commands.clan.set.invalid_rank=Invalid rank: %s
 commands.clan.set.success=Permission set succeeded!
 
 commands.clan.lock.usage=/clan lock [private|clan|open]

@@ -47,7 +47,7 @@ public class CommandDisband extends ClanSubCommand {
 					disbander.disband( sender, "commands.clan.disband.disbanded", selectedClanName, sender.getName());
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClanName).setStyle(TextStyles.GREEN));
 				} else
-					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.insufficient_funds", selectedClanName, disbander.getDisbandCost()).setStyle(TextStyles.RED));
+					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.insufficient_funds", selectedClanName, Economy.getFormattedCurrency(disbander.getDisbandCost())).setStyle(TextStyles.RED));
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.server", selectedClanName).setStyle(TextStyles.RED));
 		} else
