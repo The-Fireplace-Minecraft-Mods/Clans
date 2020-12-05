@@ -1,4 +1,4 @@
-package the_fireplace.clans.client.compat.journeymap;
+/*package the_fireplace.clans.client.compat.journeymap;
 
 import journeymap.client.api.ClientPlugin;
 import journeymap.client.api.IClientAPI;
@@ -31,4 +31,4 @@ public class JourneyMapClientPlugin implements IClientPlugin {
     public void onEvent(ClientEvent clientEvent) {
 
     }
-}
+}*/
