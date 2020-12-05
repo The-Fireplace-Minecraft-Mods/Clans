@@ -33,25 +33,18 @@ public class EntityUtil {
     }
 
     @Nullable
-    public static BlockPos getSafeLocation(World worldIn, BlockPos pos, int maxTries) {
+    public static BlockPos getSafeLocation(World worldIn, BlockPos pos) {
         int posX = pos.getX();
         int posY = pos.getY();
         int posZ = pos.getZ();
 
-        for (int l = 0; l <= 1; ++l) {
-            int i1 = posX - Integer.compare(pos.getX(), 0) * l - 1;
-            int j1 = posZ - Integer.compare(pos.getZ(), 0) * l - 1;
-            int k1 = i1 + 2;
-            int l1 = j1 + 2;
+        for (int xOffset = -2; xOffset <= 2; ++xOffset) {
+            for (int yOffset = -2; yOffset <= 2; ++yOffset) {
+                for (int zOffset = -2; zOffset <= 2; ++zOffset) {
+                    BlockPos blockpos = new BlockPos(posX+xOffset, posY+yOffset, posZ+zOffset);
 
-            for (int i2 = i1; i2 <= k1; ++i2) {
-                for (int j2 = j1; j2 <= l1; ++j2) {
-                    BlockPos blockpos = new BlockPos(i2, posY+l, j2);
-
-                    if (hasRoomForPlayer(worldIn, blockpos))
+                    if (canPlayerTeleportTo(worldIn, blockpos))
                         return blockpos;
-                    else if(--maxTries <= 0)
-                        return null;
                 }
             }
         }
@@ -59,12 +52,22 @@ public class EntityUtil {
         return null;
     }
 
-    public static boolean hasRoomForPlayer(World worldIn, BlockPos pos) {
-        return worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP) && !worldIn.getBlockState(pos).getMaterial().isSolid() && !worldIn.getBlockState(pos.up()).getMaterial().isSolid();
+    public static boolean canPlayerTeleportTo(World worldIn, BlockPos pos) {
+        return (canPlayerStandOn(worldIn, pos.down()) || canPlayerStandOn(worldIn, pos.down(2)) || canPlayerStandOn(worldIn, pos.down(3)))
+            && hasRoomForPlayer(worldIn, pos);
+    }
+
+    private static boolean canPlayerStandOn(World worldIn, BlockPos pos) {
+        return worldIn.getBlockState(pos).isSideSolid(worldIn, pos, EnumFacing.UP);
+    }
+
+    private static boolean hasRoomForPlayer(World worldIn, BlockPos pos) {
+        return !worldIn.getBlockState(pos).getMaterial().isSolid()
+            && !worldIn.getBlockState(pos.up()).getMaterial().isSolid();
     }
 
     public static void teleportHome(EntityPlayer player, BlockPos home, int homeDim, int playerDim, boolean noCooldown) {
-        home = getSafeLocation(Objects.requireNonNull(player.getServer()).getWorld(homeDim), home, 25);
+        home = getSafeLocation(Objects.requireNonNull(player.getServer()).getWorld(homeDim), home);
         if (playerDim == homeDim) {
             completeTeleportHome(player, home, playerDim, noCooldown);
         } else {
@@ -95,7 +98,7 @@ public class EntityUtil {
 
     public static boolean teleportSafelyToChunk(EntityPlayer player, Chunk chunk) {
         BlockPos center = new BlockPos((chunk.getPos().getXStart() + chunk.getPos().getXEnd())/2f, chunk.getHeight(new BlockPos((chunk.getPos().getXStart() + chunk.getPos().getXEnd())/2f, 0, (chunk.getPos().getZStart() + chunk.getPos().getZEnd())/2f)), (chunk.getPos().getZStart() + chunk.getPos().getZEnd())/2f);
-        center = getSafeLocation(chunk.getWorld(), center, 50);
+        center = getSafeLocation(chunk.getWorld(), center);
         if(center == null)
             return false;
         int chunkDim = chunk.getWorld().provider.getDimension();

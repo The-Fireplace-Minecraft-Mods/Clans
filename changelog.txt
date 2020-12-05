@@ -19,3 +19,5 @@ Economy-related commands will no longer register if Sponge is present without an
 Fix Win-Loss ratio attempting to divide by 0 for players that haven't lost
 Clan save data is now stored more efficiently and takes up less space
 Entering an invalid rank when using /clan set no longer causes an internal error
+Clan home teleport is more reliable
+Fixed lock info not displaying and spamming the console with errors

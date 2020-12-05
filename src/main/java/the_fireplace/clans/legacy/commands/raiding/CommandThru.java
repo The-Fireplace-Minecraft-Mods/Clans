@@ -59,7 +59,7 @@ public class CommandThru extends RaidSubCommand {
 
         if(ClanLocks.get(targetPosClan).isLocked(targetBlockPos) || !ClansModContainer.getConfig().isEnableStealing() && LandProtectionLogic.isContainer(sender.world, targetBlockPos, null, null)){
 			for (int step = 2; step < 9; step++) {
-				BlockPos telePos = EntityUtil.getSafeLocation(sender.world, targetBlockPos.offset(lookRay.sideHit.getOpposite(), step), step-1);
+				BlockPos telePos = EntityUtil.getSafeLocation(sender.world, targetBlockPos.offset(lookRay.sideHit.getOpposite(), step));
 				if(telePos != null) {
 					sender.attemptTeleport(telePos.getX(), telePos.getY(), telePos.getZ());
 					return;

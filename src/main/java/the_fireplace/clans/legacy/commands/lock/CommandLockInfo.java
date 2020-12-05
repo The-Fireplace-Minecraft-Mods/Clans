@@ -55,8 +55,8 @@ public class CommandLockInfo extends ClanSubCommand {
 
         if (targetChunkClan != null && ClanLocks.get(targetChunkClan).isLocked(targetBlockPos)) {
             GameProfile prof = server.getPlayerProfileCache().getProfileByUUID(Objects.requireNonNull(ClanLocks.get(targetChunkClan).getLockOwner(targetBlockPos)));
-            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown").setStyle(TextStyles.GREEN)
-			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(ClanLocks.get(targetChunkClan).getLockType(targetBlockPos)).name()).setStyle(TextStyles.GREEN)));
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.locked_by", prof != null ? prof.getName() : "unknown")
+			.appendText(" ").appendSibling(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.type", Objects.requireNonNull(ClanLocks.get(targetChunkClan).getLockType(targetBlockPos)).name())).setStyle(TextStyles.GREEN));
             Map<UUID, Boolean> overrides = ClanLocks.get(targetChunkClan).getLockOverrides(targetBlockPos);
 			if(!overrides.isEmpty()) {
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.lockinfo.overrides"));

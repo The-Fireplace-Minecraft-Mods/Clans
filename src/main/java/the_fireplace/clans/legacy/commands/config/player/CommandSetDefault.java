@@ -53,7 +53,7 @@ public class CommandSetDefault extends ClanSubCommand {
 			} else
 				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.not_in_clan", ClanNames.get(newDefaultClan).getName()).setStyle(TextStyles.RED));
 		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound").setStyle(TextStyles.RED));
+			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(),"commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
 	}
 
 	@Override

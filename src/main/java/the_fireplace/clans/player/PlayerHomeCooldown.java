@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerHomeCooldown {
     private static final Map<UUID, Integer> COOLDOWN_TIMERS = new ConcurrentHashMap<>();
-    private static final Timer TIMER = new Timer();
+    private static Timer timer = new Timer();
     private static boolean timerRunning = false;
 
     public static int getCooldown(UUID player) {
@@ -27,7 +27,8 @@ public class PlayerHomeCooldown {
 
     private static void startTimer() {
         timerRunning = true;
-        TIMER.scheduleAtFixedRate(new TimerTask() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 decrementCooldownTimers();
@@ -49,7 +50,7 @@ public class PlayerHomeCooldown {
 
     private static void stopTimerIfUnused() {
         if(timerRunning && COOLDOWN_TIMERS.isEmpty()) {
-            TIMER.cancel();
+            timer.cancel();
             timerRunning = false;
         }
     }
