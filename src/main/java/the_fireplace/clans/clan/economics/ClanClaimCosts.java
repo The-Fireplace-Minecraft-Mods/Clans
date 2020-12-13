@@ -1,7 +1,7 @@
 package the_fireplace.clans.clan.economics;
 
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.util.FormulaParser;
@@ -36,10 +36,10 @@ public class ClanClaimCosts {
     }
 
     public void refundClaim() {
-        Economy.addAmount(getNextClaimCost(ClanClaims.get(clan).getClaimCount()), clan);
+        Economy.addAmount(getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()), clan);
     }
 
     public boolean payForClaim() {
-        return Economy.deductAmount(getNextClaimCost(ClanClaims.get(clan).getClaimCount()), clan);
+        return Economy.deductAmount(getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()), clan);
     }
 }

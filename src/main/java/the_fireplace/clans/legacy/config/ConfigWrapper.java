@@ -30,14 +30,8 @@ public class ConfigWrapper implements IConfig {
         return Config.getInstance().clan.clanHomeCooldownTime;
     }
 
-    @Override
-    public int getMaxClaims() {
-        return Config.getInstance().clan.maxClaims;
-    }
-
-    @Override
-    public boolean isMultiplyMaxClaimsByPlayers() {
-        return Config.getInstance().clan.multiplyMaxClaimsByPlayers;
+    public String getMaxClaimCountFormula() {
+        return Config.getInstance().clan.maxClaimCountFormula;
     }
 
     @Override

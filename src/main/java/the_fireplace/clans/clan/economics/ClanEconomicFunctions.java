@@ -1,6 +1,6 @@
 package the_fireplace.clans.clan.economics;
 
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
@@ -20,7 +20,7 @@ public class ClanEconomicFunctions {
 
     public double getLiquidValue() {
         double value = Economy.getBalance(clan);
-        for (int claimIndex = 0; claimIndex < ClanClaims.get(clan).getClaimCount(); claimIndex++)
+        for (int claimIndex = 0; claimIndex < ClanClaimCount.get(clan).getClaimCount(); claimIndex++)
             value += ClanClaimCosts.get(clan).getNextClaimCost(claimIndex);
         return value;
     }

@@ -12,7 +12,7 @@ import the_fireplace.clans.clan.accesscontrol.ClanPermissions;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.economics.ClanClaimCosts;
 import the_fireplace.clans.clan.home.ClanHomes;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
@@ -34,18 +34,19 @@ import java.util.concurrent.TimeUnit;
 public class ClaimManagement {
     public static boolean checkCanClaimRadius(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius, String radiusMode) {
         if(radiusMode.equalsIgnoreCase("square")) {
-            int chunkCount = radius * radius;
-            long initClaimCount = ClanClaims.get(claimingClan).getClaimCount();
+            int requestedClaimCount = radius * radius;
+            long currentClaimCount = ClanClaimCount.get(claimingClan).getClaimCount();
             if(!AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
-                if(exceedsMaxClaimCount(claimingClan, chunkCount + initClaimCount)) {
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", chunkCount, ClanNames.get(claimingClan).getName(), ClanClaims.get(claimingClan).getMaxClaimCount(), initClaimCount));
+                long maxClaimCount = ClanClaimCount.get(claimingClan).getMaxClaimCount();
+                if(requestedClaimCount + currentClaimCount > maxClaimCount) {//TODO this doesn't account for claims already made within the radius
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", requestedClaimCount, ClanNames.get(claimingClan).getName(), maxClaimCount, currentClaimCount));
                     return false;
                 }
-                if (unableToAffordClaims(claimingPlayer, claimingClan, chunkCount, initClaimCount))
+                if (unableToAffordClaims(claimingPlayer, claimingClan, requestedClaimCount, currentClaimCount))
                     return false;
             }
             //Do a connection check if connected claims are enforced, this is not the first claim, and the clan is not a server clan
-            boolean doEdgeConnectionCheck = ClansModContainer.getConfig().isForceConnectedClaims() && initClaimCount != 0 && !AdminControlledClanSettings.get(claimingClan).isServerOwned();
+            boolean doEdgeConnectionCheck = ClansModContainer.getConfig().isForceConnectedClaims() && currentClaimCount != 0 && !AdminControlledClanSettings.get(claimingClan).isServerOwned();
 
             for(int x=claimingPlayer.chunkCoordX-radius;x<=claimingPlayer.chunkCoordX+radius;x++) {
                 for(int z=claimingPlayer.chunkCoordZ-radius;z<=claimingPlayer.chunkCoordZ+radius;z++) {
@@ -72,7 +73,7 @@ public class ClaimManagement {
     private static boolean unableToAffordClaims(EntityPlayerMP claimingPlayer, UUID claimingClan, int chunkCount, long previousClaimCount) {
         double cost;
         long reducedCostCount = ClansModContainer.getConfig().getReducedCostClaimCount() - previousClaimCount;
-        double customCost = AdminControlledClanSettings.get(claimingClan).hasCustomClaimCost() ? ClanClaimCosts.get(claimingClan).getNextClaimCost(ClanClaims.get(claimingClan).getClaimCount()) : -1;
+        double customCost = AdminControlledClanSettings.get(claimingClan).hasCustomClaimCost() ? ClanClaimCosts.get(claimingClan).getNextClaimCost(ClanClaimCount.get(claimingClan).getClaimCount()) : -1;
 
         if(customCost >= 0)
             cost = customCost;
@@ -86,11 +87,6 @@ public class ClaimManagement {
             return true;
         }
         return false;
-    }
-
-    private static boolean exceedsMaxClaimCount(UUID claimingClan, long claimCount) {
-        long maxClaimCount = ClanClaims.get(claimingClan).getMaxClaimCount();
-        return maxClaimCount > 0 && claimCount > maxClaimCount;
     }
 
     private static boolean createsDisconnectedClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius) {
@@ -199,9 +195,12 @@ public class ClaimManagement {
         if(AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
             return claimChunk(claimingPlayer, claimChunk, claimingClan, true, true);
         } else {
-            if (force || !ClansModContainer.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, claimingClan) || ClanClaims.get(claimingClan).getClaimCount() == 0) {
-                if (force || ClanClaims.get(claimingClan).getMaxClaimCount() <= 0 || ClanClaims.get(claimingClan).getClaimCount() < ClanClaims.get(claimingClan).getMaxClaimCount()) {
-                    if (ClanClaims.get(claimingClan).getClaimCount() > 0)
+            ClanClaimCount clanClaimCount = ClanClaimCount.get(claimingClan);
+            long claimCount = clanClaimCount.getClaimCount();
+            long maxClaimCount = clanClaimCount.getMaxClaimCount();
+            if (force || !ClansModContainer.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, claimingClan) || claimCount == 0) {
+                if (force || claimCount < maxClaimCount) {
+                    if (claimCount > 0)
                         claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
                     else if (ClansModContainer.getConfig().getMinClanHomeDist() > 0 && ClansModContainer.getConfig().getInitialClaimSeparationMultiplier() > 0) {
                         boolean inClanHomeRange = false;
@@ -222,7 +221,7 @@ public class ClaimManagement {
                     } else
                         return claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
                 } else
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed", ClanNames.get(claimingClan).getName(), ClanClaims.get(claimingClan).getMaxClaimCount()).setStyle(TextStyles.RED));
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed", ClanNames.get(claimingClan).getName(), maxClaimCount).setStyle(TextStyles.RED));
             } else
                 claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected", ClanNames.get(claimingClan).getName()).setStyle(TextStyles.RED));
         }

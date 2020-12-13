@@ -76,11 +76,8 @@ public class Config {
         @Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
         @RangeNumber(min=0)
         public int clanHomeCooldownTime = 0;
-        @Comment("Max claims per clan. Set to 0 for infinite.")
-        @RangeNumber(min=0)
-        public int maxClaims = 0;//TODO max claims formula based
-        @Comment("If enabled, multiplies the max claim count by the number of players in the clan.")
-        public boolean multiplyMaxClaimsByPlayers = true;
+        @Comment("Max claims per clan. Set to a negative number for infinite. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
+        public String maxClaimCountFormula = "-1*p";
         @Comment("Value or formula for the cost of disbanding a clan. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String disbandFeeFormula = "2^(m-0.25)";
         @Comment("Should the player spawn at the clan home if they don't have a bed?")
@@ -216,9 +213,7 @@ public class Config {
             "minecraft:black_shulker_box",
             "minecraft:bed",
             "minecraft:dispenser",
-            "minecraft:lever",//TODO find out if pressure plates can be locked
-            //"minecraft:stone_pressure_plate",
-            //"minecraft:wooden_pressure_plate",
+            "minecraft:lever",
             "minecraft:stone_pressure_plate",
             "minecraft:wooden_pressure_plate",
             "minecraft:stone_button",
@@ -226,8 +221,6 @@ public class Config {
             "minecraft:fence_gate",
             "minecraft:wooden_button",
             "minecraft:trapped_chest",
-            //"minecraft:light_weighted_pressure_plate",
-            //"minecraft:heavy_weighted_pressure_plate",
             "minecraft:daylight_detector",
             "minecraft:hopper",
             "minecraft:dropper",
@@ -246,7 +239,7 @@ public class Config {
             "minecraft:dark_oak_door",
             "minecraft:beacon",
             "minecraft:brewing_stand"
-            );
+        );
         @Comment("Protect the wilderness from damage above a specific Y level")
         public boolean protectWilderness = false;
         @Comment("Minimum Y level to protect with the Protect Wilderness option, inclusive. Set to a negative number to use sea level.")

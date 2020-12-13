@@ -9,7 +9,7 @@ import the_fireplace.clans.clan.economics.ClanEconomicFunctions;
 import the_fireplace.clans.clan.economics.ClanRent;
 import the_fireplace.clans.clan.economics.ClanUpkeep;
 import the_fireplace.clans.clan.home.ClanHomes;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMemberMessager;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.metadata.ClanBanners;
@@ -73,7 +73,7 @@ public final class ClanDisbander {
         ClanRent.delete(clan);
         ClanUpkeep.delete(clan);
         ClanHomes.delete(clan);
-        ClanClaims.delete(clan);
+        ClanClaimCount.delete(clan);
         ClanMembers.delete(clan);
         ClanBanners.delete(clan);
         ClanColors.delete(clan);

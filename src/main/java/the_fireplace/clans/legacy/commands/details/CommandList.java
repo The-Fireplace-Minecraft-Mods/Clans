@@ -11,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import the_fireplace.clans.clan.ClanIdRegistry;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.clan.metadata.ClanDescriptions;
@@ -79,9 +79,9 @@ public class CommandList extends ClanSubCommand {
 					break;
 				case "land":
 				case "claims":
-					clans.sort(Comparator.comparingLong(clan2 -> ClanClaims.get(clan2).getClaimCount()));
+					clans.sort(Comparator.comparingLong(clan2 -> ClanClaimCount.get(clan2).getClaimCount()));
 					for (UUID clan : clans)
-                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanClaims.get(clan).getClaimCount(), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
+                        listItems.add(TranslationUtil.getTranslation(sender, "commands.clan.list.listitem", ClanClaimCount.get(clan).getClaimCount(), ClanNames.get(clan).getName(), ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
 					break;
 				case "members":
 					clans.sort(Comparator.comparingInt(clan1 -> ClanMembers.get(clan1).getMemberCount()));

@@ -1,6 +1,6 @@
 package the_fireplace.clans.legacy.util;
 
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
 import the_fireplace.clans.economy.Economy;
@@ -27,10 +27,6 @@ public final class FormulaParser {
         return 0;
     }
 
-    public static String getFilteredFormula(String formula, UUID clan) {
-        return getFilteredFormula(formula, clan, RaidingParties.getActiveRaid(clan));
-    }
-
     /*
      * Don't forget to update this link when updating the formula parser
      * https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505
@@ -42,7 +38,7 @@ public final class FormulaParser {
         formula = formula.replaceAll("([0-9cdmfpw])([cdmfpw])|([cdmfpw])([0-9cdmfpw])", "\\1*\\2");
         //Deal with the old method of exponentiation
         formula = formula.replaceAll("\\*\\*", "\\^");
-        formula = formula.replaceAll("c", String.valueOf(ClanClaims.get(clan).getClaimCount()));
+        formula = formula.replaceAll("c", String.valueOf(ClanClaimCount.get(clan).getClaimCount()));
         formula = formula.replaceAll("m", String.valueOf(getWeaknessFactor(clan)));
         formula = formula.replaceAll("f", String.valueOf(Economy.getBalance(clan)));
         formula = formula.replaceAll("p", String.valueOf(ClanMembers.get(clan).getMemberCount()));

@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.economics.ClanRent;
 import the_fireplace.clans.clan.economics.ClanUpkeep;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.metadata.ClanDescriptions;
 import the_fireplace.clans.clan.metadata.ClanNames;
@@ -90,7 +90,7 @@ public class CommandDetails extends ClanSubCommand {
 	private void showDetails(MinecraftServer server, ICommandSender sender, UUID clan) throws CommandException {
         sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
-        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", ClanClaims.get(clan).getClaimCount()).setStyle(TextStyles.GREEN));
+        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", ClanClaimCount.get(clan).getClaimCount()).setStyle(TextStyles.GREEN));
         sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", ClanMembers.get(clan).getMemberCount()).setStyle(TextStyles.GREEN));
         if(ClansModContainer.getConfig().isIncreasingRewards() && !AdminControlledClanSettings.get(clan).isServerOwned())
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.multiplier", ClanWeaknessFactor.get(clan).getWeaknessFactor()).setStyle(TextStyles.GREEN));

@@ -1,6 +1,6 @@
 package the_fireplace.clans.legacy.abstraction;
 
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 
 import java.util.Collection;
 
@@ -13,10 +13,9 @@ public interface IConfig {
     int getClanHomeWarmupTime();
     int getClanHomeCooldownTime();
     /**
-     * This should not be directly used, use {@link ClanClaims#getMaxClaimCount()} instead.
+     * This should not be directly used, use {@link ClanClaimCount#getMaxClaimCount()} instead.
      */
-    int getMaxClaims();
-    boolean isMultiplyMaxClaimsByPlayers();
+    String getMaxClaimCountFormula();
     String getDefaultClanPrefix();
     String getServerDefaultClan();
     String getDisbandFeeFormula();

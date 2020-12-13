@@ -1,30 +1,30 @@
 package the_fireplace.clans.clan.land;
 
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
-import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.util.FormulaParser;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanClaims {
-    private static final Map<UUID, ClanClaims> CLAIMS = new ConcurrentHashMap<>();
+public class ClanClaimCount {
+    private static final Map<UUID, ClanClaimCount> CLAIM_COUNT_INSTANCES = new ConcurrentHashMap<>();
 
-    public static ClanClaims get(UUID clan) {
-        CLAIMS.computeIfAbsent(clan, ClanClaims::new);
-        return CLAIMS.get(clan);
+    public static ClanClaimCount get(UUID clan) {
+        CLAIM_COUNT_INSTANCES.computeIfAbsent(clan, ClanClaimCount::new);
+        return CLAIM_COUNT_INSTANCES.get(clan);
     }
 
     public static void delete(UUID clan) {
-        CLAIMS.remove(clan);
+        CLAIM_COUNT_INSTANCES.remove(clan);
     }
 
     private long cachedClaimCount = -1;
     private final UUID clan;
 
-    public ClanClaims(UUID clan) {
+    public ClanClaimCount(UUID clan) {
         this.clan = clan;
     }
 
@@ -59,9 +59,7 @@ public class ClanClaims {
         AdminControlledClanSettings clanSettings = AdminControlledClanSettings.get(clan);
         if (clanSettings.hasCustomMaxClaims())
             return clanSettings.getCustomMaxClaims();
-        //TODO Formula based max claim count
-        return ClansModContainer.getConfig().isMultiplyMaxClaimsByPlayers()
-            ? ClanMembers.get(clan).getMemberCount() * ClansModContainer.getConfig().getMaxClaims()
-            : ClansModContainer.getConfig().getMaxClaims();
+        long claimCount = (long)FormulaParser.eval(ClansModContainer.getConfig().getMaxClaimCountFormula(), clan, -1);
+        return claimCount >= 0 ? claimCount : Long.MAX_VALUE;
     }
 }

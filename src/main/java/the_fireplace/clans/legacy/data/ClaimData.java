@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.entity.Entity;
-import the_fireplace.clans.clan.land.ClanClaims;
+import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.io.FileToJsonObject;
 import the_fireplace.clans.io.JsonWritable;
 import the_fireplace.clans.legacy.ClansModContainer;
@@ -95,7 +95,7 @@ public final class ClaimData {
         getCacheSection(pos).put(pos, claimedChunks.get(clan));
         if(!pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);
-            ClanClaims.get(clan).incrementCachedClaimCount();
+            ClanClaimCount.get(clan).incrementCachedClaimCount();
         }
     }
 
@@ -105,7 +105,7 @@ public final class ClaimData {
         getCacheSection(pos).remove(pos);
         if(claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);
-            ClanClaims.get(clan).decrementCachedClaimCount();
+            ClanClaimCount.get(clan).decrementCachedClaimCount();
         }
     }
 
