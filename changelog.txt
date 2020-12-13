@@ -1,5 +1,5 @@
 Additions:
-New maxClaimCountFormula option to allow server owners to customize exactly how max claim count is determined.
+New maxClaimCountFormula option to allow server owners to customize exactly how max claim count is determined. Replaces maxClaimCount and multiplyMaxClaimsByPlayers options.
 
 Changes:
 Opclan claim commands can now be used to force claims in dimensions that aren't normally allowed.
