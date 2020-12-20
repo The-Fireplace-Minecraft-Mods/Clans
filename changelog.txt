@@ -4,3 +4,4 @@ Changes:
 The default disband fee formula is now set to 0
 
 Fixes/Internal Changes:
+Clan map commands are centered on the player again

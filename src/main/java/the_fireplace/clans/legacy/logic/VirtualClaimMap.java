@@ -14,7 +14,7 @@ public abstract class VirtualClaimMap {
         this.height = this.width = ClaimData.CACHE_SECTION_SIZE;
     }
 
-    protected ChunkPos calculateCenter() {
+    protected ChunkPos calculateCenter() {//TODO something isn't right here
         int centerOffsetX = getCenterOffsetX();
         int centerOffsetZ = getCenterOffsetZ();
         int chunkX = getCacheSegment().getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX;

@@ -33,9 +33,10 @@ public class ClaimMapToChat extends VirtualClaimMap {
     private static final String LIME_GREEN = SECTION_SYMBOL+"a";
     private static final String RED = SECTION_SYMBOL+"c";
     private static final String YELLOW = SECTION_SYMBOL+"e";
-    public static final String END_KEY_SYMBOL = ";";
-    public static final String BORDER_STRING = "=================================================";
+    private static final String END_KEY_SYMBOL = ";";
+    private static final String BORDER_STRING = "=================================================";
     public static final String WILDERNESS_SYMBOL = "-";
+
     private final ChunkPos playerChunk;
     private final ICommandSender messageTarget;
     private final int dimension;
@@ -83,11 +84,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
 
     @Override
     protected ChunkPos calculateCenter() {
-        int centerOffsetX = getCenterOffsetX();
-        int centerOffsetZ = getCenterOffsetZ();
-        int section = (playerChunk.z % ClaimData.CACHE_SECTION_SIZE) / 7;
-        centerOffsetZ += section * 7;
-        return new ChunkPos(cacheSegment.getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX, cacheSegment.getValue2() * ClaimData.CACHE_SECTION_SIZE + centerOffsetZ);
+        return playerChunk;
     }
 
     @Override
