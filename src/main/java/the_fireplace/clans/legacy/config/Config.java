@@ -79,7 +79,7 @@ public class Config {
         @Comment("Max claims per clan. Set to a negative number for infinite. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String maxClaimCountFormula = "-1*p";
         @Comment("Value or formula for the cost of disbanding a clan. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
-        public String disbandFeeFormula = "2^(m-0.25)";
+        public String disbandFeeFormula = "0";
         @Comment("Should the player spawn at the clan home if they don't have a bed?")
         public boolean clanHomeFallbackSpawn = true;
         @Comment("Value or formula for cost of claiming a chunk. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
