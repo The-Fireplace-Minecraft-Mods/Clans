@@ -19,6 +19,7 @@ import the_fireplace.clans.player.PlayerDataStorage;
 
 public class ServerEventLogic {
     public static void onServerStarting(MinecraftServer server) {
+        ConcurrentExecutionManager.startExecutors();
         LegacyClanImporter.importLegacyClans();
         InvitedPlayers.loadInvitedPlayers();
         ICommandManager command = server.getCommandManager();

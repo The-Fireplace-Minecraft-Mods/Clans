@@ -4,4 +4,5 @@ Changes:
 
 Fixes/Internal Changes:
 Fix the minimum disband cost being 1 instead of 0
-Fixed player clan data not properly updating when a clan is disbanded
+Fix player clan data not properly updating when a clan is disbanded
+Fix many things not working if the user leaves a singleplayer world then joins one without restarting the game

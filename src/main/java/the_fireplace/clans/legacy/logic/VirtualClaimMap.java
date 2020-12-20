@@ -17,7 +17,9 @@ public abstract class VirtualClaimMap {
     protected ChunkPos calculateCenter() {
         int centerOffsetX = getCenterOffsetX();
         int centerOffsetZ = getCenterOffsetZ();
-        return new ChunkPos(getCacheSegment().getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX, getCacheSegment().getValue2() * ClaimData.CACHE_SECTION_SIZE + centerOffsetZ);
+        int chunkX = getCacheSegment().getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX;
+        int chunkZ = getCacheSegment().getValue2() * ClaimData.CACHE_SECTION_SIZE + centerOffsetZ;
+        return new ChunkPos(chunkX, chunkZ);
     }
 
     protected int getCenterOffsetX() {
