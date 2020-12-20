@@ -40,10 +40,10 @@ public class CommandDisband extends ClanSubCommand {
 
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(ClanMembers.get(selectedClan).getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
-            if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
+        if (ClanMembers.get(selectedClan).getMemberRanks().get(sender.getUniqueID()).equals(EnumRank.LEADER)) {
+            if (!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
             	ClanDisbander disbander = ClanDisbander.create(selectedClan);
-				if(ClansModContainer.getConfig().getDisbandFeeFormula().isEmpty() || Economy.deductAmount(disbander.getDisbandCost(), selectedClan)) {
+				if (ClansModContainer.getConfig().getDisbandFeeFormula().isEmpty() || Economy.deductAmount(disbander.getDisbandCost(), selectedClan)) {
 					disbander.disband( sender, "commands.clan.disband.disbanded", selectedClanName, sender.getName());
 					sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", selectedClanName).setStyle(TextStyles.GREEN));
 				} else

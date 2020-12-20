@@ -12,6 +12,7 @@ import the_fireplace.clans.clan.home.ClanHomes;
 import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMemberMessager;
 import the_fireplace.clans.clan.membership.ClanMembers;
+import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanBanners;
 import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.clan.metadata.ClanDescriptions;
@@ -42,7 +43,7 @@ public final class ClanDisbander {
     }
 
     public double getDisbandCost() {
-        return FormulaParser.eval(ClansModContainer.getConfig().getDisbandFeeFormula(), clan, 1.0);
+        return FormulaParser.eval(ClansModContainer.getConfig().getDisbandFeeFormula(), clan, 0.0);
     }
 
     /**
@@ -75,6 +76,7 @@ public final class ClanDisbander {
         ClanHomes.delete(clan);
         ClanClaimCount.delete(clan);
         ClanMembers.delete(clan);
+        PlayerClans.uncacheClan(clan);
         ClanBanners.delete(clan);
         ClanColors.delete(clan);
         ClanDescriptions.delete(clan);

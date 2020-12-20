@@ -80,9 +80,9 @@ public class CommandPlayerInfo extends ClanSubCommand {
 		List<UUID> leaderInClans = Lists.newArrayList();
 		List<UUID> adminInClans = Lists.newArrayList();
 		List<UUID> memberInClans = Lists.newArrayList();
-		for(UUID clan: PlayerClans.getClansPlayerIsIn(target.getId())) {
+		for (UUID clan: PlayerClans.getClansPlayerIsIn(target.getId())) {
             EnumRank rank = ClanMembers.get(clan).getRank(target.getId());
-			switch(rank){
+			switch(rank) {
 				case LEADER:
 					leaderInClans.add(clan);
 					break;
@@ -94,7 +94,7 @@ public class CommandPlayerInfo extends ClanSubCommand {
 					break;
 			}
 		}
-		if(!leaderInClans.isEmpty() || !adminInClans.isEmpty() || !memberInClans.isEmpty()) {
+		if (!leaderInClans.isEmpty() || !adminInClans.isEmpty() || !memberInClans.isEmpty()) {
 			UUID defaultClan = null;
 			if(ArrayUtils.contains(server.getOnlinePlayerProfiles(), target))
 				defaultClan = PlayerClanSettings.getDefaultClan(target.getId());

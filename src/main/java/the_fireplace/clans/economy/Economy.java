@@ -70,10 +70,10 @@ public class Economy {
     }
 
     public static double divideFundsAmongAccounts(double totalAmountToPay, Collection<UUID> accounts) {
-        if(accounts.isEmpty())
+        if (accounts.isEmpty())
             return totalAmountToPay;
         double amountToPayPerAccount = totalAmountToPay / accounts.size();
-        for(UUID account: accounts)
+        for (UUID account: accounts)
             addAmount(amountToPayPerAccount, account);
         return 0;
     }

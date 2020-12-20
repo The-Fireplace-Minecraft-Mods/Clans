@@ -22,21 +22,20 @@ public class ClanMembers extends ClanData {
     private static boolean allMembersLoaded = false;
 
     public static ClanMembers get(UUID clan) {
-        MEMBERS.computeIfAbsent(clan, ClanMembers::new);
-        return MEMBERS.get(clan);
+        return MEMBERS.computeIfAbsent(clan, ClanMembers::new);
     }
 
     public static void delete(UUID clan) {
-        ClanMembers upkeep = MEMBERS.remove(clan);
-        if(upkeep != null)
-            upkeep.delete();
+        ClanMembers members = MEMBERS.remove(clan);
+        if(members != null)
+            members.delete();
     }
 
     static Collection<UUID> lookupPlayerClans(UUID player) {
         ensureAllMembersLoaded();
         Set<UUID> clans = new HashSet<>();
-        for(ClanMembers members : MEMBERS.values())
-            if(members.getMemberRanks().containsKey(player))
+        for (ClanMembers members : MEMBERS.values())
+            if (members.isMember(player))
                 clans.add(members.clan);
         return Collections.unmodifiableSet(clans);
     }

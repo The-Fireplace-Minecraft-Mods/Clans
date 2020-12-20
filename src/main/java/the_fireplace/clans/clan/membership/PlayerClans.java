@@ -45,7 +45,7 @@ public class PlayerClans {
         return ClanMembers.get(clan).getMemberRanks().get(player);
     }
 
-    static void uncacheClan(UUID c) {
+    public static void uncacheClan(UUID c) {
         for(UUID player: PLAYER_CLAN_CACHE.keySet())
             uncachePlayerClan(player, c);
     }
