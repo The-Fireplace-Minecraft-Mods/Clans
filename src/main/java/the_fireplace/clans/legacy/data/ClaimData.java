@@ -40,11 +40,15 @@ public final class ClaimData {
     private static ConcurrentMap<UUID, Integer> regenBordersTimer;
 
     private static ConcurrentMap<ChunkPositionWithData, ClaimStoredData> getCacheSection(ChunkPosition pos) {
-        int sectionX = pos.getPosX() / CACHE_SECTION_SIZE;
-        int sectionZ = pos.getPosZ() / CACHE_SECTION_SIZE;
-        claimDataMap.computeIfAbsent(sectionX, (unused) -> new ConcurrentHashMap<>());
-        claimDataMap.get(sectionX).computeIfAbsent(sectionZ, (unused) -> new ConcurrentHashMap<>());
-        return claimDataMap.get(sectionX).get(sectionZ);
+        OrderedPair<Integer, Integer> cacheSectionCoordinates = getCacheSectionCoordinates(pos.getPosX(), pos.getPosZ());
+        int sectionX = cacheSectionCoordinates.getValue1();
+        int sectionZ = cacheSectionCoordinates.getValue2();
+        return claimDataMap.computeIfAbsent(sectionX, (unused) -> new ConcurrentHashMap<>())
+            .computeIfAbsent(sectionZ, (unused) -> new ConcurrentHashMap<>());
+    }
+
+    private static OrderedPair<Integer, Integer> getCacheSectionCoordinates(int chunkX, int chunkZ) {
+        return new OrderedPair<>((int)Math.round(((double) chunkX) / CACHE_SECTION_SIZE), (int)Math.round(((double) chunkZ) / CACHE_SECTION_SIZE));
     }
 
     public static Collection<OrderedPair<Integer, Integer>> getOccupiedCacheSections() {
