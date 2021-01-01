@@ -83,7 +83,7 @@ public class ClaimManagement {
             cost = FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), claimingClan, 0) * chunkCount;
 
         if (cost > 0 && Economy.getBalance(claimingClan) < cost) {
-            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", ClanNames.get(claimingClan), chunkCount, Economy.getFormattedCurrency(cost)));
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds_r", ClanNames.get(claimingClan).getName(), chunkCount, Economy.getFormattedCurrency(cost)));
             return true;
         }
         return false;

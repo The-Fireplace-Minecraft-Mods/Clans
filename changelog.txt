@@ -1,7 +1,2 @@
-Additions:
-
-Changes:
-The default disband fee formula is now set to 0
-
 Fixes/Internal Changes:
-Clan map commands are centered on the player again
+Fixed clan name formatting error when the clan has insufficient funds to claim a radius
