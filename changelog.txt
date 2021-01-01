@@ -1,2 +1,3 @@
 Fixes/Internal Changes:
 Fixed clan name formatting error when the clan has insufficient funds to claim a radius
+Fixed issues with mob spawning and PVP override clan settings

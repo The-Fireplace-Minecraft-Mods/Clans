@@ -315,8 +315,9 @@ public class LandProtectionLogic {
             //Do not cancel if the attacker is in admin mode or the chunk is not a claim
             if (attacker instanceof EntityPlayerMP && ClaimAdmins.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(chunk))
                 return false;
+            AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(chunkClan);
             //Cancel if mobs cannot do damage and the attacker is a mob
-            if (!AdminControlledClanSettings.get(chunkClan).isMobDamageAllowed() && isMob(attacker))
+            if (!adminControlledClanSettings.isMobDamageAllowed() && isMob(attacker))
                 return true;
             //Do not cancel if it would be able to harm creative players or doesn't come from being attacked
             if (source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
@@ -324,11 +325,10 @@ public class LandProtectionLogic {
             EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
             //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
             if (target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                Boolean pvpAllowed = AdminControlledClanSettings.get(chunkClan).getPVPOverride();
-                if (pvpAllowed == null)
+                if (!adminControlledClanSettings.hasPVPOverride())
                     return shouldCancelPVPDefault(target, attacker, chunkClan, attackingPlayer);
                 else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
-                    return !pvpAllowed;
+                    return !adminControlledClanSettings.getPVPOverride();
             } else {//Target is not a player and not owned by a player
                 if (attackingPlayer != null) {
                     UUID attackingPlayerId = attackingPlayer.getUniqueID();
@@ -343,7 +343,7 @@ public class LandProtectionLogic {
                     //Cancel if the chunk owner has not given permission to harm
                     return !hasPermissionToHarm(target, chunkClan, attackingPlayerId)
                         //Allow anyone to kill mobs on server clan land
-                        && !(AdminControlledClanSettings.get(chunkClan).isServerOwned() && isMob(target))
+                        && !(adminControlledClanSettings.isServerOwned() && isMob(target))
                         //Allow fake players to harm things if they are allowed to do so.
                         && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
                 }
@@ -423,10 +423,21 @@ public class LandProtectionLogic {
         if(!world.isRemote && isMob(entity)) {
             ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
             UUID c = ClaimData.getChunkClan(spawnChunkPosition);
-            return c != null
-                && (ClansModContainer.getConfig().isPreventMobsOnClaims() || Boolean.TRUE.equals(AdminControlledClanSettings.get(c).getMobSpawnOverride()))
-                && (ClansModContainer.getConfig().isPreventMobsOnBorderlands() || !spawnChunkPosition.isBorderland() || Boolean.TRUE.equals(AdminControlledClanSettings.get(c).getMobSpawnOverride()));
+            if (c != null) {
+                AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(c);
+                if (adminControlledClanSettings.hasMobSpawningOverride()) {
+                    return !adminControlledClanSettings.allowsMobSpawning();
+                } else {
+                    return claimPreventsMobSpawningByDefault(spawnChunkPosition);
+                }
+            }
         }
         return false;
+    }
+
+    public static boolean claimPreventsMobSpawningByDefault(ChunkPositionWithData claimPosition) {
+        return claimPosition.isBorderland()
+            ? ClansModContainer.getConfig().isPreventMobsOnBorderlands()
+            : ClansModContainer.getConfig().isPreventMobsOnClaims();
     }
 }

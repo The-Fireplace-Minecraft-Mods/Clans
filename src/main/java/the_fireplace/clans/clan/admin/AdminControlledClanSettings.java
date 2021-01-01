@@ -86,11 +86,11 @@ public class AdminControlledClanSettings extends ClanData {
         setOption(MAX_CLAIMS, newCustomMaxClaims);
     }
 
-    public boolean hasMobSpawnOverride() {
+    public boolean hasMobSpawningOverride() {
         return inBooleanRange(settings.get(MOB_SPAWNING));
     }
 
-    public boolean getMobSpawnOverride() {
+    public boolean allowsMobSpawning() {
         return settings.get(MOB_SPAWNING) == 1;
     }
 

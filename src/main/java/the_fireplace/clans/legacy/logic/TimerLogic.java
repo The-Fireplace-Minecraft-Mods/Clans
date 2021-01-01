@@ -139,11 +139,14 @@ public class TimerLogic {
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
         UUID clan = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
-        if(clan != null) {
-            if(Boolean.FALSE.equals(AdminControlledClanSettings.get(clan).getMobSpawnOverride()))
+        ChunkPositionWithData chunkPositionWithData = ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
+        if (clan != null && chunkPositionWithData != null) {
+            AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(clan);
+            if (adminControlledClanSettings.hasMobSpawningOverride() && !adminControlledClanSettings.allowsMobSpawning()) {
                 mob.onKillCommand();
-            else if (ClansModContainer.getConfig().isPreventMobsOnClaims() && (ClansModContainer.getConfig().isPreventMobsOnBorderlands() || !Objects.requireNonNull(ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension)).isBorderland()))
+            } else if (LandProtectionLogic.claimPreventsMobSpawningByDefault(chunkPositionWithData)) {
                 mob.onKillCommand();
+            }
         }
     }
 
