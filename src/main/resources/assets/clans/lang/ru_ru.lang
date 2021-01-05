@@ -70,6 +70,7 @@ commands.clan.details.rentdue=Rent is due in %s hours.
 commands.clan.details.upkeepdue=Содержание клана должно взыматься в %s часа.
 commands.clan.details.server=Это серверный клан.
 commands.clan.details.multiplier=Множитель награды за рейд.: %s
+commands.clan.details.member=%s (WLR %s, last seen %s)
 
 commands.clan.disband.usage=/clan disband
 commands.clan.disband.description=Распустить ваш клан.
@@ -102,6 +103,8 @@ commands.clan.playerinfo.leader=Лидер клана %s:
 commands.clan.playerinfo.admin=Админ клана %s:
 commands.clan.playerinfo.member=Участник клана %s:
 commands.clan.playerinfo.noclans=%s больше не находится в кланах.
+commands.clan.playerinfo.wlr=Win-Loss Ratio: %s
+commands.clan.playerinfo.last_seen=Last Seen: %s
 
 commands.clan.setbanner.usage=/clan setbanner [banner]
 commands.clan.setbanner.description=Установите баннер своего клана на тот, который вы держите, или введите NBT баннера.
@@ -161,6 +164,7 @@ commands.clan.abandonclaim.disconnected=Вы не можете отказать�
 
 commands.clan.abandonall.usage=/clan abandonall
 commands.clan.abandonall.description=Отказ от всех земель клана.
+commands.clan.abandonall.success=Successfully abandoned all land for %s.
 
 commands.clan.claim.usage=/clan claim [radius]
 commands.clan.claim.description=Оформить притязание (приват) чанка, на котором вы стоите. По умолчанию - один чанк.
@@ -179,6 +183,7 @@ commands.clan.claim.success=Клан %s оформил права на эту з
 commands.clan.claim.insufficient_funds=На счету %s недостаточно средств для запроса чанка. Это будет стоить %s.
 commands.clan.claim.insufficient_funds_r=Недостаточно средств на счету %s, чтобы требовать чанки %s. Это будет стоить %s.
 commands.clan.claim.start_r=Начинаем зазхват в указанном радиусе. Пожалуйста, подождите.
+commands.clan.claim.dimension=You cannot claim land in this dimension.
 
 commands.clan.autoabandon.usage=/clan autoabandon
 commands.clan.autoabandon.description=Автоматический отказ от территориальных притязаний клана, в которые заходит игрок (авторасприват).
@@ -294,6 +299,7 @@ commands.clan.set.usage=/clan set <permission> [player] <value>
 commands.clan.set.description=Установите значения для разрешений вашего клана. У игрока значение равно true или false. В противном случае вы устанавливаете ранг, который имеет доступ, и вы можете выбрать MEMBER, ADMIN, LEADER или ANY. Обратите внимание, что каждый ранг включает в себя более высокие ранги, и ЛЮБОЙ позволяет игрокам, которых нет в клане. Чтобы увидеть ваши текущие разрешения, используйте /clan permissions
 commands.clan.set.invalid_perm=Неверное разрешение: %s
 commands.clan.set.success=Разрешение установлено успешно!
+commands.clan.set.invalid_rank=Invalid rank: %s
 
 commands.clan.lock.usage=/clan lock [private|clan|open]
 commands.clan.lock.description=Блокирует блок, на который вы смотрите. Режимы: приватный (по умолчанию): приватный для игрока, который его заблокировал; клан: доступен для всего клана; открыто: доступно любому, даже игрокам, не входящим в клан
@@ -341,6 +347,14 @@ commands.clan.lockinfo.overrides=Переопределение:
 commands.clan.lockinfo.allowed=%s: разрешено.
 commands.clan.lockinfo.denied=%s: отказано.
 commands.clan.lockinfo.not_block=Вы не смотрите на блок или слишком далек от него.
+
+commands.clan.territorymessagemode.usage=/clan territorymessagemode <chat|action_bar|off> [showdescription: true|false]
+commands.clan.territorymessagemode.description=Set how territory messages will display for you. Chat shows it in chat, action bar shows it in the action bar, and off turns them off. showdescription only makes a difference when using chat; descriptions cannot be shown in the action bar.
+commands.clan.territorymessagemode.success=You have successfully updated your territory message mode.
+
+commands.clan.undergroundmessages.usage=/clan undergroundmessages <on|off>
+commands.clan.undergroundmessages.description=Set if you see messages when moving between being above ground and below ground for Wilderness purposes.
+commands.clan.undergroundmessages.success=You have successfully updated your underground message mode.commands.clan.details.member=%s (WLR %s, last seen %s)
 
 commands.opclan.abandonclaim.usage=/opclan abandonclaim
 commands.opclan.abandonclaim.description=Отзывает притязание на чанк, вне зависимости от того, чей он.

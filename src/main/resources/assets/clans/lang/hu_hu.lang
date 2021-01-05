@@ -164,6 +164,7 @@ commands.clan.abandonclaim.disconnected=Nem szűntetheted meg ezen a chunkon a l
 
 commands.clan.abandonall.usage=/clan abandonall
 commands.clan.abandonall.description=Törli a klánod összes levédett területét.
+commands.clan.abandonall.success=Successfully abandoned all land for %s.
 
 commands.clan.claim.usage=/clan claim [radius]
 commands.clan.claim.description=Levédi a chunkot ahol jelenleg állsz.
@@ -297,6 +298,7 @@ commands.clan.permissions.override=Player Override: %s: %s
 commands.clan.set.usage=/clan set <permission> [player] <value>
 commands.clan.set.description=Klán permissionöket állítja át. Játékosnál az érték igaz vagy hamis lehet. De beállíthatod ranghoz függően vagy ANY opciót is választhatsz amivel klánon kívűl is állíthatnak a  /clan permissions parancs segíthet
 commands.clan.set.invalid_perm=Invalid permission: %s
+commands.clan.set.invalid_rank=Invalid rank: %s
 commands.clan.set.success=Permission sikeresen átállítva
 
 commands.clan.lock.usage=/clan lock [private|clan|open]
