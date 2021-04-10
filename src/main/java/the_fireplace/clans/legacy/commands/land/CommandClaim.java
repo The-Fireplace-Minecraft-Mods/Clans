@@ -8,6 +8,7 @@ import the_fireplace.clans.legacy.commands.ClanSubCommand;
 import the_fireplace.clans.legacy.logic.ClaimManagement;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.PermissionManager;
+import the_fireplace.clans.multithreading.ConcurrentExecutionManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -40,9 +41,15 @@ public class CommandClaim extends ClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
 			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
-		else if(hasClaimRadiusPermission(sender) && ClaimManagement.checkCanClaimRadius(sender, selectedClan, parseInt(args[0]), "square"))
-			ClaimManagement.claimRadius(sender, selectedClan, parseInt(args[0]));
-		else if(!hasClaimRadiusPermission(sender))
+		else if(hasClaimRadiusPermission(sender)) {
+			int radius = parseInt(args[0]);
+			ConcurrentExecutionManager.runKillable(() -> {
+				boolean canClaimRadius = ClaimManagement.checkCanClaimRadius(sender, selectedClan, radius, "square");
+				if (canClaimRadius) {
+					ClaimManagement.claimRadius(sender, selectedClan, radius);
+				}
+			});
+		} else
 			throw new CommandException("commands.generic.permission");
 	}
 

@@ -58,7 +58,11 @@ public class Timer {
 
 	@SubscribeEvent
     public static void livingUpdate(LivingEvent.LivingUpdateEvent event) {
-	    if(!event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof IMob && event.getEntityLiving().getEntityWorld().getTotalWorldTime() % 100 == 0)
-	        TimerLogic.runMobFiveSecondLogic(event.getEntityLiving());
+	    if (!event.getEntityLiving().world.isRemote
+            && event.getEntityLiving() instanceof IMob
+            && event.getEntityLiving().world.getTotalWorldTime() % 100 == 0
+        ) {
+            TimerLogic.runMobFiveSecondLogic(event.getEntityLiving());
+        }
     }
 }

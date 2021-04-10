@@ -33,10 +33,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ClaimManagement {
     public static boolean checkCanClaimRadius(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius, String radiusMode) {
-        if(radiusMode.equalsIgnoreCase("square")) {
+        sendCheckRadiusClaimMessage(claimingPlayer);
+        if (radiusMode.equalsIgnoreCase("square")) {
             int requestedClaimCount = radius * radius;
             long currentClaimCount = ClanClaimCount.get(claimingClan).getClaimCount();
-            if(!AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
+            if (!AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
                 long maxClaimCount = ClanClaimCount.get(claimingClan).getMaxClaimCount();
                 if(requestedClaimCount + currentClaimCount > maxClaimCount) {//TODO this doesn't account for claims already made within the radius
                     claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed_r", requestedClaimCount, ClanNames.get(claimingClan).getName(), maxClaimCount, currentClaimCount));
@@ -48,10 +49,10 @@ public class ClaimManagement {
             //Do a connection check if connected claims are enforced, this is not the first claim, and the clan is not a server clan
             boolean doEdgeConnectionCheck = ClansModContainer.getConfig().isForceConnectedClaims() && currentClaimCount != 0 && !AdminControlledClanSettings.get(claimingClan).isServerOwned();
 
-            for(int x=claimingPlayer.chunkCoordX-radius;x<=claimingPlayer.chunkCoordX+radius;x++) {
-                for(int z=claimingPlayer.chunkCoordZ-radius;z<=claimingPlayer.chunkCoordZ+radius;z++) {
+            for (int x=claimingPlayer.chunkCoordX-radius;x<=claimingPlayer.chunkCoordX+radius;x++) {
+                for (int z=claimingPlayer.chunkCoordZ-radius;z<=claimingPlayer.chunkCoordZ+radius;z++) {
                     UUID chunkClan = ClaimData.getChunkClan(x, z, claimingPlayer.dimension);
-                    if(chunkClan != null && !chunkClan.equals(claimingClan)) {
+                    if (chunkClan != null && !chunkClan.equals(claimingClan)) {
                         claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken_other_r", ClanNames.get(chunkClan).getName()));
                         return false;
                     } else if(doEdgeConnectionCheck && chunkClan != null && chunkClan.equals(claimingClan))//We know the clan has claimed within the borders of the radius, so no need to check the edges for connection
@@ -91,7 +92,7 @@ public class ClaimManagement {
 
     private static boolean createsDisconnectedClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius) {
         boolean connected = false;
-        for(int x = claimingPlayer.chunkCoordX- radius; x<= claimingPlayer.chunkCoordX+ radius && !connected; x++) {
+        for (int x = claimingPlayer.chunkCoordX- radius; x<= claimingPlayer.chunkCoordX+ radius && !connected; x++) {
             UUID chunkClan = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
             boolean chunkIsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
             UUID chunkClan2 = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
@@ -99,7 +100,7 @@ public class ClaimManagement {
             if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
                 connected = true;
         }
-        for(int z = claimingPlayer.chunkCoordZ- radius; z<= claimingPlayer.chunkCoordZ+ radius && !connected; z++) {
+        for (int z = claimingPlayer.chunkCoordZ- radius; z<= claimingPlayer.chunkCoordZ+ radius && !connected; z++) {
             UUID chunkClan = ClaimData.getChunkClan(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
             boolean chunkIsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
             UUID chunkClan2 = ClaimData.getChunkClan(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
@@ -107,7 +108,7 @@ public class ClaimManagement {
             if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
                 connected = true;
         }
-        if(!connected) {
+        if (!connected) {
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected_r", ClanNames.get(claimingClan)));
             return true;
         }
@@ -167,6 +168,10 @@ public class ClaimManagement {
 
     private static void sendStartRadiusClaimMessage(EntityPlayerMP claimingPlayer) {
         claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.start_r").setStyle(TextStyles.GREEN));
+    }
+
+    private static void sendCheckRadiusClaimMessage(EntityPlayerMP claimingPlayer) {
+        claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.check_r").setStyle(TextStyles.GREEN));
     }
 
     public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, boolean force) {

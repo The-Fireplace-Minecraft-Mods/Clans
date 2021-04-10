@@ -183,6 +183,7 @@ commands.clan.claim.success=Land claimed for %s.
 commands.clan.claim.insufficient_funds=Insufficient funds in %s's account to claim chunk. It costs %s.
 commands.clan.claim.insufficient_funds_r=Insufficient funds in %s's account to claim %s chunks. It costs %s.
 commands.clan.claim.start_r=Starting to claim everything within the radius you requested, please wait...
+commands.clan.claim.check_r=Checking if you can claim the radius you requested, please wait...
 commands.clan.claim.dimension=You cannot claim land in this dimension.
 
 commands.clan.autoabandon.usage=/clan autoabandon
