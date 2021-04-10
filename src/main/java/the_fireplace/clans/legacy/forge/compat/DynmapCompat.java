@@ -88,13 +88,11 @@ public class DynmapCompat implements IDynmapCompat {
 
         // Build a list of groups of claim chunks where the claims are touching each other.
         List<GroupedChunks> groupList = new ArrayList<>();
-        if (!remainingChunksToProcess.isEmpty()) {
-            for (ChunkPosition pos: remainingChunksToProcess) {
-                GroupedChunks group = new GroupedChunks();
-                groupList.add(group);
+        for (ChunkPosition pos: remainingChunksToProcess) {
+            GroupedChunks group = new GroupedChunks();
+            groupList.add(group);
 
-                group.processChunk(pos, remainingChunksToProcess);
-            }
+            group.processChunk(pos, remainingChunksToProcess);
         }
         final long totalGroups = groupList.size();
 

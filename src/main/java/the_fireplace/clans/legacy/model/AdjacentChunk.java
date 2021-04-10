@@ -1,7 +1,6 @@
 package the_fireplace.clans.legacy.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,10 +24,10 @@ class AdjacentChunk {
     }
 
     /**
-     * @return Return a list of chunk edges that are open and not attached to another chunk.
+     * @return Return a set of chunk edges that are open and not attached to another chunk.
      */
-    List<ChunkEdge> getOpenChunkEdges() {
-        List<ChunkEdge> edges = new ArrayList<>();
+    Set<ChunkEdge> getOpenChunkEdges() {
+        Set<ChunkEdge> edges = new HashSet<>(1);
 
         if (m_top == null) {
             edges.add(new ChunkEdge(this, ChunkEdge.Edge.TOP));
@@ -69,10 +68,8 @@ class AdjacentChunk {
 
         // Loop through all 4 sides of the chunk and associate each neighbor
         for (int index = 0; index < 4; index++) {
-            if (remainingChunksToProcess.contains(adjacentPos[index])) {
-                // Once we process a chunk remove it from the available chunk map so we don't keep processing over it
-                remainingChunksToProcess.remove(adjacentPos[index]);
-
+            // Once we process a chunk remove it from the available chunk map so we don't keep processing over it
+            if (remainingChunksToProcess.remove(adjacentPos[index])) {
                 adjacentChunks[index] = new AdjacentChunk(adjacentPos[index]);
                 processedChunks.put(adjacentPos[index], adjacentChunks[index]);
 

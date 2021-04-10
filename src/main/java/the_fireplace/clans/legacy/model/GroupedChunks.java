@@ -38,19 +38,19 @@ public class GroupedChunks {
      */
     public List<CoordinatePair> traceShapePerimeter() {
         ChunkEdge startEdge = null;
-        int nTotalEdgeCount = 0;
+        int totalEdgeCount = 0;
 
         Map<CoordinatePair, List<ChunkEdge>> pointSearchMap = new HashMap<>();
 
         //Loop through all the chunks and get a list of open edges.
         for (Map.Entry<ChunkPosition, AdjacentChunk> chunk : chunkGroupMap.entrySet()) {
-            List<ChunkEdge> edges = chunk.getValue().getOpenChunkEdges();
+            Collection<ChunkEdge> edges = chunk.getValue().getOpenChunkEdges();
             for (ChunkEdge edge : edges) {
                 // Keep track of an edge that is the lowest X position so we can use it as a starting point.
                 if (startEdge == null || edge.point1().getX() < startEdge.point1().getX())
                     startEdge = edge;
 
-                nTotalEdgeCount++;
+                totalEdgeCount++;
 
                 // Put the edge point 1's in to a map so we can find the point we are after easily
                 if (pointSearchMap.containsKey(edge.point1())) {
@@ -73,7 +73,7 @@ public class GroupedChunks {
             ChunkEdge curEdge = startEdge;
 
             ChunkEdge.Edge lastEdgeType = null;
-            int nLoopLimit = nTotalEdgeCount + 5;
+            int nLoopLimit = totalEdgeCount + 5;
             do {
                 nLoopLimit--;
                 List<ChunkEdge> edges = pointSearchMap.get(curEdge.point2());
