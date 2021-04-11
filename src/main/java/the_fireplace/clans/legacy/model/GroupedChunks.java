@@ -23,7 +23,7 @@ public class GroupedChunks {
         //TODO this start chunk is double highlighted for some reason. Find out why.
 
         // Have each chunk find its adjacent chunks and process them recursively
-        chunk.processAdjacentChunks(remainingChunksToProcess, chunkGroupMap);
+        chunk.processAdjacentChunksRecursively(remainingChunksToProcess, chunkGroupMap);
     }
 
     /**
