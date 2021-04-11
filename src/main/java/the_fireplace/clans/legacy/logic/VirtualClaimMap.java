@@ -1,24 +1,28 @@
 package the_fireplace.clans.legacy.logic;
 
 import net.minecraft.util.math.ChunkPos;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.OrderedPair;
 
 public abstract class VirtualClaimMap {
+    // This should be divisible by 7 and not exceed 53.
+    // Divisible by 7 so the smaller map can take exactly a seventh of the section.
+    // 53 map-width characters is all the chat window can fit before going to a new line.
+    // 49 is ideal because it is the largest number that fits those conditions.
+    public static final byte MAP_SIZE = 49;
     public static final String CACHE_SEGMENT_SEPARATOR = "|";
     private ChunkPos centerChunk;
     protected int width;
     protected int height;
 
     public VirtualClaimMap() {
-        this.height = this.width = ClaimData.CACHE_SECTION_SIZE;
+        this.height = this.width = MAP_SIZE;
     }
 
     protected ChunkPos calculateCenter() {//TODO something isn't right here
         int centerOffsetX = getCenterOffsetX();
         int centerOffsetZ = getCenterOffsetZ();
-        int chunkX = getCacheSegment().getValue1() * ClaimData.CACHE_SECTION_SIZE + centerOffsetX;
-        int chunkZ = getCacheSegment().getValue2() * ClaimData.CACHE_SECTION_SIZE + centerOffsetZ;
+        int chunkX = getMapSegment().getValue1() * MAP_SIZE + centerOffsetX;
+        int chunkZ = getMapSegment().getValue2() * MAP_SIZE + centerOffsetZ;
         return new ChunkPos(chunkX, chunkZ);
     }
 
@@ -34,10 +38,10 @@ public abstract class VirtualClaimMap {
         return size / 2;
     }
 
-    protected abstract OrderedPair<Integer, Integer> getCacheSegment();
+    protected abstract OrderedPair<Integer, Integer> getMapSegment();
 
     protected OrderedPair<Byte, Byte> getQuadrant() {
-        return new OrderedPair<>((byte) Math.copySign(1, getCacheSegment().getValue1()), (byte) Math.copySign(1, getCacheSegment().getValue2()));
+        return new OrderedPair<>((byte) Math.copySign(1, getMapSegment().getValue1()), (byte) Math.copySign(1, getMapSegment().getValue2()));
     }
 
     public ChunkPos getCenterChunk() {

@@ -45,20 +45,20 @@ public class ClaimMapToChat extends VirtualClaimMap {
     private final ITextComponent[] bodyMessages;
     private final boolean useAllianceColorScheme;
     private final UUID playerId;
-    private final boolean showCacheSegment;
-    protected final OrderedPair<Integer, Integer> cacheSegment;
+    private final boolean showMapSegment;
+    protected final OrderedPair<Integer, Integer> mapSegment;
 
-    private ClaimMapToChat(ICommandSender messageTarget, ChunkPos playerChunk, int dimension, boolean isSmall, @Nullable OrderedPair<Integer, Integer> cacheSegment) {
+    private ClaimMapToChat(ICommandSender messageTarget, ChunkPos playerChunk, int dimension, boolean isSmall, @Nullable OrderedPair<Integer, Integer> mapSegment) {
         super();
         this.playerChunk = playerChunk;
         this.messageTarget = messageTarget;
         this.dimension = dimension;
         this.height = getHeight(isSmall);
         this.bodyMessages = new ITextComponent[height];
-        this.showCacheSegment = cacheSegment != null;
-        if(cacheSegment == null)
-            cacheSegment = calculateCacheSegment(playerChunk);
-        this.cacheSegment = cacheSegment;
+        this.showMapSegment = mapSegment != null;
+        if(mapSegment == null)
+            mapSegment = calculateMapSegment(playerChunk);
+        this.mapSegment = mapSegment;
         useAllianceColorScheme = isSmall;
         playerId = getTargetId(messageTarget);
     }
@@ -75,7 +75,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     private byte getHeight(boolean isSmall) {
-        return isSmall ? ClaimData.CACHE_SECTION_SIZE / 7 : ClaimData.CACHE_SECTION_SIZE;
+        return isSmall ? MAP_SIZE / 7 : MAP_SIZE;
     }
 
     @Nullable
@@ -89,12 +89,12 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     @Override
-    protected OrderedPair<Integer, Integer> getCacheSegment() {
-        return cacheSegment;
+    protected OrderedPair<Integer, Integer> getMapSegment() {
+        return mapSegment;
     }
 
-    private OrderedPair<Integer, Integer> calculateCacheSegment(ChunkPos playerChunk) {
-        return new OrderedPair<>(playerChunk.x / ClaimData.CACHE_SECTION_SIZE, playerChunk.z / ClaimData.CACHE_SECTION_SIZE);
+    private OrderedPair<Integer, Integer> calculateMapSegment(ChunkPos playerChunk) {
+        return new OrderedPair<>(playerChunk.x / MAP_SIZE, playerChunk.z / MAP_SIZE);
     }
     
     public static ClaimMapToChat createFancyMap(ICommandSender messageTarget, ChunkPos originChunk, int dimension) {
@@ -180,13 +180,13 @@ public class ClaimMapToChat extends VirtualClaimMap {
 
     private void send() {
         ArrayList<ITextComponent> messages = new ArrayList<>();
-        if(showCacheSegment)
+        if(showMapSegment)
             messages.add(getCacheSegmentComponent());
         messages.add(getBorderComponent());
         messages.addAll(Arrays.asList(bodyMessages));
         messages.add(getBorderComponent());
         messages.addAll(getMapSymbolGuide());
-        if(showCacheSegment)
+        if(showMapSegment)
             messages.add(getEndSegmentComponent());
 
         SynchronizedMessageQueue.queueMessages(messageTarget, messages.toArray(new ITextComponent[0]));
@@ -221,7 +221,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     private ITextComponent getCacheSegmentComponent() {
-        return new TextComponentString(CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue1()+CACHE_SEGMENT_SEPARATOR+cacheSegment.getValue2()+CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.BLACK);
+        return new TextComponentString(CACHE_SEGMENT_SEPARATOR+ mapSegment.getValue1()+CACHE_SEGMENT_SEPARATOR+ mapSegment.getValue2()+CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.BLACK);
     }
 
     private ITextComponent getEndSegmentComponent() {

@@ -1,11 +1,11 @@
 package the_fireplace.clans.legacy.data;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.netty.util.internal.ConcurrentSet;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.entity.Entity;
 import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.io.FileToJsonObject;
@@ -25,11 +25,7 @@ import java.util.stream.Collectors;
 
 public final class ClaimData implements ClaimAccessor {
     private static final File CHUNK_DATA_LOCATION = new File(ClansModContainer.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
-    //The map commands use this, so it should be divisible by 7 and not exceed 53.
-    // Divisible by 7 so the smaller map can take exactly a seventh of the section.
-    // 53 map-width characters is all the chat window can fit before going to a new line.
-    // 49 is ideal because it is the largest number that fits those conditions.
-    public static final byte CACHE_SECTION_SIZE = 49;
+    private static final byte CACHE_SECTION_SIZE = 64;
     @Deprecated
     public static final ClaimData INSTANCE = new ClaimData().load();
 
@@ -50,12 +46,22 @@ public final class ClaimData implements ClaimAccessor {
         }
     }
 
-    private ConcurrentMap<ChunkPositionWithData, ClaimStoredData> getCacheSection(ChunkPosition pos) {
+    private static final ConcurrentMap<?, ?> EMPTY_CONCURRENT_MAP = new EmptyConcurrentMap<>();
+    private static <K, V> ConcurrentMap<K, V> getEmptyConcurrentMap() {
+        //noinspection unchecked
+        return (ConcurrentMap<K, V>) EMPTY_CONCURRENT_MAP;
+    }
+
+    private ConcurrentMap<ChunkPositionWithData, ClaimStoredData> getCacheSection(ChunkPosition pos, boolean create) {
         OrderedPair<Integer, Integer> cacheSectionCoordinates = getCacheSectionCoordinates(pos.getPosX(), pos.getPosZ());
         int sectionX = cacheSectionCoordinates.getValue1();
         int sectionZ = cacheSectionCoordinates.getValue2();
-        return claimDataMap.computeIfAbsent(sectionX, (unused) -> new ConcurrentHashMap<>())
-            .computeIfAbsent(sectionZ, (unused) -> new ConcurrentHashMap<>());
+        if (create) {
+            return claimDataMap.computeIfAbsent(sectionX, (unused) -> new ConcurrentHashMap<>())
+                .computeIfAbsent(sectionZ, (unused) -> new ConcurrentHashMap<>());
+        } else {
+            return claimDataMap.getOrDefault(sectionX, getEmptyConcurrentMap()).getOrDefault(sectionZ, getEmptyConcurrentMap());
+        }
     }
 
     private OrderedPair<Integer, Integer> getCacheSectionCoordinates(int chunkX, int chunkZ) {
@@ -83,7 +89,7 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     public Set<UUID> getClansWithClaims() {
         Set<UUID> claimClans = Sets.newHashSet();
-        for(Map.Entry<UUID, ClaimStoredData> claimedChunkEntry: claimedChunks.entrySet()) {
+        for (Map.Entry<UUID, ClaimStoredData> claimedChunkEntry: claimedChunks.entrySet()) {
             UUID clan = claimedChunkEntry.getKey();
             if (!claimedChunkEntry.getValue().getChunks().isEmpty())
                 claimClans.add(clan);
@@ -95,8 +101,8 @@ public final class ClaimData implements ClaimAccessor {
     public void addChunk(UUID clan, ChunkPositionWithData pos) {
         claimedChunks.computeIfAbsent(clan, ClaimStoredData::new);
         claimedChunks.get(clan).addChunk(pos);
-        getCacheSection(pos).put(pos, claimedChunks.get(clan));
-        if(!pos.isBorderland()) {
+        getCacheSection(pos, true).put(pos, claimedChunks.get(clan));
+        if (!pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);
             ClanClaimCount.get(clan).incrementCachedClaimCount();
         }
@@ -105,7 +111,7 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     public void delChunk(UUID clan, ChunkPositionWithData pos) {
         claimedChunks.computeIfAbsent(clan, ClaimStoredData::new);
-        getCacheSection(pos).remove(pos);
+        getCacheSection(pos, true).remove(pos);
         if(claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);
             ClanClaimCount.get(clan).decrementCachedClaimCount();
@@ -117,12 +123,12 @@ public final class ClaimData implements ClaimAccessor {
     }
 
     @Override
-    public List<Integer> getClaimDims(UUID clanId) {
-        List<Integer> dims = Lists.newArrayList();
-        for(ChunkPositionWithData pos: getClaimedChunks(clanId))
-            if(!dims.contains(pos.getDim()))
-                dims.add(pos.getDim());
-            return Collections.unmodifiableList(dims);
+    public Set<Integer> getClaimDims(UUID clanId) {
+        Set<Integer> dims = new IntArraySet(1);
+        for (ChunkPositionWithData pos: getClaimedChunks(clanId)) {
+            dims.add(pos.getDim());
+        }
+        return Collections.unmodifiableSet(dims);
     }
 
     @Override
@@ -146,7 +152,7 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     @Nullable
     public ChunkPositionWithData getChunkPositionData(ChunkPosition pos) {
-        return getCacheSection(pos).keySet().stream().filter(p -> p.equals(pos)).findFirst().orElse(null);
+        return getCacheSection(pos, false).keySet().stream().filter(p -> p.equals(pos)).findFirst().orElse(null);
     }
 
     @Override
@@ -158,7 +164,7 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     @Nullable
     public UUID getChunkClan(int x, int z, int dim) {
-        ClaimStoredData data = getCacheSection(new ChunkPosition(x, z, dim)).get(new ChunkPositionWithData(x, z, dim));
+        ClaimStoredData data = getCacheSection(new ChunkPosition(x, z, dim), false).get(new ChunkPositionWithData(x, z, dim));
         return data != null ? data.clan : null;
     }
 
@@ -171,25 +177,22 @@ public final class ClaimData implements ClaimAccessor {
         if (!(position instanceof ChunkPositionWithData)) {
             position = new ChunkPositionWithData(position);
         }
-        ClaimStoredData data = getCacheSection(position).get(position);
+        ClaimStoredData data = getCacheSection(position, false).get(position);
         return data != null ? data.clan : null;
     }
 
     @Nullable
     public ClaimStoredData getChunkClaimData(int x, int z, int dim) {
-        return getCacheSection(new ChunkPosition(x, z, dim)).get(new ChunkPositionWithData(x, z, dim));
+        return getCacheSection(new ChunkPosition(x, z, dim), false).get(new ChunkPositionWithData(x, z, dim));
     }
 
     @Nullable
     public ClaimStoredData getChunkClaimData(ChunkPositionWithData position) {
-        return getCacheSection(position).get(position);
+        return getCacheSection(position, false).get(position);
     }
 
     @Override
-    public boolean delClan(@Nullable UUID clan) {
-        if (clan == null) {
-            return false;
-        }
+    public boolean deleteClanClaims(UUID clan) {
         if (claimedChunks.containsKey(clan)) {
             removeClanFromCache(clan);
             claimedChunks.get(clan).chunkDataFile.delete();
@@ -203,7 +206,7 @@ public final class ClaimData implements ClaimAccessor {
      */
     private void removeClanFromCache(UUID clan) {
         for (ChunkPositionWithData pos: claimedChunks.get(clan).chunks) {
-            getCacheSection(pos).remove(pos);
+            getCacheSection(pos, false).remove(pos);
         }
     }
 
@@ -221,7 +224,7 @@ public final class ClaimData implements ClaimAccessor {
 
     @Override
     public boolean chunkDataExists(ChunkPositionWithData position) {
-        return getCacheSection(position).containsKey(position);
+        return getCacheSection(position, false).containsKey(position);
     }
 
     /**
@@ -265,7 +268,7 @@ public final class ClaimData implements ClaimAccessor {
                     if (loadedData != null) {
                         claimedChunks.put(loadedData.clan, loadedData);
                         for (ChunkPositionWithData cPos : loadedData.getChunks()) {
-                            getCacheSection(cPos).put(cPos, loadedData);
+                            getCacheSection(cPos, true).put(cPos, loadedData);
                         }
                     }
                 } catch (Exception e) {

@@ -6,7 +6,6 @@ import the_fireplace.clans.legacy.model.ChunkPosition;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ public interface ClaimAccessor {
 
     void delChunk(UUID clan, ChunkPositionWithData pos);
 
-    List<Integer> getClaimDims(UUID clanId);
+    Set<Integer> getClaimDims(UUID clanId);
 
     boolean isBorderland(int x, int z, int d);
 
@@ -48,7 +47,7 @@ public interface ClaimAccessor {
     @Nullable
     UUID getChunkClan(@Nullable ChunkPosition position);
 
-    boolean delClan(@Nullable UUID clan);
+    boolean deleteClanClaims(@Nullable UUID clan);
 
     void updateChunkOwner(ChunkPositionWithData pos, @Nullable UUID oldOwner, UUID newOwner);
 

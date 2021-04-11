@@ -84,7 +84,7 @@ public final class ClanDisbander {
         ClanRaidStats.delete(clan);
         ClanShield.delete(clan);
         ClanWeaknessFactor.delete(clan);
-        ClaimAccessor.getInstance().delClan(clan);
+        ClaimAccessor.getInstance().deleteClanClaims(clan);
     }
 
     private void notifyMembersOfDisband(@Nullable ICommandSender sender, String disbandMessageTranslationKey, Object... translationArgs) {
