@@ -2,7 +2,7 @@ package the_fireplace.clans.clan.land;
 
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.legacy.ClansModContainer;
-import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.util.FormulaParser;
 
 import java.util.Map;
@@ -52,7 +52,7 @@ public class ClanClaimCount {
      * WARNING: Potentially costly
      */
     public void cacheClaimCount() {
-        cachedClaimCount = ClaimData.getClaimedChunkCount(clan);
+        cachedClaimCount = ClaimAccessor.getInstance().getClaimedChunkCount(clan);
     }
 
     public long getMaxClaimCount() {

@@ -13,7 +13,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.apache.commons.lang3.ArrayUtils;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
-import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import the_fireplace.clans.player.PlayerHomeCooldown;
@@ -114,7 +114,7 @@ public class EntityUtil {
         int x = 0, z = 0, tmp, dx = 0, dz = -1;
         while(true) {//Spiral out until a player friendly chunk is found
             ChunkPosition test = new ChunkPosition(origin.getPosX() + x, origin.getPosZ() + z, origin.getDim());
-            UUID testChunkOwner = ClaimData.getChunkClan(test);
+            UUID testChunkOwner = ClaimAccessor.getInstance().getChunkClan(test);
             if((testChunkOwner == null || ClanMembers.get(testChunkOwner).isMember(player.getUniqueID())) && (!excludeOrigin || !test.equals(origin)))
                 return ClansModContainer.getMinecraftHelper().getServer().getWorld(origin.getDim()).getChunk(test.getPosX(), test.getPosZ());
             if(x == z || (x < 0 && x == -z) || (x > 0 && x == 1-z)) {

@@ -1,7 +1,7 @@
 package the_fireplace.clans.legacy.model;
 
 import com.google.common.collect.Sets;
-import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 
 import java.util.Collections;
 import java.util.Set;
@@ -14,7 +14,7 @@ public class CoordNodeTree {
     private int dim;
 
     public CoordNodeTree(int excludeCoordX, int excludeCoordZ, int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimAccessor.getInstance().getClaimedChunks(checkOwner))
             if((pos.getPosX() != excludeCoordX || pos.getPosZ() != excludeCoordZ) && pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = Collections.unmodifiableSet(coordNodes);
@@ -22,7 +22,7 @@ public class CoordNodeTree {
     }
 
     public CoordNodeTree(int dim, UUID checkOwner) {
-        for(ChunkPositionWithData pos: ClaimData.getClaimedChunks(checkOwner))
+        for(ChunkPositionWithData pos: ClaimAccessor.getInstance().getClaimedChunks(checkOwner))
             if(pos.getDim() == dim && !pos.isBorderland())
                 coordNodes.add(new OrderedPair<>(pos.getPosX(), pos.getPosZ()));
         initCoordNodes = Collections.unmodifiableSet(coordNodes);

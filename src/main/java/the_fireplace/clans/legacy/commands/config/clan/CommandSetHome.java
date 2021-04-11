@@ -6,8 +6,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.clan.home.ClanHomes;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.commands.ClanSubCommand;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.EnumRank;
 import the_fireplace.clans.legacy.util.TextStyles;
@@ -41,7 +41,7 @@ public class CommandSetHome extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		Chunk c = sender.getEntityWorld().getChunk(sender.getPosition());
-		if(selectedClan.equals(ClaimData.getChunkClan(new ChunkPositionWithData(c)))) {
+		if(selectedClan.equals(ClaimAccessor.getInstance().getChunkClan(new ChunkPositionWithData(c)))) {
             if(ClanHomes.hasHome(selectedClan)
             	? ClanHomes.isHomeWithinRadiusExcluding(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist(), ClanHomes.get(selectedClan).toBlockPos())
 				: ClanHomes.isHomeWithinRadius(sender.getPosition(), ClansModContainer.getConfig().getMinClanHomeDist())) {

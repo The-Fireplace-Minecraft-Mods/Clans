@@ -16,8 +16,8 @@ import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.PlayerCache;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.util.*;
@@ -51,7 +51,7 @@ public class ClaimManagement {
 
             for (int x=claimingPlayer.chunkCoordX-radius;x<=claimingPlayer.chunkCoordX+radius;x++) {
                 for (int z=claimingPlayer.chunkCoordZ-radius;z<=claimingPlayer.chunkCoordZ+radius;z++) {
-                    UUID chunkClan = ClaimData.getChunkClan(x, z, claimingPlayer.dimension);
+                    UUID chunkClan = ClaimAccessor.getInstance().getChunkClan(x, z, claimingPlayer.dimension);
                     if (chunkClan != null && !chunkClan.equals(claimingClan)) {
                         claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken_other_r", ClanNames.get(chunkClan).getName()));
                         return false;
@@ -93,18 +93,18 @@ public class ClaimManagement {
     private static boolean createsDisconnectedClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius) {
         boolean connected = false;
         for (int x = claimingPlayer.chunkCoordX- radius; x<= claimingPlayer.chunkCoordX+ radius && !connected; x++) {
-            UUID chunkClan = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
-            boolean chunkIsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
-            UUID chunkClan2 = ClaimData.getChunkClan(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
-            boolean chunk2IsBorderland = ClaimData.isBorderland(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
+            UUID chunkClan = ClaimAccessor.getInstance().getChunkClan(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
+            boolean chunkIsBorderland = ClaimAccessor.getInstance().isBorderland(x, claimingPlayer.chunkCoordZ+ radius +1, claimingPlayer.dimension);
+            UUID chunkClan2 = ClaimAccessor.getInstance().getChunkClan(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
+            boolean chunk2IsBorderland = ClaimAccessor.getInstance().isBorderland(x, claimingPlayer.chunkCoordZ- radius -1, claimingPlayer.dimension);
             if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
                 connected = true;
         }
         for (int z = claimingPlayer.chunkCoordZ- radius; z<= claimingPlayer.chunkCoordZ+ radius && !connected; z++) {
-            UUID chunkClan = ClaimData.getChunkClan(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
-            boolean chunkIsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
-            UUID chunkClan2 = ClaimData.getChunkClan(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
-            boolean chunk2IsBorderland = ClaimData.isBorderland(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
+            UUID chunkClan = ClaimAccessor.getInstance().getChunkClan(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
+            boolean chunkIsBorderland = ClaimAccessor.getInstance().isBorderland(claimingPlayer.chunkCoordX+ radius +1, z, claimingPlayer.dimension);
+            UUID chunkClan2 = ClaimAccessor.getInstance().getChunkClan(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
+            boolean chunk2IsBorderland = ClaimAccessor.getInstance().isBorderland(claimingPlayer.chunkCoordX- radius -1, z, claimingPlayer.dimension);
             if(claimingClan.equals(chunkClan) && !chunkIsBorderland || claimingClan.equals(chunkClan2) && !chunk2IsBorderland)
                 connected = true;
         }
@@ -184,7 +184,7 @@ public class ClaimManagement {
             return false;
         }
 
-        UUID claimOwner = ClaimData.getChunkClan(claimChunk);
+        UUID claimOwner = ClaimAccessor.getInstance().getChunkClan(claimChunk);
         if(claimOwner != null && ClanIdRegistry.isValidClan(claimOwner) && (!force || claimOwner.equals(claimingClan))) {
             if(!claimOwner.equals(claimingClan)) {
                 claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken_other", ClanNames.get(claimOwner).getName()).setStyle(TextStyles.RED));
@@ -270,7 +270,7 @@ public class ClaimManagement {
         if (noClaimCost || ClanClaimCosts.get(claimingClan).payForClaim()) {
             PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
             if(!event.isCancelled) {
-                ClaimData.updateChunkOwner(claimChunk, null, claimingClan);
+                ClaimAccessor.getInstance().updateChunkOwner(claimChunk, null, claimingClan);
                 setClanHomeIfNeeded(claimingPlayer, claimChunk, claimingClan);
                 if(showMessage)
                     sendClaimSuccessMessage(claimingPlayer, claimingClan);
@@ -342,7 +342,7 @@ public class ClaimManagement {
             ClanHomes.delete(chunkOwner);
         }
 
-        ClaimData.delChunk(chunkOwner, new ChunkPositionWithData(chunkX, chunkZ, dim));
+        ClaimAccessor.getInstance().delChunk(chunkOwner, new ChunkPositionWithData(chunkX, chunkZ, dim));
         if(!AdminControlledClanSettings.get(chunkOwner).isServerOwned())
             ClanClaimCosts.get(chunkOwner).refundClaim();
     }

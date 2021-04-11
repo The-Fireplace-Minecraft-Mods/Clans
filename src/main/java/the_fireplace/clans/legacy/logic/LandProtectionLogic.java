@@ -28,8 +28,8 @@ import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.RaidingParties;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.data.RaidRestoreDatabase;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.util.BlockSerializeUtil;
@@ -422,7 +422,7 @@ public class LandProtectionLogic {
     public static boolean shouldCancelEntitySpawn(World world, Entity entity, BlockPos spawnPos) {
         if(!world.isRemote && isMob(entity)) {
             ChunkPositionWithData spawnChunkPosition = new ChunkPositionWithData(world.getChunk(spawnPos)).retrieveCentralData();
-            UUID c = ClaimData.getChunkClan(spawnChunkPosition);
+            UUID c = ClaimAccessor.getInstance().getChunkClan(spawnChunkPosition);
             if (c != null) {
                 AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(c);
                 if (adminControlledClanSettings.hasMobSpawningOverride()) {

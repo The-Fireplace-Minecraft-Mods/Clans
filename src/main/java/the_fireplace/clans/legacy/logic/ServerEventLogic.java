@@ -32,7 +32,7 @@ public class ServerEventLogic {
 
     public static void onServerStopping() {
         ClanIdRegistry.saveInstance();
-        ClaimData.save();
+        ClaimData.INSTANCE.save();
         ClanSaver.saveAll();
         RaidRestoreDatabase.getInstance().save();
         RaidCollectionDatabase.getInstance().save();

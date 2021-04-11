@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IProtectionCompat;
-import the_fireplace.clans.legacy.data.ClaimData;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.logic.LandProtectionLogic;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 
@@ -68,7 +68,7 @@ public class IceAndFireCompat implements IProtectionCompat {
                 @SuppressWarnings("ConstantConditions")
                 BlockPos pos = rayTraceResult != null ? rayTraceResult.getBlockPos() : event.getEntity().getPosition();
                 event.setCanceled(
-                    (player == null && (ClansModContainer.getConfig().shouldProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(pos))) != null))
+                    (player == null && (ClansModContainer.getConfig().shouldProtectWilderness() || ClaimAccessor.getInstance().getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(pos))) != null))
                         || LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, pos, player, false)
                         || LandProtectionLogic.shouldCancelBlockPlacement(event.getEntity().world, pos, player, null, false));
             }
@@ -83,7 +83,7 @@ public class IceAndFireCompat implements IProtectionCompat {
             if(event.getEntity() instanceof EntityDragonBase) {
                 Entity owner = LandProtectionLogic.getOwner(event.getEntity());
                 EntityPlayerMP player = owner instanceof EntityPlayerMP ? (EntityPlayerMP)owner : null;
-                if((player == null && (ClansModContainer.getConfig().shouldProtectWilderness() || ClaimData.getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
+                if((player == null && (ClansModContainer.getConfig().shouldProtectWilderness() || ClaimAccessor.getInstance().getChunkClan(new ChunkPositionWithData(event.getEntity().world.getChunk(event.getEntity().getPosition()))) != null))
                     || LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, event.getEntity().getPosition(), player, false))
                     event.setResult(Event.Result.DENY);
             }

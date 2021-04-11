@@ -16,8 +16,8 @@ import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IDynmapCompat;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.config.Config;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPosition;
 import the_fireplace.clans.legacy.model.ClanDimInfo;
 import the_fireplace.clans.legacy.model.CoordinatePair;
@@ -83,7 +83,7 @@ public class DynmapCompat implements IDynmapCompat {
         final long startTimeNS = System.nanoTime();
         ClansModContainer.getMinecraftHelper().getLogger().trace("Claim update started for clan [{}] in Dimension [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim());
 
-        Set<ChunkPosition> remainingChunksToProcess = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));
+        Set<ChunkPosition> remainingChunksToProcess = Sets.newConcurrentHashSet(ClaimAccessor.getInstance().getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));
         final long totalChunks = remainingChunksToProcess.size();
         clearAllClanMarkers(clanDimInfo);
 
@@ -108,9 +108,9 @@ public class DynmapCompat implements IDynmapCompat {
     private void initializeMap() {
         Set<ClanDimInfo> clanDimList = Sets.newHashSet();
 
-        for(UUID clan: ClaimData.clansWithClaims()) {
+        for(UUID clan: ClaimAccessor.getInstance().getClansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
+            for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
                 if(!addedDims.contains(chunk.getDim())) {
                     clanDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
@@ -202,7 +202,7 @@ public class DynmapCompat implements IDynmapCompat {
     @Override
     public void refreshTooltip(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
+        for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
             if(!addedDims.contains(chunk.getDim())) {
                 refreshTooltip(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
@@ -252,7 +252,7 @@ public class DynmapCompat implements IDynmapCompat {
     @Override
     public void clearAllClanMarkers(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimData.getClaimedChunks(clan))
+        for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
             if(!addedDims.contains(chunk.getDim())) {
                 clearAllClanMarkers(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());

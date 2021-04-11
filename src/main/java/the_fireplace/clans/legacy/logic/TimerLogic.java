@@ -22,6 +22,7 @@ import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.clan.raids.ClanShield;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.cache.RaidingParties;
 import the_fireplace.clans.legacy.data.ClaimData;
@@ -51,7 +52,7 @@ import java.util.*;
 public class TimerLogic {
     public static void runFiveMinuteLogic() {
         ClanIdRegistry.saveInstance();
-        ClaimData.save();
+        ClaimData.INSTANCE.save();
         ClanSaver.saveAll();
         RaidCollectionDatabase.getInstance().save();
         RaidRestoreDatabase.getInstance().save();
@@ -81,7 +82,7 @@ public class TimerLogic {
             double upkeep = FormulaParser.eval(ClansModContainer.getConfig().getClanUpkeepCostFormula(), clan, 0);
             if(ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > Economy.getBalance(clan) && upkeep <= Economy.getBalance(clan) + ClanClaimCosts.get(clan).getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()) * ClanClaimCount.get(clan).getClaimCount()) {
                 while(upkeep > Economy.getBalance(clan)) {
-                    ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimData.getClaimedChunks(clan));
+                    ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimAccessor.getInstance().getClaimedChunks(clan));
                     if(chunks.isEmpty())//This _should_ always be false, but just in case...
                         break;
                     ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
@@ -129,7 +130,7 @@ public class TimerLogic {
             if (raid.checkRaidEndTimer())
                 raid.defenderVictory();
 
-        ClaimData.decrementBorderlandsRegenTimers();
+        ClaimData.INSTANCE.decrementBorderlandsRegenTimers();
     }
 
     public static void runTwoSecondLogic() {
@@ -138,8 +139,8 @@ public class TimerLogic {
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
-        UUID clan = ClaimData.getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
-        ChunkPositionWithData chunkPositionWithData = ClaimData.getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
+        UUID clan = ClaimAccessor.getInstance().getChunkClan(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
+        ChunkPositionWithData chunkPositionWithData = ClaimAccessor.getInstance().getChunkPositionData(mob.chunkCoordX, mob.chunkCoordZ, mob.dimension);
         if (clan != null && chunkPositionWithData != null) {
             AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(clan);
             if (adminControlledClanSettings.hasMobSpawningOverride() && !adminControlledClanSettings.allowsMobSpawning()) {
@@ -151,7 +152,7 @@ public class TimerLogic {
     }
 
     public static void runPlayerSecondLogic(EntityPlayer player) {
-        checkRaidAbandonmentTime(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), PlayerClans.getClansPlayerIsIn(player.getUniqueID()), player);
+        checkRaidAbandonmentTime(ClaimAccessor.getInstance().getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), PlayerClans.getClansPlayerIsIn(player.getUniqueID()), player);
     }
 
     public static void runPlayerHalfSecondLogic(EntityPlayer player) {
@@ -159,7 +160,7 @@ public class TimerLogic {
         UUID chunkClan = ChunkUtils.getChunkOwner(c);
         Collection<UUID> playerClans = PlayerClans.getClansPlayerIsIn(player.getUniqueID());
         UUID playerStoredClaimId = PlayerCache.getPreviousChunkOwner(player.getUniqueID());
-        ChunkPositionWithData data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
+        ChunkPositionWithData data = ClaimAccessor.getInstance().getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
         boolean isInBorderland = data != null && data.isBorderland();
         boolean playerStoredIsInBorderland = PlayerCache.getStoredIsInBorderland(player.getUniqueID());
         if (chunkClan != null && !ClanIdRegistry.isValidClan(chunkClan)) {
@@ -178,8 +179,8 @@ public class TimerLogic {
             if(AutoClaim.isAutoClaiming(player.getUniqueID()))
                 needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, AutoClaim.getAutoClaimingClan(player.getUniqueID()), false) || needsRecalc;
             if(needsRecalc) {
-                data = ClaimData.getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
-                chunkClan = ClaimData.getChunkClan(data);
+                data = ClaimAccessor.getInstance().getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
+                chunkClan = ClaimAccessor.getInstance().getChunkClan(data);
                 isInBorderland = data != null && data.isBorderland();
             }
 

@@ -9,8 +9,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.PlayerCache;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.CoordNodeTree;
 
@@ -21,17 +21,17 @@ import java.util.UUID;
 public class ChunkUtils {
 	@Nullable
 	public static UUID getChunkOwner(Chunk c){
-		return ClaimData.getChunkClan(c.x, c.z, c.getWorld().provider.getDimension());
+		return ClaimAccessor.getInstance().getChunkClan(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	public static void clearChunkOwner(Chunk c) {
 		UUID chunkOwner = getChunkOwner(c);
 		if(chunkOwner != null)
-			ClaimData.delChunk(chunkOwner, new ChunkPositionWithData(c));
+			ClaimAccessor.getInstance().delChunk(chunkOwner, new ChunkPositionWithData(c));
 	}
 
 	public static boolean isBorderland(Chunk c) {
-		return ClaimData.isBorderland(c.x, c.z, c.getWorld().provider.getDimension());
+		return ClaimAccessor.getInstance().isBorderland(c.x, c.z, c.getWorld().provider.getDimension());
 	}
 
 	public static boolean hasConnectedClaim(Chunk c, @Nullable UUID checkOwner) {
@@ -44,7 +44,7 @@ public class ChunkUtils {
 
 	public static boolean hasConnectedClaim(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		if(checkOwner == null)
-			checkOwner = ClaimData.getChunkClan(c);
+			checkOwner = ClaimAccessor.getInstance().getChunkClan(c);
 		if(checkOwner == null)
 			return false;
 		return !getConnectedClaimPositions(c, checkOwner).isEmpty();
@@ -174,7 +174,7 @@ public class ChunkUtils {
 	public static ArrayList<ChunkPositionWithData> getConnectedClaimPositions(ChunkPositionWithData c, @Nullable UUID checkOwner) {
 		ArrayList<ChunkPositionWithData> adjacent = Lists.newArrayList();
 		if(checkOwner == null)
-			checkOwner = ClaimData.getChunkClan(c);
+			checkOwner = ClaimAccessor.getInstance().getChunkClan(c);
 		if(checkOwner == null)
 			return adjacent;
 		final UUID checkOwnerFinal = checkOwner;
@@ -182,7 +182,7 @@ public class ChunkUtils {
 		adjacent.add(c.offset(-1, 0));
 		adjacent.add(c.offset(0, 1));
 		adjacent.add(c.offset(0, -1));
-		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimData.getChunkClan(c2)) || ClaimData.getChunkPositionData(c2).isBorderland());
+		adjacent.removeIf(c2 -> !checkOwnerFinal.equals(ClaimAccessor.getInstance().getChunkClan(c2)) || ClaimAccessor.getInstance().getChunkPositionData(c2).isBorderland());
 		return adjacent;
 	}
 

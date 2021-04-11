@@ -22,8 +22,8 @@ import the_fireplace.clans.clan.raids.ClanShield;
 import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.RaidingParties;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.util.FormulaParser;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.player.PlayerClanSettings;
@@ -84,7 +84,7 @@ public final class ClanDisbander {
         ClanRaidStats.delete(clan);
         ClanShield.delete(clan);
         ClanWeaknessFactor.delete(clan);
-        ClaimData.delClan(clan);
+        ClaimAccessor.getInstance().delClan(clan);
     }
 
     private void notifyMembersOfDisband(@Nullable ICommandSender sender, String disbandMessageTranslationKey, Object... translationArgs) {

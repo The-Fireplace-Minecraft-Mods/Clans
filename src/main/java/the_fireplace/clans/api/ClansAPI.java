@@ -3,6 +3,7 @@ package the_fireplace.clans.api;
 import the_fireplace.clans.api.event.IClansEventHandler;
 import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.abstraction.IConfig;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.util.ClansEventManager;
 
@@ -18,7 +19,7 @@ public final class ClansAPI {
     }
 
     public static boolean isClaimed(int chunkX, int chunkZ, int dimension) {
-        return ClaimData.getChunkClan(chunkX, chunkZ, dimension) != null;
+        return ClaimAccessor.getInstance().getChunkClan(chunkX, chunkZ, dimension) != null;
     }
 
     public static <V> void registerEvent(Class<V> eventType, IClansEventHandler<V> handler) {

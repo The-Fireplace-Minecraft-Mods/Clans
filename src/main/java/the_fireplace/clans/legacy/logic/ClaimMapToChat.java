@@ -12,6 +12,7 @@ import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.model.ChunkPositionWithData;
 import the_fireplace.clans.legacy.model.OrderedPair;
@@ -68,7 +69,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
 
     public static void sendAllFancyMaps(EntityPlayerMP targetPlayer) {
         ConcurrentExecutionManager.runKillable(() -> {
-            for (OrderedPair<Integer, Integer> section : ClaimData.getOccupiedCacheSections())
+            for (OrderedPair<Integer, Integer> section : ClaimData.INSTANCE.getOccupiedCacheSections())
                 createFancyMap(targetPlayer, new ChunkPos(targetPlayer.getPosition()), targetPlayer.dimension, section).prepareAndSend();
         });
     }
@@ -141,8 +142,8 @@ public class ClaimMapToChat extends VirtualClaimMap {
         StringBuilder row = new StringBuilder();
         for (int x = minX; x <= maxX; x++) {
             boolean isPlayerChunk = isPlayerChunk(x, finalZ);
-            ChunkPositionWithData pos = ClaimData.getChunkPositionData(x, finalZ, dimension);
-            UUID clan = ClaimData.getChunkClan(pos);
+            ChunkPositionWithData pos = ClaimAccessor.getInstance().getChunkPositionData(x, finalZ, dimension);
+            UUID clan = ClaimAccessor.getInstance().getChunkClan(pos);
             if(pos == null || clan == null)
                 row.append(getChunkColor(isPlayerChunk, getWildernessColor())).append(WILDERNESS_SYMBOL);
             else if(pos.isBorderland())

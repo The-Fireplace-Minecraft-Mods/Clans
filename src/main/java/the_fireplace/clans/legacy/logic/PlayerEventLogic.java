@@ -11,9 +11,9 @@ import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanColors;
 import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.cache.RaidingParties;
-import the_fireplace.clans.legacy.data.ClaimData;
 import the_fireplace.clans.legacy.util.EntityUtil;
 import the_fireplace.clans.legacy.util.TextStyles;
 import the_fireplace.clans.legacy.util.translation.TranslationUtil;
@@ -110,7 +110,7 @@ public class PlayerEventLogic {
     }
 
     public static float breakSpeed(EntityPlayer player, float oldSpeed) {//TODO should borderlands be impacted by this?
-        if(!player.world.isRemote && RaidingParties.isRaidedBy(ClaimData.getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
+        if(!player.world.isRemote && RaidingParties.isRaidedBy(ClaimAccessor.getInstance().getChunkClan(player.chunkCoordX, player.chunkCoordZ, player.dimension), player)) {
             return oldSpeed * (float) ClansModContainer.getConfig().getRaidBreakSpeedMultiplier();
         }
         return oldSpeed;
