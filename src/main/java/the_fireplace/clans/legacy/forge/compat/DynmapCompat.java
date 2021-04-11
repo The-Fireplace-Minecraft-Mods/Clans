@@ -85,33 +85,22 @@ public class DynmapCompat implements IDynmapCompat {
 
         Set<ChunkPosition> remainingChunksToProcess = Sets.newConcurrentHashSet(ClaimData.getClaimedChunks(UUID.fromString(clanDimInfo.getClanIdString())));
         final long totalChunks = remainingChunksToProcess.size();
+        clearAllClanMarkers(clanDimInfo);
 
-        // Build a list of groups of claim chunks where the claims are touching each other.
-        List<GroupedChunks> groupList = new ArrayList<>();
+        int groupCount = 0;
         for (ChunkPosition pos: remainingChunksToProcess) {
             GroupedChunks group = new GroupedChunks();
-            groupList.add(group);
 
             group.processChunk(pos, remainingChunksToProcess);
-        }
-        final long totalGroups = groupList.size();
-
-        // Draw all the team claim markers for the specified dimension.
-        clearAllClanMarkers(clanDimInfo);
-        int nIndex = 0;
-        for (GroupedChunks group : groupList) {
             List<CoordinatePair> perimeterPoints = group.traceShapePerimeter();
-
-            createAreaMarker(clanDimInfo, nIndex++, perimeterPoints);
-        }
-
-        // Make sure we clean up all the object cross references so they can be garbage collected.
-        for (GroupedChunks group : groupList)
             group.cleanup();
+
+            createAreaMarker(clanDimInfo, groupCount++, perimeterPoints);
+        }
 
         final long deltaNs = System.nanoTime() - startTimeNS;
         ClansModContainer.getMinecraftHelper().getLogger().trace(" --> {} Claim chunks processed.", totalChunks);
-        ClansModContainer.getMinecraftHelper().getLogger().trace(" --> {} Claim groups detected.", totalGroups);
+        ClansModContainer.getMinecraftHelper().getLogger().trace(" --> {} Claim groups detected.", groupCount);
         ClansModContainer.getMinecraftHelper().getLogger().trace(" --> Complete claim update in [{}ns]", deltaNs);
 
     }

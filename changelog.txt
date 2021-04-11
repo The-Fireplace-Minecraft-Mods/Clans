@@ -1,2 +1,3 @@
 Fixes/Internal Changes:
 Fixed major lag spike when claiming a large chunk radius
+Performance optimizations for servers with multiple large claimed areas and Dynmap.

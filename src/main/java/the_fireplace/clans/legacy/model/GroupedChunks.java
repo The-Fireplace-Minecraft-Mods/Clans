@@ -18,9 +18,9 @@ public class GroupedChunks {
     public void processChunk(ChunkPosition chunkPos, Set<ChunkPosition> remainingChunksToProcess) {
         AdjacentChunk chunk = new AdjacentChunk(chunkPos);
 
-        // Once we process a claim chunk remove it from the getClanID list and add it to the group map
         remainingChunksToProcess.remove(chunkPos);
         chunkGroupMap.put(chunkPos, chunk);
+        //TODO this start chunk is double highlighted for some reason. Find out why.
 
         // Have each chunk find its adjacent chunks and process them recursively
         chunk.processAdjacentChunks(remainingChunksToProcess, chunkGroupMap);
