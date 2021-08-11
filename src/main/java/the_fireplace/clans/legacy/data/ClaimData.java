@@ -235,9 +235,12 @@ public final class ClaimData implements ClaimAccessor {
             for (Map.Entry<UUID, Integer> entry : Sets.newHashSet(regenBordersTimer.entrySet())) {
                 if (entry.getValue() <= 0) {
                     regenBordersTimer.remove(entry.getKey());
-                    claimedChunks.get(entry.getKey()).regenBorderlands();
-                    for (int dim : getClaimDims(entry.getKey())) {
-                        ClansModContainer.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(entry.getKey(), dim));
+                    ClaimStoredData claimStoredData = claimedChunks.get(entry.getKey());
+                    if (claimStoredData != null) {
+                        claimStoredData.regenBorderlands();
+                        for (int dim : getClaimDims(entry.getKey())) {
+                            ClansModContainer.getDynmapCompat().queueClaimEventReceived(new ClanDimInfo(entry.getKey(), dim));
+                        }
                     }
                 } else {
                     decrementRegenBorderlandsTimer(entry);

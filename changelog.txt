@@ -3,3 +3,4 @@ Fixed major lag spike when claiming a large chunk radius
 Performance optimizations for servers with multiple large claimed areas and Dynmap.
 Chunk owner lookup optimizations
 Fixed clan commands not working for players that aren't in clans
+Fixed NullPointerException if borderlands try to regenerate after a clan has disbanded
