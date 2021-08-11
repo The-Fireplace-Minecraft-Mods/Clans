@@ -5,14 +5,9 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "Modmuss50"
-            url = "http://maven.modmuss50.me/"
-        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'ModsIOUpload:ModsIOUpload:+'
     }
 }
 
@@ -20,7 +15,6 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'net.cazzar.gradle.modsio'
 
 version = "2.1.4"
 group = "the_fireplace.clans"
@@ -35,7 +29,6 @@ minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
     replace '${version}', project.version
-    replace '${fingerprint}', project.findProperty('signSha1')
     mappings = "stable_39"
 	
 	clientRunArgs += "--uuid=0b1ec5ad-cb2a-43b7-995d-889320eb2e5b --username=The_Fireplace"
@@ -49,11 +42,9 @@ configurations {
 dependencies {
     compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.2", transitive: true
     deobfProvided "us.dynmap:DynmapCoreAPI:3.0-SNAPSHOT"
-    deobfProvided "journeymap-api:journeymap-api:1.12:1.4"
     provided ('org.spongepowered:spongeapi:7.1.0') {
         exclude module: 'org.yaml:snakeyaml:1.18'
     }
-    provided "com.builtbroken.icbm-classic:ICBM-classic:1.12.2-3.3.0b63"
     compile "appeng:appliedenergistics2:rv6-stable-7:api"
     provided("vazkii.autoreglib:AutoRegLib:1.3-33.34") {
     	transitive = true
@@ -63,7 +54,7 @@ dependencies {
     deobfCompile("net.ilexiconn:llibrary:1.7.9-1.12.2") {
     	transitive = true
     }
-    shade 'com.electronwill.night-config:hocon:3.6.0'
+    shade 'com.electronwill.night-config:hocon:3.6.4'
 }
 
 repositories {
@@ -78,8 +69,6 @@ repositories {
     maven { url "http://repo.mikeprimm.com" }
     // iChunUtil, JourneyMap API, Chisels & Bits
     maven { url "https://minecraft.curseforge.com/api/maven/" }
-    // ICBM, MFFS
-    maven { url = "http://api.dmodoomsirius.me/" }
     // Quark, AutoRegLib
     maven { url = "http://maven.blamejared.com/" }
     // LLibrary (needed for Ice and Fire)
@@ -106,27 +95,6 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
 }
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-
-    // Skips if the keyStore property is missing.
-    onlyIf {
-        project.hasProperty('keyStore')
-    }
-
-    // findProperty allows us to reference the property without it existing.
-    // Using project.propName would cause the script to fail validation if
-    // the property did not exist.
-    keyStore = project.findProperty('keyStore')
-    alias = project.findProperty('keyStoreAlias')
-    storePass = project.findProperty('keyStorePass')
-    keyPass = project.findProperty('keyStoreKeyPass')
-
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-build.dependsOn signJar
 
 artifacts {
     archives jar
@@ -173,16 +141,4 @@ curseforge {
         changelog = "*This is a file for mod developers. If you don't know what to do with it, don't use it!*"
     }
   }
-}
-
-modsIO {
-    key = project.hasProperty("modsioApiKey")? project.modsioApiKey : "empty"
-    project{
-		artifact = new File(jar.destinationDir, archivesBaseName+"-"+version+".jar")
-		modid = "1280"
-		minecraft = "1.12.2"
-		try{changelog = file('changelog.txt').text}catch(Exception ignored){changelog=""}
-		tag = ""
-		current = true
-    }
 }
