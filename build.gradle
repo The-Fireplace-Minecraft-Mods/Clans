@@ -16,9 +16,9 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.1.4"
-group = "the_fireplace.clans"
-archivesBaseName = "Clans-1.12.2"
+archivesBaseName = "Clans"
+version = "2.1.4+1.12.2"
+group = "dev.the-fireplace"
 
 allprojects {
     sourceCompatibility = 1.8
