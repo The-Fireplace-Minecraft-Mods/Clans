@@ -38,28 +38,33 @@ public abstract class ClanSubCommand extends CommandBase {
 
 	@Override
 	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		if(!PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getName(), true))
+		if (!PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + getName(), true)) {
 			return false;
-		if(getRequiredClanRank() == EnumRank.ANY || getRequiredClanRank() == EnumRank.NOCLAN && allowConsoleUsage() && !(sender instanceof Entity))
-			return true;
-		if(sender instanceof Entity) {
-			if(selectedClan != null) {
-				EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
-				switch (getRequiredClanRank()) {
-					case LEADER:
-					case ADMIN:
-                        return ClanPermissions.get(selectedClan).hasPerm(getName(), ((Entity) sender).getUniqueID());
-                    case MEMBER:
-						return playerRank.greaterOrEquals(EnumRank.MEMBER);
-					case NOCLAN:
-						return playerRank.equals(EnumRank.NOCLAN);
-					default:
-						return false;
-				}
-			} else
-				return getRequiredClanRank().equals(EnumRank.NOCLAN);
 		}
-		return false;
+		EnumRank requiredRank = getRequiredClanRank();
+
+		boolean isConsole = !(sender instanceof Entity);
+		boolean allowsClanlessUsage = requiredRank == EnumRank.ANY || requiredRank == EnumRank.NOCLAN;
+		if (isConsole) {
+			return allowsClanlessUsage && allowConsoleUsage();
+		}
+
+		if (selectedClan != null) {
+			EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
+			switch (requiredRank) {
+				case LEADER:
+				case ADMIN:
+					return ClanPermissions.get(selectedClan).hasPerm(getName(), ((Entity) sender).getUniqueID());
+				case MEMBER:
+					return playerRank.greaterOrEquals(EnumRank.MEMBER);
+				case NOCLAN:
+					return playerRank.equals(EnumRank.NOCLAN);
+				default:
+					return false;
+			}
+		} else {
+			return requiredRank.equals(EnumRank.NOCLAN);
+		}
 	}
 
 	public abstract EnumRank getRequiredClanRank();
@@ -71,47 +76,55 @@ public abstract class ClanSubCommand extends CommandBase {
 	}
 
 	public final void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (server == null)
+		if (server == null) {
 			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "clans.error.nullserver"));
-		if (allowConsoleUsage() || sender instanceof EntityPlayerMP) {
-			boolean greedyArgs = getMaxArgs() == Integer.MAX_VALUE;
-			if(args.length >= getMinArgs()+1 && args.length <= (greedyArgs ? getMaxArgs() : getMaxArgs()+1)) {
-				if(args.length > 0) {
-					UUID playerClan = ClanNames.getClanByName(args[0]);
-					if (sender instanceof EntityPlayerMP) {
-						Collection<UUID> playerClans = PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
-						if (playerClan != null && !playerClans.contains(playerClan)) {
-                            sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), ClanNames.get(playerClan).getName()).setStyle(TextStyles.RED));
-							return;
-						}
-					}
-					//noinspection ConstantConditions
-					this.selectedClan = playerClan;
-					this.selectedClanName = args[0];
-				}
-				String[] args2;
-				//If this is a clan command, remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
-				//Otherwise, this removes the subcommand name
-				if (greedyArgs) {
-					if (args.length > 2)
-						args2 = Arrays.copyOfRange(args, 2, args.length);
-					else
-						args2 = new String[]{};
-				} else if (args.length > 1)
-					args2 = Arrays.copyOfRange(args, 1, args.length);
-				else
-					args2 = new String[]{};
-				if(checkPermission(server, sender)) {
-					if (sender instanceof EntityPlayerMP)
-						run(server, (EntityPlayerMP) sender, args2);
-					else
-						runFromAnywhere(server, sender, args2);
-				} else
-					sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
-			} else
-				throwWrongUsage(sender);
-		} else
+		}
+		if (!allowConsoleUsage() && !(sender instanceof EntityPlayerMP)) {
 			throw new WrongUsageException(TranslationUtil.getRawTranslationString(sender, "commands.clan.common.player"));
+		}
+		int maxArgumentCount = getMaxArgs();
+		boolean greedyArgs = maxArgumentCount == Integer.MAX_VALUE;
+		if (!greedyArgs) {
+			// Allow the clan name to be tacked on to the beginning, since the subcommands don't consider it in their setup
+			maxArgumentCount++;
+		}
+		// Add 1 to account for clan name
+		int minimumArguments = getMinArgs() + 1;
+		if (args.length < minimumArguments || args.length > maxArgumentCount) {
+			throwWrongUsage(sender);
+		}
+		boolean hasClanName = !Objects.equals(args[0], ClanNames.NULL_CLAN_NAME);
+		if (hasClanName) {
+			UUID playerClan = ClanNames.getClanByName(args[0]);
+			if (sender instanceof EntityPlayerMP) {
+				Collection<UUID> playerClans = PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID());
+				if (playerClan != null && !playerClans.contains(playerClan)) {
+					sender.sendMessage(TranslationUtil.getTranslation(((EntityPlayerMP) sender).getUniqueID(), "commands.clan.common.player_not_in_clan", sender.getName(), ClanNames.get(playerClan).getName()).setStyle(TextStyles.RED));
+					return;
+				}
+			}
+			//noinspection ConstantConditions
+			this.selectedClan = playerClan;
+			this.selectedClanName = args[0];
+		}
+		String[] args2;
+		//If this is a clan command, remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
+		//Otherwise, this removes the subcommand name
+		int removeArgCount = greedyArgs ? 2 : 1;
+		if (args.length > removeArgCount) {
+			args2 = Arrays.copyOfRange(args, removeArgCount, args.length);
+		} else {
+			args2 = new String[]{};
+		}
+		if (checkPermission(server, sender)) {
+			if (sender instanceof EntityPlayerMP) {
+				run(server, (EntityPlayerMP) sender, args2);
+			} else {
+				runFromAnywhere(server, sender, args2);
+			}
+		} else {
+			sender.sendMessage(new TextComponentTranslation("commands.generic.permission").setStyle(new Style().setColor(TextFormatting.RED)));
+		}
 	}
 
 	protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
