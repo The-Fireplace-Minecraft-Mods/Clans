@@ -62,6 +62,8 @@ public abstract class ClanSubCommand extends CommandBase {
 				return playerRank.greaterOrEquals(EnumRank.MEMBER);
 			case NOCLAN:
 				return playerRank.equals(EnumRank.NOCLAN);
+			case ANY:
+				return true;
 			default:
 				return false;
 		}
