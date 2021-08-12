@@ -49,21 +49,21 @@ public abstract class ClanSubCommand extends CommandBase {
 			return allowsClanlessUsage && allowConsoleUsage();
 		}
 
-		if (selectedClan != null) {
-			EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
-			switch (requiredRank) {
-				case LEADER:
-				case ADMIN:
-					return ClanPermissions.get(selectedClan).hasPerm(getName(), ((Entity) sender).getUniqueID());
-				case MEMBER:
-					return playerRank.greaterOrEquals(EnumRank.MEMBER);
-				case NOCLAN:
-					return playerRank.equals(EnumRank.NOCLAN);
-				default:
-					return false;
-			}
-		} else {
-			return requiredRank.equals(EnumRank.NOCLAN);
+		if (selectedClan == null) {
+			return allowsClanlessUsage;
+		}
+
+		EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
+		switch (requiredRank) {
+			case LEADER:
+			case ADMIN:
+				return ClanPermissions.get(selectedClan).hasPerm(getName(), ((Entity) sender).getUniqueID());
+			case MEMBER:
+				return playerRank.greaterOrEquals(EnumRank.MEMBER);
+			case NOCLAN:
+				return playerRank.equals(EnumRank.NOCLAN);
+			default:
+				return false;
 		}
 	}
 
