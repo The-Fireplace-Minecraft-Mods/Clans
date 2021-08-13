@@ -307,46 +307,48 @@ public class LandProtectionLogic {
      * @return If the damage should be cancelled
      */
     public static boolean shouldCancelEntityDamage(Entity target, @Nullable DamageSource source, @Nullable Entity attacker) {
-        if (!target.getEntityWorld().isRemote && ClansModContainer.getConfig().allowInjuryProtection()) {
-            Chunk chunk = target.getEntityWorld().getChunk(target.getPosition());
-            UUID chunkClan = ChunkUtils.getChunkOwner(chunk);
-            if (attacker == null && source != null)
-                attacker = source.getTrueSource();
-            //Do not cancel if the attacker is in admin mode or the chunk is not a claim
-            if (attacker instanceof EntityPlayerMP && ClaimAdmins.isClaimAdmin((EntityPlayerMP) attacker) || chunkClan == null || ChunkUtils.isBorderland(chunk))
-                return false;
-            AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(chunkClan);
-            //Cancel if mobs cannot do damage and the attacker is a mob
-            if (!adminControlledClanSettings.isMobDamageAllowed() && isMob(attacker))
-                return true;
-            //Do not cancel if it would be able to harm creative players or doesn't come from being attacked
-            if (source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
-                return false;
-            EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
-            //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
-            if (target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
-                if (!adminControlledClanSettings.hasPVPOverride())
-                    return shouldCancelPVPDefault(target, attacker, chunkClan, attackingPlayer);
-                else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
-                    return !adminControlledClanSettings.getPVPOverride();
-            } else {//Target is not a player and not owned by a player
-                if (attackingPlayer != null) {
-                    UUID attackingPlayerId = attackingPlayer.getUniqueID();
-                    Collection<UUID> attackerEntityClans = PlayerClans.getClansPlayerIsIn(attackingPlayerId);
-                    //Players can harm things in their own claims as long as they have permission
-                    if (attackerEntityClans.contains(chunkClan))
-                        return !hasPermissionToHarm(target, chunkClan, attackingPlayerId);
-                    //Raiders can harm things when they are attacking
-                    if (RaidingParties.isRaidedBy(chunkClan, attackingPlayer))
-                        return false;
-                    //Attacker is not a raider and not in the clan.
-                    //Cancel if the chunk owner has not given permission to harm
-                    return !hasPermissionToHarm(target, chunkClan, attackingPlayerId)
-                        //Allow anyone to kill mobs on server clan land
-                        && !(adminControlledClanSettings.isServerOwned() && isMob(target))
-                        //Allow fake players to harm things if they are allowed to do so.
-                        && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
-                }
+        if (target.getEntityWorld().isRemote || !ClansModContainer.getConfig().allowInjuryProtection()) {
+            return false;
+        }
+        Chunk chunk = target.getEntityWorld().getChunk(target.getPosition());
+        UUID chunkClan = ChunkUtils.getChunkOwner(chunk);
+        if (attacker == null && source != null)
+            attacker = source.getTrueSource();
+        //Do not cancel if the attacker is in admin mode or the chunk is not a claim
+        boolean attackerIsInAdminMode = attacker instanceof EntityPlayerMP && ClaimAdmins.isClaimAdmin((EntityPlayerMP) attacker);
+        if (attackerIsInAdminMode || chunkClan == null || ChunkUtils.isBorderland(chunk))
+            return false;
+        AdminControlledClanSettings adminControlledClanSettings = AdminControlledClanSettings.get(chunkClan);
+        //Cancel if mobs cannot do damage and the attacker is a mob
+        if (!adminControlledClanSettings.isMobDamageAllowed() && isMob(attacker))
+            return true;
+        //Do not cancel if it would be able to harm creative players or doesn't come from being attacked
+        if (source != null && (source.canHarmInCreative() || (attacker == null && !source.isExplosion())))
+            return false;
+        EntityPlayer attackingPlayer = attacker instanceof EntityPlayer ? (EntityPlayer) attacker : isOwnable(attacker) && getOwner(attacker) instanceof EntityPlayer ? (EntityPlayer) getOwner(attacker) : null;
+        //Players and their tameables fall into this first category. Including tameables ensures that wolves, Overlord Skeletons, etc are protected
+        if (target instanceof EntityPlayer || (isOwnable(target) && getOwnerId(target) != null)) {
+            if (!adminControlledClanSettings.hasPVPOverride())
+                return shouldCancelPVPDefault(target, attacker, chunkClan, attackingPlayer);
+            else //Cancel if pvp is not allowed, don't cancel if pvp is allowed
+                return !adminControlledClanSettings.getPVPOverride();
+        } else {//Target is not a player and not owned by a player
+            if (attackingPlayer != null) {
+                UUID attackingPlayerId = attackingPlayer.getUniqueID();
+                Collection<UUID> attackerEntityClans = PlayerClans.getClansPlayerIsIn(attackingPlayerId);
+                //Players can harm things in their own claims as long as they have permission
+                if (attackerEntityClans.contains(chunkClan))
+                    return !hasPermissionToHarm(target, chunkClan, attackingPlayerId);
+                //Raiders can harm things when they are attacking
+                if (RaidingParties.isRaidedBy(chunkClan, attackingPlayer))
+                    return false;
+                //Attacker is not a raider and not in the clan.
+                //Cancel if the chunk owner has not given permission to harm
+                return !hasPermissionToHarm(target, chunkClan, attackingPlayerId)
+                    //Allow anyone to kill mobs on server clan land
+                    && !(adminControlledClanSettings.isServerOwned() && isMob(target))
+                    //Allow fake players to harm things if they are allowed to do so.
+                    && !ClansModContainer.getMinecraftHelper().isAllowedNonPlayerEntity(attacker, false);
             }
         }
         return false;

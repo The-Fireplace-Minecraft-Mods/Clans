@@ -60,8 +60,8 @@ public class CommandList extends ClanSubCommand {
 	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.list.clans").setStyle(TextStyles.GREEN));
 		if(!ClanIdRegistry.getIds().isEmpty()) {
-			ArrayList<UUID> clans = Lists.newArrayList(ClanIdRegistry.getIds());
-			ArrayList<ITextComponent> listItems = Lists.newArrayList();
+			List<UUID> clans = Lists.newArrayList(ClanIdRegistry.getIds());
+			List<ITextComponent> listItems = Lists.newArrayList();
 			String sort = args.length > 0 ? args[0] : "abc";
 			switch (sort) {
 				case "alphabetical":
