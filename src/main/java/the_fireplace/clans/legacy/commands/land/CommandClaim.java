@@ -40,7 +40,7 @@ public class CommandClaim extends ClanSubCommand {
 	@Override
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
 		if(args.length == 0)
-			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
+			ClaimManagement.checkAndAttemptClaim(sender, selectedClan);
 		else if(hasClaimRadiusPermission(sender)) {
 			int radius = parseInt(args[0]);
 			ConcurrentExecutionManager.runKillable(() -> {

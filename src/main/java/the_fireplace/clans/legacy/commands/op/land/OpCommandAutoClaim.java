@@ -40,16 +40,18 @@ public class OpCommandAutoClaim extends OpClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String attemptClanName = args[0];
 		UUID clan = ClanNames.getClanByName(attemptClanName);
-		if(clan != null) {
+		if (clan != null) {
             UUID rm = OpAutoClaim.cancelAutoClaim(sender.getUniqueID());
-			if(rm == null) {
+			if (rm == null) {
                 OpAutoClaim.activateAutoClaim(sender.getUniqueID(), clan);
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
-				ClaimManagement.checkAndAttemptClaim(sender, clan, true);
-			} else
-                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
-		} else
+				ClaimManagement.adminClaimChunk(sender, clan);
+			} else {
+				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
+			}
+		} else {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", attemptClanName).setStyle(TextStyles.RED));
+		}
 	}
 
 	@Override

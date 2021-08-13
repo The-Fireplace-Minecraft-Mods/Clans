@@ -39,10 +39,11 @@ public class OpCommandClaim extends OpClanSubCommand {
 	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
 		String clanName = args[0];
 		UUID clan = ClanNames.getClanByName(clanName);
-		if(clan != null)
-			ClaimManagement.checkAndAttemptClaim(sender, clan, true);
-		else
+		if (clan != null) {
+			ClaimManagement.adminClaimChunk(sender, clan);
+		} else {
 			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
+		}
 	}
 
 	@Override

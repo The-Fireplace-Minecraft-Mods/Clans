@@ -7,6 +7,7 @@ import io.netty.util.internal.ConcurrentSet;
 import the_fireplace.clans.io.*;
 import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +46,11 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
         return Collections.unmodifiableCollection(getInstance().clanIds);
     }
 
-    public static boolean isValidClan(UUID uuid) {
+    public static boolean isValidClan(@Nullable UUID uuid) {
+        if (uuid == null) {
+            return false;
+        }
+
         return getInstance().clanIds.contains(uuid);
     }
 

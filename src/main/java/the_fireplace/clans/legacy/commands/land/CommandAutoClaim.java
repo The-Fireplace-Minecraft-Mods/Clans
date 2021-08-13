@@ -43,7 +43,7 @@ public class CommandAutoClaim extends ClanSubCommand {
 		if(rm == null) {
             AutoClaim.activateAutoClaim(sender.getUniqueID(), selectedClan);
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClanName).setStyle(TextStyles.GREEN));
-			ClaimManagement.checkAndAttemptClaim(sender, selectedClan, false);
+			ClaimManagement.checkAndAttemptClaim(sender, selectedClan);
 		} else
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
 	}

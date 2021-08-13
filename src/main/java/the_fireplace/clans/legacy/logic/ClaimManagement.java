@@ -151,7 +151,13 @@ public class ClaimManagement {
                 for (int z = cZ - radius; z <= cZ + radius; z++) {
                     int finalX = x;
                     int finalZ = z;
-                    claimExecutorService.execute(() -> claimChunk(claimingPlayer, new ChunkPositionWithData(finalX, finalZ, claimingPlayer.dimension), claimingClan, AdminControlledClanSettings.get(claimingClan).isServerOwned(), false)
+                    claimExecutorService.execute(() -> claimChunk(
+                        claimingPlayer,
+                        new ChunkPositionWithData(finalX, finalZ, claimingPlayer.dimension),
+                        claimingClan,
+                        AdminControlledClanSettings.get(claimingClan).isServerOwned(),
+                        false
+                        )
                     );
                 }
             claimExecutorService.shutdown();
@@ -174,63 +180,100 @@ public class ClaimManagement {
         claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.check_r").setStyle(TextStyles.GREEN));
     }
 
-    public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, boolean force) {
-        return checkAndAttemptClaim(claimingPlayer, claimingClan, new ChunkPositionWithData(claimingPlayer.chunkCoordX, claimingPlayer.chunkCoordZ, claimingPlayer.getEntityWorld().provider.getDimension()).retrieveCentralData(), force);
+    public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, UUID claimingClan) {
+        return checkAndAttemptClaim(claimingPlayer, claimingClan, new ChunkPositionWithData(claimingPlayer.chunkCoordX, claimingPlayer.chunkCoordZ, claimingPlayer.getEntityWorld().provider.getDimension()).retrieveCentralData());
     }
 
-    public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, ChunkPositionWithData claimChunk, boolean force) {
-        if (!force && shouldCancelClaimingBecauseOfDimension(claimingPlayer)) {
+    public static boolean checkAndAttemptClaim(EntityPlayerMP claimingPlayer, UUID claimingClan, ChunkPositionWithData claimChunk) {
+        if (shouldCancelClaimingBecauseOfDimension(claimingPlayer)) {
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
             return false;
         }
 
-        UUID claimOwner = ClaimAccessor.getInstance().getChunkClan(claimChunk);
-        if(claimOwner != null && ClanIdRegistry.isValidClan(claimOwner) && (!force || claimOwner.equals(claimingClan))) {
-            if(!claimOwner.equals(claimingClan)) {
-                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken_other", ClanNames.get(claimOwner).getName()).setStyle(TextStyles.RED));
+        UUID previousClaimOwner = ClaimAccessor.getInstance().getChunkClan(claimChunk);
+        if (ClanIdRegistry.isValidClan(previousClaimOwner)) {
+            String previousClaimOwnerName = ClanNames.get(previousClaimOwner).getName();
+            if (!previousClaimOwner.equals(claimingClan)) {
+                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken_other", previousClaimOwnerName).setStyle(TextStyles.RED));
                 return false;
-            } else if(!claimChunk.isBorderland()) {
-                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken", ClanNames.get(claimingClan).getName()).setStyle(TextStyles.YELLOW));
+            } else if (!claimChunk.isBorderland()) {
+                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken", previousClaimOwnerName).setStyle(TextStyles.YELLOW));
                 return false;
             }
         }
-        if(claimOwner != null && !claimChunk.isBorderland() && !AdminControlledClanSettings.get(claimOwner).isServerOwned()) {//In this scenario, we are always forcing the claim and it is over someone else's claim, so we should refund the clan the land is being taken from
+        if (AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
+            return claimChunk(claimingPlayer, claimChunk, claimingClan, true, true);
+        }
+        ClanClaimCount clanClaimCount = ClanClaimCount.get(claimingClan);
+        long claimCount = clanClaimCount.getClaimCount();
+        long maxClaimCount = clanClaimCount.getMaxClaimCount();
+        if (ClansModContainer.getConfig().isForceConnectedClaims() && !ChunkUtils.hasConnectedClaim(claimChunk, claimingClan) && claimCount != 0) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected", ClanNames.get(claimingClan).getName()).setStyle(TextStyles.RED));
+            return false;
+        }
+        if (claimCount >= maxClaimCount) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed", ClanNames.get(claimingClan).getName(), maxClaimCount).setStyle(TextStyles.RED));
+            return false;
+        }
+        boolean makingInitialClaim = claimCount == 0;
+        boolean hasInitialClaimDistanceSetting = ClansModContainer.getConfig().getMinClanHomeDist() > 0 && ClansModContainer.getConfig().getInitialClaimSeparationMultiplier() > 0;
+        if (makingInitialClaim && hasInitialClaimDistanceSetting) {
+            boolean inClanHomeRange = false;
+            double minimumInitialClaimDistanceFromOtherClanHomes = ClansModContainer.getConfig().getMinClanHomeDist() * ClansModContainer.getConfig().getInitialClaimSeparationMultiplier();
+            for (Map.Entry<UUID, ClanHomes> pos : ClanHomes.getClanHomes().entrySet()) {
+                if (!pos.getKey().equals(claimingClan)
+                    && pos.getValue() != null
+                ) {
+                    double homeDistanceFromClaimingPlayer = pos.getValue().toBlockPos().getDistance(
+                        claimingPlayer.getPosition().getX(),
+                        claimingPlayer.getPosition().getY(),
+                        claimingPlayer.getPosition().getZ()
+                    );
+                    if (homeDistanceFromClaimingPlayer < minimumInitialClaimDistanceFromOtherClanHomes) {
+                        inClanHomeRange = true;
+                        break;
+                    }
+                }
+            }
+            if (inClanHomeRange) {
+                if (ClansModContainer.getConfig().isEnforceInitialClaimSeparation()) {
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_error", minimumInitialClaimDistanceFromOtherClanHomes).setStyle(TextStyles.RED));
+                    return false;
+                } else if (!PlayerCache.getClaimWarning(claimingPlayer.getUniqueID())) {
+                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_warning", minimumInitialClaimDistanceFromOtherClanHomes).setStyle(TextStyles.YELLOW));
+                    PlayerCache.setClaimWarning(claimingPlayer.getUniqueID(), true);
+                    return false;
+                }
+            }
+        }
+
+        return claimChunk(claimingPlayer, claimChunk, claimingClan, false, true);
+    }
+
+    public static boolean adminClaimChunk(EntityPlayerMP claimingPlayer, UUID claimingClan) {
+        return adminClaimChunk(claimingPlayer, claimingClan, new ChunkPositionWithData(claimingPlayer.chunkCoordX, claimingPlayer.chunkCoordZ, claimingPlayer.getEntityWorld().provider.getDimension()).retrieveCentralData());
+    }
+
+    public static boolean adminClaimChunk(EntityPlayerMP claimingPlayer, UUID claimingClan, ChunkPositionWithData claimChunk) {
+        UUID previousChunkOwner = ClaimAccessor.getInstance().getChunkClan(claimChunk);
+        boolean claimingOverOwnChunk = claimingClan.equals(previousChunkOwner);
+        if (claimingOverOwnChunk && !claimChunk.isBorderland()) {
+            String claimOwnerName = ClanNames.get(previousChunkOwner).getName();
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.taken", claimOwnerName).setStyle(TextStyles.YELLOW));
+            return false;
+        }
+        refundPreviousChunkOwner(claimChunk, previousChunkOwner);
+
+        return claimChunk(claimingPlayer, claimChunk, claimingClan, true, true);
+    }
+
+    private static void refundPreviousChunkOwner(ChunkPositionWithData claimChunk, @Nullable UUID claimOwner) {
+        if (ClanIdRegistry.isValidClan(claimOwner)
+            && !claimChunk.isBorderland()
+            && !AdminControlledClanSettings.get(claimOwner).isServerOwned()
+        ) {
             ClanClaimCosts.get(claimOwner).refundClaim();
         }
-        if(AdminControlledClanSettings.get(claimingClan).isServerOwned()) {
-            return claimChunk(claimingPlayer, claimChunk, claimingClan, true, true);
-        } else {
-            ClanClaimCount clanClaimCount = ClanClaimCount.get(claimingClan);
-            long claimCount = clanClaimCount.getClaimCount();
-            long maxClaimCount = clanClaimCount.getMaxClaimCount();
-            if (force || !ClansModContainer.getConfig().isForceConnectedClaims() || ChunkUtils.hasConnectedClaim(claimChunk, claimingClan) || claimCount == 0) {
-                if (force || claimCount < maxClaimCount) {
-                    if (claimCount > 0)
-                        claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
-                    else if (ClansModContainer.getConfig().getMinClanHomeDist() > 0 && ClansModContainer.getConfig().getInitialClaimSeparationMultiplier() > 0) {
-                        boolean inClanHomeRange = false;
-                        for (Map.Entry<UUID, ClanHomes> pos : ClanHomes.getClanHomes().entrySet())
-                            if (!pos.getKey().equals(claimingClan) && pos.getValue() != null && pos.getValue().toBlockPos().getDistance(claimingPlayer.getPosition().getX(), claimingPlayer.getPosition().getY(), claimingPlayer.getPosition().getZ()) < ClansModContainer.getConfig().getMinClanHomeDist() * ClansModContainer.getConfig().getInitialClaimSeparationMultiplier())
-                                inClanHomeRange = true;
-                        if (inClanHomeRange) {
-                            if (ClansModContainer.getConfig().isEnforceInitialClaimSeparation())
-                                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_error", ClansModContainer.getConfig().getMinClanHomeDist() * ClansModContainer.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.RED));
-                            else if (PlayerCache.getClaimWarning(claimingPlayer.getUniqueID()))
-                                return claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
-                            else {
-                                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.proximity_warning", ClansModContainer.getConfig().getMinClanHomeDist() * ClansModContainer.getConfig().getInitialClaimSeparationMultiplier()).setStyle(TextStyles.YELLOW));
-                                PlayerCache.setClaimWarning(claimingPlayer.getUniqueID(), true);
-                            }
-                        } else
-                            return claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
-                    } else
-                        return claimChunk(claimingPlayer, claimChunk, claimingClan, force, true);
-                } else
-                    claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.maxed", ClanNames.get(claimingClan).getName(), maxClaimCount).setStyle(TextStyles.RED));
-            } else
-                claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.disconnected", ClanNames.get(claimingClan).getName()).setStyle(TextStyles.RED));
-        }
-        return false;
     }
 
     private static boolean shouldCancelClaimingBecauseOfDimension(EntityPlayerMP claimingPlayer) {
@@ -266,22 +309,23 @@ public class ClaimManagement {
         return false;
     }
 
-    public static boolean claimChunk(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, UUID claimingClan, boolean noClaimCost, boolean showMessage) {
-        if (noClaimCost || ClanClaimCosts.get(claimingClan).payForClaim()) {
-            PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
-            if(!event.isCancelled) {
-                ClaimAccessor.getInstance().updateChunkOwner(claimChunk, null, claimingClan);
-                setClanHomeIfNeeded(claimingPlayer, claimChunk, claimingClan);
-                if(showMessage)
-                    sendClaimSuccessMessage(claimingPlayer, claimingClan);
-                return true;
-            } else {
-                claimingPlayer.sendMessage(event.cancelledMessage);
-                return false;
-            }
-        } else
+    private static boolean claimChunk(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, UUID claimingClan, boolean noClaimCost, boolean showMessage) {
+        if (!noClaimCost && !ClanClaimCosts.get(claimingClan).payForClaim()) {
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", ClanNames.get(claimingClan).getName(), Economy.getFormattedCurrency(FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), claimingClan, 0))).setStyle(TextStyles.RED));
-        return false;
+            return false;
+        }
+        PreLandClaimEvent event = ClansEventManager.fireEvent(new PreLandClaimEvent(claimingPlayer.world, claimChunk, claimingPlayer.getUniqueID(), claimingClan));
+        if (!event.isCancelled) {
+            ClaimAccessor.getInstance().updateChunkOwner(claimChunk, null, claimingClan);
+            setClanHomeIfNeeded(claimingPlayer, claimChunk, claimingClan);
+            if (showMessage) {
+                sendClaimSuccessMessage(claimingPlayer, claimingClan);
+            }
+            return true;
+        } else {
+            claimingPlayer.sendMessage(event.cancelledMessage);
+            return false;
+        }
     }
 
     private static void setClanHomeIfNeeded(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, UUID claimingClan) {

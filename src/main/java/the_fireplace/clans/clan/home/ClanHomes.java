@@ -26,8 +26,9 @@ public class ClanHomes extends ClanData {
 
     public static void delete(UUID clan) {
         ClanHomes upkeep = HOME_INSTANCES.remove(clan);
-        if(upkeep != null)
+        if (upkeep != null) {
             upkeep.delete();
+        }
     }
 
     public static Map<UUID, ClanHomes> getClanHomes() {

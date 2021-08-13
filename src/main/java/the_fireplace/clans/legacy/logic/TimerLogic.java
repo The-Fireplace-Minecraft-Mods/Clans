@@ -175,9 +175,9 @@ public class TimerLogic {
             if(AutoAbandon.isAutoAbandoning(player.getUniqueID()))
                 needsRecalc = ClaimManagement.checkAndAttemptAbandon((EntityPlayerMP) player, AutoAbandon.getAutoAbandoningClan(player.getUniqueID())) || needsRecalc;
             if(OpAutoClaim.isAutoClaiming(player.getUniqueID()))
-                needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, OpAutoClaim.getAutoClaimingClan(player.getUniqueID()), true) || needsRecalc;
+                needsRecalc = ClaimManagement.adminClaimChunk((EntityPlayerMP) player, OpAutoClaim.getAutoClaimingClan(player.getUniqueID())) || needsRecalc;
             if(AutoClaim.isAutoClaiming(player.getUniqueID()))
-                needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, AutoClaim.getAutoClaimingClan(player.getUniqueID()), false) || needsRecalc;
+                needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, AutoClaim.getAutoClaimingClan(player.getUniqueID())) || needsRecalc;
             if(needsRecalc) {
                 data = ClaimAccessor.getInstance().getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimAccessor.getInstance().getChunkClan(data);

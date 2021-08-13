@@ -1,3 +1,6 @@
+Changes:
+Admins using /opclan claim now ignore the minimum clan home distance when making the initial claim for a clan.
+
 Fixes/Internal Changes:
 Fixed major lag spike when claiming a large chunk radius
 Performance optimizations for servers with multiple large claimed areas and Dynmap.
