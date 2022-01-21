@@ -8,7 +8,8 @@ import the_fireplace.clans.legacy.model.ChunkPosition;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class PreLandAbandonEvent {
+public class PreLandAbandonEvent
+{
     public boolean isCancelled = false;
     public ITextComponent cancelledMessage;
     private final World world;

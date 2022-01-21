@@ -13,34 +13,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandAutoAbandon extends OpClanSubCommand {
-	@Override
-	public String getName() {
-		return "autoabandon";
-	}
+public class OpCommandAutoAbandon extends OpClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "autoabandon";
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 0;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 0;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-        if(!OpAutoAbandon.cancelOpAutoAbandon(sender.getUniqueID())) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        if (!OpAutoAbandon.cancelOpAutoAbandon(sender.getUniqueID())) {
             OpAutoAbandon.activateOpAutoAbandon(sender.getUniqueID());
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
-			ClaimManagement.checkAndAttemptAbandon(sender, null);
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
-	}
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.start").setStyle(TextStyles.YELLOW));
+            ClaimManagement.checkAndAttemptAbandon(sender, null);
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.opclan.autoabandon.stop").setStyle(TextStyles.GREEN));
+        }
+    }
 
-	@Override
-	protected boolean allowConsoleUsage() {
-		return false;
-	}
+    @Override
+    protected boolean allowConsoleUsage() {
+        return false;
+    }
 }

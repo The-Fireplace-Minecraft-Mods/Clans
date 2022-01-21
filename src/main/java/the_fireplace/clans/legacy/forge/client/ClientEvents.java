@@ -9,10 +9,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import the_fireplace.clans.legacy.ClansModContainer;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = ClansModContainer.MODID)
-public class ClientEvents {
+public class ClientEvents
+{
     @SubscribeEvent
     public static void configChanged(ConfigChangedEvent event) {
-        if (event.getModID().equals(ClansModContainer.MODID))
+        if (event.getModID().equals(ClansModContainer.MODID)) {
             ConfigManager.sync(ClansModContainer.MODID, Config.Type.INSTANCE);
+        }
     }
 }

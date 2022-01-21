@@ -23,7 +23,8 @@ import java.io.File;
 import java.util.UUID;
 
 @Deprecated
-public final class LegacyClanImporter {
+public final class LegacyClanImporter
+{
     public static void importLegacyClans() {
         File[] oldClanDataFiles = FileNames.getUUIDJsonFolderContents(Directories.CLAN_DATA_LOCATION);
         if (oldClanDataFiles != null) {
@@ -36,11 +37,13 @@ public final class LegacyClanImporter {
 
     private static void importLegacyClan(File file) {
         JsonReader reader = JsonReader.create(file);
-        if(reader == null)
+        if (reader == null) {
             return;
+        }
         UUID clanId = reader.readUUID("clanId", null);
-        if(clanId == null)
+        if (clanId == null) {
             clanId = getUUIDFromFileName(file);
+        }
 
         ClanIdRegistry.addLegacy(clanId);
 

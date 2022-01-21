@@ -47,15 +47,17 @@ import java.util.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CommandClan extends CommandBase {
-    public static final Map<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>() {{
+public class CommandClan extends CommandBase
+{
+    public static final Map<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>()
+    {{
         //land claiming
         put("claim", new CommandClaim());
         put("abandonclaim", new CommandAbandonClaim());
         put("abandonall", new CommandAbandonAll());
         put("autoclaim", new CommandAutoClaim());
         put("autoabandon", new CommandAutoAbandon());
-	    put("map", new CommandMap());
+        put("map", new CommandMap());
         put("fancymap", new CommandFancyMap());
         put("seechunk", new CommandSeeChunk());
         //invites
@@ -70,7 +72,7 @@ public class CommandClan extends CommandBase {
         put("demote", new CommandDemote());
         //clan constants/details/other
         put("form", new CommandForm());
-	    put("disband", new CommandDisband());
+        put("disband", new CommandDisband());
         put("banner", new CommandBanner());
         put("details", new CommandDetails());
         put("playerinfo", new CommandPlayerInfo());
@@ -86,8 +88,9 @@ public class CommandClan extends CommandBase {
         //player config
         put("setdefault", new CommandSetDefault());
         put("territorymessagemode", new CommandTerritoryMessageMode());
-        if(ClansModContainer.getConfig().shouldProtectWilderness())
+        if (ClansModContainer.getConfig().shouldProtectWilderness()) {
             put("undergroundmessages", new CommandUndergroundMessages());
+        }
         //teleportation related
         put("home", new CommandHome());
         put("trapped", new CommandTrapped());
@@ -111,7 +114,7 @@ public class CommandClan extends CommandBase {
         put("grantaccess", new CommandGrantAccess());
         put("denyaccess", new CommandDenyAccess());
         put("lockinfo", new CommandLockInfo());
-	}};
+    }};
 
     public static final Map<String, String> COMMAND_ALIASES = Maps.newHashMap();
     private static final List<String> FINANCE_COMMANDS = Lists.newArrayList("balance", "addfunds", "takefunds", "setrent", "finances");
@@ -148,8 +151,9 @@ public class CommandClan extends CommandBase {
         COMMAND_ALIASES.put("setdesc", "setdescription");
         //player config
         COMMAND_ALIASES.put("tmm", "territorymessagemode");
-        if(ClansModContainer.getConfig().shouldProtectWilderness())
+        if (ClansModContainer.getConfig().shouldProtectWilderness()) {
             COMMAND_ALIASES.put("um", "undergroundmessages");
+        }
         //teleportation related
         COMMAND_ALIASES.put("h", "home");
         COMMAND_ALIASES.put("t", "trapped");
@@ -189,8 +193,9 @@ public class CommandClan extends CommandBase {
 
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0)
+        if (args.length <= 0) {
             throw new WrongUsageException(getUsage(sender));
+        }
         String tag = args[0].toLowerCase();
         //Remove the subcommand from the args
         if (ClanNames.isClanNameUsed(tag) && args.length >= 2) {
@@ -200,30 +205,35 @@ public class CommandClan extends CommandBase {
                 String[] commArgs = Arrays.copyOfRange(args, 2, args.length);
                 //If the command is greedy, we leave the subcommand in the args so it can be identified as greedy when the subcommand handler executes.
                 args = ArrayUtils.addAll(new String[]{args[0]}, GREEDY_COMMANDS.contains(tag) ? ArrayUtils.addAll(new String[]{tag}, commArgs) : commArgs);
-            } else
+            } else {
                 args = new String[]{args[0]};
+            }
         } else {
             //Skip greedy commands because this would cause part of the description to be cut off
-            if(!GREEDY_COMMANDS.contains(tag))
-                if (args.length > 1)
+            if (!GREEDY_COMMANDS.contains(tag)) {
+                if (args.length > 1) {
                     args = Arrays.copyOfRange(args, 1, args.length);
-                else
+                } else {
                     args = new String[]{};
+                }
+            }
             //Make the first arg the default clan name because a clan name was not specified
             UUID defaultClan = sender instanceof EntityPlayerMP ? PlayerClanSettings.getDefaultClan(((EntityPlayerMP) sender).getUniqueID()) : null;
             args = ArrayUtils.addAll(new String[]{defaultClan != null ? ClanNames.get(defaultClan).getName() : ClanNames.NULL_CLAN_NAME}, args);
         }
         //Check permissions and run command
-        if(PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX+processAlias(tag), true)) {
+        if (PermissionManager.hasPermission(sender, PermissionManager.CLAN_COMMAND_PREFIX + processAlias(tag), true)) {
             if (Economy.isPresent() || !FINANCE_COMMANDS.contains(processAlias(tag))) {
-                if(COMMANDS.containsKey(processAlias(tag)))
+                if (COMMANDS.containsKey(processAlias(tag))) {
                     COMMANDS.get(processAlias(tag)).execute(server, sender, args);
-                else
+                } else {
                     throw new WrongUsageException(getUsage(sender));
+                }
                 return;
             }
-        } else if(COMMANDS.containsKey(tag) || COMMAND_ALIASES.containsKey(tag))
+        } else if (COMMANDS.containsKey(tag) || COMMAND_ALIASES.containsKey(tag)) {
             throw new CommandException("commands.generic.permission");
+        }
         throw new WrongUsageException(getUsage(sender));
     }
 
@@ -245,24 +255,28 @@ public class CommandClan extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         String[] args2;
-        if(args.length > 1)
+        if (args.length > 1) {
             args2 = Arrays.copyOfRange(args, 1, args.length);
-        else
+        } else {
             args2 = new String[]{};
-        if(args.length >= 1) {
-            if(args.length == 1) {
+        }
+        if (args.length >= 1) {
+            if (args.length == 1) {
                 List<String> arg1List = Lists.newArrayList(COMMANDS.keySet());
-                if (sender instanceof EntityPlayerMP)
-                    for (UUID c : PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID()))
+                if (sender instanceof EntityPlayerMP) {
+                    for (UUID c : PlayerClans.getClansPlayerIsIn(((EntityPlayerMP) sender).getUniqueID())) {
                         arg1List.add(ClanNames.get(c).getName());
+                    }
+                }
                 return getListOfStringsMatchingLastWord(args, arg1List);
-            } else if(COMMANDS.containsKey(processAlias(args[0]))) {
+            } else if (COMMANDS.containsKey(processAlias(args[0]))) {
                 return COMMANDS.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos);
-            } else if(ClanNames.getClanNames().contains(args[0])) {
-                if(args.length == 2)
+            } else if (ClanNames.getClanNames().contains(args[0])) {
+                if (args.length == 2) {
                     return getListOfStringsMatchingLastWord(args, COMMANDS.keySet());
-                else if(COMMANDS.get(args[1]) != null)
+                } else if (COMMANDS.get(args[1]) != null) {
                     return COMMANDS.get(args[1]).getTabCompletions(server, sender, args2, targetPos);
+                }
             }
         }
         return Collections.emptyList();

@@ -16,35 +16,37 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandAutoClaim extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "autoclaim";
-	}
+public class CommandAutoClaim extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "autoclaim";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.ADMIN;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.ADMIN;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 0;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 0;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
         UUID rm = AutoClaim.cancelAutoClaim(sender.getUniqueID());
-		if(rm == null) {
+        if (rm == null) {
             AutoClaim.activateAutoClaim(sender.getUniqueID(), selectedClan);
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.start", selectedClanName).setStyle(TextStyles.GREEN));
-			ClaimManagement.checkAndAttemptClaim(sender, selectedClan);
-		} else
+            ClaimManagement.checkAndAttemptClaim(sender, selectedClan);
+        } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.autoclaim.stop", ClanNames.get(rm).getName()).setStyle(TextStyles.GREEN));
-	}
+        }
+    }
 }

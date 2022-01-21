@@ -3,7 +3,8 @@ package the_fireplace.clans.api.event;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class ClanFormedEvent {
+public class ClanFormedEvent
+{
     @Nullable
     private final UUID formingPlayer;
     private final UUID newClan;

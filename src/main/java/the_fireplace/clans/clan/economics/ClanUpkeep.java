@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanUpkeep extends ClanData {
+public class ClanUpkeep extends ClanData
+{
     private static final Map<UUID, ClanUpkeep> UPKEEP_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanUpkeep get(UUID clan) {
@@ -20,8 +21,9 @@ public class ClanUpkeep extends ClanData {
 
     public static void delete(UUID clan) {
         ClanUpkeep upkeep = UPKEEP_INSTANCES.remove(clan);
-        if(upkeep != null)
+        if (upkeep != null) {
             upkeep.delete();
+        }
     }
 
     private long upkeepTimestamp = getNewUpkeepTimestamp();

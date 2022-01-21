@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanHomes extends ClanData {
+public class ClanHomes extends ClanData
+{
     private static final Map<UUID, ClanHomes> HOME_INSTANCES = new ConcurrentHashMap<>();
     private static boolean cacheLoaded = false;
 
@@ -45,25 +46,29 @@ public class ClanHomes extends ClanData {
     }
 
     public static void set(UUID clan, BlockPos home, int dimension) {
-        if(!hasHome(clan))
+        if (!hasHome(clan)) {
             HOME_INSTANCES.put(clan, new ClanHomes(clan));
+        }
         get(clan).setHome(home, dimension);
     }
 
     private static void ensureClanHomeCacheLoaded() {
-        if(!cacheLoaded)
-            for(UUID clan: ClanIdRegistry.getIds())
+        if (!cacheLoaded) {
+            for (UUID clan : ClanIdRegistry.getIds()) {
                 loadIfAbsent(clan);
+            }
+        }
         cacheLoaded = true;
     }
 
     private static void loadIfAbsent(UUID clan) {
-        if(!cacheLoaded) {
+        if (!cacheLoaded) {
             ClanHomes loadHome = new ClanHomes(clan);
-            if(loadHome.loadSavedData())
+            if (loadHome.loadSavedData()) {
                 HOME_INSTANCES.putIfAbsent(clan, loadHome);
-            else
+            } else {
                 loadHome.delete();
+            }
         }
     }
 
@@ -94,7 +99,7 @@ public class ClanHomes extends ClanData {
 
     @Override
     public void readFromJson(JsonReader reader) {
-        if(reader.readBool("hasHome", true)) {
+        if (reader.readBool("hasHome", true)) {
             homeX = reader.readFloat("homeX", 0);
             homeY = reader.readFloat("homeY", 0);
             homeZ = reader.readFloat("homeZ", 0);

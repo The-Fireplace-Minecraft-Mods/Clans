@@ -23,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-public final class ClaimData implements ClaimAccessor {
+public final class ClaimData implements ClaimAccessor
+{
     private static final File CHUNK_DATA_LOCATION = new File(ClansModContainer.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/chunk");
     private static final byte CACHE_SECTION_SIZE = 64;
     @Deprecated
@@ -41,12 +42,13 @@ public final class ClaimData implements ClaimAccessor {
     }
 
     public void save() {
-        for (ClaimStoredData data: claimedChunks.values()) {
+        for (ClaimStoredData data : claimedChunks.values()) {
             data.save();
         }
     }
 
     private static final ConcurrentMap<?, ?> EMPTY_CONCURRENT_MAP = new EmptyConcurrentMap<>();
+
     private static <K, V> ConcurrentMap<K, V> getEmptyConcurrentMap() {
         //noinspection unchecked
         return (ConcurrentMap<K, V>) EMPTY_CONCURRENT_MAP;
@@ -65,7 +67,7 @@ public final class ClaimData implements ClaimAccessor {
     }
 
     private OrderedPair<Integer, Integer> getCacheSectionCoordinates(int chunkX, int chunkZ) {
-        return new OrderedPair<>((int)Math.round(((double) chunkX) / CACHE_SECTION_SIZE), (int)Math.round(((double) chunkZ) / CACHE_SECTION_SIZE));
+        return new OrderedPair<>((int) Math.round(((double) chunkX) / CACHE_SECTION_SIZE), (int) Math.round(((double) chunkZ) / CACHE_SECTION_SIZE));
     }
 
     public Collection<OrderedPair<Integer, Integer>> getOccupiedCacheSections() {
@@ -89,10 +91,11 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     public Set<UUID> getClansWithClaims() {
         Set<UUID> claimClans = Sets.newHashSet();
-        for (Map.Entry<UUID, ClaimStoredData> claimedChunkEntry: claimedChunks.entrySet()) {
+        for (Map.Entry<UUID, ClaimStoredData> claimedChunkEntry : claimedChunks.entrySet()) {
             UUID clan = claimedChunkEntry.getKey();
-            if (!claimedChunkEntry.getValue().getChunks().isEmpty())
+            if (!claimedChunkEntry.getValue().getChunks().isEmpty()) {
                 claimClans.add(clan);
+            }
         }
         return Collections.unmodifiableSet(claimClans);
     }
@@ -112,7 +115,7 @@ public final class ClaimData implements ClaimAccessor {
     public void delChunk(UUID clan, ChunkPositionWithData pos) {
         claimedChunks.computeIfAbsent(clan, ClaimStoredData::new);
         getCacheSection(pos, true).remove(pos);
-        if(claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
+        if (claimedChunks.get(clan).delChunk(pos) && !pos.isBorderland()) {
             resetRegenBorderlandsTimer(clan);
             ClanClaimCount.get(clan).decrementCachedClaimCount();
         }
@@ -125,7 +128,7 @@ public final class ClaimData implements ClaimAccessor {
     @Override
     public Set<Integer> getClaimDims(UUID clanId) {
         Set<Integer> dims = new IntArraySet(1);
-        for (ChunkPositionWithData pos: getClaimedChunks(clanId)) {
+        for (ChunkPositionWithData pos : getClaimedChunks(clanId)) {
             dims.add(pos.getDim());
         }
         return Collections.unmodifiableSet(dims);
@@ -205,7 +208,7 @@ public final class ClaimData implements ClaimAccessor {
      * An alternative way could be created, but it would be far worse for performance.
      */
     private void removeClanFromCache(UUID clan) {
-        for (ChunkPositionWithData pos: claimedChunks.get(clan).chunks) {
+        for (ChunkPositionWithData pos : claimedChunks.get(clan).chunks) {
             getCacheSection(pos, false).remove(pos);
         }
     }
@@ -282,11 +285,12 @@ public final class ClaimData implements ClaimAccessor {
         for (UUID entry : claimedChunks.keySet()) {
             resetRegenBorderlandsTimer(entry);
         }
-        
+
         return this;
     }
 
-    public static class ClaimStoredData implements ThreadedSaveable, JsonWritable {
+    public static class ClaimStoredData implements ThreadedSaveable, JsonWritable
+    {
         private final File chunkDataFile;
         private final ThreadedSaveHandler<ClaimStoredData> saveHandler = ThreadedSaveHandler.create(this);
 
@@ -295,7 +299,7 @@ public final class ClaimData implements ClaimAccessor {
         private boolean hasBorderlands = false;
 
         private ClaimStoredData(UUID clan) {
-            chunkDataFile = new File(CHUNK_DATA_LOCATION, clan.toString()+".json");
+            chunkDataFile = new File(CHUNK_DATA_LOCATION, clan.toString() + ".json");
             this.clan = clan;
         }
 
@@ -347,22 +351,25 @@ public final class ClaimData implements ClaimAccessor {
 
         boolean addChunk(ChunkPositionWithData pos) {
             boolean added = chunks.add(pos);
-            if(added)
+            if (added) {
                 markChanged();
+            }
             return added;
         }
 
         boolean addAllChunks(Collection<? extends ChunkPositionWithData> positions) {
             boolean added = chunks.addAll(positions);
-            if(added)
+            if (added) {
                 markChanged();
+            }
             return added;
         }
 
         boolean delChunk(ChunkPositionWithData pos) {
             boolean removed = chunks.remove(pos);
-            if(removed)
+            if (removed) {
                 markChanged();
+            }
             return removed;
         }
 
@@ -371,10 +378,12 @@ public final class ClaimData implements ClaimAccessor {
         }
 
         void genBorderlands() {
-            if(ClansModContainer.getConfig().isEnableBorderlands()) {
-                for (int d : ClansModContainer.getMinecraftHelper().getDimensionIds())
-                    for (ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos) && !INSTANCE.chunkDataExists(pos)).collect(Collectors.toSet()))
+            if (ClansModContainer.getConfig().isEnableBorderlands()) {
+                for (int d : ClansModContainer.getMinecraftHelper().getDimensionIds()) {
+                    for (ChunkPositionWithData pos : new CoordNodeTree(d, clan).forBorderlandRetrieval().getBorderChunks().stream().filter(pos -> !getChunks().contains(pos) && !INSTANCE.chunkDataExists(pos)).collect(Collectors.toSet())) {
                         INSTANCE.addChunk(clan, pos);
+                    }
+                }
                 hasBorderlands = true;
                 markChanged();
             }
@@ -386,10 +395,12 @@ public final class ClaimData implements ClaimAccessor {
         }
 
         void clearBorderlands() {
-            if(hasBorderlands) {
-                for(ChunkPositionWithData chunk: getChunks())
-                    if(chunk.isBorderland())
+            if (hasBorderlands) {
+                for (ChunkPositionWithData chunk : getChunks()) {
+                    if (chunk.isBorderland()) {
                         INSTANCE.delChunk(clan, chunk);
+                    }
+                }
                 hasBorderlands = false;
                 markChanged();
             }

@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class PlayerDataStorage {
+public final class PlayerDataStorage
+{
     private static final Map<UUID, PlayerStoredData> PLAYER_DATA = new ConcurrentHashMap<>();
     static final File PLAYER_DATA_LOCATION = new File(ClansModContainer.getMinecraftHelper().getServer().getWorld(0).getSaveHandler().getWorldDirectory(), "clans/player");
 
@@ -28,22 +29,24 @@ public final class PlayerDataStorage {
     }
 
     static PlayerStoredData getPlayerData(UUID player) {
-        if(!PLAYER_DATA.containsKey(player))
+        if (!PLAYER_DATA.containsKey(player)) {
             PLAYER_DATA.put(player, new PlayerStoredData(player));
+        }
         return PLAYER_DATA.get(player);
     }
 
     public static void save() {
-        for(Map.Entry<UUID, PlayerStoredData> entry : PLAYER_DATA.entrySet()) {
+        for (Map.Entry<UUID, PlayerStoredData> entry : PLAYER_DATA.entrySet()) {
             entry.getValue().save();
-            if(entry.getValue().shouldDisposeReferences) {
+            if (entry.getValue().shouldDisposeReferences) {
                 PLAYER_DATA.remove(entry.getKey());
                 entry.getValue().getSaveHandler().disposeReferences();
             }
         }
     }
 
-    static class PlayerStoredData implements ThreadedSaveable, JsonWritable {
+    static class PlayerStoredData implements ThreadedSaveable, JsonWritable
+    {
         private final File playerDataFile;
         private final ThreadedSaveHandler<PlayerStoredData> saveHandler = ThreadedSaveHandler.create(this);
         private boolean shouldDisposeReferences = false;
@@ -59,8 +62,8 @@ public final class PlayerDataStorage {
         private long lastSeen;
 
         private PlayerStoredData(UUID playerId) {
-            playerDataFile = new File(PLAYER_DATA_LOCATION, playerId.toString()+".json");
-            if(!load()) {
+            playerDataFile = new File(PLAYER_DATA_LOCATION, playerId.toString() + ".json");
+            if (!load()) {
                 inviteBlock = false;
                 raidWins = raidLosses = 0;
                 territoryDisplayMode = TerritoryDisplayMode.ACTION_BAR;
@@ -69,7 +72,7 @@ public final class PlayerDataStorage {
             }
             //If the player is offline, we should remove references so garbage collection can clean it up when the data is done being used.
             //noinspection ConstantConditions
-            if(ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(playerId) == null) {
+            if (ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(playerId) == null) {
                 shouldDisposeReferences = true;
                 saveHandler.disposeReferences();
             }
@@ -79,15 +82,16 @@ public final class PlayerDataStorage {
          * @return true if it loaded from a file successfully, false otherwise.
          */
         private boolean load() {
-            if(!PLAYER_DATA_LOCATION.exists()) {
+            if (!PLAYER_DATA_LOCATION.exists()) {
                 PLAYER_DATA_LOCATION.mkdirs();
                 return false;
             }
 
             JsonReader json = JsonReader.create(playerDataFile);
-            if(json == null)
+            if (json == null) {
                 return false;
-            defaultClan = json.readUUID( "defaultClan", null);
+            }
+            defaultClan = json.readUUID("defaultClan", null);
             invites.addAll(JsonHelper.uuidsFromJsonArray(json.readArray("invites")));
             blockedClans.addAll(JsonHelper.uuidsFromJsonArray(json.readArray("blockedClans")));
             inviteBlock = json.readBool("inviteBlock", false);
@@ -102,8 +106,9 @@ public final class PlayerDataStorage {
         @Override
         public JsonObject toJson() {
             JsonObject obj = new JsonObject();
-            if (defaultClan != null)
+            if (defaultClan != null) {
                 obj.addProperty("defaultClan", defaultClan.toString());
+            }
             obj.add("invites", JsonHelper.toJsonArray(invites));
             obj.add("blockedClans", JsonHelper.toJsonArray(blockedClans));
             obj.addProperty("inviteBlock", inviteBlock);
@@ -127,7 +132,7 @@ public final class PlayerDataStorage {
         }
 
         void setDefaultClan(@Nullable UUID defaultClan) {
-            if(!Objects.equals(this.defaultClan, defaultClan)) {
+            if (!Objects.equals(this.defaultClan, defaultClan)) {
                 this.defaultClan = defaultClan;
                 markChanged();
             }
@@ -135,34 +140,38 @@ public final class PlayerDataStorage {
 
         boolean addInvite(UUID clan) {
             boolean ret = invites.add(clan);
-            if(ret)
+            if (ret) {
                 markChanged();
+            }
             return ret;
         }
 
         boolean removeInvite(UUID clan) {
             boolean ret = invites.remove(clan);
-            if(ret)
+            if (ret) {
                 markChanged();
+            }
             return ret;
         }
 
         boolean addInviteBlock(UUID clan) {
             boolean ret = blockedClans.add(clan);
-            if(ret)
+            if (ret) {
                 markChanged();
+            }
             return ret;
         }
 
         boolean removeInviteBlock(UUID clan) {
             boolean ret = blockedClans.remove(clan);
-            if(ret)
+            if (ret) {
                 markChanged();
+            }
             return ret;
         }
 
         void setGlobalInviteBlock(boolean inviteBlock) {
-            if(this.inviteBlock != inviteBlock) {
+            if (this.inviteBlock != inviteBlock) {
                 this.inviteBlock = inviteBlock;
                 markChanged();
             }
@@ -216,14 +225,14 @@ public final class PlayerDataStorage {
         }
 
         void setTerritoryDisplayMode(TerritoryDisplayMode mode) {
-            if(mode != territoryDisplayMode) {
+            if (mode != territoryDisplayMode) {
                 territoryDisplayMode = mode;
                 markChanged();
             }
         }
 
         void setShowUndergroundMessages(boolean show) {
-            if(showUndergroundMessages != show) {
+            if (showUndergroundMessages != show) {
                 showUndergroundMessages = show;
                 markChanged();
             }

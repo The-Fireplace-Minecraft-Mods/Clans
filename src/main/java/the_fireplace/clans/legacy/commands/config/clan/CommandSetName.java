@@ -15,39 +15,42 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSetName extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "setname";
-	}
+public class CommandSetName extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "setname";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.LEADER;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.LEADER;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		String newName = args[0];
-		if(Config.getInstance().chatCensor.censorClanNames)
-			newName = ClansModContainer.getChatCensorCompat().getCensoredString(newName);
-		if(ClansModContainer.getConfig().getMaxNameLength() > 0 && newName.length() > ClansModContainer.getConfig().getMaxNameLength())
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansModContainer.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
-		else if(ClanNames.isClanNameAvailable(newName)) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        String newName = args[0];
+        if (Config.getInstance().chatCensor.censorClanNames) {
+            newName = ClansModContainer.getChatCensorCompat().getCensoredString(newName);
+        }
+        if (ClansModContainer.getConfig().getMaxNameLength() > 0 && newName.length() > ClansModContainer.getConfig().getMaxNameLength()) {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.toolong", ClansModContainer.getConfig().getMaxNameLength()).setStyle(TextStyles.RED));
+        } else if (ClanNames.isClanNameAvailable(newName)) {
             String oldName = selectedClanName;
             ClanNames.get(selectedClan).setName(newName);
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.success", oldName, newName).setStyle(TextStyles.GREEN));
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
-	}
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setname.taken", newName).setStyle(TextStyles.RED));
+        }
+    }
 }

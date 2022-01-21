@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AutoAbandon {
+public class AutoAbandon
+{
     private static final Map<UUID, UUID> AUTO_ABANDONING_PLAYERS = new ConcurrentHashMap<>();
 
     public static void activateAutoAbandon(UUID player, UUID selectedClan) {

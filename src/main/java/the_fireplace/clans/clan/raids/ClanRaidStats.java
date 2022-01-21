@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanRaidStats extends ClanData {
+public class ClanRaidStats extends ClanData
+{
     private static final Map<UUID, ClanRaidStats> RAID_STATS_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanRaidStats get(UUID clan) {
@@ -20,8 +21,9 @@ public class ClanRaidStats extends ClanData {
 
     public static void delete(UUID clan) {
         ClanRaidStats stats = RAID_STATS_INSTANCES.remove(clan);
-        if(stats != null)
+        if (stats != null) {
             stats.delete();
+        }
     }
 
     private int wins = 0;
@@ -44,8 +46,9 @@ public class ClanRaidStats extends ClanData {
         wins++;
         //TODO Abstract this out
         if (ClansModContainer.getConfig().isIncreasingRewards()) {
-            if (raid.getPartyWlr() >= ClansModContainer.getConfig().getWLRThreshold())
+            if (raid.getPartyWlr() >= ClansModContainer.getConfig().getWLRThreshold()) {
                 ClanWeaknessFactor.get(clan).decreaseWeaknessFactor();
+            }
         }
         markChanged();
     }
@@ -53,8 +56,9 @@ public class ClanRaidStats extends ClanData {
     public void addLoss() {
         losses++;
         //TODO Abstract this out
-        if (ClansModContainer.getConfig().isIncreasingRewards())
+        if (ClansModContainer.getConfig().isIncreasingRewards()) {
             ClanWeaknessFactor.get(clan).increaseWeaknessFactor();
+        }
         markChanged();
     }
 

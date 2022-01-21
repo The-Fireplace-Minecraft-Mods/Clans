@@ -14,13 +14,15 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWritable, JsonReadable {
+public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWritable, JsonReadable
+{
     private static final File REGISTRY_FILE = new File(Directories.CLAN_DATA_LOCATION, "registry.json");
     private static ClanIdRegistry instance = null;
 
     private static ClanIdRegistry getInstance() {
-        if(instance == null)
+        if (instance == null) {
             instance = new ClanIdRegistry();
+        }
         return instance;
     }
 
@@ -28,7 +30,7 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
         UUID clanId;
         do {
             clanId = UUID.randomUUID();
-        } while(getInstance().hasId(clanId));
+        } while (getInstance().hasId(clanId));
         getInstance().addId(clanId);
         return clanId;
     }
@@ -62,8 +64,9 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
     private final Set<UUID> clanIds = new ConcurrentSet<>();
 
     private ClanIdRegistry() {
-        if(REGISTRY_FILE.exists())
+        if (REGISTRY_FILE.exists()) {
             load(REGISTRY_FILE);
+        }
     }
 
     private boolean hasId(UUID uuid) {
@@ -71,19 +74,22 @@ public final class ClanIdRegistry implements ThreadedJsonSerializable, JsonWrita
     }
 
     private void addId(UUID uuid) {
-        if (clanIds.add(uuid))
+        if (clanIds.add(uuid)) {
             markChanged();
+        }
     }
 
     private void removeId(UUID uuid) {
-        if (clanIds.remove(uuid))
+        if (clanIds.remove(uuid)) {
             markChanged();
+        }
     }
 
     @Override
     public void readFromJson(JsonReader reader) {
-        for(JsonElement entry: reader.readArray("ids"))
+        for (JsonElement entry : reader.readArray("ids")) {
             clanIds.add(UUID.fromString(entry.getAsString()));
+        }
     }
 
     @Override

@@ -23,8 +23,10 @@ import java.util.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CommandOpClan extends CommandBase {
-    public static final Map<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>() {{
+public class CommandOpClan extends CommandBase
+{
+    public static final Map<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>()
+    {{
         //land claiming
         put("claim", new OpCommandClaim());
         put("abandonclaim", new OpCommandAbandonClaim());
@@ -35,8 +37,9 @@ public class CommandOpClan extends CommandBase {
         put("setdescription", new OpCommandSetDescription());
         put("setcolor", new OpCommandSetColor());
         put("setshield", new OpCommandSetShield());
-        if(Economy.isPresent())
+        if (Economy.isPresent()) {
             put("addfunds", new OpCommandAddFunds());
+        }
         put("setrank", new OpCommandSetRank());
         put("kick", new OpCommandKick());
         put("disband", new OpCommandDisband());
@@ -47,9 +50,10 @@ public class CommandOpClan extends CommandBase {
         put("tp", new OpCommandTeleport());
         //help
         put("help", new OpCommandHelp());
-	}};
+    }};
 
-    public static final Map<String, String> COMMAND_ALIASES = new HashMap<String, String>(){{
+    public static final Map<String, String> COMMAND_ALIASES = new HashMap<String, String>()
+    {{
         put("c", "claim");
         put("ac", "autoclaim");
         put("abc", "abandonclaim");
@@ -84,22 +88,26 @@ public class CommandOpClan extends CommandBase {
 
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0)
+        if (args.length <= 0) {
             throw new WrongUsageException(getUsage(sender));
+        }
         String tag = args[0].toLowerCase();
         //Attach an extra arg to greedy commands because ClanSubCommand takes two args off of those.
-        if(args.length > 1 && CommandClan.GREEDY_COMMANDS.contains(tag))
+        if (args.length > 1 && CommandClan.GREEDY_COMMANDS.contains(tag)) {
             args = ArrayUtils.addAll(new String[]{"opclan"}, args);
-        if(PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX+processAlias(tag), true)) {
+        }
+        if (PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX + processAlias(tag), true)) {
             if (Economy.isPresent() || !"addfunds".equals(processAlias(tag))) {
-                if(COMMANDS.containsKey(processAlias(tag)))
+                if (COMMANDS.containsKey(processAlias(tag))) {
                     COMMANDS.get(processAlias(tag)).execute(server, sender, args);
-                else
+                } else {
                     throw new WrongUsageException(getUsage(sender));
+                }
                 return;
             }
-        } else if(COMMANDS.containsKey(tag) || COMMAND_ALIASES.containsKey(tag))
+        } else if (COMMANDS.containsKey(tag) || COMMAND_ALIASES.containsKey(tag)) {
             throw new CommandException("commands.generic.permission");
+        }
         throw new WrongUsageException(getUsage(sender));
     }
 
@@ -112,10 +120,11 @@ public class CommandOpClan extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         String[] args2;
-        if(args.length > 1)
+        if (args.length > 1) {
             args2 = Arrays.copyOfRange(args, 1, args.length);
-        else
+        } else {
             args2 = new String[]{};
+        }
         return args.length >= 1 && COMMANDS.containsKey(processAlias(args[0])) ? args.length == 1 ? getListOfStringsMatchingLastWord(args, COMMANDS.keySet()) : COMMANDS.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
     }
 }

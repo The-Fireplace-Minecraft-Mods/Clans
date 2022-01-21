@@ -20,40 +20,43 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSeeChunk extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "seechunk";
-	}
+public class CommandSeeChunk extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "seechunk";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.ANY;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.ANY;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		World w = sender.getEntityWorld();
-		Chunk c = w.getChunk(sender.getPosition());
-		if(args.length == 1)
-			PlayerCache.setIsShowingChunkBorders(sender.getUniqueID(), parseBool(args[0]));
-		ChunkUtils.showChunkBounds(c, sender);
-	}
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+        World w = sender.getEntityWorld();
+        Chunk c = w.getChunk(sender.getPosition());
+        if (args.length == 1) {
+            PlayerCache.setIsShowingChunkBorders(sender.getUniqueID(), parseBool(args[0]));
+        }
+        ChunkUtils.showChunkBounds(c, sender);
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, "on", "off");
-		return Collections.emptyList();
-	}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, "on", "off");
+        }
+        return Collections.emptyList();
+    }
 }

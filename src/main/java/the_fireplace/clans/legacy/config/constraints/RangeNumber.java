@@ -11,7 +11,9 @@ import static java.lang.annotation.ElementType.FIELD;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
-public @interface RangeNumber {
+public @interface RangeNumber
+{
     long min() default Long.MIN_VALUE;
+
     long max() default Long.MAX_VALUE;
 }

@@ -12,22 +12,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class RaidSubCommand extends ClanSubCommand {
-	@Override
-	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + getUsage(server).split(" ")[1], true);
-	}
+public abstract class RaidSubCommand extends ClanSubCommand
+{
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + getUsage(server).split(" ")[1], true);
+    }
 
-	@Override
-	public final EnumRank getRequiredClanRank(){
-		return EnumRank.ANY;
-	}
+    @Override
+    public final EnumRank getRequiredClanRank() {
+        return EnumRank.ANY;
+    }
 
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {}
+    @Override
+    protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    }
 
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.raid."+getName()+".usage");
-	}
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return TranslationUtil.getRawTranslationString(sender, "commands.raid." + getName() + ".usage");
+    }
 }

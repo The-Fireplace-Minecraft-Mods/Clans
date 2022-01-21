@@ -14,7 +14,8 @@ import the_fireplace.clans.legacy.forge.FakePlayerUtil;
 
 import javax.annotation.Nullable;
 
-public class ForgeMinecraftHelper {
+public class ForgeMinecraftHelper
+{
     public MinecraftServer getServer() {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }

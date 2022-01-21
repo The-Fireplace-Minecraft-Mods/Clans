@@ -13,36 +13,41 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-class SpongeWrapper implements ExternalEconomy {
+class SpongeWrapper implements ExternalEconomy
+{
 
     @Nullable
     private EconomyService spongeEcon;
 
     @Nullable
     private EconomyService getEcon() {
-        if(spongeEcon == null)
+        if (spongeEcon == null) {
             spongeEcon = Sponge.getServiceManager().provide(EconomyService.class).isPresent() ? Sponge.getServiceManager().provide(EconomyService.class).get() : null;
+        }
         return spongeEcon;
     }
 
     @Override
     public double getBalance(UUID uuid) {
-        if(hasAccount(uuid))
+        if (hasAccount(uuid)) {
             return getAccount(uuid).getBalance(getDefaultCurrency()).doubleValue();
+        }
         return 0;
     }
 
     @Override
     public boolean addAmount(double amount, UUID uuid) {
-        if(hasAccount(uuid))
+        if (hasAccount(uuid)) {
             return getAccount(uuid).deposit(getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansModContainer.MODID)).getResult().equals(ResultType.SUCCESS);
+        }
         return false;
     }
 
     @Override
     public boolean deductAmount(double amount, UUID uuid) {
-        if(hasAccount(uuid))
+        if (hasAccount(uuid)) {
             return getAccount(uuid).withdraw(getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansModContainer.MODID)).getResult().equals(ResultType.SUCCESS);
+        }
         return false;
     }
 
@@ -57,13 +62,14 @@ class SpongeWrapper implements ExternalEconomy {
     @Override
     public double deductPartialAmount(double amount, UUID account) {
         double balance = getBalance(account);
-        if(balance > amount) {
+        if (balance > amount) {
             deductAmount(amount, account);
             return 0;
-        } else if(deductAmount(balance, account))
+        } else if (deductAmount(balance, account)) {
             return amount - balance;
-        else
+        } else {
             return amount;
+        }
     }
 
     @Override

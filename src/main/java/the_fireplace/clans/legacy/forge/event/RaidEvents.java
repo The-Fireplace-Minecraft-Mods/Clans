@@ -12,35 +12,38 @@ import the_fireplace.clans.legacy.ClansModContainer;
 import the_fireplace.clans.legacy.logic.RaidManagementLogic;
 
 @Mod.EventBusSubscriber(modid = ClansModContainer.MODID)
-public class RaidEvents {
-	@SubscribeEvent
-	public static void onBlockDrops(BlockEvent.HarvestDropsEvent event) {
-		if(RaidManagementLogic.shouldCancelBlockDrops(event.getWorld(), event.getPos())) {
-			//Double check that nothing gets dropped during a raid, to avoid block duping.
-			event.getDrops().clear();
-			event.setDropChance(0.0f);
-		}
-	}
+public class RaidEvents
+{
+    @SubscribeEvent
+    public static void onBlockDrops(BlockEvent.HarvestDropsEvent event) {
+        if (RaidManagementLogic.shouldCancelBlockDrops(event.getWorld(), event.getPos())) {
+            //Double check that nothing gets dropped during a raid, to avoid block duping.
+            event.getDrops().clear();
+            event.setDropChance(0.0f);
+        }
+    }
 
-	@SubscribeEvent
-	public static void onPlayerDeath(LivingDeathEvent event) {
-		if(event.getEntity() instanceof EntityPlayerMP)
-			RaidManagementLogic.onPlayerDeath((EntityPlayerMP)event.getEntity(), event.getSource());
-	}
+    @SubscribeEvent
+    public static void onPlayerDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof EntityPlayerMP) {
+            RaidManagementLogic.onPlayerDeath((EntityPlayerMP) event.getEntity(), event.getSource());
+        }
+    }
 
-	@SubscribeEvent
-	public static void onChunkLoaded(ChunkEvent.Load event) {
-		RaidManagementLogic.checkAndRestoreChunk(event.getChunk());
-	}
+    @SubscribeEvent
+    public static void onChunkLoaded(ChunkEvent.Load event) {
+        RaidManagementLogic.checkAndRestoreChunk(event.getChunk());
+    }
 
-	@SubscribeEvent
-	public static void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
-		RaidManagementLogic.onNeighborBlockNotified(event.getWorld(), event.getState(), event.getPos());
-	}
+    @SubscribeEvent
+    public static void onNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
+        RaidManagementLogic.onNeighborBlockNotified(event.getWorld(), event.getState(), event.getPos());
+    }
 
-	@SubscribeEvent
-	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
-		if(event.getEntity() instanceof EntityFallingBlock)
-			event.setCanceled(RaidManagementLogic.shouldCancelFallingBlockCreation((EntityFallingBlock)event.getEntity()));
-	}
+    @SubscribeEvent
+    public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() instanceof EntityFallingBlock) {
+            event.setCanceled(RaidManagementLogic.shouldCancelFallingBlockCreation((EntityFallingBlock) event.getEntity()));
+        }
+    }
 }

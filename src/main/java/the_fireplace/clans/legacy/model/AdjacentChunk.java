@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-class AdjacentChunk {
+class AdjacentChunk
+{
     private ChunkPosition loc;
 
     private AdjacentChunk m_top = null;
@@ -51,20 +52,20 @@ class AdjacentChunk {
     /**
      * Takes a list of available claim chunks and finds all chunks which attach to this chunk location. As chunks
      * are found to be attached they are removed from the remainingChunksToProcess list and put it the processedChunks list.
-     *
+     * <p>
      * Note: This is a recursive method.
      *
      * @param remainingChunksToProcess A list of available chunks to search for adjacent chunks
-     * @param processedChunks A list of chunks that have been found and processed already.
+     * @param processedChunks          A list of chunks that have been found and processed already.
      */
     void processAdjacentChunksRecursively(Set<ChunkPosition> remainingChunksToProcess, Map<ChunkPosition, AdjacentChunk> processedChunks) {
-        ChunkPosition[] adjacentPos = { new ChunkPosition(loc.getPosX(), loc.getPosZ() - 1, loc.getDim()),
-                new ChunkPosition(loc.getPosX(), loc.getPosZ() + 1, loc.getDim()),
-                new ChunkPosition(loc.getPosX() - 1, loc.getPosZ(), loc.getDim()),
-                new ChunkPosition(loc.getPosX() + 1, loc.getPosZ(), loc.getDim())
+        ChunkPosition[] adjacentPos = {new ChunkPosition(loc.getPosX(), loc.getPosZ() - 1, loc.getDim()),
+            new ChunkPosition(loc.getPosX(), loc.getPosZ() + 1, loc.getDim()),
+            new ChunkPosition(loc.getPosX() - 1, loc.getPosZ(), loc.getDim()),
+            new ChunkPosition(loc.getPosX() + 1, loc.getPosZ(), loc.getDim())
         };
 
-        AdjacentChunk[] adjacentChunks = { null, null, null, null };
+        AdjacentChunk[] adjacentChunks = {null, null, null, null};
 
         // Loop through all 4 sides of the chunk and associate each neighbor
         for (int index = 0; index < 4; index++) {

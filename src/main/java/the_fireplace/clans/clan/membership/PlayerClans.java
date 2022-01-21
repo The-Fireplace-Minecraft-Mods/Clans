@@ -6,19 +6,22 @@ import the_fireplace.clans.legacy.model.EnumRank;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerClans {
+public class PlayerClans
+{
     private static final Map<UUID, Set<UUID>> PLAYER_CLAN_CACHE = new ConcurrentHashMap<>();
 
     public static Collection<UUID> getClansPlayerIsIn(UUID player) {
-        if(player == null)
+        if (player == null) {
             return Collections.emptySet();
+        }
         ensurePlayerClansCached(player);
         return Collections.unmodifiableSet(PLAYER_CLAN_CACHE.get(player));
     }
 
     public static int countClansPlayerIsIn(UUID player) {
-        if(player == null)
+        if (player == null) {
             return 0;
+        }
         ensurePlayerClansCached(player);
         return PLAYER_CLAN_CACHE.get(player).size();
     }
@@ -46,7 +49,8 @@ public class PlayerClans {
     }
 
     public static void uncacheClan(UUID c) {
-        for(UUID player: PLAYER_CLAN_CACHE.keySet())
+        for (UUID player : PLAYER_CLAN_CACHE.keySet()) {
             uncachePlayerClan(player, c);
+        }
     }
 }

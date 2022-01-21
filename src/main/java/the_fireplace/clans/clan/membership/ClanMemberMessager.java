@@ -9,7 +9,8 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 
-public class ClanMemberMessager {
+public class ClanMemberMessager
+{
     public static ClanMemberMessager get(UUID clan) {
         return new ClanMemberMessager(clan);
     }
@@ -50,8 +51,10 @@ public class ClanMemberMessager {
 
     public void messageAllOnline(boolean actionBar, EnumRank minRank, @Nullable EntityPlayerMP excluded, Style textStyle, String translationKey, Object... args) {
         Map<EntityPlayerMP, EnumRank> online = ClanMembers.get(clan).getOnlineMemberRanks();
-        for (EntityPlayerMP member : online.keySet())
-            if (online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID())))
+        for (EntityPlayerMP member : online.keySet()) {
+            if (online.get(member).greaterOrEquals(minRank) && (excluded == null || !member.getUniqueID().equals(excluded.getUniqueID()))) {
                 member.sendStatusMessage(TranslationUtil.getTranslation(member.getUniqueID(), translationKey, args).setStyle(textStyle), actionBar && member.isEntityAlive());
+            }
+        }
     }
 }

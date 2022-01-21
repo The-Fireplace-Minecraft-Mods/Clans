@@ -1,6 +1,7 @@
 package the_fireplace.clans.legacy.util.translation;
 
-class I18n {
+class I18n
+{
     private static final ClansLanguageMap localizedName = ClansLanguageMap.getInstance();
     private static final ClansLanguageMap fallbackTranslator = new ClansLanguageMap("en_us");
 

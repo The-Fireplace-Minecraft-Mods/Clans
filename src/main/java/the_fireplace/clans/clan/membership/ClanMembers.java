@@ -17,7 +17,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class ClanMembers extends ClanData {
+public class ClanMembers extends ClanData
+{
     private static final Map<UUID, ClanMembers> MEMBERS = new ConcurrentHashMap<>();
     private static boolean allMembersLoaded = false;
 
@@ -27,22 +28,25 @@ public class ClanMembers extends ClanData {
 
     public static void delete(UUID clan) {
         ClanMembers members = MEMBERS.remove(clan);
-        if(members != null)
+        if (members != null) {
             members.delete();
+        }
     }
 
     static Collection<UUID> lookupPlayerClans(UUID player) {
         ensureAllMembersLoaded();
         Set<UUID> clans = new HashSet<>();
-        for (ClanMembers members : MEMBERS.values())
-            if (members.isMember(player))
+        for (ClanMembers members : MEMBERS.values()) {
+            if (members.isMember(player)) {
                 clans.add(members.clan);
+            }
+        }
         return Collections.unmodifiableSet(clans);
     }
 
     private static void ensureAllMembersLoaded() {
         if (!allMembersLoaded) {
-            for (UUID clan: ClanIdRegistry.getIds()) {
+            for (UUID clan : ClanIdRegistry.getIds()) {
                 get(clan);
             }
             allMembersLoaded = true;
@@ -89,8 +93,9 @@ public class ClanMembers extends ClanData {
         for (Map.Entry<UUID, EnumRank> member : getMemberRanks().entrySet()) {
             EntityPlayerMP player = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
             //noinspection ConstantConditions
-            if (player != null)
+            if (player != null) {
                 online.put(player, member.getValue());
+            }
         }
         return Collections.unmodifiableMap(online);
     }
@@ -100,8 +105,9 @@ public class ClanMembers extends ClanData {
         for (UUID member : getMembers()) {
             EntityPlayerMP player = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member);
             //noinspection ConstantConditions
-            if (player != null)
+            if (player != null) {
                 online.add(player);
+            }
         }
         return Collections.unmodifiableSet(online);
     }
@@ -136,15 +142,18 @@ public class ClanMembers extends ClanData {
     private void cacheNewMember(UUID player) {
         PlayerClans.cachePlayerClan(player, clan);
         InvitedPlayers.removeInvite(player, clan);
-        if (!ClansModContainer.getConfig().isAllowMultiClanMembership() && !AdminControlledClanSettings.get(clan).isServerOwned())
-            for (UUID clan : ClanIdRegistry.getIds())
+        if (!ClansModContainer.getConfig().isAllowMultiClanMembership() && !AdminControlledClanSettings.get(clan).isServerOwned()) {
+            for (UUID clan : ClanIdRegistry.getIds()) {
                 InvitedPlayers.removeInvite(player, clan);
+            }
+        }
         ClansModContainer.getDynmapCompat().refreshTooltip(clan);
     }
 
     public boolean removeMember(UUID player) {
-        if (isEssentialMember(player))
+        if (isEssentialMember(player)) {
             return false;
+        }
         boolean removed = this.members.remove(player) != null;
         if (removed) {
             PlayerClans.uncachePlayerClan(player, clan);
@@ -201,8 +210,9 @@ public class ClanMembers extends ClanData {
 
     @Override
     public void readFromJson(JsonReader reader) {
-        for(JsonElement entry: reader.readArray("members"))
+        for (JsonElement entry : reader.readArray("members")) {
             members.put(UUID.fromString(entry.getAsJsonObject().get("key").getAsString()), EnumRank.valueOf(entry.getAsJsonObject().get("value").getAsString()));
+        }
     }
 
     @Override
@@ -210,7 +220,7 @@ public class ClanMembers extends ClanData {
         JsonObject obj = new JsonObject();
 
         JsonArray members = new JsonArray();
-        for(Map.Entry<UUID, EnumRank> entry : this.members.entrySet()) {
+        for (Map.Entry<UUID, EnumRank> entry : this.members.entrySet()) {
             JsonObject newEntry = new JsonObject();
             newEntry.addProperty("key", entry.getKey().toString());
             newEntry.addProperty("value", entry.getValue().toString());

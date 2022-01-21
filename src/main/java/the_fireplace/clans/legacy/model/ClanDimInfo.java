@@ -6,7 +6,8 @@ import the_fireplace.clans.clan.metadata.ClanNames;
 
 import java.util.UUID;
 
-public class ClanDimInfo {
+public class ClanDimInfo
+{
     private final String clanName;
     private final String clanDescription;
 
@@ -48,19 +49,21 @@ public class ClanDimInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        else if (obj == this)
+        } else if (obj == this) {
             return true;
-        else
+        } else {
             return obj instanceof ClanDimInfo && this.equals((ClanDimInfo) obj);
+        }
     }
 
     private boolean equals(ClanDimInfo other) {
-        if (other == null)
+        if (other == null) {
             return false;
-        else
+        } else {
             return clanUniqueID.equals(other.clanUniqueID) && clanDimension == other.clanDimension;
+        }
     }
 
     @Override

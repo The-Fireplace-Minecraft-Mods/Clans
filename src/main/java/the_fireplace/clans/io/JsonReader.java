@@ -7,8 +7,10 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.UUID;
 
-public class JsonReader {
+public class JsonReader
+{
     protected final JsonObject obj;
+
     protected JsonReader(JsonObject obj) {
         this.obj = obj;
     }
@@ -20,8 +22,9 @@ public class JsonReader {
     @Nullable
     public static JsonReader create(File file) {
         JsonObject obj = FileToJsonObject.readJsonFile(file);
-        if(obj == null)
+        if (obj == null) {
             return null;
+        }
         return new JsonReader(obj);
     }
 

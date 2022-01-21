@@ -13,7 +13,8 @@ import the_fireplace.clans.legacy.util.ClansEventManager;
  * {@link the_fireplace.clans.player}
  * {@link ClaimData}
  */
-public final class ClansAPI {
+public final class ClansAPI
+{
     public static IConfig getConfig() {
         return ClansModContainer.getConfig();
     }

@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanShield extends ClanData {
+public class ClanShield extends ClanData
+{
     private static final Map<UUID, ClanShield> SHIELD_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanShield get(UUID clan) {
@@ -19,8 +20,9 @@ public class ClanShield extends ClanData {
 
     public static void delete(UUID clan) {
         ClanShield shield = SHIELD_INSTANCES.remove(clan);
-        if(shield != null)
+        if (shield != null) {
             shield.delete();
+        }
     }
 
     private long shield = ClansModContainer.getConfig().getInitialShield() * 60;
@@ -48,8 +50,9 @@ public class ClanShield extends ClanData {
      * This should be called once a minute
      */
     public void decrementShield() {
-        if (shield > 0)
+        if (shield > 0) {
             shield--;
+        }
         markChanged();
     }
 

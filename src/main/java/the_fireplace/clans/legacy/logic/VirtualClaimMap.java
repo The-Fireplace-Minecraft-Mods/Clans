@@ -3,7 +3,8 @@ package the_fireplace.clans.legacy.logic;
 import net.minecraft.util.math.ChunkPos;
 import the_fireplace.clans.legacy.model.OrderedPair;
 
-public abstract class VirtualClaimMap {
+public abstract class VirtualClaimMap
+{
     // This should be divisible by 7 and not exceed 53.
     // Divisible by 7 so the smaller map can take exactly a seventh of the section.
     // 53 map-width characters is all the chat window can fit before going to a new line.
@@ -45,19 +46,20 @@ public abstract class VirtualClaimMap {
     }
 
     public ChunkPos getCenterChunk() {
-        if (centerChunk == null)
+        if (centerChunk == null) {
             centerChunk = calculateCenter();
+        }
         return centerChunk;
     }
 
     protected int getMinX() {
         byte offset = getQuadrantXOffset();
-        return getCenterChunk().x - width/2 + offset;
+        return getCenterChunk().x - width / 2 + offset;
     }
 
     protected int getMaxX() {
         byte xOff = getQuadrantXOffset();
-        return getCenterChunk().x + width/2 + xOff;
+        return getCenterChunk().x + width / 2 + xOff;
     }
 
     protected byte getQuadrantXOffset() {
@@ -65,11 +67,11 @@ public abstract class VirtualClaimMap {
     }
 
     protected int getMinZ() {
-        return getCenterChunk().z - height/2 + getQuadrantZOffset();
+        return getCenterChunk().z - height / 2 + getQuadrantZOffset();
     }
 
     protected int getMaxZ() {
-        return getCenterChunk().z + height/2 + getQuadrantZOffset();
+        return getCenterChunk().z + height / 2 + getQuadrantZOffset();
     }
 
     protected byte getQuadrantZOffset() {

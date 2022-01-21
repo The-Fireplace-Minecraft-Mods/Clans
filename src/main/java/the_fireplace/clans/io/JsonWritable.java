@@ -9,11 +9,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public interface JsonWritable {
+public interface JsonWritable
+{
     Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     JsonObject toJson();
+
     default void writeToJson(File file) {
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file), Short.MAX_VALUE)) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file), Short.MAX_VALUE)) {
             GSON.toJson(this.toJson(), bw);
         } catch (IOException e) {
             e.printStackTrace();

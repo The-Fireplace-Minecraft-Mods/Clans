@@ -2,7 +2,8 @@ package the_fireplace.clans.player;
 
 import java.util.UUID;
 
-public final class PlayerRaidStats {
+public final class PlayerRaidStats
+{
     public static int getRaidWins(UUID player) {
         return PlayerDataStorage.getPlayerData(player).getRaidWins();
     }
@@ -12,7 +13,7 @@ public final class PlayerRaidStats {
     }
 
     public static double getRaidWLR(UUID player) {
-        return ((double) getRaidWins(player))/(getRaidLosses(player) > 1 ? (double) getRaidLosses(player) : 1);
+        return ((double) getRaidWins(player)) / (getRaidLosses(player) > 1 ? (double) getRaidLosses(player) : 1);
     }
 
     public static void incrementRaidLosses(UUID player) {

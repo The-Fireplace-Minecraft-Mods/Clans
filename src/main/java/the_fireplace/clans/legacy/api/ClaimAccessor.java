@@ -9,7 +9,8 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.UUID;
 
-public interface ClaimAccessor {
+public interface ClaimAccessor
+{
     static ClaimAccessor getInstance() {
         //noinspection deprecation
         return ClaimData.INSTANCE;

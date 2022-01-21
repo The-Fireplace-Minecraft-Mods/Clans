@@ -31,8 +31,9 @@ import java.util.UUID;
 import static the_fireplace.clans.legacy.ClansModContainer.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
-@Mod(modid = MODID, name = ClansModContainer.MODNAME, version = ClansModContainer.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies="after:grandeconomy;after:dynmap;after:spongeapi;required-after:forge@[14.23.5.2817,)")
-public final class ClansModContainer {
+@Mod(modid = MODID, name = ClansModContainer.MODNAME, version = ClansModContainer.VERSION, acceptedMinecraftVersions = "[1.12,1.13)", acceptableRemoteVersions = "*", dependencies = "after:grandeconomy;after:dynmap;after:spongeapi;required-after:forge@[14.23.5.2817,)")
+public final class ClansModContainer
+{
     public static final String MODID = "clans";
     public static final String MODNAME = "Clans";
     public static final String VERSION = "${version}";
@@ -45,43 +46,53 @@ public final class ClansModContainer {
     private static IDynmapCompat dynmapCompat = new DynmapCompatDummy();
     private static IChatCensorCompat chatCensorCompat = new ChatCensorCompatDummy();
     private static final List<IProtectionCompat> protectionCompats = Lists.newArrayList();
-    private static final IProtectionCompat protectionCompatManager = new IProtectionCompat() {
+    private static final IProtectionCompat protectionCompatManager = new IProtectionCompat()
+    {
         @Override
         public void init() {
-            for(IProtectionCompat compat: protectionCompats)
+            for (IProtectionCompat compat : protectionCompats) {
                 compat.init();
+            }
         }
 
         @Override
         public boolean isOwnable(Entity entity) {
-            for(IProtectionCompat compat: protectionCompats)
-                if(compat.isOwnable(entity))
+            for (IProtectionCompat compat : protectionCompats) {
+                if (compat.isOwnable(entity)) {
                     return true;
+                }
+            }
             return false;
         }
 
         @Nullable
         @Override
         public UUID getOwnerId(Entity entity) {
-            for(IProtectionCompat compat: protectionCompats)
-                if(compat.getOwnerId(entity) != null)
+            for (IProtectionCompat compat : protectionCompats) {
+                if (compat.getOwnerId(entity) != null) {
                     return compat.getOwnerId(entity);
+                }
+            }
             return null;
         }
 
         @Override
         public boolean isMob(Entity entity) {
-            for(IProtectionCompat compat: protectionCompats)
-                if(compat.isMob(entity))
+            for (IProtectionCompat compat : protectionCompats) {
+                if (compat.isMob(entity)) {
                     return true;
+                }
+            }
             return false;
         }
 
         @Override
         public boolean isContainer(World world, BlockPos pos, @Nullable IBlockState state, @Nullable TileEntity tileEntity) {
-            for(IProtectionCompat compat: protectionCompats)
-                if(compat.isContainer(world, pos, state, tileEntity))
+            for (IProtectionCompat compat : protectionCompats) {
+                if (compat.isContainer(world, pos, state, tileEntity)) {
                     return true;
+                }
+            }
             return false;
         }
     };
@@ -107,27 +118,31 @@ public final class ClansModContainer {
     public void preInit(FMLPreInitializationEvent event) {
         LOGGER = event.getModLog();
 
-        if(getMinecraftHelper().isPluginLoaded("dynmap"))
+        if (getMinecraftHelper().isPluginLoaded("dynmap")) {
             dynmapCompat = new DynmapCompat();
-        if(getMinecraftHelper().isPluginLoaded("chatcensor"))
+        }
+        if (getMinecraftHelper().isPluginLoaded("chatcensor")) {
             chatCensorCompat = new ChatCensorCompat();
-        if(getMinecraftHelper().isPluginLoaded("iceandfire"))
+        }
+        if (getMinecraftHelper().isPluginLoaded("iceandfire")) {
             addProtectionCompat(new IceAndFireCompat());
+        }
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event){
+    public void init(FMLInitializationEvent event) {
         getDynmapCompat().init();
         getProtectionCompat().init();
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event){
+    public void postInit(FMLPostInitializationEvent event) {
         Economy.detectAndUseExternalEconomy();
-        if(getMinecraftHelper().isPluginLoaded("spongeapi") && !Config.getInstance().general.forgePermissionPrecedence)
+        if (getMinecraftHelper().isPluginLoaded("spongeapi") && !Config.getInstance().general.forgePermissionPrecedence) {
             setPermissionManager(new SpongePermissionHandler());
-        else
+        } else {
             setPermissionManager(new ForgePermissionHandler());
+        }
     }
 
     @Mod.EventHandler
@@ -152,11 +167,11 @@ public final class ClansModContainer {
         protectionCompats.add(compat);
     }
 
-    public static IDynmapCompat getDynmapCompat(){
+    public static IDynmapCompat getDynmapCompat() {
         return dynmapCompat;
     }
 
-    public static IChatCensorCompat getChatCensorCompat(){
+    public static IChatCensorCompat getChatCensorCompat() {
         return chatCensorCompat;
     }
 }

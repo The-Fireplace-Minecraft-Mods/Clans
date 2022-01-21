@@ -26,14 +26,15 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class ClaimMapToChat extends VirtualClaimMap {
+public class ClaimMapToChat extends VirtualClaimMap
+{
     public static final char[] MAP_CHARS = {'#', '&', '@', '*', '+', '<', '>', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9', 'w', 'm'};
     public static final char SECTION_SYMBOL = '\u00A7';
-    private static final String DARK_GREEN = SECTION_SYMBOL+"2";
-    private static final String BLUE = SECTION_SYMBOL+"9";
-    private static final String LIME_GREEN = SECTION_SYMBOL+"a";
-    private static final String RED = SECTION_SYMBOL+"c";
-    private static final String YELLOW = SECTION_SYMBOL+"e";
+    private static final String DARK_GREEN = SECTION_SYMBOL + "2";
+    private static final String BLUE = SECTION_SYMBOL + "9";
+    private static final String LIME_GREEN = SECTION_SYMBOL + "a";
+    private static final String RED = SECTION_SYMBOL + "c";
+    private static final String YELLOW = SECTION_SYMBOL + "e";
     private static final String END_KEY_SYMBOL = ";";
     private static final String BORDER_STRING = "=================================================";
     public static final String WILDERNESS_SYMBOL = "-";
@@ -56,8 +57,9 @@ public class ClaimMapToChat extends VirtualClaimMap {
         this.height = getHeight(isSmall);
         this.bodyMessages = new ITextComponent[height];
         this.showMapSegment = mapSegment != null;
-        if(mapSegment == null)
+        if (mapSegment == null) {
             mapSegment = calculateMapSegment(playerChunk);
+        }
         this.mapSegment = mapSegment;
         useAllianceColorScheme = isSmall;
         playerId = getTargetId(messageTarget);
@@ -69,8 +71,9 @@ public class ClaimMapToChat extends VirtualClaimMap {
 
     public static void sendAllFancyMaps(EntityPlayerMP targetPlayer) {
         ConcurrentExecutionManager.runKillable(() -> {
-            for (OrderedPair<Integer, Integer> section : ClaimData.INSTANCE.getOccupiedCacheSections())
+            for (OrderedPair<Integer, Integer> section : ClaimData.INSTANCE.getOccupiedCacheSections()) {
                 createFancyMap(targetPlayer, new ChunkPos(targetPlayer.getPosition()), targetPlayer.dimension, section).prepareAndSend();
+            }
         });
     }
 
@@ -96,7 +99,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
     private OrderedPair<Integer, Integer> calculateMapSegment(ChunkPos playerChunk) {
         return new OrderedPair<>(playerChunk.x / MAP_SIZE, playerChunk.z / MAP_SIZE);
     }
-    
+
     public static ClaimMapToChat createFancyMap(ICommandSender messageTarget, ChunkPos originChunk, int dimension) {
         return new ClaimMapToChat(messageTarget, originChunk, dimension, false, null);
     }
@@ -122,18 +125,18 @@ public class ClaimMapToChat extends VirtualClaimMap {
             send();
         });
     }
-    
+
     private void prepareMapBodyAndKey(ExecutorService executor) {
         int minX = getMinX();
         int maxX = getMaxX();
         int minZ = getMinZ();
         int maxZ = getMaxZ();
         byte zOff = getQuadrantZOffset();
-        for(int z = minZ; z <= maxZ; z++) {
+        for (int z = minZ; z <= maxZ; z++) {
             int finalZ = z;
             executor.execute(() -> {
                 String row = buildRow(finalZ, minX, maxX);
-                bodyMessages[finalZ - getCenterChunk().z + height/2 - zOff] = new TextComponentString(row);
+                bodyMessages[finalZ - getCenterChunk().z + height / 2 - zOff] = new TextComponentString(row);
             });
         }
     }
@@ -144,11 +147,11 @@ public class ClaimMapToChat extends VirtualClaimMap {
             boolean isPlayerChunk = isPlayerChunk(x, finalZ);
             ChunkPositionWithData pos = ClaimAccessor.getInstance().getChunkPositionData(x, finalZ, dimension);
             UUID clan = ClaimAccessor.getInstance().getChunkClan(pos);
-            if(pos == null || clan == null)
+            if (pos == null || clan == null) {
                 row.append(getChunkColor(isPlayerChunk, getWildernessColor())).append(WILDERNESS_SYMBOL);
-            else if(pos.isBorderland())
+            } else if (pos.isBorderland()) {
                 row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(WILDERNESS_SYMBOL);
-            else {
+            } else {
                 symbolMap.putIfAbsent(clan, MAP_CHARS[symbolMap.size() % MAP_CHARS.length]);
                 row.append(getChunkColor(isPlayerChunk, getClanColor(clan))).append(symbolMap.get(clan));
             }
@@ -161,8 +164,9 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     private String getClanColor(UUID clan) {
-        if(useAllianceColorScheme)
+        if (useAllianceColorScheme) {
             return (isAlliedTo(clan) ? LIME_GREEN : RED);
+        }
         return SECTION_SYMBOL + Integer.toHexString(ClanColors.get(clan).getColorFormatting().getColorIndex());
     }
 
@@ -180,14 +184,16 @@ public class ClaimMapToChat extends VirtualClaimMap {
 
     private void send() {
         ArrayList<ITextComponent> messages = new ArrayList<>();
-        if(showMapSegment)
+        if (showMapSegment) {
             messages.add(getCacheSegmentComponent());
+        }
         messages.add(getBorderComponent());
         messages.addAll(Arrays.asList(bodyMessages));
         messages.add(getBorderComponent());
         messages.addAll(getMapSymbolGuide());
-        if(showMapSegment)
+        if (showMapSegment) {
             messages.add(getEndSegmentComponent());
+        }
 
         SynchronizedMessageQueue.queueMessages(messageTarget, messages.toArray(new ITextComponent[0]));
     }
@@ -208,12 +214,14 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     private Style getTextStyle(UUID c) {
-        if(c == null)
+        if (c == null) {
             return TextStyles.YELLOW;
-        if(useAllianceColorScheme)
+        }
+        if (useAllianceColorScheme) {
             return isAlliedTo(c) ? TextStyles.GREEN : TextStyles.RED;
-        else
+        } else {
             return new Style().setColor(ClanColors.get(c).getColorFormatting());
+        }
     }
 
     private ITextComponent getBorderComponent() {
@@ -221,7 +229,7 @@ public class ClaimMapToChat extends VirtualClaimMap {
     }
 
     private ITextComponent getCacheSegmentComponent() {
-        return new TextComponentString(CACHE_SEGMENT_SEPARATOR+ mapSegment.getValue1()+CACHE_SEGMENT_SEPARATOR+ mapSegment.getValue2()+CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.BLACK);
+        return new TextComponentString(CACHE_SEGMENT_SEPARATOR + mapSegment.getValue1() + CACHE_SEGMENT_SEPARATOR + mapSegment.getValue2() + CACHE_SEGMENT_SEPARATOR).setStyle(TextStyles.BLACK);
     }
 
     private ITextComponent getEndSegmentComponent() {

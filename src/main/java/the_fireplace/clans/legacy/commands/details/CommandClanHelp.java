@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 @MethodsReturnNonnullByDefault
-public class CommandClanHelp extends ClanSubCommand {
+public class CommandClanHelp extends ClanSubCommand
+{
     @Override
     public String getName() {
         return "help";
@@ -28,20 +29,21 @@ public class CommandClanHelp extends ClanSubCommand {
 
     @Override
     public void runFromAnywhere(@Nullable MinecraftServer server, @Nonnull ICommandSender sender, @Nullable String[] args) throws CommandException {
-        if(args == null || args.length == 0 || args[0].matches("\\d+")) {
+        if (args == null || args.length == 0 || args[0].matches("\\d+")) {
             int page = args == null || args.length < 1 ? 1 : parseInt(args[0]);
             List<ITextComponent> helps = Lists.newArrayList();
-            for (Map.Entry<String, ClanSubCommand> command : CommandClan.COMMANDS.entrySet())
+            for (Map.Entry<String, ClanSubCommand> command : CommandClan.COMMANDS.entrySet()) {
                 helps.add(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
-                        TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".usage"),
-                        TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".description")));
+                    TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".usage"),
+                    TranslationUtil.getStringTranslation(sender, "commands.clan." + command.getKey() + ".description")));
+            }
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
             ChatUtil.showPaginatedChat(sender, "/clan help %s", helps, page);
-        } else if(CommandClan.COMMAND_ALIASES.containsKey(args[0]) || CommandClan.COMMANDS.containsKey(args[0])) {
+        } else if (CommandClan.COMMAND_ALIASES.containsKey(args[0]) || CommandClan.COMMANDS.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
-                    TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".usage"),
-                    TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".description")));
+                TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".usage"),
+                TranslationUtil.getStringTranslation(sender, "commands.clan." + CommandClan.processAlias(args[0]) + ".description")));
         } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.invalid_help", args[0]));
         }
@@ -75,10 +77,12 @@ public class CommandClanHelp extends ClanSubCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> comp = Lists.newArrayList();
-        if(args.length != 1)
+        if (args.length != 1) {
             return comp;
-        for(int i = 1; i<CommandClan.COMMANDS.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
+        }
+        for (int i = 1; i < CommandClan.COMMANDS.size() / ChatUtil.RESULTS_PER_PAGE; i++) {
             comp.add(String.valueOf(i));
+        }
         comp.addAll(CommandClan.COMMAND_ALIASES.keySet());
         comp.addAll(CommandClan.COMMANDS.keySet());
         return getListOfStringsMatchingLastWord(args, comp);

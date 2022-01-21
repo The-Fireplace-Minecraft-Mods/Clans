@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class PlayerCache {
+public final class PlayerCache
+{
     private static final Map<UUID, UUID> clanChattingPlayers = new ConcurrentHashMap<>();
     private static final Map<EntityPlayerMP, OrderedPair<Integer, UUID>> clanHomeWarmups = new ConcurrentHashMap<>();
     private static final Map<UUID, PlayerCachedData> playerCache = new ConcurrentHashMap<>();
@@ -79,8 +80,9 @@ public final class PlayerCache {
 
     public static void setIsShowingChunkBorders(UUID player, boolean isShowingChunkBorders) {
         getPlayerCache(player).isShowingChunkBorders = isShowingChunkBorders;
-        if(!isShowingChunkBorders)
+        if (!isShowingChunkBorders) {
             updateBorderDisplayCache(ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(player), new BlockPos[0]);
+        }
     }
 
     public static void setClanHomeCheckX(UUID player, float prevX) {
@@ -119,14 +121,16 @@ public final class PlayerCache {
 
     public static void setNeedsCleanup(UUID player, boolean isMarkedForCleanup) {
         getPlayerCache(player).isMarkedForCleanup = isMarkedForCleanup;
-        if(isMarkedForCleanup)
+        if (isMarkedForCleanup) {
             clanChattingPlayers.remove(player);
+        }
     }
 
     public static void cleanup() {
-        for(Map.Entry<UUID, PlayerCachedData> entry: Sets.newHashSet(playerCache.entrySet())) {
-            if(entry.getValue().isMarkedForCleanup)
+        for (Map.Entry<UUID, PlayerCachedData> entry : Sets.newHashSet(playerCache.entrySet())) {
+            if (entry.getValue().isMarkedForCleanup) {
                 playerCache.remove(entry.getKey());
+            }
         }
     }
 
@@ -144,10 +148,11 @@ public final class PlayerCache {
     }
 
     public static void toggleClanChat(UUID uuid, UUID clan) {
-        if(clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan))
+        if (clanChattingPlayers.containsKey(uuid) && clanChattingPlayers.get(uuid).equals(clan)) {
             clanChattingPlayers.remove(uuid);
-        else
+        } else {
             clanChattingPlayers.put(uuid, clan);
+        }
     }
 
     public static boolean hasPlayerMovedSinceTeleportStarted(UUID player, Vec3d position) {
@@ -159,25 +164,27 @@ public final class PlayerCache {
     }
 
     public static void decrementHomeWarmupTimers() {
-        for(Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : clanHomeWarmups.entrySet()) {
+        for (Map.Entry<EntityPlayerMP, OrderedPair<Integer, UUID>> entry : clanHomeWarmups.entrySet()) {
             if (entry.getValue().getValue1() > 0) {
-                if(!hasPlayerMovedSinceTeleportStarted(entry.getKey().getUniqueID(), entry.getKey().getPositionVector()))
+                if (!hasPlayerMovedSinceTeleportStarted(entry.getKey().getUniqueID(), entry.getKey().getPositionVector())) {
                     clanHomeWarmups.put(entry.getKey(), new OrderedPair<>(entry.getValue().getValue1() - 1, entry.getValue().getValue2()));
-                else {
+                } else {
                     cancelClanHomeWarmup(entry.getKey());
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
                     continue;
                 }
-            } else
+            } else {
                 clanHomeWarmups.remove(entry.getKey());
+            }
 
             if (entry.getValue().getValue1() == 0 && entry.getKey() != null && entry.getKey().isEntityAlive()) {
                 UUID clan = entry.getValue().getValue2();
                 //Ensure that the clan still has a home and that the player is still in the clan before teleporting.
-                if(clan != null && ClanHomes.hasHome(clan) && ClanMembers.get(clan).getMembers().contains(entry.getKey().getUniqueID()))
+                if (clan != null && ClanHomes.hasHome(clan) && ClanMembers.get(clan).getMembers().contains(entry.getKey().getUniqueID())) {
                     EntityUtil.teleportHome(entry.getKey(), ClanHomes.get(clan).toBlockPos(), ClanHomes.get(clan).getHomeDim(), entry.getKey().dimension, false);
-                else
+                } else {
                     entry.getKey().sendMessage(TranslationUtil.getTranslation(entry.getKey().getUniqueID(), "commands.clan.home.cancelled").setStyle(TextStyles.RED));
+                }
             }
         }
     }
@@ -186,7 +193,8 @@ public final class PlayerCache {
         return clanHomeWarmups.remove(player) != null;
     }
 
-    private static class PlayerCachedData {
+    private static class PlayerCachedData
+    {
         private boolean isMarkedForCleanup = false;
 
         @Nullable

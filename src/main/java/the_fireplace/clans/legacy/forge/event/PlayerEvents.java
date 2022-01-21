@@ -10,7 +10,8 @@ import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.logic.PlayerEventLogic;
 
 @Mod.EventBusSubscriber(modid = ClansModContainer.MODID)
-public class PlayerEvents {
+public class PlayerEvents
+{
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEventLogic.onPlayerLoggedIn(event.player);
@@ -34,8 +35,8 @@ public class PlayerEvents {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onServerChat(ServerChatEvent event) {
-        if(event.getPlayer() != null) {
-            if(PlayerCache.isClanChatting(event.getPlayer().getUniqueID())) {
+        if (event.getPlayer() != null) {
+            if (PlayerCache.isClanChatting(event.getPlayer().getUniqueID())) {
                 event.setCanceled(true);
                 PlayerEventLogic.sendClanChat(event.getPlayer(), event.getComponent());
             } else {

@@ -12,7 +12,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanBanners extends ClanData {
+public class ClanBanners extends ClanData
+{
     private static final Map<UUID, ClanBanners> BANNERS = new ConcurrentHashMap<>();
     private static final Set<String> BANNER_CACHE = new ConcurrentSet<>();
     private static boolean cacheLoaded = false;
@@ -27,15 +28,17 @@ public class ClanBanners extends ClanData {
     }
 
     public static void set(UUID clan, String banner) {
-        if(!hasBanner(clan))
+        if (!hasBanner(clan)) {
             BANNERS.put(clan, new ClanBanners(clan));
+        }
         get(clan).setClanBanner(banner);
     }
 
     public static void delete(UUID clan) {
         ClanBanners banner = BANNERS.remove(clan);
-        if(banner != null)
+        if (banner != null) {
             banner.delete();
+        }
     }
 
     public static boolean isClanBannerAvailable(String clanBanner) {
@@ -44,19 +47,22 @@ public class ClanBanners extends ClanData {
     }
 
     private static void ensureBannerCacheLoaded() {
-        if(!cacheLoaded)
-            for(UUID clan: ClanIdRegistry.getIds())
+        if (!cacheLoaded) {
+            for (UUID clan : ClanIdRegistry.getIds()) {
                 loadIfAbsent(clan);
+            }
+        }
         cacheLoaded = true;
     }
 
     private static void loadIfAbsent(UUID clan) {
-        if(!cacheLoaded) {
+        if (!cacheLoaded) {
             ClanBanners loadBanner = new ClanBanners(clan);
-            if(loadBanner.hasSaveFile())
+            if (loadBanner.hasSaveFile()) {
                 BANNERS.putIfAbsent(clan, loadBanner);
-            else
+            } else {
                 loadBanner.delete();
+            }
         }
     }
 
@@ -65,8 +71,9 @@ public class ClanBanners extends ClanData {
     }
 
     private static void uncacheBanner(@Nullable String banner) {
-        if(banner != null)
+        if (banner != null) {
             BANNER_CACHE.remove(banner.toLowerCase());
+        }
     }
 
     private String clanBanner = null;
@@ -81,8 +88,9 @@ public class ClanBanners extends ClanData {
     }
 
     private void setClanBanner(String clanBanner) {
-        if(this.clanBanner != null)
+        if (this.clanBanner != null) {
             uncacheBanner(this.clanBanner);
+        }
         this.clanBanner = clanBanner;
         cacheBanner(clanBanner);
         markChanged();
@@ -92,8 +100,9 @@ public class ClanBanners extends ClanData {
     public void readFromJson(JsonReader reader) {
         //noinspection ConstantConditions
         String banner = reader.readString("clanBanner", null);
-        if(banner != null && !banner.isEmpty())
+        if (banner != null && !banner.isEmpty()) {
             setClanBanner(banner);
+        }
     }
 
     @Override

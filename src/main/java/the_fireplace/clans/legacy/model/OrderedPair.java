@@ -5,15 +5,16 @@ import java.util.Objects;
 
 /**
  * Simple OrderedPair system with 2 variables.
- * @author MRebhan
- * @author The_Fireplace
  *
  * @param <V1> First variable
  * @param <V2> Second variable
+ * @author MRebhan
+ * @author The_Fireplace
  */
 
 @SuppressWarnings("WeakerAccess")
-public class OrderedPair<V1, V2> {
+public class OrderedPair<V1, V2>
+{
     private V1 obj1;
     private V2 obj2;
 
@@ -45,17 +46,19 @@ public class OrderedPair<V1, V2> {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        else if (obj == this)
+        } else if (obj == this) {
             return true;
-        else
+        } else {
             return obj instanceof OrderedPair && equals((OrderedPair) obj);
+        }
     }
 
     public boolean equals(@Nullable OrderedPair pair) {
-        if (pair == null)
+        if (pair == null) {
             return false;
+        }
         return pair.obj1.equals(obj1) && pair.obj2.equals(obj2);
     }
 

@@ -11,7 +11,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanColors extends ClanData {
+public class ClanColors extends ClanData
+{
     private static final Map<UUID, ClanColors> COLORS = new ConcurrentHashMap<>();
 
     public static ClanColors get(UUID clan) {
@@ -21,8 +22,9 @@ public class ClanColors extends ClanData {
 
     public static void delete(UUID clan) {
         ClanColors colors = COLORS.remove(clan);
-        if(colors != null)
+        if (colors != null) {
             colors.delete();
+        }
     }
 
     private int color = new Random().nextInt(0xffffff);
@@ -30,7 +32,7 @@ public class ClanColors extends ClanData {
 
     private ClanColors(UUID clan) {
         super(clan, "color");
-        if(!loadSavedData()) {
+        if (!loadSavedData()) {
             markChanged();
         }
     }
@@ -41,13 +43,14 @@ public class ClanColors extends ClanData {
 
     public TextFormatting getColorFormatting() {
         TextFormatting colorFormatting = TextFormatting.fromColorIndex(textFormattingColorIndex);
-        if(colorFormatting == null)
+        if (colorFormatting == null) {
             colorFormatting = TextFormatting.RESET;
+        }
         return colorFormatting;
     }
 
     public void setColor(int color) {
-        if(this.color != color) {
+        if (this.color != color) {
             this.color = color;
             this.textFormattingColorIndex = TextStyles.getNearestTextColor(color).getColorIndex();
             markChanged();

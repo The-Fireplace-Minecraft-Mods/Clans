@@ -19,21 +19,24 @@ import java.util.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CommandRaid extends CommandBase {
-    public static final HashMap<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>() {{
+public class CommandRaid extends CommandBase
+{
+    public static final HashMap<String, ClanSubCommand> COMMANDS = new HashMap<String, ClanSubCommand>()
+    {{
         //raiding parties
         put("join", new CommandJoinRaid());
         put("leave", new CommandLeaveRaid());
         put("invite", new CommandInviteRaid());
-	    put("start", new CommandStartRaid());
+        put("start", new CommandStartRaid());
         put("collect", new CommandCollect());
         //Teleportation
         put("thru", new CommandThru());
         //help
         put("help", new CommandRaidHelp());
-	}};
+    }};
 
-    public static final Map<String, String> aliases = new HashMap<String, String>() {{
+    public static final Map<String, String> aliases = new HashMap<String, String>()
+    {{
         put("j", "join");
         put("form", "join");
         put("l", "leave");
@@ -59,23 +62,26 @@ public class CommandRaid extends CommandBase {
 
     @Override
     public void execute(@Nullable MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0)
+        if (args.length <= 0) {
             throw new WrongUsageException(getUsage(sender));
+        }
         String tag = args[0].toLowerCase();
-        if(ClansModContainer.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag)))
+        if (ClansModContainer.getConfig().getMaxRaidDuration() <= 0 && !"collect".equals(processAlias(tag))) {
             throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.raid.disabled"));
-        if(PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX+processAlias(tag), true)) {
-            if(COMMANDS.containsKey(processAlias(tag)))
+        }
+        if (PermissionManager.hasPermission(sender, PermissionManager.RAID_COMMAND_PREFIX + processAlias(tag), true)) {
+            if (COMMANDS.containsKey(processAlias(tag))) {
                 COMMANDS.get(processAlias(tag)).execute(server, sender, args);
-            else
+            } else {
                 throw new WrongUsageException(getUsage(sender));
-        } else if(COMMANDS.containsKey(tag) || aliases.containsKey(tag))
+            }
+        } else if (COMMANDS.containsKey(tag) || aliases.containsKey(tag)) {
             throw new CommandException("commands.generic.permission");
+        }
     }
 
     @Override
-    public int getRequiredPermissionLevel()
-    {
+    public int getRequiredPermissionLevel() {
         return 0;
     }
 
@@ -88,10 +94,11 @@ public class CommandRaid extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         String[] args2;
-        if(args.length > 1)
+        if (args.length > 1) {
             args2 = Arrays.copyOfRange(args, 1, args.length);
-        else
+        } else {
             args2 = new String[]{};
+        }
         return args.length >= 1 && COMMANDS.containsKey(processAlias(args[0])) ? args.length == 1 ? getListOfStringsMatchingLastWord(args, COMMANDS.keySet()) : COMMANDS.get(processAlias(args[0])).getTabCompletions(server, sender, args2, targetPos) : Collections.emptyList();
     }
 

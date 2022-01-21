@@ -27,7 +27,8 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class DynmapCompat implements IDynmapCompat {
+public class DynmapCompat implements IDynmapCompat
+{
     @Override
     public void serverStart() {
         buildDynmapWorldNames();
@@ -51,8 +52,9 @@ public class DynmapCompat implements IDynmapCompat {
                 tickCounter -= 20;
                 // Update the claim display in dynmap for the list of clans.
                 if (!claimUpdates.isEmpty()) {
-                    for (ClanDimInfo clanDim : claimUpdates)
+                    for (ClanDimInfo clanDim : claimUpdates) {
                         updateClanClaims(clanDim);
+                    }
 
                     claimUpdates.clear();
                 }
@@ -71,12 +73,14 @@ public class DynmapCompat implements IDynmapCompat {
         ClansModContainer.getMinecraftHelper().getLogger().debug("Claim update notification received for clan [{}] in Dimension [{}], total queued events [{}]", clanDimInfo.getClanIdString(), clanDimInfo.getDim(), claimUpdates.size());
 
         UUID clan = UUID.fromString(clanDimInfo.getClanIdString());
-        if(AdminControlledClanSettings.get(clan).isVisibleOnDynmap())
+        if (AdminControlledClanSettings.get(clan).isVisibleOnDynmap()) {
             claimUpdates.add(clanDimInfo);
+        }
     }
 
     /**
      * Updates all the claims in Dynamp for the specified clan in the specified dimension.
+     *
      * @param clanDimInfo The clan and dimension to update claims for.
      */
     private void updateClanClaims(ClanDimInfo clanDimInfo) {
@@ -88,7 +92,7 @@ public class DynmapCompat implements IDynmapCompat {
         clearAllClanMarkers(clanDimInfo);
 
         int groupCount = 0;
-        for (ChunkPosition pos: remainingChunksToProcess) {
+        for (ChunkPosition pos : remainingChunksToProcess) {
             GroupedChunks group = new GroupedChunks();
 
             group.processChunk(pos, remainingChunksToProcess);
@@ -108,17 +112,19 @@ public class DynmapCompat implements IDynmapCompat {
     private void initializeMap() {
         Set<ClanDimInfo> clanDimList = Sets.newHashSet();
 
-        for(UUID clan: ClaimAccessor.getInstance().getClansWithClaims()) {
+        for (UUID clan : ClaimAccessor.getInstance().getClansWithClaims()) {
             List<Integer> addedDims = Lists.newArrayList();
-            for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
-                if(!addedDims.contains(chunk.getDim())) {
+            for (ChunkPosition chunk : ClaimAccessor.getInstance().getClaimedChunks(clan)) {
+                if (!addedDims.contains(chunk.getDim())) {
                     clanDimList.add(new ClanDimInfo(clan, chunk.getDim()));
                     addedDims.add(chunk.getDim());
                 }
+            }
         }
 
-        for (ClanDimInfo clanDim : clanDimList)
+        for (ClanDimInfo clanDim : clanDimList) {
             queueClaimEventReceived(clanDim);
+        }
     }
 
 
@@ -135,7 +141,8 @@ public class DynmapCompat implements IDynmapCompat {
      * This is a call back class which Dynmap will call when it is ready to accept API requests. This is
      * also where we get the API object reference from.
      */
-    private class DynmapAPIListener extends DynmapCommonAPIListener {
+    private class DynmapAPIListener extends DynmapCommonAPIListener
+    {
         @Override
         public void apiEnabled(DynmapCommonAPI api) {
             if (api != null) {
@@ -153,16 +160,18 @@ public class DynmapCompat implements IDynmapCompat {
         // Create / update a Dynmap Layer for claims
         dynmapMarkerSet = dynmapMarkerApi.getMarkerSet(MARKER_SET_ID);
 
-        if(dynmapMarkerSet == null)
+        if (dynmapMarkerSet == null) {
             dynmapMarkerSet = dynmapMarkerApi.createMarkerSet(MARKER_SET_ID, MARKER_SET_LABEL, null, false);
-        else
+        } else {
             dynmapMarkerSet.setMarkerSetLabel(MARKER_SET_LABEL);
+        }
     }
 
     /**
      * This creates a single claim marker in Dynmap.
-     * @param clanDimInfo Defines the clan and dimension this claim marker is for
-     * @param groupIndex Defines the index number for how many claims this team has
+     *
+     * @param clanDimInfo     Defines the clan and dimension this claim marker is for
+     * @param groupIndex      Defines the index number for how many claims this team has
      * @param perimeterPoints A list of X Z points representing the perimeter of the claim to draw.
      */
     public void createAreaMarker(ClanDimInfo clanDimInfo, int groupIndex, List<CoordinatePair> perimeterPoints) {
@@ -193,28 +202,33 @@ public class DynmapCompat implements IDynmapCompat {
 
                 marker.setLineStyle(nStrokeWeight, dStrokeOpacity, nFillColor);
                 marker.setFillStyle(dFillOpacity, nFillColor);
-            } else
+            } else {
                 ClansModContainer.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim.");
-        } else
+            }
+        } else {
             ClansModContainer.getMinecraftHelper().getLogger().error("Failed to create Dynmap area marker for claim, Dynmap Marker Set is not available.");
+        }
     }
 
     @Override
     public void refreshTooltip(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
-            if(!addedDims.contains(chunk.getDim())) {
+        for (ChunkPosition chunk : ClaimAccessor.getInstance().getClaimedChunks(clan)) {
+            if (!addedDims.contains(chunk.getDim())) {
                 refreshTooltip(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
             }
+        }
     }
 
     public void refreshTooltip(ClanDimInfo info) {
-        if(dynmapMarkerSet != null) {
+        if (dynmapMarkerSet != null) {
             String newTooltip = getTooltipString(info).toString();
-            for(AreaMarker marker: dynmapMarkerSet.getAreaMarkers())
-                if(marker.getMarkerID().startsWith(getWorldName(info.getDim())+"_"+info.getClanIdString()+"_"))
+            for (AreaMarker marker : dynmapMarkerSet.getAreaMarkers()) {
+                if (marker.getMarkerID().startsWith(getWorldName(info.getDim()) + "_" + info.getClanIdString() + "_")) {
                     marker.setLabel(newTooltip, true);
+                }
+            }
         }
     }
 
@@ -236,8 +250,9 @@ public class DynmapCompat implements IDynmapCompat {
 
             for (UUID member : teamMembers) {
                 GameProfile gp = ClansModContainer.getMinecraftHelper().getServer().getPlayerProfileCache().getProfileByUUID(member);
-                if(gp != null)
+                if (gp != null) {
                     stToolTip.append("<div style=\"text-align: center;\"><span>").append(checkAndCensor(stripColorCodes(gp.getName()))).append("</span></div>");
+                }
             }
         }
 
@@ -247,37 +262,42 @@ public class DynmapCompat implements IDynmapCompat {
 
     /**
      * Find all the markers for the specified clan and clear them.
+     *
      * @param clan clan you want to clear the markers for. Clears in all dimensions.
      */
     @Override
     public void clearAllClanMarkers(UUID clan) {
         List<Integer> addedDims = Lists.newArrayList();
-        for(ChunkPosition chunk: ClaimAccessor.getInstance().getClaimedChunks(clan))
-            if(!addedDims.contains(chunk.getDim())) {
+        for (ChunkPosition chunk : ClaimAccessor.getInstance().getClaimedChunks(clan)) {
+            if (!addedDims.contains(chunk.getDim())) {
                 clearAllClanMarkers(new ClanDimInfo(clan, chunk.getDim()));
                 addedDims.add(chunk.getDim());
             }
+        }
     }
 
     /**
      * Find all the markers for the specified clan and clear them.
+     *
      * @param clanDimInfo clan and dimension you want to clear the markers for.
      */
     public void clearAllClanMarkers(ClanDimInfo clanDimInfo) {
         if (dynmapMarkerSet != null) {
             String worldName = getWorldName(clanDimInfo.getDim());
 
-            for(AreaMarker marker: dynmapMarkerSet.getAreaMarkers())
-                if(marker.getMarkerID().startsWith(worldName+"_"+clanDimInfo.getClanIdString()+"_") && marker.getWorld().equals(worldName))
+            for (AreaMarker marker : dynmapMarkerSet.getAreaMarkers()) {
+                if (marker.getMarkerID().startsWith(worldName + "_" + clanDimInfo.getClanIdString() + "_") && marker.getWorld().equals(worldName)) {
                     marker.deleteMarker();
-                else if(marker.getMarkerID().contains(clanDimInfo.getClanIdString()))
+                } else if (marker.getMarkerID().contains(clanDimInfo.getClanIdString())) {
                     ClansModContainer.getLogger().debug("Marker ID not removed, but it probably should be: {}", marker.getMarkerID());
+                }
+            }
         }
     }
 
     /**
      * Build a list of dimension names which are compatible with how Dynmap makes its names.
-     *
+     * <p>
      * Note: This method needs to be called prior to any worlds being unloaded.
      */
     public void buildDynmapWorldNames() {
@@ -287,11 +307,13 @@ public class DynmapCompat implements IDynmapCompat {
 
         // This code below follows Dynmap's naming which is required to get mapping between dimensions and worlds
         // to work. As dynmap API takes world strings not dimension numbers.
-        for (WorldServer world : worldsList)
-            dimensionNames.put(world.provider.getDimension(),  world.getWorldInfo().getWorldName());
+        for (WorldServer world : worldsList) {
+            dimensionNames.put(world.provider.getDimension(), world.getWorldInfo().getWorldName());
+        }
 
-        for (Map.Entry<Integer, String> entry : dimensionNames.entrySet())
+        for (Map.Entry<Integer, String> entry : dimensionNames.entrySet()) {
             ClansModContainer.getMinecraftHelper().getLogger().debug("  --> Dimension [{}] = {}", entry.getKey(), entry.getValue());
+        }
     }
 
     /**
@@ -303,8 +325,9 @@ public class DynmapCompat implements IDynmapCompat {
     private String getWorldName(int dim) {
         String worldName = "";
 
-        if (dimensionNames.containsKey(dim))
+        if (dimensionNames.containsKey(dim)) {
             worldName = dimensionNames.get(dim);
+        }
 
         return worldName;
     }
@@ -314,7 +337,7 @@ public class DynmapCompat implements IDynmapCompat {
      * @return Removes color codes from text strings and returns the raw text
      */
     public static String stripColorCodes(String text) {
-        return text.isEmpty() ? text :FORMATTING_COLOR_CODES_PATTERN.matcher(text).replaceAll("");
+        return text.isEmpty() ? text : FORMATTING_COLOR_CODES_PATTERN.matcher(text).replaceAll("");
     }
 
     public static String checkAndCensor(String text) {

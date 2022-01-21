@@ -18,43 +18,48 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSetRent extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "setrent";
-	}
+public class CommandSetRent extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "setrent";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.LEADER;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.LEADER;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(ClansModContainer.getConfig().getChargeRentDays() <= 0)
-			throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
-        if(!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
-			double newRent = parseDouble(args[0]);
-			if (newRent >= 0) {
-				double maxRent = FormulaParser.eval(ClansModContainer.getConfig().getMaxRentFormula(), selectedClan, 0);
-				if (maxRent <= 0 || newRent <= maxRent) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+        if (ClansModContainer.getConfig().getChargeRentDays() <= 0) {
+            throw new CommandException(TranslationUtil.getRawTranslationString(sender, "commands.clan.setrent.disabled"));
+        }
+        if (!AdminControlledClanSettings.get(selectedClan).isServerOwned()) {
+            double newRent = parseDouble(args[0]);
+            if (newRent >= 0) {
+                double maxRent = FormulaParser.eval(ClansModContainer.getConfig().getMaxRentFormula(), selectedClan, 0);
+                if (maxRent <= 0 || newRent <= maxRent) {
                     ClanRent.get(selectedClan).setRent(newRent);
                     sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.success", selectedClanName, ClanRent.get(selectedClan).getRent()).setStyle(TextStyles.GREEN));
-				} else
+                } else {
                     sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.overmax", selectedClanName, Economy.getFormattedCurrency(maxRent)).setStyle(TextStyles.RED));
-			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
-		} else
+                }
+            } else {
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setrent.negative").setStyle(TextStyles.RED));
+            }
+        } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.not_on_server", "setrent", selectedClanName).setStyle(TextStyles.RED));
-	}
+        }
+    }
 }

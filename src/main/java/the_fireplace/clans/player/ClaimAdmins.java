@@ -6,15 +6,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import java.util.Set;
 import java.util.UUID;
 
-public class ClaimAdmins {
+public class ClaimAdmins
+{
     private static final Set<UUID> CLAIM_ADMINS = new ConcurrentSet<>();
 
-    public static boolean toggleClaimAdmin(EntityPlayerMP admin){
+    public static boolean toggleClaimAdmin(EntityPlayerMP admin) {
         return toggleClaimAdmin(admin.getUniqueID());
     }
 
-    public static boolean toggleClaimAdmin(UUID admin){
-        if(CLAIM_ADMINS.contains(admin)) {
+    public static boolean toggleClaimAdmin(UUID admin) {
+        if (CLAIM_ADMINS.contains(admin)) {
             CLAIM_ADMINS.remove(admin);
             return false;
         } else {

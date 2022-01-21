@@ -15,12 +15,14 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanNames extends ClanData {
+public class ClanNames extends ClanData
+{
     private static final Map<UUID, ClanNames> NAME_INSTANCES = new ConcurrentHashMap<>();
     private static final Map<String, UUID> NAME_TO_UUID_CACHE = new ConcurrentHashMap<>();
     private static boolean cacheLoaded = false;
-    public static final String NULL_CLAN_NAME = ClaimMapToChat.SECTION_SYMBOL+"knull"+ClaimMapToChat.SECTION_SYMBOL+'r';
+    public static final String NULL_CLAN_NAME = ClaimMapToChat.SECTION_SYMBOL + "knull" + ClaimMapToChat.SECTION_SYMBOL + 'r';
     private static final Set<String> FORBIDDEN_CLAN_NAMES = Sets.newHashSet("wilderness", "underground", "opclan", "clan", "raid", NULL_CLAN_NAME);
+
     static {
         FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMANDS.keySet());
         FORBIDDEN_CLAN_NAMES.addAll(CommandClan.COMMAND_ALIASES.keySet());
@@ -43,7 +45,7 @@ public class ClanNames extends ClanData {
     }
 
     @Nullable
-    public static UUID getClanByName(String name){
+    public static UUID getClanByName(String name) {
         ensureNameCacheLoaded();
         return NAME_TO_UUID_CACHE.get(cleanNameForCache(name));
     }
@@ -71,9 +73,11 @@ public class ClanNames extends ClanData {
     }
 
     private static void ensureNameCacheLoaded() {
-        if (!cacheLoaded)
-            for (UUID clan : ClanIdRegistry.getIds())
+        if (!cacheLoaded) {
+            for (UUID clan : ClanIdRegistry.getIds()) {
                 NAME_TO_UUID_CACHE.put(cleanNameForCache(get(clan).getName()), clan);
+            }
+        }
         cacheLoaded = true;
     }
 
@@ -97,8 +101,9 @@ public class ClanNames extends ClanData {
     }
 
     public void setName(String clanName) {
-        if (this.clanName != null)
+        if (this.clanName != null) {
             uncacheName(this.clanName);
+        }
         this.clanName = TextStyles.stripFormatting(clanName);
         cacheName(this.clanName, clan);
         markChanged();

@@ -5,19 +5,25 @@ import the_fireplace.clans.legacy.model.ClanDimInfo;
 
 import java.util.UUID;
 
-public class DynmapCompatDummy implements IDynmapCompat {
+public class DynmapCompatDummy implements IDynmapCompat
+{
     @Override
-    public void init() {}
+    public void init() {
+    }
 
     @Override
-    public void serverStart() {}
+    public void serverStart() {
+    }
 
     @Override
-    public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {}
+    public void queueClaimEventReceived(ClanDimInfo clanDimInfo) {
+    }
 
     @Override
-    public void refreshTooltip(UUID clan) {}
+    public void refreshTooltip(UUID clan) {
+    }
 
     @Override
-    public void clearAllClanMarkers(UUID clan) {}
+    public void clearAllClanMarkers(UUID clan) {
+    }
 }

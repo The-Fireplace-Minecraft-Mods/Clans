@@ -20,7 +20,8 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandTeleport extends OpClanSubCommand {
+public class OpCommandTeleport extends OpClanSubCommand
+{
     @Override
     public int getMinArgs() {
         return 1;
@@ -44,17 +45,18 @@ public class OpCommandTeleport extends OpClanSubCommand {
     @Override
     protected void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
         UUID targetClan = ClanNames.getClanByName(args[0]);
-        if(targetClan != null) {
-            if (!ClanHomes.hasHome(targetClan))
+        if (targetClan != null) {
+            if (!ClanHomes.hasHome(targetClan)) {
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.home.nohome", ClanNames.get(targetClan).getName()).setStyle(TextStyles.RED));
-            else {
+            } else {
                 BlockPos home = ClanHomes.get(targetClan).toBlockPos();
                 int playerDim = sender.dimension;
 
                 EntityUtil.teleportHome(sender, home, ClanHomes.get(targetClan).getHomeDim(), playerDim, false);
             }
-        } else
+        } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", args[0]).setStyle(TextStyles.RED));
+        }
     }
 
     @Override

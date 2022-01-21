@@ -8,7 +8,8 @@ import the_fireplace.clans.multithreading.ThreadedSaveHandler;
 import java.io.File;
 import java.util.UUID;
 
-public abstract class ClanData implements ThreadedJsonSerializable {
+public abstract class ClanData implements ThreadedJsonSerializable
+{
     protected final ThreadedSaveHandler<ClanData> saveHandler = ThreadedSaveHandler.create(this);
     protected final File saveFile;
     protected final UUID clan;
@@ -24,7 +25,7 @@ public abstract class ClanData implements ThreadedJsonSerializable {
     public void save() {
         if (!isDefaultData()) {
             ThreadedJsonSerializable.super.save();
-        } else if(saveFile.exists()) {
+        } else if (saveFile.exists()) {
             saveFile.delete();
         }
     }
@@ -40,7 +41,7 @@ public abstract class ClanData implements ThreadedJsonSerializable {
     }
 
     public boolean loadSavedData() {
-        if(hasSaveFile()) {
+        if (hasSaveFile()) {
             load(saveFile);
             return true;
         }

@@ -5,7 +5,8 @@ import io.netty.util.internal.ConcurrentSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class OpAutoAbandon {
+public class OpAutoAbandon
+{
     private static final Set<UUID> AUTO_ABANDONING_PLAYERS = new ConcurrentSet<>();
 
     public static void activateOpAutoAbandon(UUID player) {

@@ -20,47 +20,51 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandSetRank extends OpClanSubCommand {
-	@Override
-	public String getName() {
-		return "setrank";
-	}
+public class OpCommandSetRank extends OpClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "setrank";
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 3;
-	}
+    @Override
+    public int getMinArgs() {
+        return 3;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 3;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 3;
+    }
 
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		String clan = args[0];
-		UUID c = ClanNames.getClanByName(clan);
-		if(c != null) {
-			try {
-				if(args[1].equalsIgnoreCase("any") || args[1].equalsIgnoreCase("none"))
-					throwWrongUsage(sender);
-				EnumRank rank = EnumRank.valueOf(args[1].toUpperCase());
-				ClanMemberManagement.setRank(server, sender, args[2], c, rank);
-			} catch(IllegalArgumentException e) {
-				throwWrongUsage(sender);
-			}
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
-	}
+    @Override
+    protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        String clan = args[0];
+        UUID c = ClanNames.getClanByName(clan);
+        if (c != null) {
+            try {
+                if (args[1].equalsIgnoreCase("any") || args[1].equalsIgnoreCase("none")) {
+                    throwWrongUsage(sender);
+                }
+                EnumRank rank = EnumRank.valueOf(args[1].toUpperCase());
+                ClanMemberManagement.setRank(server, sender, args[2], c, rank);
+            } catch (IllegalArgumentException e) {
+                throwWrongUsage(sender);
+            }
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clan).setStyle(TextStyles.RED));
+        }
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		if(args.length == 1)
-			return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
-		else if(args.length == 2)
-			return getListOfStringsMatchingLastWord(args, "member", "admin", "leader");
-		else if(args.length == 3)
-			return getListOfStringsMatchingLastWord(args, server.getPlayerProfileCache().getUsernames());
-		return Collections.emptyList();
-	}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, ClanNames.getClanNames());
+        } else if (args.length == 2) {
+            return getListOfStringsMatchingLastWord(args, "member", "admin", "leader");
+        } else if (args.length == 3) {
+            return getListOfStringsMatchingLastWord(args, server.getPlayerProfileCache().getUsernames());
+        }
+        return Collections.emptyList();
+    }
 }

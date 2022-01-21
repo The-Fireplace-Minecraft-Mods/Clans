@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanLocks extends ClanData {
+public class ClanLocks extends ClanData
+{
     private static final Map<UUID, ClanLocks> LOCK_DATA_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanLocks get(UUID clan) {
@@ -27,8 +28,9 @@ public class ClanLocks extends ClanData {
 
     public static void delete(UUID clan) {
         ClanLocks locks = LOCK_DATA_INSTANCES.remove(clan);
-        if(locks != null)
+        if (locks != null) {
             locks.delete();
+        }
     }
 
     private final Map<BlockPos, OrderedPair<EnumLockType, UUID>> locks = new ConcurrentHashMap<>();
@@ -45,29 +47,34 @@ public class ClanLocks extends ClanData {
     }
 
     public void delLock(BlockPos pos) {
-        if (locks.remove(pos) != null)
+        if (locks.remove(pos) != null) {
             markChanged();
+        }
     }
 
     public void addLockOverride(BlockPos pos, UUID playerId, boolean value) {
-        if (!lockOverrides.containsKey(pos))
+        if (!lockOverrides.containsKey(pos)) {
             lockOverrides.put(pos, new ConcurrentHashMap<>());
+        }
         lockOverrides.get(pos).put(playerId, value);
         markChanged();
     }
 
     public boolean hasLockAccess(BlockPos pos, UUID playerId, String defaultToPermission) {
-        if (playerId == null)
+        if (playerId == null) {
             return false;
-        if (ClanPermissions.get(clan).hasPerm("lockadmin", playerId))
+        }
+        if (ClanPermissions.get(clan).hasPerm("lockadmin", playerId)) {
             return true;
-        if (hasLockOverride(pos, playerId))
+        }
+        if (hasLockOverride(pos, playerId)) {
             return lockOverrides.get(pos).get(playerId);
-        else if (locks.containsKey(pos)) {
+        } else if (locks.containsKey(pos)) {
             OrderedPair<EnumLockType, UUID> lockData = locks.get(pos);
             return getAccessByLockType(lockData.getValue1(), lockData.getValue2(), playerId);
-        } else
+        } else {
             return ClanPermissions.get(clan).hasPerm(defaultToPermission, playerId);
+        }
     }
 
     private boolean hasLockOverride(BlockPos pos, UUID testPlayerId) {
@@ -109,12 +116,16 @@ public class ClanLocks extends ClanData {
     }
 
     public void removeLockData(UUID player) {
-        for (Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry : locks.entrySet())
-            if (entry.getValue().getValue2().equals(player))
+        for (Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry : locks.entrySet()) {
+            if (entry.getValue().getValue2().equals(player)) {
                 locks.remove(entry.getKey());
-        for (Map.Entry<BlockPos, Map<UUID, Boolean>> entry : lockOverrides.entrySet())
-            if (entry.getValue().containsKey(player))
+            }
+        }
+        for (Map.Entry<BlockPos, Map<UUID, Boolean>> entry : lockOverrides.entrySet()) {
+            if (entry.getValue().containsKey(player)) {
                 lockOverrides.get(entry.getKey()).remove(player);
+            }
+        }
     }
 
     @Override
@@ -122,19 +133,20 @@ public class ClanLocks extends ClanData {
         JsonObject obj = new JsonObject();
 
         JsonArray locks = new JsonArray();
-        for(Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry: this.locks.entrySet()) {
+        for (Map.Entry<BlockPos, OrderedPair<EnumLockType, UUID>> entry : this.locks.entrySet()) {
             JsonObject lock = new JsonObject();
             lock.add("position", JsonHelper.toJsonObject(entry.getKey()));
             lock.addProperty("type", entry.getValue().getValue1().ordinal());
             lock.addProperty("owner", entry.getValue().getValue2().toString());
             JsonArray overrides = new JsonArray();
-            if(this.lockOverrides.containsKey(entry.getKey()))
-                for(Map.Entry<UUID, Boolean> override: this.lockOverrides.get(entry.getKey()).entrySet()) {
+            if (this.lockOverrides.containsKey(entry.getKey())) {
+                for (Map.Entry<UUID, Boolean> override : this.lockOverrides.get(entry.getKey()).entrySet()) {
                     JsonObject or = new JsonObject();
                     or.addProperty("player", override.getKey().toString());
                     or.addProperty("allowed", override.getValue());
                     overrides.add(or);
                 }
+            }
             lock.add("overrides", overrides);
             locks.add(lock);
         }
@@ -145,13 +157,14 @@ public class ClanLocks extends ClanData {
 
     @Override
     public void readFromJson(JsonReader reader) {
-        for(JsonElement e: reader.readArray("locks")) {
+        for (JsonElement e : reader.readArray("locks")) {
             JsonObject lock = e.getAsJsonObject();
             BlockPos pos = JsonHelper.fromJsonObject(lock.get("position").getAsJsonObject());
             locks.put(pos, new OrderedPair<>(EnumLockType.values()[lock.get("type").getAsInt()], UUID.fromString(lock.get("owner").getAsString())));
             lockOverrides.put(pos, new ConcurrentHashMap<>());
-            for(JsonElement o: lock.getAsJsonArray("overrides"))
+            for (JsonElement o : lock.getAsJsonArray("overrides")) {
                 lockOverrides.get(pos).put(UUID.fromString(o.getAsJsonObject().get("player").getAsString()), o.getAsJsonObject().get("allowed").getAsBoolean());
+            }
         }
     }
 

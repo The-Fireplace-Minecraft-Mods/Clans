@@ -11,7 +11,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class TranslationUtil {
+public class TranslationUtil
+{
 
     public static List<UUID> clansClients = Lists.newArrayList();
 
@@ -47,17 +48,18 @@ public class TranslationUtil {
      * Returns the translation key if the target is able to translate it, or the translated string otherwise.
      */
     public static String getRawTranslationString(@Nullable UUID target, String translationKey) {
-        if(target == null || !clansClients.contains(target))
+        if (target == null || !clansClients.contains(target)) {
             return I18n.translateToLocalFormatted(translationKey);
-        else
+        } else {
             return translationKey;
+        }
     }
 
     /**
      * Returns the translated TextComponentString for the supplied key and arguments
      */
     public static ITextComponent getTranslation(String translationKey, Object... args) {
-        return getTranslation((UUID)null, translationKey, args);
+        return getTranslation((UUID) null, translationKey, args);
     }
 
     /**
@@ -71,9 +73,10 @@ public class TranslationUtil {
      * Returns the TextComponentTranslation if the target is able to translate it, or the translated TextComponentString otherwise.
      */
     public static ITextComponent getTranslation(@Nullable UUID target, String translationKey, Object... args) {
-        if(target == null || !clansClients.contains(target))
+        if (target == null || !clansClients.contains(target)) {
             return new TextComponentString(I18n.translateToLocalFormatted(translationKey, args));
-        else
+        } else {
             return new TextComponentTranslation(translationKey, args);
+        }
     }
 }

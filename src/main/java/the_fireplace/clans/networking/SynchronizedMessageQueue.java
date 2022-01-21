@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class SynchronizedMessageQueue {
+public final class SynchronizedMessageQueue
+{
     private static final Map<ICommandSender, SynchronizedMessageQueue> MESSAGE_QUEUES = new ConcurrentHashMap<>();
 
     private static SynchronizedMessageQueue getOrCreateQueue(ICommandSender messageTarget) {
@@ -32,8 +33,9 @@ public final class SynchronizedMessageQueue {
 
     private synchronized void queueMessages(ITextComponent... messages) {
         this.messages.addAll(Arrays.asList(messages));
-        if (!sendingMessages)
+        if (!sendingMessages) {
             ConcurrentExecutionManager.runKillable(this::sendMessages);
+        }
     }
 
     private synchronized void sendMessages() {

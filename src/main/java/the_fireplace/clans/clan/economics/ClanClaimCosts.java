@@ -8,7 +8,8 @@ import the_fireplace.clans.legacy.util.FormulaParser;
 
 import java.util.UUID;
 
-public class ClanClaimCosts {
+public class ClanClaimCosts
+{
     public static ClanClaimCosts get(UUID clan) {
         return new ClanClaimCosts(clan);
     }
@@ -24,8 +25,9 @@ public class ClanClaimCosts {
      */
     public double getNextClaimCost(long currentClaimCount) {
         AdminControlledClanSettings clanSettings = AdminControlledClanSettings.get(clan);
-        if (clanSettings.hasCustomClaimCost())
+        if (clanSettings.hasCustomClaimCost()) {
             return clanSettings.getCustomClaimCost();
+        }
         return shouldUseReducedClaimCost(currentClaimCount)
             ? ClansModContainer.getConfig().getReducedChunkClaimCost()
             : FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), clan, 0);

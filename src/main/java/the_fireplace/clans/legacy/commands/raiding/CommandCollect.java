@@ -18,45 +18,50 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandCollect extends RaidSubCommand {
-	@Override
-	public String getName() {
-		return "collect";
-	}
+public class CommandCollect extends RaidSubCommand
+{
+    @Override
+    public String getName() {
+        return "collect";
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 0;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 0;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		if(!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
-			if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID())) {
-				List<String> removeItems = Lists.newArrayList();
-				for (String string : RaidCollectionDatabase.getCollectItems(sender.getUniqueID())) {
-					ItemStack stack;
-					try {
-						stack = new ItemStack(JsonToNBT.getTagFromJson(string));
-					} catch (NBTException e) {
-						stack = null;
-					}
-					if (stack == null || sender.addItemStackToInventory(stack))
-						removeItems.add(string);
-				}
-				RaidCollectionDatabase.getInstance().removeCollectItems(sender.getUniqueID(), removeItems);
-				if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID()))
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
-				else
-					sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));
-			} else
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.empty").setStyle(TextStyles.RED));
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.raiding").setStyle(TextStyles.RED));
-	}
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        if (!RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
+            if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID())) {
+                List<String> removeItems = Lists.newArrayList();
+                for (String string : RaidCollectionDatabase.getCollectItems(sender.getUniqueID())) {
+                    ItemStack stack;
+                    try {
+                        stack = new ItemStack(JsonToNBT.getTagFromJson(string));
+                    } catch (NBTException e) {
+                        stack = null;
+                    }
+                    if (stack == null || sender.addItemStackToInventory(stack)) {
+                        removeItems.add(string);
+                    }
+                }
+                RaidCollectionDatabase.getInstance().removeCollectItems(sender.getUniqueID(), removeItems);
+                if (RaidCollectionDatabase.hasCollectItems(sender.getUniqueID())) {
+                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.makespace").setStyle(TextStyles.YELLOW));
+                } else {
+                    sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.success").setStyle(TextStyles.GREEN));
+                }
+            } else {
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.empty").setStyle(TextStyles.RED));
+            }
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.collect.raiding").setStyle(TextStyles.RED));
+        }
+    }
 }

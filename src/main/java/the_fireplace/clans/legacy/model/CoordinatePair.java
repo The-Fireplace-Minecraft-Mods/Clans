@@ -1,6 +1,7 @@
 package the_fireplace.clans.legacy.model;
 
-public class CoordinatePair extends OrderedPair<Integer, Integer> {
+public class CoordinatePair extends OrderedPair<Integer, Integer>
+{
 
     public CoordinatePair() {
         super(0, 0);

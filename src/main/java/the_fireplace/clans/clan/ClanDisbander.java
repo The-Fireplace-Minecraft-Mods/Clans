@@ -31,7 +31,8 @@ import the_fireplace.clans.player.PlayerClanSettings;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public final class ClanDisbander {
+public final class ClanDisbander
+{
     private final UUID clan;
 
     private ClanDisbander(UUID clan) {
@@ -48,20 +49,19 @@ public final class ClanDisbander {
 
     /**
      * Disbands a clan and unregisters cache for it where needed.
-     * @param sender
-     * The player that initiated this disband, if any. Used to determine which clan member, if any, should be exempt from the disband message
-     * @param disbandMessageTranslationKey
-     * The translation key of the message to go out to all online clan members when it gets disbanded
-     * @param translationArgs
-     * The arguments to pass in to the translation
+     *
+     * @param sender                       The player that initiated this disband, if any. Used to determine which clan member, if any, should be exempt from the disband message
+     * @param disbandMessageTranslationKey The translation key of the message to go out to all online clan members when it gets disbanded
+     * @param translationArgs              The arguments to pass in to the translation
      */
     public void disband(@Nullable ICommandSender sender, String disbandMessageTranslationKey, Object... translationArgs) {
         stopRaid();
         ClansModContainer.getDynmapCompat().clearAllClanMarkers(clan);
         notifyMembersOfDisband(sender, disbandMessageTranslationKey, translationArgs);
         boolean isServerClan = AdminControlledClanSettings.get(clan).isServerOwned();
-        if(!isServerClan)
+        if (!isServerClan) {
             distributeLiquidValueToClanMembers();
+        }
         updateMembersDefaultClans();
         unregisterClan();
     }
@@ -100,17 +100,20 @@ public final class ClanDisbander {
     }
 
     private void stopRaid() {
-        if(RaidingParties.hasActiveRaid(clan))
+        if (RaidingParties.hasActiveRaid(clan)) {
             RaidingParties.getActiveRaid(clan).raiderVictory();
-        if(RaidingParties.isPreparingRaid(clan))
+        }
+        if (RaidingParties.isPreparingRaid(clan)) {
             RaidingParties.removeRaid(RaidingParties.getInactiveRaid(clan));
+        }
     }
 
     private void distributeLiquidValueToClanMembers() {
         ClanEconomicFunctions economicFunctions = ClanEconomicFunctions.get(clan);
         double distFunds = economicFunctions.getLiquidValue();
-        if (ClansModContainer.getConfig().isLeaderRecieveDisbandFunds())
+        if (ClansModContainer.getConfig().isLeaderRecieveDisbandFunds()) {
             distFunds = economicFunctions.divideFundsAmongLeaders(distFunds);
+        }
         economicFunctions.divideFundsAmongAllMembers(distFunds);
         Economy.deductAmount(Economy.getBalance(clan), clan);
     }

@@ -4,7 +4,8 @@ import the_fireplace.clans.legacy.model.TerritoryDisplayMode;
 
 import java.util.UUID;
 
-public final class TerritoryMessageSettings {
+public final class TerritoryMessageSettings
+{
     public static TerritoryDisplayMode getTerritoryDisplayMode(UUID player) {
         return PlayerDataStorage.getPlayerData(player).getTerritoryDisplayMode();
     }

@@ -18,36 +18,38 @@ import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandDisband extends OpClanSubCommand {
-	@Override
-	public String getName() {
-		return "disband";
-	}
+public class OpCommandDisband extends OpClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "disband";
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
-		String clanName = args[0];
-		UUID clan = ClanNames.getClanByName(clanName);
-		if(clan != null) {
-			ClanDisbander disbander = ClanDisbander.create(clan);
+    @Override
+    protected void runFromAnywhere(MinecraftServer server, ICommandSender sender, String[] args) {
+        String clanName = args[0];
+        UUID clan = ClanNames.getClanByName(clanName);
+        if (clan != null) {
+            ClanDisbander disbander = ClanDisbander.create(clan);
             disbander.disband(sender, "commands.clan.disband.disbanded", clanName, sender.getName());
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.disband.success", clanName).setStyle(TextStyles.GREEN));
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
-	}
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.notfound", clanName).setStyle(TextStyles.RED));
+        }
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
-	}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, ClanNames.getClanNames()) : Collections.emptyList();
+    }
 }

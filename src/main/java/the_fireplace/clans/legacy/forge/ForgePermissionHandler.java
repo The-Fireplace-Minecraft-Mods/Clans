@@ -10,22 +10,26 @@ import the_fireplace.clans.legacy.commands.CommandRaid;
 
 import static the_fireplace.clans.legacy.util.PermissionManager.*;
 
-public class ForgePermissionHandler implements IPermissionHandler {
+public class ForgePermissionHandler implements IPermissionHandler
+{
 
     public ForgePermissionHandler() {
-        for(String subcommand: CommandClan.COMMANDS.keySet())
-            registerPermission(CLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
+        for (String subcommand : CommandClan.COMMANDS.keySet()) {
+            registerPermission(CLAN_COMMAND_PREFIX + subcommand, DefaultPermissionLevel.ALL, "");
+        }
 
-        for(String subcommand: CommandRaid.COMMANDS.keySet())
-            registerPermission(RAID_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.ALL, "");
+        for (String subcommand : CommandRaid.COMMANDS.keySet()) {
+            registerPermission(RAID_COMMAND_PREFIX + subcommand, DefaultPermissionLevel.ALL, "");
+        }
 
-        for(String subcommand: CommandOpClan.COMMANDS.keySet())
-            registerPermission(OPCLAN_COMMAND_PREFIX+subcommand, DefaultPermissionLevel.OP, "");
+        for (String subcommand : CommandOpClan.COMMANDS.keySet()) {
+            registerPermission(OPCLAN_COMMAND_PREFIX + subcommand, DefaultPermissionLevel.OP, "");
+        }
 
-        registerPermission(PROTECTION_PREFIX+"break.protected_wilderness", DefaultPermissionLevel.NONE, "");
-        registerPermission(PROTECTION_PREFIX+"build.protected_wilderness", DefaultPermissionLevel.NONE, "");
+        registerPermission(PROTECTION_PREFIX + "break.protected_wilderness", DefaultPermissionLevel.NONE, "");
+        registerPermission(PROTECTION_PREFIX + "build.protected_wilderness", DefaultPermissionLevel.NONE, "");
 
-        registerPermission(CLAN_COMMAND_PREFIX+"claim.radius", DefaultPermissionLevel.ALL, "");
+        registerPermission(CLAN_COMMAND_PREFIX + "claim.radius", DefaultPermissionLevel.ALL, "");
     }
 
     @Override
@@ -35,7 +39,7 @@ public class ForgePermissionHandler implements IPermissionHandler {
 
     @Override
     public void registerPermission(String permissionName, Object permissionLevel, String permissionDescription) {
-        PermissionAPI.registerNode(permissionName, (DefaultPermissionLevel)permissionLevel, permissionDescription);
+        PermissionAPI.registerNode(permissionName, (DefaultPermissionLevel) permissionLevel, permissionDescription);
     }
 
     @Override

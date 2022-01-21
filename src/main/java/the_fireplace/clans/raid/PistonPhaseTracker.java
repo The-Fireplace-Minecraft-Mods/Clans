@@ -5,7 +5,8 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PistonPhaseTracker {
+public class PistonPhaseTracker
+{
     private static final Map<BlockPos, Boolean> PISTON_PHASES = new ConcurrentHashMap<>();
 
     public static boolean isTrackingPistonPhaseAt(BlockPos pos) {

@@ -6,7 +6,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerHomeCooldown {
+public class PlayerHomeCooldown
+{
     private static final Map<UUID, Integer> COOLDOWN_TIMERS = new ConcurrentHashMap<>();
     private static Timer timer = new Timer();
     private static boolean timerRunning = false;
@@ -21,14 +22,16 @@ public class PlayerHomeCooldown {
 
     public static void setCooldown(UUID player, int cooldown) {
         COOLDOWN_TIMERS.put(player, cooldown);
-        if(!timerRunning)
+        if (!timerRunning) {
             startTimer();
+        }
     }
 
     private static void startTimer() {
         timerRunning = true;
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask()
+        {
             @Override
             public void run() {
                 decrementCooldownTimers();
@@ -43,13 +46,15 @@ public class PlayerHomeCooldown {
     }
 
     private static void removeExpiredTimers() {
-        for(Map.Entry<UUID, Integer> cooldownEntry: COOLDOWN_TIMERS.entrySet())
-            if(cooldownEntry.getValue() < 1)
+        for (Map.Entry<UUID, Integer> cooldownEntry : COOLDOWN_TIMERS.entrySet()) {
+            if (cooldownEntry.getValue() < 1) {
                 COOLDOWN_TIMERS.remove(cooldownEntry.getKey());
+            }
+        }
     }
 
     private static void stopTimerIfUnused() {
-        if(timerRunning && COOLDOWN_TIMERS.isEmpty()) {
+        if (timerRunning && COOLDOWN_TIMERS.isEmpty()) {
             timer.cancel();
             timerRunning = false;
         }

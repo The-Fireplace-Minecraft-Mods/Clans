@@ -4,7 +4,8 @@ import the_fireplace.clans.legacy.abstraction.IConfig;
 
 import java.util.Collection;
 
-public class ConfigWrapper implements IConfig {
+public class ConfigWrapper implements IConfig
+{
     @Override
     public boolean allowsMultipleClanLeaders() {
         return Config.getInstance().clan.multipleClanLeaders;

@@ -12,15 +12,17 @@ import the_fireplace.clans.player.InvitedPlayers;
 
 import java.util.UUID;
 
-public final class ClanCreator {
+public final class ClanCreator
+{
     public static UUID createStandardClan(String clanName, UUID leaderId) {
         UUID clan = ClanIdRegistry.createAndRegisterClanId();
 
         ClanNames.get(clan).setName(clanName);
         ClanMembers.get(clan).addMember(leaderId, EnumRank.LEADER);
         ClanEconomicFunctions.get(clan).setInitialBalance();
-        if(!ClansModContainer.getConfig().isAllowMultiClanMembership())
+        if (!ClansModContainer.getConfig().isAllowMultiClanMembership()) {
             InvitedPlayers.clearReceivedInvites(leaderId);
+        }
 
         ClansEventManager.fireEvent(new ClanFormedEvent(leaderId, clan));
 

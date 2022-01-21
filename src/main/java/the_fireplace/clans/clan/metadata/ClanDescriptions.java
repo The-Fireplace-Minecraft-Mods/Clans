@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanDescriptions extends ClanData {
+public class ClanDescriptions extends ClanData
+{
     private static final Map<UUID, ClanDescriptions> DESCRIPTIONS = new ConcurrentHashMap<>();
 
     public static ClanDescriptions get(UUID clan) {
@@ -20,8 +21,9 @@ public class ClanDescriptions extends ClanData {
 
     public static void delete(UUID clan) {
         ClanDescriptions description = DESCRIPTIONS.remove(clan);
-        if(description != null)
+        if (description != null) {
             description.delete();
+        }
     }
 
     private String description = TranslationUtil.getStringTranslation("clan.default_description");
@@ -36,7 +38,7 @@ public class ClanDescriptions extends ClanData {
     }
 
     public void setDescription(String description) {
-        if(!this.description.equals(description)) {
+        if (!this.description.equals(description)) {
             this.description = description;
             markChanged();
         }

@@ -49,7 +49,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class TimerLogic {
+public class TimerLogic
+{
     public static void runFiveMinuteLogic() {
         ClanIdRegistry.saveInstance();
         ClaimData.INSTANCE.save();
@@ -67,32 +68,37 @@ public class TimerLogic {
     }
 
     private static void chargeRentAndUpkeep() {
-        if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 || ClansModContainer.getConfig().getChargeRentDays() > 0)
+        if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 || ClansModContainer.getConfig().getChargeRentDays() > 0) {
             for (UUID clan : ClanIdRegistry.getIds()) {
-                if(AdminControlledClanSettings.get(clan).isServerOwned())
+                if (AdminControlledClanSettings.get(clan).isServerOwned()) {
                     continue;
+                }
                 chargeRent(clan);
                 chargeUpkeep(clan);
             }
+        }
     }
 
     private static void chargeUpkeep(UUID clan) {
         if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 && !AdminControlledClanSettings.get(clan).isUpkeepExempt() && System.currentTimeMillis() >= ClanUpkeep.get(clan).getNextUpkeepTimestamp()) {
             ClansModContainer.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", ClanNames.get(clan).getName());
             double upkeep = FormulaParser.eval(ClansModContainer.getConfig().getClanUpkeepCostFormula(), clan, 0);
-            if(ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > Economy.getBalance(clan) && upkeep <= Economy.getBalance(clan) + ClanClaimCosts.get(clan).getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()) * ClanClaimCount.get(clan).getClaimCount()) {
-                while(upkeep > Economy.getBalance(clan)) {
+            if (ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > Economy.getBalance(clan) && upkeep <= Economy.getBalance(clan) + ClanClaimCosts.get(clan).getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()) * ClanClaimCount.get(clan).getClaimCount()) {
+                while (upkeep > Economy.getBalance(clan)) {
                     ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimAccessor.getInstance().getClaimedChunks(clan));
-                    if(chunks.isEmpty())//This _should_ always be false, but just in case...
+                    if (chunks.isEmpty())//This _should_ always be false, but just in case...
+                    {
                         break;
+                    }
                     ChunkPositionWithData pos = chunks.get(new Random().nextInt(chunks.size()));
                     ClaimManagement.abandonClaim(pos.getPosX(), pos.getPosZ(), pos.getDim(), clan);
                 }
             }
-            if (Economy.deductPartialAmount(upkeep, clan) > 0 && ClansModContainer.getConfig().isDisbandNoUpkeep())
+            if (Economy.deductPartialAmount(upkeep, clan) > 0 && ClansModContainer.getConfig().isDisbandNoUpkeep()) {
                 ClanDisbander.create(clan).disband(null, "clans.upkeep.disbanded", ClanNames.get(clan).getName());
-            else
+            } else {
                 ClanUpkeep.get(clan).updateNextUpkeepTimestamp();
+            }
         }
     }
 
@@ -100,9 +106,9 @@ public class TimerLogic {
         if (ClansModContainer.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= ClanRent.get(clan).getNextRentTimestamp()) {
             ClansModContainer.getMinecraftHelper().getLogger().debug("Charging rent for {}.", ClanNames.get(clan).getName());
             for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(ClanMembers.get(clan).getMemberRanks().entrySet())) {
-                if (Economy.deductAmount(ClanRent.get(clan).getRent(), member.getKey()))
+                if (Economy.deductAmount(ClanRent.get(clan).getRent(), member.getKey())) {
                     Economy.addAmount(ClanRent.get(clan).getRent(), clan);
-                else if (ClansModContainer.getConfig().isEvictNonpayers())
+                } else if (ClansModContainer.getConfig().isEvictNonpayers()) {
                     if (member.getValue() != EnumRank.LEADER && (ClansModContainer.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
                         ClanMembers.get(clan).removeMember(member.getKey());
                         EntityPlayerMP player = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
@@ -112,30 +118,35 @@ public class TimerLogic {
                             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.rent.kicked", ClanNames.get(clan).getName()).setStyle(TextStyles.YELLOW));
                         }
                     }
+                }
             }
             ClanRent.get(clan).updateNextRentTimestamp();
         }
     }
 
     private static void decrementShields() {
-        for (UUID clan : ClanIdRegistry.getIds())
+        for (UUID clan : ClanIdRegistry.getIds()) {
             ClanShield.get(clan).decrementShield();
+        }
     }
 
     public static void runOneSecondLogic() {
         RaidingParties.decrementBuffers();
         PlayerCache.decrementHomeWarmupTimers();
 
-        for (Raid raid : RaidingParties.getActiveRaids())
-            if (raid.checkRaidEndTimer())
+        for (Raid raid : RaidingParties.getActiveRaids()) {
+            if (raid.checkRaidEndTimer()) {
                 raid.defenderVictory();
+            }
+        }
 
         ClaimData.INSTANCE.decrementBorderlandsRegenTimers();
     }
 
     public static void runTwoSecondLogic() {
-        for(Raid raid: RaidingParties.getActiveRaids())
+        for (Raid raid : RaidingParties.getActiveRaids()) {
             RaidManagementLogic.checkAndRemoveForbiddenItems(ClansModContainer.getMinecraftHelper().getServer(), raid);
+        }
     }
 
     public static void runMobFiveSecondLogic(EntityLivingBase mob) {
@@ -170,41 +181,48 @@ public class TimerLogic {
 
         if (!Objects.equals(chunkClan, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
             boolean needsRecalc = false;
-            if(OpAutoAbandon.isOpAutoAbandoning(player.getUniqueID()))
+            if (OpAutoAbandon.isOpAutoAbandoning(player.getUniqueID())) {
                 needsRecalc = ClaimManagement.checkAndAttemptAbandon((EntityPlayerMP) player, null);
-            if(AutoAbandon.isAutoAbandoning(player.getUniqueID()))
+            }
+            if (AutoAbandon.isAutoAbandoning(player.getUniqueID())) {
                 needsRecalc = ClaimManagement.checkAndAttemptAbandon((EntityPlayerMP) player, AutoAbandon.getAutoAbandoningClan(player.getUniqueID())) || needsRecalc;
-            if(OpAutoClaim.isAutoClaiming(player.getUniqueID()))
+            }
+            if (OpAutoClaim.isAutoClaiming(player.getUniqueID())) {
                 needsRecalc = ClaimManagement.adminClaimChunk((EntityPlayerMP) player, OpAutoClaim.getAutoClaimingClan(player.getUniqueID())) || needsRecalc;
-            if(AutoClaim.isAutoClaiming(player.getUniqueID()))
+            }
+            if (AutoClaim.isAutoClaiming(player.getUniqueID())) {
                 needsRecalc = ClaimManagement.checkAndAttemptClaim((EntityPlayerMP) player, AutoClaim.getAutoClaimingClan(player.getUniqueID())) || needsRecalc;
-            if(needsRecalc) {
+            }
+            if (needsRecalc) {
                 data = ClaimAccessor.getInstance().getChunkPositionData(player.chunkCoordX, player.chunkCoordZ, player.dimension);
                 chunkClan = ClaimAccessor.getInstance().getChunkClan(data);
                 isInBorderland = data != null && data.isBorderland();
             }
 
-            if(!Objects.equals(chunkClan, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
-                if(chunkClan != null)
+            if (!Objects.equals(chunkClan, playerStoredClaimId) || (isInBorderland != playerStoredIsInBorderland)) {
+                if (chunkClan != null) {
                     handleTerritoryEnteredMessage(player, chunkClan, playerClans, isInBorderland);
-                else
+                } else {
                     handleWildernessEnteredMessage(player);
+                }
             }
             PlayerCache.setPreviousY(player.getUniqueID(), (int) Math.round(player.posY));
         } else if (chunkClan == null
             && ClansModContainer.getConfig().shouldProtectWilderness()
             && ClansModContainer.getConfig().getMinWildernessY() > 0
             && player.getEntityWorld().getTotalWorldTime() % 20 == 0
-            && !PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness", false)
-            && !PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness", false)
-        )
+            && !PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX + "break.protected_wilderness", false)
+            && !PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX + "build.protected_wilderness", false)
+        ) {
             handleDepthChangedMessage(player);
+        }
         EntityPlayerMP playerMP = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
         if (playerMP != null) {
-            if(PlayerCache.getPreviousChunkX(player.getUniqueID()) != c.x || PlayerCache.getPreviousChunkZ(player.getUniqueID()) != c.z) {
+            if (PlayerCache.getPreviousChunkX(player.getUniqueID()) != c.x || PlayerCache.getPreviousChunkZ(player.getUniqueID()) != c.z) {
                 checkAndResetClaimWarning(playerMP);
-                if(PlayerCache.getIsShowingChunkBorders(player.getUniqueID()))
+                if (PlayerCache.getIsShowingChunkBorders(player.getUniqueID())) {
                     ChunkUtils.showChunkBounds(c, playerMP);
+                }
 
                 PlayerCache.setPreviousChunkX(player.getUniqueID(), c.x);
                 PlayerCache.setPreviousChunkZ(player.getUniqueID(), c.z);
@@ -214,15 +232,17 @@ public class TimerLogic {
 
     private static void handleDepthChangedMessage(EntityPlayer player) {
         TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
-        if(!TerritoryMessageSettings.isShowingUndergroundMessages(player.getUniqueID()) || mode.equals(TerritoryDisplayMode.OFF))
+        if (!TerritoryMessageSettings.isShowingUndergroundMessages(player.getUniqueID()) || mode.equals(TerritoryDisplayMode.OFF)) {
             return;
+        }
         int curY = (int) Math.round(player.posY);
         int prevY = PlayerCache.getPreviousY(player.getUniqueID());
         int yBound = (ClansModContainer.getConfig().getMinWildernessY() < 0 ? player.world.getSeaLevel() : ClansModContainer.getConfig().getMinWildernessY());
         if (curY >= yBound && prevY < yBound) {
             player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness")).setStyle(TextStyles.YELLOW), mode.isAction());
-            if(mode.showsDescription())
+            if (mode.showsDescription()) {
                 player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected")).setStyle(TextStyles.YELLOW));
+            }
         } else if (prevY >= yBound && curY < yBound) {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground")).setStyle(TextStyles.DARK_GREEN));
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed")).setStyle(TextStyles.DARK_GREEN));
@@ -233,14 +253,16 @@ public class TimerLogic {
     private static void handleTerritoryEnteredMessage(EntityPlayer player, @Nonnull UUID chunkClan, Collection<UUID> playerClans, boolean isBorderland) {
         PlayerCache.setPreviousChunkOwner(player.getUniqueID(), chunkClan, isBorderland);
         TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
-        if(mode.equals(TerritoryDisplayMode.OFF))
+        if (mode.equals(TerritoryDisplayMode.OFF)) {
             return;
+        }
         Style color = TextStyles.GREEN;
-        if (playerClans.isEmpty() || !playerClans.contains(chunkClan))
+        if (playerClans.isEmpty() || !playerClans.contains(chunkClan)) {
             color = TextStyles.YELLOW;
+        }
         String territoryName;
         String territoryDesc;
-        if(isBorderland) {
+        if (isBorderland) {
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.borderland", ClanNames.get(chunkClan).getName());
             territoryDesc = "";
         } else {
@@ -249,62 +271,72 @@ public class TimerLogic {
         }
 
         player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
-        if(!territoryDesc.isEmpty() && mode.showsDescription())
+        if (!territoryDesc.isEmpty() && mode.showsDescription()) {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
+        }
     }
 
     private static void handleWildernessEnteredMessage(EntityPlayer player) {
         PlayerCache.setPreviousChunkOwner(player.getUniqueID(), null, false);
         TerritoryDisplayMode mode = TerritoryMessageSettings.getTerritoryDisplayMode(player.getUniqueID());
-        if(mode.equals(TerritoryDisplayMode.OFF))
+        if (mode.equals(TerritoryDisplayMode.OFF)) {
             return;
+        }
         Style color = TextStyles.DARK_GREEN;
         String territoryName;
         String territoryDesc;
-        boolean canBuildInWilderness = PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"break.protected_wilderness", false)
-            && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX+"build.protected_wilderness", false);
+        boolean canBuildInWilderness = PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX + "break.protected_wilderness", false)
+            && PermissionManager.hasPermission(player, PermissionManager.PROTECTION_PREFIX + "build.protected_wilderness", false);
         if (ClansModContainer.getConfig().shouldProtectWilderness() && (ClansModContainer.getConfig().getMinWildernessY() < 0 ? player.posY < player.world.getSeaLevel() : player.posY < ClansModContainer.getConfig().getMinWildernessY()) && !canBuildInWilderness) {
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.underground");
             territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
         } else {
             territoryName = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.wilderness");
-            if(ClansModContainer.getConfig().shouldProtectWilderness() && !canBuildInWilderness) {
+            if (ClansModContainer.getConfig().shouldProtectWilderness() && !canBuildInWilderness) {
                 color = TextStyles.YELLOW;
                 territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.protected");
-            } else
+            } else {
                 territoryDesc = TranslationUtil.getStringTranslation(player.getUniqueID(), "clans.territory.unclaimed");
+            }
         }
 
         player.sendStatusMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entry", territoryName).setStyle(color), mode.isAction());
-        if(!territoryDesc.isEmpty() && mode.showsDescription())
+        if (!territoryDesc.isEmpty() && mode.showsDescription()) {
             player.sendMessage(TranslationUtil.getTranslation(player.getUniqueID(), "clans.territory.entrydesc", territoryDesc).setStyle(color));
+        }
     }
 
     private static void checkAndResetClaimWarning(EntityPlayerMP player) {
-        if(PlayerCache.getClaimWarning(player.getUniqueID()))
+        if (PlayerCache.getClaimWarning(player.getUniqueID())) {
             PlayerCache.setClaimWarning(player.getUniqueID(), false);
+        }
     }
 
     private static void checkRaidAbandonmentTime(@Nullable UUID chunkClan, Collection<UUID> playerClans, EntityPlayer player) {
-        for(UUID pc: playerClans)
+        for (UUID pc : playerClans) {
             if (RaidingParties.hasActiveRaid(pc)) {
                 Raid r = RaidingParties.getActiveRaid(pc);
                 assert r != null;
-                if(r.getDefenders().contains(player.getUniqueID()))
-                    if (pc.equals(chunkClan))
+                if (r.getDefenders().contains(player.getUniqueID())) {
+                    if (pc.equals(chunkClan)) {
                         r.resetDefenderAbandonmentTime(player);
-                    else
+                    } else {
                         r.incrementDefenderAbandonmentTime(player);
+                    }
+                }
             }
+        }
         if (RaidingParties.getRaidingPlayers().contains(player.getUniqueID())) {
             Raid r = RaidingParties.getRaid(player);
             assert r != null;
             if (r.isActive()) {
-                if(r.getAttackers().contains(player.getUniqueID()))
-                    if (r.getTarget().equals(chunkClan))
+                if (r.getAttackers().contains(player.getUniqueID())) {
+                    if (r.getTarget().equals(chunkClan)) {
                         r.resetAttackerAbandonmentTime(player);
-                    else
+                    } else {
                         r.incrementAttackerAbandonmentTime(player);
+                    }
+                }
             }
         }
     }

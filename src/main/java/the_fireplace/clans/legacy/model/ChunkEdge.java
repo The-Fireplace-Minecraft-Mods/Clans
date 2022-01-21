@@ -2,8 +2,10 @@ package the_fireplace.clans.legacy.model;
 
 import java.util.Objects;
 
-public class ChunkEdge {
-    public enum Edge {
+public class ChunkEdge
+{
+    public enum Edge
+    {
         LEFT, RIGHT, TOP, BOTTOM
     }
 
@@ -17,9 +19,9 @@ public class ChunkEdge {
      * Construct an edge based on the chunk and edge position provided.
      *
      * @param chunk Contains the position details of the chunk
-     * @param edge Indicates which edge of the chunk this edge is to represent.
+     * @param edge  Indicates which edge of the chunk this edge is to represent.
      */
-    public ChunkEdge (AdjacentChunk chunk, Edge edge) {
+    public ChunkEdge(AdjacentChunk chunk, Edge edge) {
         if (chunk != null && edge != null) {
             // Get the position of the chunk which is the upper left corner
             int xPos = chunk.getPos().getBlockPosX();
@@ -82,12 +84,13 @@ public class ChunkEdge {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        else if (obj == this)
+        } else if (obj == this) {
             return true;
-        else
+        } else {
             return obj instanceof ChunkEdge && this.equals((ChunkEdge) obj);
+        }
     }
 
     /**
@@ -97,10 +100,11 @@ public class ChunkEdge {
      * @return Returns true if the edges match with the same coordinates.
      */
     private boolean equals(ChunkEdge edge) {
-        if (edge == null)
+        if (edge == null) {
             return false;
-        else
+        } else {
             return m_p1 == edge.m_p1 && m_p2 == edge.m_p2;
+        }
     }
 
     @Override

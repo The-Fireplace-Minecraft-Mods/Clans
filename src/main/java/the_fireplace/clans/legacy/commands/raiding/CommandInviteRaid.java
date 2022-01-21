@@ -28,61 +28,68 @@ import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandInviteRaid extends RaidSubCommand {
-	@Override
-	public String getName() {
-		return "invite";
-	}
+public class CommandInviteRaid extends RaidSubCommand
+{
+    @Override
+    public String getName() {
+        return "invite";
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		if(RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
-			Raid raid = RaidingParties.getRaid(sender);
-			if (raid != null) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+        if (RaidingParties.getRaidingPlayers().contains(sender.getUniqueID())) {
+            Raid raid = RaidingParties.getRaid(sender);
+            if (raid != null) {
 
-				GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
-				EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
-				if(target != null) {
+                GameProfile targetProfile = server.getPlayerProfileCache().getGameProfileForUsername(args[0]);
+                EntityPlayerMP target = targetProfile != null ? server.getPlayerList().getPlayerByUUID(targetProfile.getId()) : null;
+                if (target != null) {
                     Collection<EntityPlayerMP> clanPlayers = ClanMembers.get(raid.getTarget()).getOnlineMembers();
-					if (clanPlayers.size() > raid.getAttackerCount() - ClansModContainer.getConfig().getMaxRaidersOffset()) {
-						if (!clanPlayers.contains(target)) {
+                    if (clanPlayers.size() > raid.getAttackerCount() - ClansModContainer.getConfig().getMaxRaidersOffset()) {
+                        if (!clanPlayers.contains(target)) {
                             target.sendMessage(TranslationUtil.getTranslation(target.getUniqueID(), "commands.raid.invite.invited", ClanNames.get(raid.getTarget()).getName()).setStyle(TextStyles.GREEN));
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
-						} else
-							sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
-					} else
-						sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + ClansModContainer.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
-				} else
-					throw new PlayerNotFoundException("commands.generic.player.notFound", args[0]);
-			} else {
-				sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
-				ClansModContainer.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");
-			}
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
-	}
+                            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.success", target.getName()).setStyle(TextStyles.GREEN));
+                        } else {
+                            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.inclan").setStyle(TextStyles.RED));
+                        }
+                    } else {
+                        sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.invite.limit", raid.getAttackerCount(), clanPlayers.size() + ClansModContainer.getConfig().getMaxRaidersOffset()).setStyle(TextStyles.RED));
+                    }
+                } else {
+                    throw new PlayerNotFoundException("commands.generic.player.notFound", args[0]);
+                }
+            } else {
+                sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
+                ClansModContainer.getMinecraftHelper().getLogger().error("Player was in getRaidingPlayers but getRaid was null!");
+            }
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.raid.common.notinparty").setStyle(TextStyles.RED));
+        }
+    }
 
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-		ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
-		if(sender instanceof EntityPlayerMP) {
-			Raid r = RaidingParties.getRaid((EntityPlayerMP)sender);
-			if (r != null)
-				players.removeIf(s -> PlayerClans.getClansPlayerIsIn(s.getId()).contains(r.getTarget()));
-		}
-		ArrayList<String> playerNames = Lists.newArrayList();
-		for(GameProfile profile: players)
-			playerNames.add(profile.getName());
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();
-	}
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        ArrayList<GameProfile> players = Lists.newArrayList(server.getPlayerList().getOnlinePlayerProfiles());
+        if (sender instanceof EntityPlayerMP) {
+            Raid r = RaidingParties.getRaid((EntityPlayerMP) sender);
+            if (r != null) {
+                players.removeIf(s -> PlayerClans.getClansPlayerIsIn(s.getId()).contains(r.getTarget()));
+            }
+        }
+        ArrayList<String> playerNames = Lists.newArrayList();
+        for (GameProfile profile : players) {
+            playerNames.add(profile.getName());
+        }
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, playerNames) : Collections.emptyList();
+    }
 }

@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AdminControlledClanSettings extends ClanData {
+public class AdminControlledClanSettings extends ClanData
+{
     private static final Map<UUID, AdminControlledClanSettings> ADMIN_CONTROLLED_SETTINGS_INSTANCES = new ConcurrentHashMap<>();
 
     public static AdminControlledClanSettings get(UUID clan) {
@@ -22,8 +23,9 @@ public class AdminControlledClanSettings extends ClanData {
 
     public static void delete(UUID clan) {
         AdminControlledClanSettings adminControlledSettings = ADMIN_CONTROLLED_SETTINGS_INSTANCES.remove(clan);
-        if(adminControlledSettings != null)
+        if (adminControlledSettings != null) {
             adminControlledSettings.delete();
+        }
     }
 
     public static final String MAX_CLAIMS = "maxclaims";
@@ -39,7 +41,8 @@ public class AdminControlledClanSettings extends ClanData {
     //TODO this desperately needs an overhaul. A new system should probably do a better job at handling the different
     // setting types, since right now it's a mix of integers (which in some cases should really be longs or doubles),
     // tristates, and booleans
-    private static final Map<String, Integer> DEFAULT_SETTINGS = new HashMap<String, Integer>(8, 1) {{
+    private static final Map<String, Integer> DEFAULT_SETTINGS = new HashMap<String, Integer>(8, 1)
+    {{
         //Config option overrides
         put(MAX_CLAIMS, -1);
         put(MOB_SPAWNING, -1);
@@ -64,8 +67,9 @@ public class AdminControlledClanSettings extends ClanData {
 
     private AdminControlledClanSettings(UUID clan) {
         super(clan, "adminsettings");
-        for(Map.Entry<String, Integer> opt: AdminControlledClanSettings.DEFAULT_SETTINGS.entrySet())
+        for (Map.Entry<String, Integer> opt : AdminControlledClanSettings.DEFAULT_SETTINGS.entrySet()) {
             settings.put(opt.getKey(), opt.getValue());
+        }
         loadSavedData();
     }
 
@@ -168,10 +172,11 @@ public class AdminControlledClanSettings extends ClanData {
 
     @Override
     public void readFromJson(JsonReader reader) {
-        for(JsonElement e: reader.readArray("options")) {
+        for (JsonElement e : reader.readArray("options")) {
             JsonObject perm = e.getAsJsonObject();
-            if(!isValidSettingName(perm.get("name").getAsString()))
+            if (!isValidSettingName(perm.get("name").getAsString())) {
                 continue;
+            }
             settings.put(perm.get("name").getAsString(), perm.get("value").getAsInt());
         }
     }
@@ -181,7 +186,7 @@ public class AdminControlledClanSettings extends ClanData {
         JsonObject obj = new JsonObject();
 
         JsonArray options = new JsonArray();
-        for(Map.Entry<String, Integer> entry: this.settings.entrySet()) {
+        for (Map.Entry<String, Integer> entry : this.settings.entrySet()) {
             JsonObject opt = new JsonObject();
             opt.addProperty("name", entry.getKey());
             opt.addProperty("value", entry.getValue());
@@ -194,9 +199,11 @@ public class AdminControlledClanSettings extends ClanData {
 
     @Override
     protected boolean isDefaultData() {
-        for (Map.Entry<String, Integer> setting: settings.entrySet())
-            if(!setting.getValue().equals(DEFAULT_SETTINGS.get(setting.getKey())))
+        for (Map.Entry<String, Integer> setting : settings.entrySet()) {
+            if (!setting.getValue().equals(DEFAULT_SETTINGS.get(setting.getKey()))) {
                 return false;
+            }
+        }
         return true;
     }
 }

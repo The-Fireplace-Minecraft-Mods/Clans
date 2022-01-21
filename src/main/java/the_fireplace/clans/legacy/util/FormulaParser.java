@@ -11,7 +11,8 @@ import the_fireplace.clans.legacy.model.Raid;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public final class FormulaParser {
+public final class FormulaParser
+{
     public static double eval(String formula, UUID clan, double min) {
         return eval(formula, clan, RaidingParties.getActiveRaid(clan), min);
     }
@@ -20,7 +21,7 @@ public final class FormulaParser {
         formula = getFilteredFormula(formula, clan, raid);
         try {
             return Math.max(min, Double.parseDouble(String.valueOf(eval(formula))));
-        } catch(ClassCastException|NullPointerException|NumberFormatException e) {
+        } catch (ClassCastException | NullPointerException | NumberFormatException e) {
             ClansModContainer.getMinecraftHelper().getLogger().error("Problem with the configured formula: \"{}\" - does not evaluate to a decimal value", formula);
             e.printStackTrace();
         }
@@ -71,7 +72,8 @@ public final class FormulaParser {
      * Formula parse code taken and modified from https://stackoverflow.com/a/26227947
      * Use this instead of javascript to avoid any problems with Minecraft's built in Java version not having a JavaScript engine.
      */
-    private static class MathParser {
+    private static class MathParser
+    {
         int pos = -1, ch;
         private final String formula;
 
@@ -84,8 +86,9 @@ public final class FormulaParser {
         }
 
         boolean eat(int charToEat) {
-            while (ch == ' ')
+            while (ch == ' ') {
                 nextChar();
+            }
             if (ch == charToEat) {
                 nextChar();
                 return true;
@@ -96,8 +99,9 @@ public final class FormulaParser {
         double parse() {
             nextChar();
             double x = parseExpression();
-            if (pos < formula.length())
-                throw new RuntimeException("Unexpected: " + (char)ch);
+            if (pos < formula.length()) {
+                throw new RuntimeException("Unexpected: " + (char) ch);
+            }
             return x;
         }
 
@@ -109,33 +113,37 @@ public final class FormulaParser {
 
         double parseExpression() {
             double x = parseTerm();
-            for (;;) {
-                if (eat('+'))
+            for (; ; ) {
+                if (eat('+')) {
                     x += parseTerm(); // addition
-                else if (eat('-'))
+                } else if (eat('-')) {
                     x -= parseTerm(); // subtraction
-                else
+                } else {
                     return x;
+                }
             }
         }
 
         double parseTerm() {
             double x = parseFactor();
-            for (;;) {
-                if (eat('*'))
+            for (; ; ) {
+                if (eat('*')) {
                     x *= parseFactor(); // multiplication
-                else if (eat('/'))
+                } else if (eat('/')) {
                     x /= parseFactor(); // division
-                else
+                } else {
                     return x;
+                }
             }
         }
 
         double parseFactor() {
-            if (eat('+'))
+            if (eat('+')) {
                 return parseFactor(); // unary plus
-            if (eat('-'))
+            }
+            if (eat('-')) {
                 return -parseFactor(); // unary minus
+            }
 
             double x;
             int startPos = this.pos;
@@ -150,11 +158,13 @@ public final class FormulaParser {
                 String func = formula.substring(startPos, this.pos);
                 x = parseFactor();
                 x = performFunction(x, func);
-            } else
-                throw new RuntimeException("Unexpected: " + (char)ch);
+            } else {
+                throw new RuntimeException("Unexpected: " + (char) ch);
+            }
 
-            if (eat('^'))
+            if (eat('^')) {
                 x = Math.pow(x, parseFactor()); // exponentiation
+            }
 
             return x;
         }
@@ -172,13 +182,15 @@ public final class FormulaParser {
         }
 
         private void navigatePastNumber() {
-            while (isNumberCharacter())
+            while (isNumberCharacter()) {
                 nextChar();
+            }
         }
 
         private void navigatePastFunctionName() {
-            while (isLetter())
+            while (isLetter()) {
                 nextChar();
+            }
         }
 
         private double performFunction(double x, String func) {

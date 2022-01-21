@@ -4,19 +4,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public final class ConcurrentExecutionManager {
+public final class ConcurrentExecutionManager
+{
     //Limit the number of active threads so we don't run the machine out of memory
     private static ExecutorService essentialExecutorService = Executors.newFixedThreadPool(256);
     private static ExecutorService nonessentialExecutorService = Executors.newFixedThreadPool(128);
 
     public static void run(Runnable runnable) {
-        if(!essentialExecutorService.isShutdown())
+        if (!essentialExecutorService.isShutdown()) {
             essentialExecutorService.execute(runnable);
+        }
     }
 
     public static void runKillable(Runnable runnable) {
-        if(!nonessentialExecutorService.isShutdown())
+        if (!nonessentialExecutorService.isShutdown()) {
             nonessentialExecutorService.execute(runnable);
+        }
     }
 
     public static void waitForCompletion() throws InterruptedException {

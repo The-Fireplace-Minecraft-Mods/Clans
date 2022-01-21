@@ -11,7 +11,9 @@ import static java.lang.annotation.ElementType.FIELD;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
-public @interface RangeDecimal {
+public @interface RangeDecimal
+{
     double min() default Double.MIN_VALUE;
+
     double max() default Double.MAX_VALUE;
 }

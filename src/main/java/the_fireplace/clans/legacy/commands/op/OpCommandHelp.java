@@ -21,7 +21,8 @@ import java.util.Map;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpCommandHelp extends OpClanSubCommand {
+public class OpCommandHelp extends OpClanSubCommand
+{
     @Override
     public String getName() {
         return "help";
@@ -29,20 +30,21 @@ public class OpCommandHelp extends OpClanSubCommand {
 
     @Override
     public void runFromAnywhere(@Nullable MinecraftServer server, ICommandSender sender, @Nullable String[] args) throws CommandException {
-        if(args == null || args.length == 0 || args[0].matches("\\d+")) {
+        if (args == null || args.length == 0 || args[0].matches("\\d+")) {
             int page = args == null || args.length < 1 ? 1 : parseInt(args[0]);
             List<ITextComponent> helps = Lists.newArrayList();
-            for (Map.Entry<String, ClanSubCommand> command : CommandOpClan.COMMANDS.entrySet())
+            for (Map.Entry<String, ClanSubCommand> command : CommandOpClan.COMMANDS.entrySet()) {
                 helps.add(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
-                        TranslationUtil.getStringTranslation(sender, "commands.opclan." + command.getKey() + ".usage"),
-                        TranslationUtil.getStringTranslation(sender, "commands.opclan." + command.getKey() + ".description")));
+                    TranslationUtil.getStringTranslation(sender, "commands.opclan." + command.getKey() + ".usage"),
+                    TranslationUtil.getStringTranslation(sender, "commands.opclan." + command.getKey() + ".description")));
+            }
             helps.sort(Comparator.comparing(ITextComponent::getUnformattedText));
 
             ChatUtil.showPaginatedChat(sender, "/opclan help %s", helps, page);
-        } else if(CommandOpClan.COMMAND_ALIASES.containsKey(args[0]) || CommandOpClan.COMMANDS.containsKey(args[0])) {
+        } else if (CommandOpClan.COMMAND_ALIASES.containsKey(args[0]) || CommandOpClan.COMMANDS.containsKey(args[0])) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.help_format",
-                    TranslationUtil.getStringTranslation(sender, "commands.opclan." + CommandOpClan.processAlias(args[0]) + ".usage"),
-                    TranslationUtil.getStringTranslation(sender, "commands.opclan." + CommandOpClan.processAlias(args[0]) + ".description")));
+                TranslationUtil.getStringTranslation(sender, "commands.opclan." + CommandOpClan.processAlias(args[0]) + ".usage"),
+                TranslationUtil.getStringTranslation(sender, "commands.opclan." + CommandOpClan.processAlias(args[0]) + ".description")));
         } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.common.invalid_help", args[0]));
         }
@@ -66,10 +68,12 @@ public class OpCommandHelp extends OpClanSubCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> comp = Lists.newArrayList();
-        if(args.length != 1)
+        if (args.length != 1) {
             return comp;
-        for(int i = 1; i < CommandOpClan.COMMANDS.size()/ ChatUtil.RESULTS_PER_PAGE; i++)
+        }
+        for (int i = 1; i < CommandOpClan.COMMANDS.size() / ChatUtil.RESULTS_PER_PAGE; i++) {
             comp.add(String.valueOf(i));
+        }
         comp.addAll(CommandOpClan.COMMAND_ALIASES.keySet());
         comp.addAll(CommandOpClan.COMMANDS.keySet());
         return getListOfStringsMatchingLastWord(args, comp);

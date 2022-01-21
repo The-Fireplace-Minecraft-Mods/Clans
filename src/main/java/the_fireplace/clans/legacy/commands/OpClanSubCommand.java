@@ -11,24 +11,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class OpClanSubCommand extends ClanSubCommand {
-	@Override
-	public final boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1], sender.canUseCommand(server.getOpPermissionLevel(), this.getName()));
-	}
+public abstract class OpClanSubCommand extends ClanSubCommand
+{
+    @Override
+    public final boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return PermissionManager.hasPermission(sender, PermissionManager.OPCLAN_COMMAND_PREFIX + getUsage(server).split(" ")[1], sender.canUseCommand(server.getOpPermissionLevel(), this.getName()));
+    }
 
-	@Override
-	public final EnumRank getRequiredClanRank(){
-		return EnumRank.LEADER;
-	}
+    @Override
+    public final EnumRank getRequiredClanRank() {
+        return EnumRank.LEADER;
+    }
 
-	@Override
-	protected boolean allowConsoleUsage() {
-		return true;
-	}
+    @Override
+    protected boolean allowConsoleUsage() {
+        return true;
+    }
 
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return TranslationUtil.getRawTranslationString(sender, "commands.opclan."+getName()+".usage");
-	}
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return TranslationUtil.getRawTranslationString(sender, "commands.opclan." + getName() + ".usage");
+    }
 }

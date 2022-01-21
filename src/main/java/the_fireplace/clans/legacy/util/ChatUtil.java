@@ -11,12 +11,13 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 import java.util.Collection;
 import java.util.List;
 
-public final class ChatUtil {
+public final class ChatUtil
+{
     public static final int RESULTS_PER_PAGE = 7;
 
     public static void showPaginatedChat(ICommandSender target, String command, Collection<ITextComponent> items, int page) {
         int current = page;
-        int totalPageCount = items.size() % RESULTS_PER_PAGE > 0 ? (items.size()/ RESULTS_PER_PAGE)+1 : items.size()/ RESULTS_PER_PAGE;
+        int totalPageCount = items.size() % RESULTS_PER_PAGE > 0 ? (items.size() / RESULTS_PER_PAGE) + 1 : items.size() / RESULTS_PER_PAGE;
 
         ITextComponent counter = TranslationUtil.getTranslation(target, "clans.chat.page.num", current, totalPageCount);
         ITextComponent top = new TextComponentString("-----------------").setStyle(TextStyles.GREEN).appendSibling(counter).appendText("-------------------").setStyle(TextStyles.GREEN);
@@ -28,22 +29,25 @@ public final class ChatUtil {
         int termLength = RESULTS_PER_PAGE;
         List<ITextComponent> printItems = Lists.newArrayList();
 
-        for (ITextComponent item: items) {
-            if (page-- > 0)
+        for (ITextComponent item : items) {
+            if (page-- > 0) {
                 continue;
-            if (termLength-- <= 0)
+            }
+            if (termLength-- <= 0) {
                 break;
+            }
             printItems.add(item);
         }
 
-        ITextComponent nextButton = current < totalPageCount ? TranslationUtil.getTranslation(target, "clans.chat.page.next").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current+1)))) : new TextComponentString("------");
-        ITextComponent prevButton = current > 1 ? TranslationUtil.getTranslation(target, "clans.chat.page.prev").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current-1)))) : new TextComponentString("-------");
+        ITextComponent nextButton = current < totalPageCount ? TranslationUtil.getTranslation(target, "clans.chat.page.next").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current + 1)))) : new TextComponentString("------");
+        ITextComponent prevButton = current > 1 ? TranslationUtil.getTranslation(target, "clans.chat.page.prev").setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(command, current - 1)))) : new TextComponentString("-------");
         ITextComponent bottom = new TextComponentString("---------------").setStyle(TextStyles.GREEN).appendSibling(prevButton).appendText("---").setStyle(TextStyles.GREEN).appendSibling(nextButton).appendText("-------------").setStyle(TextStyles.GREEN);
 
         target.sendMessage(top);
 
-        for(ITextComponent item: printItems)
+        for (ITextComponent item : printItems) {
             target.sendMessage(item);
+        }
 
         target.sendMessage(bottom);
     }

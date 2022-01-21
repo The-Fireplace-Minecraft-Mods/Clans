@@ -17,10 +17,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-public class ClansLanguageMap {
-    /** Pattern that matches numeric variable placeholders in a resource string, such as "%d", "%3$d", "%.2f" */
+public class ClansLanguageMap
+{
+    /**
+     * Pattern that matches numeric variable placeholders in a resource string, such as "%d", "%3$d", "%.2f"
+     */
     private static final Pattern NUMERIC_VARIABLE_PATTERN = Pattern.compile("%(\\d+\\$)?[\\d\\.]*[df]");
-    /** A Splitter that splits a string on the first "=".  For example, "a=b=c" would split into ["a", "b=c"]. */
+    /**
+     * A Splitter that splits a string on the first "=".  For example, "a=b=c" would split into ["a", "b=c"].
+     */
     private static final Splitter EQUAL_SIGN_SPLITTER = Splitter.on('=').limit(2);
     private static final ClansLanguageMap instance = new ClansLanguageMap(ClansModContainer.getConfig().getLocale());
     private final Map<String, String> languageList = Maps.newHashMap();
@@ -43,7 +48,9 @@ public class ClansLanguageMap {
         Map<String, String> table = Maps.newHashMap();
         try {
             inputstream = loadLanguage(table, inputstream);
-            if (inputstream == null) return table;
+            if (inputstream == null) {
+                return table;
+            }
 
             for (String s : IOUtils.readLines(inputstream, StandardCharsets.UTF_8)) {
                 if (!s.isEmpty() && s.charAt(0) != '#') {
@@ -57,7 +64,8 @@ public class ClansLanguageMap {
                 }
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return table;
     }
 
@@ -90,37 +98,33 @@ public class ClansLanguageMap {
      * The Marker is 'PARSE_ESCAPES' by itself on a line starting with '#' as such:
      * #PARSE_ESCAPES
      *
-     * @param table The Map to load each key/value pair into.
+     * @param table       The Map to load each key/value pair into.
      * @param inputstream Input stream containing the lang file.
      * @return A new InputStream that vanilla uses to load normal Lang files, Null if this is a 'enhanced' file and loading is done.
      */
     @Nullable
-    private static InputStream loadLanguage(Map<String, String> table, InputStream inputstream) throws IOException
-    {
+    private static InputStream loadLanguage(Map<String, String> table, InputStream inputstream) throws IOException {
         byte[] data = IOUtils.toByteArray(inputstream);
 
         boolean isEnhanced = false;
-        for (String line : IOUtils.readLines(new ByteArrayInputStream(data), StandardCharsets.UTF_8))
-        {
-            if (!line.isEmpty() && line.charAt(0) == '#')
-            {
+        for (String line : IOUtils.readLines(new ByteArrayInputStream(data), StandardCharsets.UTF_8)) {
+            if (!line.isEmpty() && line.charAt(0) == '#') {
                 line = line.substring(1).trim();
-                if (line.equals("PARSE_ESCAPES"))
-                {
+                if (line.equals("PARSE_ESCAPES")) {
                     isEnhanced = true;
                     break;
                 }
             }
         }
 
-        if (!isEnhanced)
+        if (!isEnhanced) {
             return new ByteArrayInputStream(data);
+        }
 
         Properties props = new Properties();
         props.load(new InputStreamReader(new ByteArrayInputStream(data), StandardCharsets.UTF_8));
-        for (Map.Entry<Object, Object> e : props.entrySet())
-        {
-            table.put((String)e.getKey(), (String)e.getValue());
+        for (Map.Entry<Object, Object> e : props.entrySet()) {
+            table.put((String) e.getKey(), (String) e.getValue());
         }
         props.clear();
         return null;

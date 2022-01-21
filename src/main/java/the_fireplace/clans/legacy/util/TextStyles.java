@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class TextStyles {
+public class TextStyles
+{
     public static final Style RED = new Style().setColor(TextFormatting.RED);
     public static final Style YELLOW = new Style().setColor(TextFormatting.YELLOW);
     public static final Style GREEN = new Style().setColor(TextFormatting.GREEN);
@@ -23,6 +24,7 @@ public class TextStyles {
 
     private static final HashMap<Color, TextFormatting> colorMap = Maps.newHashMap();
     public static final HashMap<String, Integer> colorStrings = Maps.newHashMap();
+
     static {
         colorMap.put(new Color(0x000000), TextFormatting.BLACK);
         colorMap.put(new Color(0x0000AA), TextFormatting.DARK_BLUE);
@@ -41,17 +43,18 @@ public class TextStyles {
         colorMap.put(new Color(0xFFFF55), TextFormatting.YELLOW);
         colorMap.put(new Color(0xFFFFFF), TextFormatting.WHITE);
 
-        for(Map.Entry<Color, TextFormatting> entry : colorMap.entrySet())
+        for (Map.Entry<Color, TextFormatting> entry : colorMap.entrySet()) {
             colorStrings.put(entry.getValue().name().toLowerCase(), entry.getKey().getRGB());
+        }
     }
 
     public static TextFormatting getNearestTextColor(int exactColor) {
         Color ec = new Color(exactColor);
         Color closest = null;
         double distance = Double.MAX_VALUE;
-        for(Color c2: colorMap.keySet()) {
+        for (Color c2 : colorMap.keySet()) {
             double d = colorDistance(ec, c2);
-            if(d < distance) {
+            if (d < distance) {
                 closest = c2;
                 distance = d;
             }
@@ -66,7 +69,7 @@ public class TextStyles {
         int r = red1 - red2;
         int g = c1.getGreen() - c2.getGreen();
         int b = c1.getBlue() - c2.getBlue();
-        return (((512+rmean)*r*r)>>8) + 4*g*g + (((767-rmean)*b*b)>>8);
+        return (((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8);
     }
 
     public static String stripFormatting(String input) {

@@ -5,7 +5,8 @@ import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class NetworkUtils {
+public class NetworkUtils
+{
 
     public static SPacketBlockChange createFakeBlockChange(World w, BlockPos pos, IBlockState state) {
         SPacketBlockChange pkt = new SPacketBlockChange(w, pos);

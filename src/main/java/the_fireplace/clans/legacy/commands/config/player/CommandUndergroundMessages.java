@@ -14,31 +14,32 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandUndergroundMessages extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "undergroundmessages";
-	}
+public class CommandUndergroundMessages extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "undergroundmessages";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.ANY;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.ANY;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 1;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
-		boolean showMessages = parseBool(args[0]);
-		TerritoryMessageSettings.setShowUndergroundMessages(sender.getUniqueID(), showMessages);
-		sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.undergroundmessages.success").setStyle(TextStyles.GREEN));
-	}
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException {
+        boolean showMessages = parseBool(args[0]);
+        TerritoryMessageSettings.setShowUndergroundMessages(sender.getUniqueID(), showMessages);
+        sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.undergroundmessages.success").setStyle(TextStyles.GREEN));
+    }
 }

@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanRent extends ClanData {
+public class ClanRent extends ClanData
+{
     private static final Map<UUID, ClanRent> RENT_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanRent get(UUID clan) {
@@ -21,8 +22,9 @@ public class ClanRent extends ClanData {
 
     public static void delete(UUID clan) {
         ClanRent rent = RENT_INSTANCES.remove(clan);
-        if(rent != null)
+        if (rent != null) {
             rent.delete();
+        }
     }
 
     private double rent = getInitialRent();

@@ -13,32 +13,33 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandMap extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "map";
-	}
-
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.ANY;
-	}
-
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
-
-	@Override
-	public int getMaxArgs() {
-		return 0;
-	}
+public class CommandMap extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "map";
+    }
 
     @Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		World w = sender.getEntityWorld();
-		Chunk senderChunk = w.getChunk(sender.getPosition());
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.ANY;
+    }
 
-		ClaimMapToChat.createAllianceMap(sender, senderChunk.getPos(), sender.dimension).prepareAndSend();
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxArgs() {
+        return 0;
+    }
+
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        World w = sender.getEntityWorld();
+        Chunk senderChunk = w.getChunk(sender.getPosition());
+
+        ClaimMapToChat.createAllianceMap(sender, senderChunk.getPos(), sender.dimension).prepareAndSend();
+    }
 }

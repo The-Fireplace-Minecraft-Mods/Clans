@@ -1,6 +1,7 @@
 package the_fireplace.clans.multithreading;
 
-public class ThreadedSaveHandler<T extends ThreadedSaveable> {
+public class ThreadedSaveHandler<T extends ThreadedSaveable>
+{
     private T saveObject;
     private boolean isChanged = false;
     private boolean saving = false;
@@ -26,18 +27,21 @@ public class ThreadedSaveHandler<T extends ThreadedSaveable> {
      * Make a save on a new thread to avoid blocking existing threads. Only save if changed.
      */
     public void concurrentSave() {
-        if(!isChanged || saving)
+        if (!isChanged || saving) {
             return;
+        }
         saving = true;
         isChanged = false;
         ConcurrentExecutionManager.run(() -> {
             saveObject.blockingSave();
             saving = false;
-            if(markedForDisposal) {
-                if(isChanged)
+            if (markedForDisposal) {
+                if (isChanged) {
                     concurrentSave();
-                else //noinspection ConstantConditions
+                } else //noinspection ConstantConditions
+                {
                     saveObject = null;
+                }
             }
         });
     }

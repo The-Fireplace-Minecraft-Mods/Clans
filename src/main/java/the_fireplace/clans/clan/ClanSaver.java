@@ -17,9 +17,10 @@ import the_fireplace.clans.clan.raids.ClanWeaknessFactor;
 
 import java.util.UUID;
 
-public final class ClanSaver {
+public final class ClanSaver
+{
     public static void saveAll() {
-        for (UUID uuid: ClanIdRegistry.getIds()) {
+        for (UUID uuid : ClanIdRegistry.getIds()) {
             saveClan(uuid);
         }
     }
@@ -30,12 +31,14 @@ public final class ClanSaver {
         AdminControlledClanSettings.get(clan).save();
         ClanRent.get(clan).save();
         ClanUpkeep.get(clan).save();
-        if(ClanHomes.hasHome(clan))
+        if (ClanHomes.hasHome(clan)) {
             ClanHomes.get(clan).save();
+        }
         ClanRent.get(clan).save();
         ClanMembers.get(clan).save();
-        if(ClanBanners.hasBanner(clan))
+        if (ClanBanners.hasBanner(clan)) {
             ClanBanners.get(clan).save();
+        }
         ClanColors.get(clan).save();
         ClanDescriptions.get(clan).save();
         ClanNames.get(clan).save();

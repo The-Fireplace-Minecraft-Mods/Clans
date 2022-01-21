@@ -12,12 +12,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class Config {
-    public static final File configFile = new File("config", ClansModContainer.MODID +".conf");
+public class Config
+{
+    public static final File configFile = new File("config", ClansModContainer.MODID + ".conf");
     private static Config instance = null;
 
     public static Config getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Config();
             instance.load();
         }
@@ -26,7 +27,9 @@ public class Config {
 
     @Comment("General config values to control the mod as a whole.")
     public General general = new General();
-    public static class General {
+
+    public static class General
+    {
         @Comment("Server locale - the client's locale takes precedence if Clans is installed there.")
         public String locale = "en_us";
         @Comment("A list of Fake Players that are allowed to build, destroy, interact, and injure things on claimed land. These are typically machines added by mods. If it contains a *, this list is a blacklist, so everything is allowed by default. Otherwise, it is a whitelist.")
@@ -45,7 +48,9 @@ public class Config {
 
     @Comment("Config values related to clans, which would not be able to be overridden on a per-clan basis.")
     public GeneralClanSettings generalClan = new GeneralClanSettings();
-    public static class GeneralClanSettings {
+
+    public static class GeneralClanSettings
+    {
         @Comment("Allow players to be a member of multiple clans at once.")
         public boolean allowMultiClanMembership = true;
         @Comment("Default clan to put players in when they first join the server. Leave empty for no clan.")
@@ -53,28 +58,30 @@ public class Config {
         // https://github.com/TheElectronWill/night-config/issues/82
         public String serverDefaultClan = "N/A";
         @Comment("Cost of forming a clan. This requires a compatible economy to be installed.")
-        @RangeDecimal(min=0)
+        @RangeDecimal(min = 0)
         public double formClanCost = 0;
         @Comment("Initial amount in a clan account's balance when it is formed. This requires a compatible economy to be installed.")
-        @RangeDecimal(min=0)
+        @RangeDecimal(min = 0)
         public double formClanBankAmount = 0;
         @Comment("Maximum clan name length. Larger values allow more characters to be typed for the clan name, but also increase the chance of clans making their name hard to type in an attempt to avoid getting raided. Set to 0 for no limit.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int maxNameLength = 32;
     }
 
     @Comment("Config values related to properties of specific clans, which can currently or potentially in the future be overridden on a per-clan basis.")
     public Clan clan = new Clan();
-    public static class Clan {
+
+    public static class Clan
+    {
         @Comment("Clan prefix for chat. If the player is in multiple clans, it uses the default clan. Make empty for no prefix. %s is where the clan name will go.")
         public String chatPrefix = "[%s]";
         @Comment("Allow clans to have multiple leaders.")
         public boolean multipleClanLeaders = true;
         @Comment("The amount of time, in seconds, the player must wait after typing /clan home before being teleported. Set to -1 to disable /clan home.")
-        @RangeNumber(min=-1)
+        @RangeNumber(min = -1)
         public int clanHomeWarmupTime = 0;
         @Comment("The amount of time, in seconds, the player must wait after teleporting to the clan home before they can use /clan home again.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int clanHomeCooldownTime = 0;
         @Comment("Max claims per clan. Set to a negative number for infinite. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String maxClaimCountFormula = "-1*p";
@@ -85,13 +92,13 @@ public class Config {
         @Comment("Value or formula for cost of claiming a chunk. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String claimChunkCostFormula = "0";
         @Comment("Reduced cost of claiming a chunk for the first x claims. This requires a compatible economy to be installed.")
-        @RangeDecimal(min=0)
+        @RangeDecimal(min = 0)
         public double reducedClaimChunkCost = 0;
         @Comment("Use the reduced cost for this many claims. This requires a compatible economy to be installed.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int reducedCostClaimCount = 0;
         @Comment("How often to charge clans upkeep(in days). Set to 0 to disable the need for upkeep. This requires a compatible economy to be installed.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int clanUpkeepDays = 0;
         @Comment("Value or formula for amount to charge a clan for upkeep. This requires a compatible economy to be installed. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String clanUpkeepCostFormula = "0*c";
@@ -102,7 +109,7 @@ public class Config {
         @Comment("When enabled, remaining clan funds go to the clan leader when the clan is disbanded. When disabled, remaining clan funds get split evenly among all clan members when the clan is disbanded. This requires a compatible economy to be installed.")
         public boolean leaderRecieveDisbandFunds = true;
         @Comment("Frequency to charge clan members rent to go into the clan bank account (in days). If enabled, allows clan leaders to set the amount for their clans. Set to 0 to disable clan rent. This requires a compatible economy to be installed.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int chargeRentDays = 0;
         @Comment("Kick clan members out who can't afford rent. This will not kick out leaders. This requires a compatible economy to be installed.")
         public boolean evictNonpayers = false;
@@ -114,34 +121,36 @@ public class Config {
 
     @Comment("Config values related to raiding.")
     public Raid raid = new Raid();
-    public static class Raid {
+
+    public static class Raid
+    {
         @Comment("Offset the maximum number of raiders by this much when determining how many people can join a raiding party. Formula is: (# raiders) - (maxRaiderOffset) <= (# defenders)")
         public int maxRaidersOffset = 0;
         @Comment("Maximum duration a raid can last for, in minutes. If set to 0, raids will be disabled.")
-        @RangeNumber(min=0,max=Integer.MAX_VALUE/60)
+        @RangeNumber(min = 0, max = Integer.MAX_VALUE / 60)
         public int maxRaidDuration = 30;
         @Comment("The amount of time the defenders are given to prepare for a raid, in seconds.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int raidBufferTime = 90;
         @Comment("Amount of time before the end of the raid to make all defenders glow, in minutes.")
-        @RangeNumber(min=0,max=Integer.MAX_VALUE/60)
+        @RangeNumber(min = 0, max = Integer.MAX_VALUE / 60)
         public int remainingTimeToGlow = 10;
         @Comment("Maximum amount of consecutive time raiding parties can remain outside their target's territory, in seconds.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int maxAttackerAbandonmentTime = 30;
         @Comment("Maximum amount of consecutive time defending clans can remain outside their territory during a raid, in seconds.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int maxClanDesertionTime = 60;
         @Comment("Amount of shield given to the defending clan after a raid, in hours.")
-        @RangeNumber(min=0)
-        public int defenseShield = 24*5;
+        @RangeNumber(min = 0)
+        public int defenseShield = 24 * 5;
         @Comment("Amount of shield given to newly formed clans, in hours.")
-        @RangeNumber(min=0)
-        public int initialShield = 24*3;
+        @RangeNumber(min = 0)
+        public int initialShield = 24 * 3;
         @Comment("Prevents reclaiming TNT that was placed while raiding.")
         public boolean noReclaimTNT = true;
         @Comment("Raid break speed multiplier")
-        @RangeDecimal(min=0.0, max=10.0)
+        @RangeDecimal(min = 0.0, max = 10.0)
         public double raidBreakSpeedMultiplier = 1.0;
         @Comment("This option disables rollback of raids.")
         public boolean disableRaidRollback = false;
@@ -158,7 +167,7 @@ public class Config {
         @Comment("If enabled, rewards will increase as a clan gets repeatedly defeated. This requires a compatible economy to be installed.")
         public boolean increasingRewards = true;
         @Comment("Win-Loss Ratio threshold for decreasing the clan's reward multiplier - Helps prevent rich clans from hiring people to purposely fail a raid and reduce their reward multiplier. This requires a compatible economy to be installed.")
-        @RangeDecimal(min=0)
+        @RangeDecimal(min = 0)
         public double wlrThreshold = 0.66;
         @Comment("Formula to increase the clan's reward multiplier to after a clan loses to raiders. This requires increasingRewards to do anything. See https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505 for formula writing details.")
         public String multiplierIncreaseFormula = "m^1.05";
@@ -168,12 +177,14 @@ public class Config {
 
     @Comment("Config values related to protecting things.")
     public Protection protection = new Protection();
-    public static class Protection {
+
+    public static class Protection
+    {
         @Comment("Minimum number of blocks between clan homes.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int minClanHomeDist = 320;
         @Comment("This multiplied by the minimum clan home distance is how far away from other clans' homes to make the initial claim for a clan.")
-        @RangeDecimal(min=0)
+        @RangeDecimal(min = 0)
         public double initialClaimSeparationMultiplier = 1.25;
         @Comment("If set to false, players will be warned if making the initial claim within the claim separation range, but not prevented from making the claim if they want to.")
         public boolean enforceInitialClaimSeparation = true;
@@ -250,7 +261,9 @@ public class Config {
 
     @Comment("Config values related to integration with Chat Censor.")
     public Censor chatCensor = new Censor();
-    public static class Censor {
+
+    public static class Censor
+    {
         @Comment("Censor clan names before they are set. This requires Chat Censor to do anything.")
         public boolean censorClanNames = true;
         @Comment("Censor clan descriptions before they are set. This is a bit excessive since currently Chat Censor will censor the description before it reaches the user anyways, but good if something else uses the clan description that is not fixed by Chat Censor. This requires Chat Censor to do anything.")
@@ -261,68 +274,77 @@ public class Config {
 
     @Comment("Config values related to integration with Dynmap.")
     public Dynmap dynmap = new Dynmap();
-    public static class Dynmap {
+
+    public static class Dynmap
+    {
         @Comment("The weight of the dynmap border for claims. This requires Dynmap to be installed.")
-        @RangeNumber(min=0)
+        @RangeNumber(min = 0)
         public int dynmapBorderWeight = 0;
         @Comment("The opacity of the border for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
-        @RangeDecimal(min=0, max=1)
+        @RangeDecimal(min = 0, max = 1)
         public double dynmapBorderOpacity = 0.9;
         @Comment("The opacity of the fill color for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
-        @RangeDecimal(min=0, max=1)
+        @RangeDecimal(min = 0, max = 1)
         public double dynmapFillOpacity = 0.75;
     }
 
     public void load() {
-        if(!configFile.exists())
+        if (!configFile.exists()) {
             createDefaultConfigFile();
-        else {
+        } else {
             try {
                 CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
                 cfg.load();
                 Map<Field, List<Field>> toAdd = new HashMap<>();
-                for(Field f: getClass().getFields()) {
-                    if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
+                for (Field f : getClass().getFields()) {
+                    if (Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers())) {
                         continue;
+                    }
                     Object obj = cfg.get(f.getName());
                     com.electronwill.nightconfig.core.Config subcfg;
-                    if(obj instanceof com.electronwill.nightconfig.core.Config) {
+                    if (obj instanceof com.electronwill.nightconfig.core.Config) {
                         subcfg = (com.electronwill.nightconfig.core.Config) obj;
                         for (Field f1 : f.getType().getFields()) {
-                            if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                            if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers())) {
                                 continue;
+                            }
                             Object value = subcfg.get(f1.getName());
-                            if(value != null) {
+                            if (value != null) {
                                 //Ensure that values are in an acceptable range
                                 RangeDecimal decRange = f1.getAnnotation(RangeDecimal.class);
                                 RangeNumber numRange = f1.getAnnotation(RangeNumber.class);
                                 Object prevVal = value;
-                                if(numRange != null)
+                                if (numRange != null) {
                                     value = Math.max(numRange.min(), Math.min(numRange.max(), Long.parseLong(String.valueOf(value))));
-                                if(decRange != null)
+                                }
+                                if (decRange != null) {
                                     value = Math.max(decRange.min(), Math.min(decRange.max(), Double.parseDouble(String.valueOf(value))));
-                                if((numRange != null || decRange != null) && Double.parseDouble(String.valueOf(value)) - Double.parseDouble(String.valueOf(prevVal)) != 0)
+                                }
+                                if ((numRange != null || decRange != null) && Double.parseDouble(String.valueOf(value)) - Double.parseDouble(String.valueOf(prevVal)) != 0) {
                                     ClansModContainer.getLogger().warn("Adjusted value of {} from {} to {} due to Range constraint.", f1.getName(), prevVal, value);
+                                }
                                 //Apply appropriate conversions to avoid ClassCastExceptions
-                                if(f1.getType().equals(String.class))
+                                if (f1.getType().equals(String.class)) {
                                     value = String.valueOf(value);
-                                else if(f1.getType().equals(double.class) || f1.getType().equals(Double.class))
+                                } else if (f1.getType().equals(double.class) || f1.getType().equals(Double.class)) {
                                     value = Double.parseDouble(String.valueOf(value));
-                                else if(f1.getType().equals(float.class) || f1.getType().equals(Float.class))
+                                } else if (f1.getType().equals(float.class) || f1.getType().equals(Float.class)) {
                                     value = Float.parseFloat(String.valueOf(value));
-                                else if(f1.getType().equals(long.class) || f1.getType().equals(Long.class))
+                                } else if (f1.getType().equals(long.class) || f1.getType().equals(Long.class)) {
                                     value = Long.parseLong(String.valueOf(value));
-                                else if(f1.getType().equals(int.class) || f1.getType().equals(Integer.class))
+                                } else if (f1.getType().equals(int.class) || f1.getType().equals(Integer.class)) {
                                     value = Integer.parseInt(String.valueOf(value));
-                                else if(f1.getType().equals(short.class) || f1.getType().equals(Short.class))
+                                } else if (f1.getType().equals(short.class) || f1.getType().equals(Short.class)) {
                                     value = Short.parseShort(String.valueOf(value));
-                                else if(f1.getType().equals(byte.class) || f1.getType().equals(Byte.class))
+                                } else if (f1.getType().equals(byte.class) || f1.getType().equals(Byte.class)) {
                                     value = Byte.parseByte(String.valueOf(value));
+                                }
                                 //Put the value in the field
                                 f1.set(f.get(this), value);
                             } else {
-                                if(!toAdd.containsKey(f))
+                                if (!toAdd.containsKey(f)) {
                                     toAdd.put(f, new ArrayList<>());
+                                }
                                 toAdd.get(f).add(f1);
                             }
                         }
@@ -331,27 +353,31 @@ public class Config {
                     }
                 }
                 //Now add the missing fields from the default config, if any, then save
-                if(!toAdd.isEmpty()) {
-                    for(Field f: toAdd.keySet()) {
+                if (!toAdd.isEmpty()) {
+                    for (Field f : toAdd.keySet()) {
                         CommentedConfig subcfg = cfg.get(f.getName());
-                        if(subcfg == null)
+                        if (subcfg == null) {
                             subcfg = cfg.createSubConfig();
-                        for(Field f1: toAdd.get(f) != null ? toAdd.get(f) : Lists.newArrayList(f.getType().getFields())) {
-                            if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                        }
+                        for (Field f1 : toAdd.get(f) != null ? toAdd.get(f) : Lists.newArrayList(f.getType().getFields())) {
+                            if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers())) {
                                 continue;
+                            }
                             Comment comment = f1.getAnnotation(Comment.class);
-                            if(comment != null)
+                            if (comment != null) {
                                 subcfg.setComment(f1.getName(), comment.value());
+                            }
                             subcfg.add(f1.getName(), f1.get(f.get(this)));
                         }
                         Comment comment = f.getAnnotation(Comment.class);
-                        if(comment != null)
+                        if (comment != null) {
                             cfg.setComment(f.getName(), comment.value());
+                        }
                         cfg.set(f.getName(), subcfg.unmodifiable());
                     }
                     cfg.save();
                 }
-            } catch(IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -362,25 +388,29 @@ public class Config {
             //noinspection ResultOfMethodCallIgnored
             configFile.getParentFile().mkdirs();
             CommentedFileConfig cfg = CommentedFileConfig.of(configFile);
-            for(Field f: getClass().getFields()) {
-                if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers()))
+            for (Field f : getClass().getFields()) {
+                if (Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers())) {
                     continue;
+                }
                 CommentedConfig subcfg = cfg.createSubConfig();
-                for(Field f1: f.getType().getFields()) {
-                    if(Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers()))
+                for (Field f1 : f.getType().getFields()) {
+                    if (Modifier.isStatic(f1.getModifiers()) || Modifier.isFinal(f1.getModifiers())) {
                         continue;
+                    }
                     Comment comment = f1.getAnnotation(Comment.class);
-                    if(comment != null)
+                    if (comment != null) {
                         subcfg.setComment(f1.getName(), comment.value());
+                    }
                     subcfg.add(f1.getName(), f1.get(f.get(this)));
                 }
                 Comment comment = f.getAnnotation(Comment.class);
-                if(comment != null)
+                if (comment != null) {
                     cfg.setComment(f.getName(), comment.value());
+                }
                 cfg.set(f.getName(), subcfg.unmodifiable());
             }
             cfg.save();
-        } catch(IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }

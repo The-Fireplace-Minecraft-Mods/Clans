@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AutoClaim {
+public class AutoClaim
+{
     private static final Map<UUID, UUID> AUTO_CLAIMING_PLAYERS = new ConcurrentHashMap<>();
 
     public static void activateAutoClaim(UUID player, UUID selectedClan) {

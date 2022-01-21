@@ -20,68 +20,70 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandBanner extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "banner";
-	}
+public class CommandBanner extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "banner";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.MEMBER;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.MEMBER;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 0;
-	}
+    @Override
+    public int getMinArgs() {
+        return 0;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return 0;
-	}
+    @Override
+    public int getMaxArgs() {
+        return 0;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		NBTTagCompound banner;
-		if (ClanBanners.hasBanner(selectedClan)) {
-			try {
-				banner = JsonToNBT.getTagFromJson(ClanBanners.get(selectedClan).getClanBanner());
-			} catch (NBTException e) {
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        NBTTagCompound banner;
+        if (ClanBanners.hasBanner(selectedClan)) {
+            try {
+                banner = JsonToNBT.getTagFromJson(ClanBanners.get(selectedClan).getClanBanner());
+            } catch (NBTException e) {
                 sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClanName).setStyle(TextStyles.RED));
-				return;
-			}
-		} else {
+                return;
+            }
+        } else {
             sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.clan_nobanner", selectedClanName).setStyle(TextStyles.RED));
-			return;
-		}
-		if(sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
-			int count = sender.getHeldItemMainhand().getCount();
-			ItemStack bannerStack = new ItemStack(banner);
-			bannerStack.setCount(count);
-			sender.setHeldItem(EnumHand.MAIN_HAND, bannerStack);
-		} else if(sender.getHeldItemOffhand().getItem() instanceof ItemBanner) {
-			int count = sender.getHeldItemOffhand().getCount();
-			ItemStack bannerStack = new ItemStack(banner);
-			bannerStack.setCount(count);
-			sender.setHeldItem(EnumHand.OFF_HAND, bannerStack);
-		} else if(sender.getHeldItemMainhand().getItem() instanceof ItemShield) {
-			ItemStack bannerStack = new ItemStack(banner);
-			NBTTagCompound bet = bannerStack.getSubCompound("BlockEntityTag");
-			NBTTagCompound finalBet = bet == null ? new NBTTagCompound() : bet.copy();
-			finalBet.setInteger("Base", bannerStack.getMetadata() & 15);
-			ItemStack shieldStack = sender.getHeldItemMainhand();
-			shieldStack.setTagInfo("BlockEntityTag", finalBet);
-			sender.setHeldItem(EnumHand.MAIN_HAND, shieldStack);
-		} else if(sender.getHeldItemOffhand().getItem() instanceof ItemShield) {
-			ItemStack bannerStack = new ItemStack(banner);
-			NBTTagCompound bet = bannerStack.getSubCompound("BlockEntityTag");
-			NBTTagCompound finalBet = bet == null ? new NBTTagCompound() : bet.copy();
-			finalBet.setInteger("Base", bannerStack.getMetadata() & 15);
-			ItemStack shieldStack = sender.getHeldItemOffhand();
-			shieldStack.setTagInfo("BlockEntityTag", finalBet);
-			sender.setHeldItem(EnumHand.OFF_HAND, shieldStack);
-		} else
-			sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.player_nobanner").setStyle(TextStyles.RED));
-	}
+            return;
+        }
+        if (sender.getHeldItemMainhand().getItem() instanceof ItemBanner) {
+            int count = sender.getHeldItemMainhand().getCount();
+            ItemStack bannerStack = new ItemStack(banner);
+            bannerStack.setCount(count);
+            sender.setHeldItem(EnumHand.MAIN_HAND, bannerStack);
+        } else if (sender.getHeldItemOffhand().getItem() instanceof ItemBanner) {
+            int count = sender.getHeldItemOffhand().getCount();
+            ItemStack bannerStack = new ItemStack(banner);
+            bannerStack.setCount(count);
+            sender.setHeldItem(EnumHand.OFF_HAND, bannerStack);
+        } else if (sender.getHeldItemMainhand().getItem() instanceof ItemShield) {
+            ItemStack bannerStack = new ItemStack(banner);
+            NBTTagCompound bet = bannerStack.getSubCompound("BlockEntityTag");
+            NBTTagCompound finalBet = bet == null ? new NBTTagCompound() : bet.copy();
+            finalBet.setInteger("Base", bannerStack.getMetadata() & 15);
+            ItemStack shieldStack = sender.getHeldItemMainhand();
+            shieldStack.setTagInfo("BlockEntityTag", finalBet);
+            sender.setHeldItem(EnumHand.MAIN_HAND, shieldStack);
+        } else if (sender.getHeldItemOffhand().getItem() instanceof ItemShield) {
+            ItemStack bannerStack = new ItemStack(banner);
+            NBTTagCompound bet = bannerStack.getSubCompound("BlockEntityTag");
+            NBTTagCompound finalBet = bet == null ? new NBTTagCompound() : bet.copy();
+            finalBet.setInteger("Base", bannerStack.getMetadata() & 15);
+            ItemStack shieldStack = sender.getHeldItemOffhand();
+            shieldStack.setTagInfo("BlockEntityTag", finalBet);
+            sender.setHeldItem(EnumHand.OFF_HAND, shieldStack);
+        } else {
+            sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.banner.player_nobanner").setStyle(TextStyles.RED));
+        }
+    }
 }

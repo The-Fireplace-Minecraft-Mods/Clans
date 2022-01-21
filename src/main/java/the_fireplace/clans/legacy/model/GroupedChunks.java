@@ -5,14 +5,15 @@ import the_fireplace.clans.legacy.ClansModContainer;
 
 import java.util.*;
 
-public class GroupedChunks {
+public class GroupedChunks
+{
     private final Map<ChunkPosition, AdjacentChunk> chunkGroupMap = Maps.newHashMap();
 
     /**
      * Takes the info for the position of the current frame and finds all the chunks that are adjacent to it and
      * then to each other. Eventually building up a list of all chunks that are related to each other in a group.
      *
-     * @param chunkPos The starting chunk to processes for this group
+     * @param chunkPos                 The starting chunk to processes for this group
      * @param remainingChunksToProcess The list of remaining claim chunks to check for adjacent chunks.
      */
     public void processChunk(ChunkPosition chunkPos, Set<ChunkPosition> remainingChunksToProcess) {
@@ -29,7 +30,7 @@ public class GroupedChunks {
     /**
      * Assembles in memory the group of chunks and edges for each chunk and traces the outer perimeter of the
      * group of chunks in a clockwise pattern.
-     *
+     * <p>
      * NOTE:
      * Chunks not present in the middle of the group of chunks are just ignored and just rendered as full claim
      * areas in dynmap.
@@ -47,8 +48,9 @@ public class GroupedChunks {
             Collection<ChunkEdge> edges = chunk.getValue().getOpenChunkEdges();
             for (ChunkEdge edge : edges) {
                 // Keep track of an edge that is the lowest X position so we can use it as a starting point.
-                if (startEdge == null || edge.point1().getX() < startEdge.point1().getX())
+                if (startEdge == null || edge.point1().getX() < startEdge.point1().getX()) {
                     startEdge = edge;
+                }
 
                 totalEdgeCount++;
 
@@ -88,8 +90,9 @@ public class GroupedChunks {
                         // be.
                         ChunkEdge.Edge nextEdge = ChunkEdge.Edge.LEFT;
 
-                        if (lastEdgeType == null)
+                        if (lastEdgeType == null) {
                             lastEdgeType = curEdge.edgeType();
+                        }
 
                         switch (lastEdgeType) {
                             case LEFT:
@@ -115,18 +118,20 @@ public class GroupedChunks {
                         }
 
                     }
-                } else
+                } else {
                     curEdge = null;
+                }
 
                 if (curEdge != null) {
                     // While tracing if this point is on the same axis as the previous point, then just replace the
                     // previous point with this new one, this will end up removing all the redundant points for each
                     // chunk. For example a square box of 9 chunks will produce 4 points for the corners only (assuming
                     // it starts on a corner)
-                    if (lastEdgeType != null && lastEdgeType == curEdge.edgeType())
+                    if (lastEdgeType != null && lastEdgeType == curEdge.edgeType()) {
                         perimeterPoints.set(perimeterPoints.size() - 1, curEdge.point2());
-                    else
+                    } else {
                         perimeterPoints.add(curEdge.point2());
+                    }
 
                     lastEdgeType = curEdge.edgeType();
                 } else {
@@ -144,8 +149,9 @@ public class GroupedChunks {
             } while (curEdge != startEdge);
         }
 
-        if (bTraceError)
+        if (bTraceError) {
             perimeterPoints.clear();
+        }
 
         return perimeterPoints;
     }
@@ -154,8 +160,9 @@ public class GroupedChunks {
      * Clean up all the cross references so the garbage collector can destroy the objects
      */
     public void cleanup() {
-        for (Map.Entry<ChunkPosition, AdjacentChunk> chunk : chunkGroupMap.entrySet())
+        for (Map.Entry<ChunkPosition, AdjacentChunk> chunk : chunkGroupMap.entrySet()) {
             chunk.getValue().cleanup();
+        }
 
         chunkGroupMap.clear();
     }

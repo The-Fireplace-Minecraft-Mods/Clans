@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClanClaimCount {
+public class ClanClaimCount
+{
     private static final Map<UUID, ClanClaimCount> CLAIM_COUNT_INSTANCES = new ConcurrentHashMap<>();
 
     public static ClanClaimCount get(UUID clan) {
@@ -44,8 +45,9 @@ public class ClanClaimCount {
     }
 
     private void cacheClaimCountIfNeeded() {
-        if (cachedClaimCount < 0)
+        if (cachedClaimCount < 0) {
             cacheClaimCount();
+        }
     }
 
     /**
@@ -57,9 +59,10 @@ public class ClanClaimCount {
 
     public long getMaxClaimCount() {
         AdminControlledClanSettings clanSettings = AdminControlledClanSettings.get(clan);
-        if (clanSettings.hasCustomMaxClaims())
+        if (clanSettings.hasCustomMaxClaims()) {
             return clanSettings.getCustomMaxClaims();
-        long claimCount = (long)FormulaParser.eval(ClansModContainer.getConfig().getMaxClaimCountFormula(), clan, -1);
+        }
+        long claimCount = (long) FormulaParser.eval(ClansModContainer.getConfig().getMaxClaimCountFormula(), clan, -1);
         return claimCount >= 0 ? claimCount : Long.MAX_VALUE;
     }
 }

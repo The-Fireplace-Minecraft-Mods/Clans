@@ -10,13 +10,15 @@ import the_fireplace.clans.legacy.util.translation.TranslationUtil;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid= ClansModContainer.MODID)
-public class NetworkEvents {
+@Mod.EventBusSubscriber(modid = ClansModContainer.MODID)
+public class NetworkEvents
+{
 
     @SubscribeEvent
     public static void clientConnectToServer(FMLNetworkEvent.ServerConnectionFromClientEvent event) {
         Map<String, String> clientMods = NetworkDispatcher.get(event.getManager()).getModList();
-        if(event.getHandler() instanceof NetHandlerPlayServer && ((NetHandlerPlayServer) event.getHandler()).player != null && clientMods.containsKey("clans") && !clientMods.get("clans").startsWith("1.0.") && !clientMods.get("clans").startsWith("1.1.") && !clientMods.get("clans").startsWith("1.2."))
+        if (event.getHandler() instanceof NetHandlerPlayServer && ((NetHandlerPlayServer) event.getHandler()).player != null && clientMods.containsKey("clans") && !clientMods.get("clans").startsWith("1.0.") && !clientMods.get("clans").startsWith("1.1.") && !clientMods.get("clans").startsWith("1.2.")) {
             TranslationUtil.clansClients.add(((NetHandlerPlayServer) event.getHandler()).player.getUniqueID());
+        }
     }
 }

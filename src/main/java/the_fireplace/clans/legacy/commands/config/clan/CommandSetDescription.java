@@ -15,36 +15,39 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CommandSetDescription extends ClanSubCommand {
-	@Override
-	public String getName() {
-		return "setdescription";
-	}
+public class CommandSetDescription extends ClanSubCommand
+{
+    @Override
+    public String getName() {
+        return "setdescription";
+    }
 
-	@Override
-	public EnumRank getRequiredClanRank() {
-		return EnumRank.LEADER;
-	}
+    @Override
+    public EnumRank getRequiredClanRank() {
+        return EnumRank.LEADER;
+    }
 
-	@Override
-	public int getMinArgs() {
-		return 1;
-	}
+    @Override
+    public int getMinArgs() {
+        return 1;
+    }
 
-	@Override
-	public int getMaxArgs() {
-		return Integer.MAX_VALUE;
-	}
+    @Override
+    public int getMaxArgs() {
+        return Integer.MAX_VALUE;
+    }
 
-	@Override
-	public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
-		StringBuilder newTagline = new StringBuilder();
-		for(String arg: args)
-			newTagline.append(arg).append(' ');
-		String descString = newTagline.toString();
-		if(Config.getInstance().chatCensor.censorClanDescriptions)
-			descString = ClansModContainer.getChatCensorCompat().getCensoredString(descString);
+    @Override
+    public void run(MinecraftServer server, EntityPlayerMP sender, String[] args) {
+        StringBuilder newTagline = new StringBuilder();
+        for (String arg : args) {
+            newTagline.append(arg).append(' ');
+        }
+        String descString = newTagline.toString();
+        if (Config.getInstance().chatCensor.censorClanDescriptions) {
+            descString = ClansModContainer.getChatCensorCompat().getCensoredString(descString);
+        }
         ClanDescriptions.get(selectedClan).setDescription(descString);
         sender.sendMessage(TranslationUtil.getTranslation(sender.getUniqueID(), "commands.clan.setdescription.success", selectedClanName).setStyle(TextStyles.GREEN));
-	}
+    }
 }

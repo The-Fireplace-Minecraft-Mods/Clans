@@ -10,7 +10,8 @@ import the_fireplace.clans.legacy.logic.LandProtectionLogic;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public interface IProtectionCompat {
+public interface IProtectionCompat
+{
     void init();
 
     /**
