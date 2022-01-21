@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 archivesBaseName = "Clans"
-version = "2.1.4+1.12.2"
+version = "2.1.5+1.12.2"
 group = "dev.the-fireplace"
 
 allprojects {
@@ -52,10 +52,6 @@ dependencies {
     	transitive = true
     }
     provided "vazkii.quark:Quark:r1.6-177.753"
-    //Don't use newer versions of LLibrary unless Ice and Fire updates to use them.
-    deobfCompile("net.ilexiconn:llibrary:1.7.9-1.12.2") {
-    	transitive = true
-    }
     shade 'com.electronwill.night-config:hocon:3.6.4'
 }
 
