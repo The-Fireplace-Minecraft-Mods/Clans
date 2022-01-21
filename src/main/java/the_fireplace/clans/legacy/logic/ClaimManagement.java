@@ -34,6 +34,10 @@ import java.util.concurrent.TimeUnit;
 public class ClaimManagement
 {
     public static boolean checkCanClaimRadius(EntityPlayerMP claimingPlayer, UUID claimingClan, int radius, String radiusMode) {
+        if (shouldCancelClaimingBecauseOfDimension(claimingPlayer)) {
+            claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.dimension").setStyle(TextStyles.RED));
+            return false;
+        }
         sendCheckRadiusClaimMessage(claimingPlayer);
         if (radiusMode.equalsIgnoreCase("square")) {
             int requestedClaimCount = radius * radius;
