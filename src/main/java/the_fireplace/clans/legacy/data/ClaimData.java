@@ -282,8 +282,14 @@ public final class ClaimData implements ClaimAccessor
                 }
             }
         }
-        for (UUID entry : claimedChunks.keySet()) {
-            resetRegenBorderlandsTimer(entry);
+        if (ClansModContainer.getConfig().isEnableBorderlands()) {
+            for (UUID entry : claimedChunks.keySet()) {
+                resetRegenBorderlandsTimer(entry);
+            }
+        } else {
+            for (ClaimStoredData data : claimedChunks.values()) {
+                data.clearBorderlands();
+            }
         }
 
         return this;
@@ -314,7 +320,9 @@ public final class ClaimData implements ClaimAccessor
             ClaimStoredData loadClaimStoredData = new ClaimStoredData(clan);
             for (JsonElement element : obj.get("chunks").getAsJsonArray()) {
                 ChunkPositionWithData pos = new ChunkPositionWithData(element.getAsJsonObject().get("x").getAsInt(), element.getAsJsonObject().get("z").getAsInt(), element.getAsJsonObject().get("d").getAsInt());
-                pos.setBorderland(element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean());
+                boolean isBorderland = element.getAsJsonObject().has("isBorderland") && element.getAsJsonObject().get("isBorderland").getAsBoolean();
+                pos.setBorderland(isBorderland);
+                loadClaimStoredData.hasBorderlands = loadClaimStoredData.hasBorderlands || isBorderland;
                 positions.add(pos);
             }
             loadClaimStoredData.chunks.addAll(positions);
