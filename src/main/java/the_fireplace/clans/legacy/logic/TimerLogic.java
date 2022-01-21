@@ -22,6 +22,7 @@ import the_fireplace.clans.clan.metadata.ClanNames;
 import the_fireplace.clans.clan.raids.ClanShield;
 import the_fireplace.clans.economy.Economy;
 import the_fireplace.clans.legacy.ClansModContainer;
+import the_fireplace.clans.legacy.abstraction.IConfig;
 import the_fireplace.clans.legacy.api.ClaimAccessor;
 import the_fireplace.clans.legacy.cache.PlayerCache;
 import the_fireplace.clans.legacy.cache.RaidingParties;
@@ -103,13 +104,15 @@ public class TimerLogic
     }
 
     private static void chargeRent(UUID clan) {
-        if (ClansModContainer.getConfig().getChargeRentDays() > 0 && System.currentTimeMillis() >= ClanRent.get(clan).getNextRentTimestamp()) {
+        ClanRent clanRent = ClanRent.get(clan);
+        IConfig config = ClansModContainer.getConfig();
+        if (config.getChargeRentDays() > 0 && System.currentTimeMillis() >= clanRent.getNextRentTimestamp()) {
             ClansModContainer.getMinecraftHelper().getLogger().debug("Charging rent for {}.", ClanNames.get(clan).getName());
             for (Map.Entry<UUID, EnumRank> member : Sets.newHashSet(ClanMembers.get(clan).getMemberRanks().entrySet())) {
-                if (Economy.deductAmount(ClanRent.get(clan).getRent(), member.getKey())) {
-                    Economy.addAmount(ClanRent.get(clan).getRent(), clan);
-                } else if (ClansModContainer.getConfig().isEvictNonpayers()) {
-                    if (member.getValue() != EnumRank.LEADER && (ClansModContainer.getConfig().isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
+                if (Economy.deductAmount(clanRent.getRent(), member.getKey())) {
+                    Economy.addAmount(clanRent.getRent(), clan);
+                } else if (config.isEvictNonpayers()) {
+                    if (member.getValue() != EnumRank.LEADER && (config.isEvictNonpayerAdmins() || member.getValue() == EnumRank.MEMBER)) {
                         ClanMembers.get(clan).removeMember(member.getKey());
                         EntityPlayerMP player = ClansModContainer.getMinecraftHelper().getServer().getPlayerList().getPlayerByUUID(member.getKey());
                         //noinspection ConstantConditions
@@ -120,7 +123,7 @@ public class TimerLogic
                     }
                 }
             }
-            ClanRent.get(clan).updateNextRentTimestamp();
+            clanRent.updateNextRentTimestamp();
         }
     }
 
