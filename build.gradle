@@ -52,6 +52,7 @@ dependencies {
     	transitive = true
     }
     provided "vazkii.quark:Quark:r1.6-177.753"
+    deobfCompile "net.ilexiconn:llibrary:1.7.9-1.12.2"
     shade 'com.electronwill.night-config:hocon:3.6.4'
 }
 

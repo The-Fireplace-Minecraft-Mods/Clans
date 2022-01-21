@@ -95,7 +95,14 @@ public class IceAndFireCompat implements IProtectionCompat
 
     @SubscribeEvent
     public void dragonFire(DragonFireEvent event) {
-        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(event.getEntity().world, new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()), event.getDragon().getRidingPlayer() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getRidingPlayer() : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null), false));
+        event.setCanceled(LandProtectionLogic.shouldCancelBlockBroken(
+            event.getEntity().world,
+            new BlockPos(event.getTargetX(), event.getTargetY(), event.getTargetZ()),
+            event.getDragon().getRidingPlayer() instanceof EntityPlayerMP
+                ? (EntityPlayerMP) event.getDragon().getRidingPlayer()
+                : (event.getDragon().getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) event.getDragon().getOwner() : null),
+            false
+        ));
     }
 
     @SubscribeEvent
