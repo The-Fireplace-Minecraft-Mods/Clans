@@ -339,4 +339,9 @@ public class ConfigWrapper implements IConfig
     public double getDynmapFillOpacity() {
         return Config.getInstance().dynmap.dynmapFillOpacity;
     }
+
+    @Override
+    public int getMaxDisplayedConnectedClaims() {
+        return Config.getInstance().dynmap.maxDisplayedConnectedClaims;
+    }
 }

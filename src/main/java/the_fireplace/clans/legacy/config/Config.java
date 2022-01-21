@@ -286,6 +286,9 @@ public class Config
         @Comment("The opacity of the fill color for claims. 0.0=0%, 1.0=100%. This requires Dynmap to be installed.")
         @RangeDecimal(min = 0, max = 1)
         public double dynmapFillOpacity = 0.75;
+        @Comment("Max number of connected claims Dynmap can show at once. Try lowering this if you're getting a StackOverflowException crash with Dynmap installed. Claims larger than this many chunks will be displayed inaccurately. Set to 0 for no limit.")
+        @RangeNumber(min = 0)
+        public int maxDisplayedConnectedClaims = Integer.MAX_VALUE;
     }
 
     public void load() {

@@ -1,4 +1,5 @@
 Changes:
+Added an option to work around a crash displaying very large claimed areas on Dynmap
 
 Fixes/Internal Changes:
 Fixed dimension settings being ignored for radius claim

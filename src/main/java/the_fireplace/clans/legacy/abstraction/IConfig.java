@@ -151,4 +151,6 @@ public interface IConfig
     double getDynmapBorderOpacity();
 
     double getDynmapFillOpacity();
+
+    int getMaxDisplayedConnectedClaims();
 }

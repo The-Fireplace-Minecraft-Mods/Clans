@@ -58,7 +58,8 @@ class AdjacentChunk
      * @param remainingChunksToProcess A list of available chunks to search for adjacent chunks
      * @param processedChunks          A list of chunks that have been found and processed already.
      */
-    void processAdjacentChunksRecursively(Set<ChunkPosition> remainingChunksToProcess, Map<ChunkPosition, AdjacentChunk> processedChunks) {
+    void processAdjacentChunksRecursively(Set<ChunkPosition> remainingChunksToProcess, Map<ChunkPosition, AdjacentChunk> processedChunks, RecursiveProcessingAllowance recursiveProcessingAllowance) {
+        recursiveProcessingAllowance.decrementProcessAmount();
         ChunkPosition[] adjacentPos = {new ChunkPosition(loc.getPosX(), loc.getPosZ() - 1, loc.getDim()),
             new ChunkPosition(loc.getPosX(), loc.getPosZ() + 1, loc.getDim()),
             new ChunkPosition(loc.getPosX() - 1, loc.getPosZ(), loc.getDim()),
@@ -74,7 +75,9 @@ class AdjacentChunk
                 adjacentChunks[index] = new AdjacentChunk(adjacentPos[index]);
                 processedChunks.put(adjacentPos[index], adjacentChunks[index]);
 
-                adjacentChunks[index].processAdjacentChunksRecursively(remainingChunksToProcess, processedChunks);
+                if (recursiveProcessingAllowance.canContinueProcessing()) {
+                    adjacentChunks[index].processAdjacentChunksRecursively(remainingChunksToProcess, processedChunks, recursiveProcessingAllowance);
+                }
             } else {
                 // Associate the side if it exists in the processed chunk list.
                 adjacentChunks[index] = processedChunks.get(adjacentPos[index]);

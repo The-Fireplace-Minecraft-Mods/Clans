@@ -24,7 +24,7 @@ public class GroupedChunks
         //TODO this start chunk is double highlighted for some reason. Find out why.
 
         // Have each chunk find its adjacent chunks and process them recursively
-        chunk.processAdjacentChunksRecursively(remainingChunksToProcess, chunkGroupMap);
+        chunk.processAdjacentChunksRecursively(remainingChunksToProcess, chunkGroupMap, new RecursiveProcessingAllowance(ClansModContainer.getConfig().getMaxDisplayedConnectedClaims()));
     }
 
     /**
