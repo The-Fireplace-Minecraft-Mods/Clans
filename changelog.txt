@@ -1,6 +1,2 @@
-Changes:
-Added an option to work around a crash displaying very large claimed areas on Dynmap
-
-Fixes/Internal Changes:
-Fixed dimension settings being ignored for radius claim
-Fixed existing borderlands not clearing when turning the option off.
+Rewrite for 1.18.X
+- Configs are redesigned for convenience and consistency

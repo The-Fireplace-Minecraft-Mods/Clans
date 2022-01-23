@@ -1,116 +1,106 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
-}
-
+//file:noinspection GroovyAssignabilityCheck
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-}
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-archivesBaseName = "Clans"
-version = "2.1.5+1.12.2"
-group = "dev.the-fireplace"
-
-allprojects {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    // Dependencies
+    id 'fabric-loom' version '0.10-SNAPSHOT'
+    // Mod Hosting Publish
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'com.modrinth.minotaur' version '1.1.0'
+    // Maven Publish
+    id 'maven-publish'
+    id 'signing'
+    id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
-minecraft {
-    version = "1.12.2-14.23.5.2847"
-    runDir = "run"
-    replace '${version}', project.version
-    mappings = "stable_39"
-	
-	clientRunArgs += "--uuid=0b1ec5ad-cb2a-43b7-995d-889320eb2e5b --username=The_Fireplace"
-}
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
-dependencies {
-    compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.2", transitive: true
-    deobfProvided "us.dynmap:DynmapCoreAPI:3.0-SNAPSHOT"
-    provided ('org.spongepowered:spongeapi:7.1.0') {
-        exclude module: 'org.yaml:snakeyaml:1.18'
+sourceSets {
+    api {
+        compileClasspath += sourceSets.main.compileClasspath
     }
-    compile("appeng:appliedenergistics2:rv6-stable-7"){
-        exclude group: 'mezz.jei'
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
-    provided("vazkii.autoreglib:AutoRegLib:1.3-33.34") {
-    	transitive = true
-    }
-    provided "vazkii.quark:Quark:r1.6-177.753"
-    deobfCompile "net.ilexiconn:llibrary:1.7.9-1.12.2"
-    shade 'com.electronwill.night-config:hocon:3.6.4'
+}
+
+archivesBaseName = project.archives_base_name
+version = "${project.mod_version}+${project.minecraft_version}"
+group = project.maven_group
+if (project.hasProperty('SNAPSHOT')) {
+    version = "${version}-SNAPSHOT"
 }
 
 repositories {
-    jcenter()
-    //Night-Config, probably others
-    mavenCentral()
-    // Sponge
-    maven { url 'https://repo.spongepowered.org/maven' }
-    // Forgelin
-    maven { url "http://maven.shadowfacts.net/" }
-    // Dynmap
-    maven { url "http://repo.mikeprimm.com" }
-    // iChunUtil, JourneyMap API, Chisels & Bits
-    maven { url "https://minecraft.curseforge.com/api/maven/" }
-    // Quark, AutoRegLib
-    maven { url = "http://maven.blamejared.com/" }
-    // LLibrary (needed for Ice and Fire)
-    maven { url "https://maven.mcmoddev.com/" }
+    maven { url 'https://maven.shedaniel.me/' }
+    maven { url 'https://maven.terraformersmc.com/releases/' }
+    flatDir { dirs 'lib' }
 }
 
-processResources
-{
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    modCompileOnly "dev.the-fireplace:Fireplace-Lib:${project.fireplacelib_version}:api"
+    modRuntimeOnly "dev.the-fireplace:Fireplace-Lib:${project.fireplacelib_version}"
+    annotationProcessor "dev.the-fireplace:Annotated-DI:${project.annotateddi_version}:processor"
+
+    modCompileOnly "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}:api"
+    modRuntimeOnly "dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}"
+    modImplementation "dev.the-fireplace:Overlord:${project.overlord_version}"
+
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
     }
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release.set(17)
 }
 
-artifacts {
-    archives jar
-    archives deobfJar
-    archives sourceJar
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource + sourceSets.api.allSource
 }
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
+javadoc {
+    source sourceSets.api.allJava
+    source sourceSets.main.allJava
+}
+
+task apiJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('api')
+    from sourceSets.api.output
+    from 'src/api/dummyresources/fabric.mod.json'
+}
+
+build.dependsOn(apiJar)
 
 jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            exclude 'META-INF/*.SF'
-            exclude 'META-INF/*.RSA'
-            exclude 'META-INF/*.MF'
-
-            exclude '**/*.html'
-        }
+    from sourceSets.api.output
+    from('LICENSE') {
+        rename { "${it}_${project.archivesBaseName}" }
     }
+}
+
+configurations {
+    apiElements.outgoing.artifact(apiJar)
 }
 
 if (hasProperty('curseForgeApiKey')) {
@@ -119,27 +109,92 @@ if (hasProperty('curseForgeApiKey')) {
         project {
             id = '313915'
             changelog = file('changelog.txt')
-            releaseType = 'release'
-            addGameVersion '1.12.2'
-            addGameVersion '1.12.1'
-            addGameVersion '1.12'
-            addGameVersion 'Java 8'
-            mainArtifact(new File(new File(buildDir, "libs"), "$archivesBaseName-${version}.jar")) {
+            releaseType = project.release_type
+            addGameVersion project.minecraft_version
+            addGameVersion '1.18'
+            addGameVersion 'Java 17'
+            addGameVersion 'Fabric'
+            mainArtifact(new File(new File(buildDir, 'libs'), "$archivesBaseName-${version}.jar")) {
                 displayName = jar.archiveName.replace(".jar", "")
                 relations {
-                    optionalLibrary 'grand-economy'
-                    optionalLibrary 'dynmapforge'
-                    optionalLibrary 'chat-censor'
+                    requiredDependency 'fireplace-lib'
+                    optionalDependency 'cloth-config'
+                    optionalDependency 'modmenu'
+                    optionalDependency 'overlord'
                 }
             }
-            addArtifact(sourceJar) {
-                displayName = sourceJar.archiveName.replace(".jar", "")
-                changelog = "*This is a file for mod developers. If you don't know what to do with it, don't use it!*"
-            }
-            addArtifact(deobfJar) {
-                displayName = deobfJar.archiveName.replace(".jar", "")
-                changelog = "*This is a file for mod developers. If you don't know what to do with it, don't use it!*"
+        }
+        options {
+            javaIntegration = false
+            forgeGradleIntegration = false
+        }
+    }
+}
+
+import com.modrinth.minotaur.TaskModrinthUpload
+
+if (hasProperty('modrinthApiKey')) {
+    task publishModrinth(type: TaskModrinthUpload) {
+        token = modrinthApiKey
+        projectId = '00000000'//TODO
+        versionNumber = version
+        versionName = project.mod_version
+        uploadFile = new File(new File(buildDir, 'libs'), "$archivesBaseName-${version}.jar")
+        changelog = file('changelog.txt').getText()
+        releaseType = project.release_type
+        addGameVersion(project.minecraft_version as String)
+        addGameVersion('1.18')
+        addLoader('fabric')
+    }
+}
+
+if (hasProperty('nexusUsername') || System.getenv("NEXUS_USERNAME") != null) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = 'Clans'
+                    packaging = 'jar'
+                    description = 'A server-side Minecraft mod for land protection and PVP.'
+                    url = 'https://www.curseforge.com/minecraft/mc-mods/clans'
+                    scm {
+                        connection = "scm:svn:https://github.com/The-Fireplace-Minecraft-Mods/${project.github_slug}.git"
+                        developerConnection = "scm:svn:https://github.com/The-Fireplace-Minecraft-Mods/${project.github_slug}.git"
+                        url = "https://github.com/The-Fireplace-Minecraft-Mods/${project.github_slug}"
+                    }
+
+                    licenses {
+                        license {
+                            name = 'Mozilla Public License 2.0'
+                            url = 'https://www.mozilla.org/en-US/MPL/2.0/'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'the_fireplace'
+                            name = 'The_Fireplace'
+                            email = 'the.f1repl4ce@gmail.com'
+                        }
+                    }
+                }
             }
         }
+        repositories {
+            maven {
+                def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username = findProperty('nexusUsername') ?: System.getenv("NEXUS_USERNAME")
+                    password = findProperty('nexusPassword') ?: System.getenv("NEXUS_PASSWORD")
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
     }
 }

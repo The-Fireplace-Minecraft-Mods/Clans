@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "clansapi",
+  "version": "${version}",
+  "name": "Clans API",
+  "description": "This is a dummy file to include in the API jar so Loom will remap the API in the dev environment.",
+  "authors": [
+    "The_Fireplace"
+  ],
+  "contact": {},
+  "license": "MPL-2.0",
+  "environment": "*",
+  "entrypoints": {},
+  "mixins": [],
+  "depends": {}
+}
