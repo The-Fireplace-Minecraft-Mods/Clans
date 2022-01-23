@@ -34,6 +34,7 @@ if (project.hasProperty('SNAPSHOT')) {
 repositories {
     maven { url 'https://maven.shedaniel.me/' }
     maven { url 'https://maven.terraformersmc.com/releases/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     flatDir { dirs 'lib' }
 }
 
