@@ -12,7 +12,7 @@ public final class RaidEconomicsConfigDefaults implements RaidEconomicsConfig
     }
 
     @Override
-    public String getWinRaidAmountFormula() {
+    public String getWinRaidRewardFormula() {
         return "0";
     }
 
@@ -22,7 +22,7 @@ public final class RaidEconomicsConfigDefaults implements RaidEconomicsConfig
     }
 
     @Override
-    public double getWLRThreshold() {
+    public double getMinimumWinLossRatioForWeaknessFactorReduction() {
         return 0.66;
     }
 

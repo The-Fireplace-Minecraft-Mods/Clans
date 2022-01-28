@@ -40,7 +40,7 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
 
     @Override
     public String getId() {
-        return "raids";
+        return "raid";
     }
 
     @Override
@@ -51,80 +51,157 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
         remainingTimeToGlowFormula = buffer.readString("remainingTimeToGlowFormula", defaultConfig.getRemainingTimeToGlowFormula());
         maxAttackerAbandonmentTimeFormula = buffer.readString("maxAttackerAbandonmentTimeFormula", defaultConfig.getMaxAttackerAbandonmentTimeFormula());
         maxDefenderDesertionTimeFormula = buffer.readString("maxDefenderDesertionTimeFormula", defaultConfig.getMaxDefenderDesertionTimeFormula());
+        shieldAfterRaidFormula = buffer.readString("shieldAfterRaidFormula", defaultConfig.getShieldAfterRaidFormula());
+        initialShield = buffer.readInt("initialShield", defaultConfig.getInitialShield());
+        allowReclaimingTNT = buffer.readBool("allowReclaimingTNT", defaultConfig.allowReclaimingTNT());
+        enableRaidRollback = buffer.readBool("enableRaidRollback", defaultConfig.isEnableRaidRollback());
+        enableStealing = buffer.readBool("enableStealing", defaultConfig.isEnableStealing());
+        raidBreakSpeedMultiplier = buffer.readDouble("raidBreakSpeedMultiplier", defaultConfig.getRaidBreakSpeedMultiplier());
+        raidItemList = buffer.readStringList("raidItemList", defaultConfig.getRaidItemList());
+        teleportToRaidStart = buffer.readBool("teleportToRaidStart", defaultConfig.isTeleportToRaidStart());
     }
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-
+        buffer.writeString("maxRaidersFormula", maxRaidersFormula);
+        buffer.writeString("maxRaidDurationFormula", maxRaidDurationFormula);
+        buffer.writeString("raidPreparationTimeFormula", raidPreparationTimeFormula);
+        buffer.writeString("remainingTimeToGlowFormula", remainingTimeToGlowFormula);
+        buffer.writeString("maxAttackerAbandonmentTimeFormula", maxAttackerAbandonmentTimeFormula);
+        buffer.writeString("maxDefenderDesertionTimeFormula", maxDefenderDesertionTimeFormula);
+        buffer.writeString("shieldAfterRaidFormula", shieldAfterRaidFormula);
+        buffer.writeInt("initialShield", initialShield);
+        buffer.writeBool("allowReclaimingTNT", allowReclaimingTNT);
+        buffer.writeBool("enableRaidRollback", enableRaidRollback);
+        buffer.writeBool("enableStealing", enableStealing);
+        buffer.writeDouble("raidBreakSpeedMultiplier", raidBreakSpeedMultiplier);
+        buffer.writeStringList("raidItemList", raidItemList);
+        buffer.writeBool("teleportToRaidStart", teleportToRaidStart);
     }
 
     @Override
     public String getMaxRaidersFormula() {
-        return null;
+        return maxRaidersFormula;
+    }
+
+    public void setMaxRaidersFormula(String maxRaidersFormula) {
+        this.maxRaidersFormula = maxRaidersFormula;
     }
 
     @Override
     public String getMaxRaidDurationFormula() {
-        return null;
+        return maxRaidDurationFormula;
+    }
+
+    public void setMaxRaidDurationFormula(String maxRaidDurationFormula) {
+        this.maxRaidDurationFormula = maxRaidDurationFormula;
     }
 
     @Override
     public String getRaidPreparationTimeFormula() {
-        return null;
+        return raidPreparationTimeFormula;
+    }
+
+    public void setRaidPreparationTimeFormula(String raidPreparationTimeFormula) {
+        this.raidPreparationTimeFormula = raidPreparationTimeFormula;
     }
 
     @Override
     public String getRemainingTimeToGlowFormula() {
-        return null;
+        return remainingTimeToGlowFormula;
+    }
+
+    public void setRemainingTimeToGlowFormula(String remainingTimeToGlowFormula) {
+        this.remainingTimeToGlowFormula = remainingTimeToGlowFormula;
     }
 
     @Override
     public String getMaxAttackerAbandonmentTimeFormula() {
-        return null;
+        return maxAttackerAbandonmentTimeFormula;
+    }
+
+    public void setMaxAttackerAbandonmentTimeFormula(String maxAttackerAbandonmentTimeFormula) {
+        this.maxAttackerAbandonmentTimeFormula = maxAttackerAbandonmentTimeFormula;
     }
 
     @Override
     public String getMaxDefenderDesertionTimeFormula() {
-        return null;
+        return maxDefenderDesertionTimeFormula;
+    }
+
+    public void setMaxDefenderDesertionTimeFormula(String maxDefenderDesertionTimeFormula) {
+        this.maxDefenderDesertionTimeFormula = maxDefenderDesertionTimeFormula;
     }
 
     @Override
     public String getShieldAfterRaidFormula() {
-        return null;
+        return shieldAfterRaidFormula;
+    }
+
+    public void setShieldAfterRaidFormula(String shieldAfterRaidFormula) {
+        this.shieldAfterRaidFormula = shieldAfterRaidFormula;
     }
 
     @Override
     public int getInitialShield() {
-        return 0;
+        return initialShield;
+    }
+
+    public void setInitialShield(int initialShield) {
+        this.initialShield = initialShield;
     }
 
     @Override
     public boolean allowReclaimingTNT() {
-        return false;
+        return allowReclaimingTNT;
+    }
+
+    public void setAllowReclaimingTNT(boolean allowReclaimingTNT) {
+        this.allowReclaimingTNT = allowReclaimingTNT;
     }
 
     @Override
     public boolean isEnableRaidRollback() {
-        return false;
+        return enableRaidRollback;
+    }
+
+    public void setEnableRaidRollback(boolean enableRaidRollback) {
+        this.enableRaidRollback = enableRaidRollback;
     }
 
     @Override
     public boolean isEnableStealing() {
-        return false;
+        return enableStealing;
+    }
+
+    public void setEnableStealing(boolean enableStealing) {
+        this.enableStealing = enableStealing;
     }
 
     @Override
     public double getRaidBreakSpeedMultiplier() {
-        return 0;
+        return raidBreakSpeedMultiplier;
+    }
+
+    public void setRaidBreakSpeedMultiplier(double raidBreakSpeedMultiplier) {
+        this.raidBreakSpeedMultiplier = raidBreakSpeedMultiplier;
     }
 
     @Override
     public List<String> getRaidItemList() {
-        return null;
+        return raidItemList;
+    }
+
+    public void setRaidItemList(List<String> raidItemList) {
+        this.raidItemList = raidItemList;
     }
 
     @Override
     public boolean isTeleportToRaidStart() {
-        return false;
+        return teleportToRaidStart;
+    }
+
+    public void setTeleportToRaidStart(boolean teleportToRaidStart) {
+        this.teleportToRaidStart = teleportToRaidStart;
     }
 }

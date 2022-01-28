@@ -12,42 +12,42 @@ public final class PerClanEconomicsConfigDefaults implements PerClanEconomicsCon
     }
 
     @Override
-    public int getClanUpkeepDays() {
+    public int getChargeUpkeepFrequencyInDays() {
         return 0;
     }
 
     @Override
-    public String getClanUpkeepCostFormula() {
+    public String getUpkeepCostFormula() {
         return "0";
     }
 
     @Override
-    public boolean isDisbandNoUpkeep() {
+    public boolean shouldDisbandWhenUnableToPayUpkeep() {
         return false;
     }
 
     @Override
-    public boolean isLeaderWithdrawFunds() {
+    public boolean canLeaderWithdrawFunds() {
         return false;
     }
 
     @Override
-    public boolean isLeaderReceiveDisbandFunds() {
+    public boolean shouldLeaderReceiveDisbandFunds() {
         return false;
     }
 
     @Override
-    public int getChargeRentDays() {
+    public int getChargeRentFrequencyInDays() {
         return 0;
     }
 
     @Override
-    public boolean isEvictNonpayers() {
+    public boolean shouldEvictNonpayingMembers() {
         return false;
     }
 
     @Override
-    public boolean isEvictNonpayerAdmins() {
+    public boolean shouldEvictNonpayingAdmins() {
         return false;
     }
 

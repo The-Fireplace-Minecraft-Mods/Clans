@@ -4,11 +4,11 @@ public interface RaidEconomicsConfig
 {
     String getStartRaidCostFormula();
 
-    String getWinRaidAmountFormula();
+    String getWinRaidRewardFormula();
 
     boolean isIncreasingRewards();
 
-    double getWLRThreshold();
+    double getMinimumWinLossRatioForWeaknessFactorReduction();
 
     String getIncreasedWeaknessFactorFormula();
 

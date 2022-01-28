@@ -4,22 +4,22 @@ public interface PerClanEconomicsConfig
 {
     String getClaimChunkCostFormula();
 
-    int getClanUpkeepDays();
+    int getChargeUpkeepFrequencyInDays();
 
-    String getClanUpkeepCostFormula();
+    String getUpkeepCostFormula();
 
-    boolean isDisbandNoUpkeep();
+    boolean shouldDisbandWhenUnableToPayUpkeep();
 
     //Clan finance management
-    boolean isLeaderWithdrawFunds();
+    boolean canLeaderWithdrawFunds();
 
-    boolean isLeaderReceiveDisbandFunds();
+    boolean shouldLeaderReceiveDisbandFunds();
 
-    int getChargeRentDays();
+    int getChargeRentFrequencyInDays();
 
-    boolean isEvictNonpayers();
+    boolean shouldEvictNonpayingMembers();
 
-    boolean isEvictNonpayerAdmins();
+    boolean shouldEvictNonpayingAdmins();
 
     String getMaxRentFormula();
 
