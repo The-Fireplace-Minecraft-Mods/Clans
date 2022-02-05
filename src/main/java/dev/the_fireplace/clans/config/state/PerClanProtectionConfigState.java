@@ -9,7 +9,6 @@ import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.List;
 
 @Implementation
 @Singleton
@@ -22,7 +21,6 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
     private boolean preventMobsOnClaims;
     private boolean preventMobsOnBorderlands;
     private boolean allowTntChainingOnClaims;
-    private List<String> lockableBlocks;
 
     @Inject
     public PerClanProtectionConfigState(ConfigStateManager configStateManager, @Named("default") PerClanProtectionConfig defaultConfig) {
@@ -42,7 +40,6 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
         preventMobsOnClaims = buffer.readBool("preventMobsOnClaims", defaultConfig.isPreventMobsOnClaims());
         preventMobsOnBorderlands = buffer.readBool("preventMobsOnBorderlands", defaultConfig.isPreventMobsOnBorderlands());
         allowTntChainingOnClaims = buffer.readBool("allowTntChainingOnClaims", defaultConfig.isAllowTntChainingOnClaims());
-        lockableBlocks = buffer.readStringList("lockableBlocks", defaultConfig.getLockableBlocks());
     }
 
     @Override
@@ -52,7 +49,6 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
         buffer.writeBool("preventMobsOnClaims", preventMobsOnClaims);
         buffer.writeBool("preventMobsOnBorderlands", preventMobsOnBorderlands);
         buffer.writeBool("allowTntChainingOnClaims", allowTntChainingOnClaims);
-        buffer.writeStringList("lockableBlocks", lockableBlocks);
     }
 
     @Override
@@ -78,10 +74,5 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
     @Override
     public boolean isAllowTntChainingOnClaims() {
         return allowTntChainingOnClaims;
-    }
-
-    @Override
-    public List<String> getLockableBlocks() {
-        return lockableBlocks;
     }
 }

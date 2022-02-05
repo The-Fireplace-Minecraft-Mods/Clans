@@ -19,6 +19,9 @@
     "di-main": [
       "dev.the_fireplace.clans.entrypoints.Main"
     ],
+    "di-client": [
+      "dev.the_fireplace.clans.entrypoints.Client"
+    ],
     "modmenu": [
       "dev.the_fireplace.clans.entrypoints.ModMenu"
     ],

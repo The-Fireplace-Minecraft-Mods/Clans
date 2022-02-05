@@ -1,7 +1,5 @@
 package dev.the_fireplace.clans.domain.config;
 
-import java.util.List;
-
 public interface PerClanProtectionConfig
 {
     boolean isForceConnectedClaims();
@@ -13,6 +11,4 @@ public interface PerClanProtectionConfig
     boolean isPreventMobsOnBorderlands();
 
     boolean isAllowTntChainingOnClaims();
-
-    List<String> getLockableBlocks();
 }
