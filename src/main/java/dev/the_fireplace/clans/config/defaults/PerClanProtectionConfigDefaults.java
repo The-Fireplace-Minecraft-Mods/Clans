@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.clans.domain.config.PerClanProtectionConfig;
 
-import java.util.Collection;
+import java.util.List;
 
 @Implementation(name = "default")
 public final class PerClanProtectionConfigDefaults implements PerClanProtectionConfig
@@ -30,12 +30,12 @@ public final class PerClanProtectionConfigDefaults implements PerClanProtectionC
     }
 
     @Override
-    public boolean isChainTNT() {
+    public boolean isAllowTntChainingOnClaims() {
         return true;
     }
 
     @Override
-    public Collection<String> getLockableBlocks() {
+    public List<String> getLockableBlocks() {
         return Lists.newArrayList(//TODO use a block tag for this maybe?
             "minecraft:chest",
             "minecraft:furnace",
