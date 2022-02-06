@@ -53,9 +53,9 @@ dependencies {
     modRuntimeOnly("dev.the-fireplace:Grand-Economy:${project.grandeconomy_version}") {
         exclude group: 'dev.the-fireplace'
     }
-    modImplementation("dev.the-fireplace:Overlord:${project.overlord_version}") {
+    /*modImplementation("dev.the-fireplace:Overlord:${project.overlord_version}") {
         exclude group: 'dev.the-fireplace'
-    }
+    }*/
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
