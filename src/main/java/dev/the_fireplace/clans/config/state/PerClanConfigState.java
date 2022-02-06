@@ -16,11 +16,11 @@ public final class PerClanConfigState extends ClansConfigState implements PerCla
 {
     private final PerClanConfig defaultConfig;
 
-    private int clanHomeWarmupTime;
-    private int clanHomeCooldownTime;
+    private int homeTeleportWarmupTime;
+    private int homeTeleportCooldownTime;
     private String maxClaimCountFormula;
-    private String defaultClanPrefix;
-    private boolean isClanHomeFallbackSpawnpoint;
+    private String chatPrefix;
+    private boolean isHomeFallbackSpawnpoint;
 
     @Inject
     public PerClanConfigState(ConfigStateManager configStateManager, @Named("default") PerClanConfig defaultConfig) {
@@ -35,38 +35,38 @@ public final class PerClanConfigState extends ClansConfigState implements PerCla
 
     @Override
     public void readFrom(StorageReadBuffer buffer) {
-        clanHomeWarmupTime = buffer.readInt("clanHomeWarmupTime", defaultConfig.getClanHomeWarmupTime());
-        clanHomeCooldownTime = buffer.readInt("clanHomeCooldownTime", defaultConfig.getClanHomeCooldownTime());
+        homeTeleportWarmupTime = buffer.readInt("homeTeleportWarmupTime", defaultConfig.getHomeTeleportWarmupTime());
+        homeTeleportCooldownTime = buffer.readInt("homeTeleportCooldownTime", defaultConfig.getHomeTeleportCooldownTime());
         maxClaimCountFormula = buffer.readString("maxClaimCountFormula", defaultConfig.getMaxClaimCountFormula());
-        defaultClanPrefix = buffer.readString("defaultClanPrefix", defaultConfig.getDefaultClanPrefix());
-        isClanHomeFallbackSpawnpoint = buffer.readBool("isClanHomeFallbackSpawnpoint", defaultConfig.isClanHomeFallbackSpawnpoint());
+        chatPrefix = buffer.readString("chatPrefix", defaultConfig.getChatPrefix());
+        isHomeFallbackSpawnpoint = buffer.readBool("isClanHomeFallbackSpawnpoint", defaultConfig.isHomeFallbackSpawnpoint());
     }
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeInt("clanHomeWarmupTime", clanHomeWarmupTime);
-        buffer.writeInt("clanHomeCooldownTime", clanHomeCooldownTime);
+        buffer.writeInt("homeTeleportWarmupTime", homeTeleportWarmupTime);
+        buffer.writeInt("homeTeleportCooldownTime", homeTeleportCooldownTime);
         buffer.writeString("maxClaimCountFormula", maxClaimCountFormula);
-        buffer.writeString("defaultClanPrefix", defaultClanPrefix);
-        buffer.writeBool("isClanHomeFallbackSpawnpoint", isClanHomeFallbackSpawnpoint);
+        buffer.writeString("chatPrefix", chatPrefix);
+        buffer.writeBool("isHomeFallbackSpawnpoint", isHomeFallbackSpawnpoint);
     }
 
     @Override
-    public int getClanHomeWarmupTime() {
-        return clanHomeWarmupTime;
+    public int getHomeTeleportWarmupTime() {
+        return homeTeleportWarmupTime;
     }
 
-    public void setClanHomeWarmupTime(int clanHomeWarmupTime) {
-        this.clanHomeWarmupTime = clanHomeWarmupTime;
+    public void setHomeTeleportWarmupTime(int homeTeleportWarmupTime) {
+        this.homeTeleportWarmupTime = homeTeleportWarmupTime;
     }
 
     @Override
-    public int getClanHomeCooldownTime() {
-        return clanHomeCooldownTime;
+    public int getHomeTeleportCooldownTime() {
+        return homeTeleportCooldownTime;
     }
 
-    public void setClanHomeCooldownTime(int clanHomeCooldownTime) {
-        this.clanHomeCooldownTime = clanHomeCooldownTime;
+    public void setHomeTeleportCooldownTime(int homeTeleportCooldownTime) {
+        this.homeTeleportCooldownTime = homeTeleportCooldownTime;
     }
 
     @Override
@@ -79,20 +79,20 @@ public final class PerClanConfigState extends ClansConfigState implements PerCla
     }
 
     @Override
-    public String getDefaultClanPrefix() {
-        return defaultClanPrefix;
+    public String getChatPrefix() {
+        return chatPrefix;
     }
 
-    public void setDefaultClanPrefix(String defaultClanPrefix) {
-        this.defaultClanPrefix = defaultClanPrefix;
+    public void setChatPrefix(String chatPrefix) {
+        this.chatPrefix = chatPrefix;
     }
 
     @Override
-    public boolean isClanHomeFallbackSpawnpoint() {
-        return isClanHomeFallbackSpawnpoint;
+    public boolean isHomeFallbackSpawnpoint() {
+        return isHomeFallbackSpawnpoint;
     }
 
-    public void setClanHomeFallbackSpawnpoint(boolean clanHomeFallbackSpawnpoint) {
-        isClanHomeFallbackSpawnpoint = clanHomeFallbackSpawnpoint;
+    public void setHomeFallbackSpawnpoint(boolean homeFallbackSpawnpoint) {
+        isHomeFallbackSpawnpoint = homeFallbackSpawnpoint;
     }
 }

@@ -2,13 +2,13 @@ package dev.the_fireplace.clans.domain.config;
 
 public interface PerClanConfig
 {
-    int getClanHomeWarmupTime();
+    int getHomeTeleportWarmupTime();
 
-    int getClanHomeCooldownTime();
+    int getHomeTeleportCooldownTime();
 
     String getMaxClaimCountFormula();
 
-    String getDefaultClanPrefix();
+    String getChatPrefix();
 
-    boolean isClanHomeFallbackSpawnpoint();
+    boolean isHomeFallbackSpawnpoint();
 }

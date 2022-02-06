@@ -7,12 +7,12 @@ import dev.the_fireplace.clans.domain.config.PerClanConfig;
 public final class PerClanConfigDefaults implements PerClanConfig
 {
     @Override
-    public int getClanHomeWarmupTime() {
+    public int getHomeTeleportWarmupTime() {
         return 0;
     }
 
     @Override
-    public int getClanHomeCooldownTime() {
+    public int getHomeTeleportCooldownTime() {
         return 0;
     }
 
@@ -22,12 +22,12 @@ public final class PerClanConfigDefaults implements PerClanConfig
     }
 
     @Override
-    public String getDefaultClanPrefix() {
+    public String getChatPrefix() {
         return "[%s]";
     }
 
     @Override
-    public boolean isClanHomeFallbackSpawnpoint() {
+    public boolean isHomeFallbackSpawnpoint() {
         return true;
     }
 }
