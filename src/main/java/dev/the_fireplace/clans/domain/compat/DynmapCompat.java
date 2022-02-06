@@ -1,6 +1,6 @@
 package dev.the_fireplace.clans.domain.compat;
 
-import dev.the_fireplace.clans.legacy.model.ClanDimInfo;
+import dev.the_fireplace.clans.compat.dynmap.model.ClanDimInfo;
 
 import java.util.UUID;
 

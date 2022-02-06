@@ -6,6 +6,7 @@ import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageWriteBuffer;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -22,6 +23,7 @@ public final class RaidEconomicsConfigState extends ClansConfigState implements 
     private String increasedWeaknessFactorFormula;
     private String decreasedWeaknessFactorFormula;
 
+    @Inject
     public RaidEconomicsConfigState(ConfigStateManager configStateManager, @Named("default") RaidEconomicsConfig defaultConfig) {
         this.defaultConfig = defaultConfig;
         configStateManager.initialize(this);

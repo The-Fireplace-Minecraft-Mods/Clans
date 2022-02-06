@@ -24,6 +24,20 @@ sourceSets {
     }
 }
 
+loom {
+    runs {
+        datagen {
+            server()
+
+            name 'Data Generation'
+            vmArg '-Dfabric-api.datagen'
+
+            runDir 'build/datagen'
+        }
+    }
+}
+assemble.dependsOn runDatagen
+
 archivesBaseName = project.archives_base_name
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group

@@ -1,6 +1,5 @@
 package dev.the_fireplace.clans.domain.compat;
 
-import dev.the_fireplace.clans.legacy.logic.LandProtectionLogic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
