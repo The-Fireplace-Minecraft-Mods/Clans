@@ -7,7 +7,11 @@ import dev.the_fireplace.lib.api.chat.injectables.TranslatorFactory;
 import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
 import dev.the_fireplace.lib.api.client.interfaces.ConfigScreenBuilder;
+import dev.the_fireplace.lib.api.client.interfaces.OptionBuilder;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
+import dev.the_fireplace.lib.api.math.exception.ParsingException;
+import dev.the_fireplace.lib.api.math.injectables.FormulaParserFactory;
+import dev.the_fireplace.lib.api.math.interfaces.FormulaParser;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -16,6 +20,8 @@ import net.minecraft.client.gui.screen.Screen;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 @Singleton
@@ -32,10 +38,12 @@ public final class ClansConfigScreenFactory
     private static final String WORLD_PROTECTION_TRANSLATION_BASE = TRANSLATION_BASE + "worldProtection.";
 
     private static final String ECONOMICS_TRANSLATION_KEY = TRANSLATION_BASE + "economics";
+    private static final String FORMULA_SUFFIX_TRANSLATION_KEY = TRANSLATION_BASE + "formula";
 
     private final Translator translator;
     private final ConfigStateManager configStateManager;
     private final ConfigScreenBuilderFactory configScreenBuilderFactory;
+    private final FormulaParserFactory formulaParserFactory;
 
     private final DynmapConfigState dynmapState;
     private final DynmapConfig dynmapDefaults;
@@ -61,6 +69,7 @@ public final class ClansConfigScreenFactory
         TranslatorFactory translatorFactory,
         ConfigStateManager configStateManager,
         ConfigScreenBuilderFactory configScreenBuilderFactory,
+        FormulaParserFactory formulaParserFactory,
         DynmapConfigState dynmapState,
         @Named("default") DynmapConfig dynmapDefaults,
         GlobalClanConfigState globalState,
@@ -81,6 +90,7 @@ public final class ClansConfigScreenFactory
         this.translator = translatorFactory.getTranslator(ClansConstants.MODID);
         this.configStateManager = configStateManager;
         this.configScreenBuilderFactory = configScreenBuilderFactory;
+        this.formulaParserFactory = formulaParserFactory;
         this.dynmapState = dynmapState;
         this.dynmapDefaults = dynmapDefaults;
         this.globalState = globalState;
@@ -121,8 +131,58 @@ public final class ClansConfigScreenFactory
         // Clan Defaults tab
         this.configScreenBuilder.startCategory(TRANSLATION_BASE + "clanDefault");
         addPerClanCategoryEntries();
+        this.configScreenBuilder.startSubCategory(TRANSLATION_BASE + "protection");
+        addPerClanProtectionCategoryEntries();
+        this.configScreenBuilder.endSubCategory();
+        if (hasEconomy()) {
+            this.configScreenBuilder.startSubCategory(ECONOMICS_TRANSLATION_KEY);
+            addPerClanEconomicsCategoryEntries();
+            this.configScreenBuilder.endSubCategory();
+        }
+        // Raid tab
+        this.configScreenBuilder.startCategory(TRANSLATION_BASE + "raid");
+        addRaidCategoryEntries();
+        if (hasEconomy()) {
+            this.configScreenBuilder.startSubCategory(ECONOMICS_TRANSLATION_KEY);
+            addRaidEconomicsCategoryEntries();
+            this.configScreenBuilder.endSubCategory();
+        }
+        // World Protection tab
+        this.configScreenBuilder.startCategory(TRANSLATION_BASE + "worldProtection");
+        addWorldProtectionCategoryEntries();
+        // Dynmap tab
+        if (hasDynmap()) {
+            this.configScreenBuilder.startCategory(TRANSLATION_BASE + "dynmap");
+            addDynmapCategoryEntries();
+        }
 
         return this.configScreenBuilder.build();
+    }
+
+    private OptionBuilder<String> addFormulaField(
+        String optionTranslationBase,
+        String currentValue,
+        String defaultValue,
+        Consumer<String> saveFunction,
+        byte descriptionRowCount
+    ) {
+        return this.configScreenBuilder.addStringField(//TODO new Formula Builder GUI
+                optionTranslationBase,
+                currentValue,
+                defaultValue,
+                saveFunction
+            ).setErrorSupplier(formula -> {
+                FormulaParser formulaParser = this.formulaParserFactory.createParser(formula);
+                //TODO fill in the variables with dummy values
+                try {
+                    formulaParser.parseDouble();
+                } catch (ParsingException exception) {
+                    return Optional.of(translator.getTranslatedText("text.config.clans.invalid_formula"));
+                }
+                return Optional.empty();
+            })
+            .setDescriptionRowCount(descriptionRowCount)
+            .appendCustomDescriptionRow(translator.getTranslatedText(FORMULA_SUFFIX_TRANSLATION_KEY));
     }
 
     private void addClanGlobalCategoryEntries() {
@@ -196,6 +256,31 @@ public final class ClansConfigScreenFactory
             perClanState.getHomeTeleportWarmupTime(),
             perClanDefaults.getHomeTeleportWarmupTime(),
             perClanState::setHomeTeleportWarmupTime
+        ).setMinimum(-1).setDescriptionRowCount((byte) 3);
+        this.configScreenBuilder.addIntField(
+            PER_CLAN_TRANSLATION_BASE + "homeTeleportCooldownTime",
+            perClanState.getHomeTeleportCooldownTime(),
+            perClanDefaults.getHomeTeleportCooldownTime(),
+            perClanState::setHomeTeleportCooldownTime
+        ).setMinimum(0).setDescriptionRowCount((byte) 2);
+        this.addFormulaField(
+            PER_CLAN_TRANSLATION_BASE + "maxClaimCountFormula",
+            perClanState.getMaxClaimCountFormula(),
+            perClanDefaults.getMaxClaimCountFormula(),
+            perClanState::setMaxClaimCountFormula,
+            (byte) 1
+        );
+        this.configScreenBuilder.addStringField(
+            PER_CLAN_TRANSLATION_BASE + "chatPrefix",
+            perClanState.getChatPrefix(),
+            perClanDefaults.getChatPrefix(),
+            perClanState::setChatPrefix
+        ).setDescriptionRowCount((byte) 3);
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_TRANSLATION_BASE + "isHomeFallbackSpawnpoint",
+            perClanState.isHomeFallbackSpawnpoint(),
+            perClanDefaults.isHomeFallbackSpawnpoint(),
+            perClanState::setHomeFallbackSpawnpoint
         );
     }
 
