@@ -42,12 +42,12 @@ public final class PerClanEconomicsConfigDefaults implements PerClanEconomicsCon
     }
 
     @Override
-    public boolean shouldEvictNonpayingMembers() {
+    public boolean shouldKickNonpayingMembers() {
         return false;
     }
 
     @Override
-    public boolean shouldEvictNonpayingAdmins() {
+    public boolean shouldKickNonpayingAdmins() {
         return false;
     }
 

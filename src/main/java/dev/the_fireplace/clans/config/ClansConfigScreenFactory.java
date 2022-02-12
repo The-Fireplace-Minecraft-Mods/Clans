@@ -29,10 +29,10 @@ public final class ClansConfigScreenFactory
 {
     private static final String TRANSLATION_BASE = "text.config." + ClansConstants.MODID + ".";
     private static final String DYNMAP_TRANSLATION_BASE = TRANSLATION_BASE + "dynmap.";
-    private static final String GLOBAL_TRANSLATION_BASE = TRANSLATION_BASE + "global.";
-    private static final String PER_CLAN_TRANSLATION_BASE = TRANSLATION_BASE + "perClan.";
-    private static final String PER_CLAN_ECONOMICS_TRANSLATION_BASE = TRANSLATION_BASE + "perClanEconomics.";
-    private static final String PER_CLAN_PROTECTION_TRANSLATION_BASE = TRANSLATION_BASE + "perClanProtection.";
+    private static final String GLOBAL_TRANSLATION_BASE = TRANSLATION_BASE + "clan.";
+    private static final String PER_CLAN_TRANSLATION_BASE = TRANSLATION_BASE + "clanDefault.";
+    private static final String PER_CLAN_ECONOMICS_TRANSLATION_BASE = TRANSLATION_BASE + "clanDefaultEconomics.";
+    private static final String PER_CLAN_PROTECTION_TRANSLATION_BASE = TRANSLATION_BASE + "clanDefaultProtection.";
     private static final String RAID_TRANSLATION_BASE = TRANSLATION_BASE + "raid.";
     private static final String RAID_ECONOMICS_TRANSLATION_BASE = TRANSLATION_BASE + "raidEconomics.";
     private static final String WORLD_PROTECTION_TRANSLATION_BASE = TRANSLATION_BASE + "worldProtection.";

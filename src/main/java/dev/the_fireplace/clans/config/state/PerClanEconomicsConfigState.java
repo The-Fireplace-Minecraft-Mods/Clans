@@ -24,8 +24,8 @@ public final class PerClanEconomicsConfigState extends ClansConfigState implemen
     private boolean disbandWhenUnableToPayUpkeep;
     private boolean leaderCanWithdrawFunds;
     private boolean leaderShouldReceiveDisbandFunds;
-    private boolean evictNonpayingMembers;
-    private boolean evictNonpayingAdmins;
+    private boolean kickNonpayingMembers;
+    private boolean kickNonpayingAdmins;
     private String disbandFeeFormula;
 
     @Inject
@@ -49,8 +49,8 @@ public final class PerClanEconomicsConfigState extends ClansConfigState implemen
         disbandWhenUnableToPayUpkeep = buffer.readBool("disbandWhenUnableToPayUpkeep", defaultConfig.shouldDisbandWhenUnableToPayUpkeep());
         leaderCanWithdrawFunds = buffer.readBool("leaderCanWithdrawFunds", defaultConfig.canLeaderWithdrawFunds());
         leaderShouldReceiveDisbandFunds = buffer.readBool("leaderShouldReceiveDisbandFunds", defaultConfig.shouldLeaderReceiveDisbandFunds());
-        evictNonpayingMembers = buffer.readBool("evictNonpayingMembers", defaultConfig.shouldEvictNonpayingMembers());
-        evictNonpayingAdmins = buffer.readBool("evictNonpayingAdmins", defaultConfig.shouldEvictNonpayingAdmins());
+        kickNonpayingMembers = buffer.readBool("kickNonpayingMembers", defaultConfig.shouldKickNonpayingMembers());
+        kickNonpayingAdmins = buffer.readBool("kickNonpayingAdmins", defaultConfig.shouldKickNonpayingAdmins());
         disbandFeeFormula = buffer.readString("disbandFeeFormula", defaultConfig.getDisbandFeeFormula());
     }
 
@@ -64,8 +64,8 @@ public final class PerClanEconomicsConfigState extends ClansConfigState implemen
         buffer.writeBool("disbandWhenUnableToPayUpkeep", disbandWhenUnableToPayUpkeep);
         buffer.writeBool("leaderCanWithdrawFunds", leaderCanWithdrawFunds);
         buffer.writeBool("leaderShouldReceiveDisbandFunds", leaderShouldReceiveDisbandFunds);
-        buffer.writeBool("evictNonpayingMembers", evictNonpayingMembers);
-        buffer.writeBool("evictNonpayingAdmins", evictNonpayingAdmins);
+        buffer.writeBool("kickNonpayingMembers", kickNonpayingMembers);
+        buffer.writeBool("kickNonpayingAdmins", kickNonpayingAdmins);
         buffer.writeString("disbandFeeFormula", disbandFeeFormula);
     }
 
@@ -133,21 +133,21 @@ public final class PerClanEconomicsConfigState extends ClansConfigState implemen
     }
 
     @Override
-    public boolean shouldEvictNonpayingMembers() {
-        return evictNonpayingMembers;
+    public boolean shouldKickNonpayingMembers() {
+        return kickNonpayingMembers;
     }
 
-    public void setEvictNonpayingMembers(boolean evictNonpayingMembers) {
-        this.evictNonpayingMembers = evictNonpayingMembers;
+    public void setKickNonpayingMembers(boolean kickNonpayingMembers) {
+        this.kickNonpayingMembers = kickNonpayingMembers;
     }
 
     @Override
-    public boolean shouldEvictNonpayingAdmins() {
-        return evictNonpayingAdmins;
+    public boolean shouldKickNonpayingAdmins() {
+        return kickNonpayingAdmins;
     }
 
-    public void setEvictNonpayingAdmins(boolean evictNonpayingAdmins) {
-        this.evictNonpayingAdmins = evictNonpayingAdmins;
+    public void setKickNonpayingAdmins(boolean kickNonpayingAdmins) {
+        this.kickNonpayingAdmins = kickNonpayingAdmins;
     }
 
     @Override

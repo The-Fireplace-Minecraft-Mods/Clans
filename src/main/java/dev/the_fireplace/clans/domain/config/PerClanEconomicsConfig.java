@@ -17,9 +17,9 @@ public interface PerClanEconomicsConfig
 
     int getChargeRentFrequencyInDays();
 
-    boolean shouldEvictNonpayingMembers();
+    boolean shouldKickNonpayingMembers();
 
-    boolean shouldEvictNonpayingAdmins();
+    boolean shouldKickNonpayingAdmins();
 
     String getMaxRentFormula();
 
