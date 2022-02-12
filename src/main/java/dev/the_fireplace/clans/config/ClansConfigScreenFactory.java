@@ -166,8 +166,7 @@ public final class ClansConfigScreenFactory
         String optionTranslationBase,
         String currentValue,
         String defaultValue,
-        Consumer<String> saveFunction,
-        byte descriptionRowCount
+        Consumer<String> saveFunction
     ) {
         return this.configScreenBuilder.addStringField(//TODO new Formula Builder GUI
                 optionTranslationBase,
@@ -184,7 +183,6 @@ public final class ClansConfigScreenFactory
                 }
                 return Optional.empty();
             })
-            .setDescriptionRowCount(descriptionRowCount)
             .appendCustomDescriptionRow(translator.getTranslatedText(FORMULA_SUFFIX_TRANSLATION_KEY));
     }
 
@@ -270,8 +268,7 @@ public final class ClansConfigScreenFactory
             PER_CLAN_TRANSLATION_BASE + "maxClaimCountFormula",
             perClanState.getMaxClaimCountFormula(),
             perClanDefaults.getMaxClaimCountFormula(),
-            perClanState::setMaxClaimCountFormula,
-            (byte) 1
+            perClanState::setMaxClaimCountFormula
         );
         this.configScreenBuilder.addStringField(
             PER_CLAN_TRANSLATION_BASE + "chatPrefix",
@@ -292,8 +289,7 @@ public final class ClansConfigScreenFactory
             PER_CLAN_ECONOMICS_TRANSLATION_BASE + "claimChunkCostFormula",
             perClanEconomicsState.getClaimChunkCostFormula(),
             perClanEconomicsDefaults.getClaimChunkCostFormula(),
-            perClanEconomicsState::setClaimChunkCostFormula,
-            (byte) 1
+            perClanEconomicsState::setClaimChunkCostFormula
         );
         this.configScreenBuilder.addIntField(
             PER_CLAN_ECONOMICS_TRANSLATION_BASE + "chargeUpkeepFrequencyInDays",
@@ -305,8 +301,7 @@ public final class ClansConfigScreenFactory
             PER_CLAN_ECONOMICS_TRANSLATION_BASE + "upkeepCostFormula",
             perClanEconomicsState.getUpkeepCostFormula(),
             perClanEconomicsDefaults.getUpkeepCostFormula(),
-            perClanEconomicsState::setUpkeepCostFormula,
-            (byte) 1
+            perClanEconomicsState::setUpkeepCostFormula
         );
         this.configScreenBuilder.addIntField(
             PER_CLAN_ECONOMICS_TRANSLATION_BASE + "chargeRentFrequencyInDays",
@@ -318,8 +313,43 @@ public final class ClansConfigScreenFactory
             PER_CLAN_ECONOMICS_TRANSLATION_BASE + "maxRentFormula",
             perClanEconomicsState.getMaxRentFormula(),
             perClanEconomicsDefaults.getMaxRentFormula(),
-            perClanEconomicsState::setMaxRentFormula,
-            (byte) 1
+            perClanEconomicsState::setMaxRentFormula
+        );
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "disbandWhenUnableToPayUpkeep",
+            perClanEconomicsState.shouldDisbandWhenUnableToPayUpkeep(),
+            perClanEconomicsDefaults.shouldDisbandWhenUnableToPayUpkeep(),
+            perClanEconomicsState::setDisbandWhenUnableToPayUpkeep
+        );
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "leadersCanWithdrawFunds",
+            perClanEconomicsState.canLeaderWithdrawFunds(),
+            perClanEconomicsDefaults.canLeaderWithdrawFunds(),
+            perClanEconomicsState::setLeaderCanWithdrawFunds
+        );
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "leadersReceiveDisbandFunds",
+            perClanEconomicsState.shouldLeaderReceiveDisbandFunds(),
+            perClanEconomicsDefaults.shouldLeaderReceiveDisbandFunds(),
+            perClanEconomicsState::setLeaderShouldReceiveDisbandFunds
+        ).setDescriptionRowCount((byte) 2);
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "kickNonpayingMembers",
+            perClanEconomicsState.shouldKickNonpayingMembers(),
+            perClanEconomicsDefaults.shouldKickNonpayingMembers(),
+            perClanEconomicsState::setKickNonpayingMembers
+        );
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "kickNonpayingAdmins",
+            perClanEconomicsState.shouldKickNonpayingAdmins(),
+            perClanEconomicsDefaults.shouldKickNonpayingAdmins(),
+            perClanEconomicsState::setKickNonpayingAdmins
+        );
+        this.addFormulaField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "disbandFeeFormula",
+            perClanEconomicsState.getDisbandFeeFormula(),
+            perClanEconomicsDefaults.getDisbandFeeFormula(),
+            perClanEconomicsState::setDisbandFeeFormula
         );
     }
 
