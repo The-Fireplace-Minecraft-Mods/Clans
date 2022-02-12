@@ -17,7 +17,7 @@ public final class WorldProtectionConfigState extends ClansConfigState implement
 {
     private final WorldProtectionConfig defaultConfig;
 
-    private boolean shouldProtectWilderness;
+    private boolean protectWilderness;
     private short minimumWildernessY;
     private List<String> claimableDimensions;
 
@@ -34,25 +34,25 @@ public final class WorldProtectionConfigState extends ClansConfigState implement
 
     @Override
     public void readFrom(StorageReadBuffer buffer) {
-        shouldProtectWilderness = buffer.readBool("shouldProtectWilderness", defaultConfig.shouldProtectWilderness());
+        protectWilderness = buffer.readBool("protectWilderness", defaultConfig.shouldProtectWilderness());
         minimumWildernessY = buffer.readShort("minimumWildernessY", defaultConfig.getMinimumWildernessY());
         claimableDimensions = buffer.readStringList("claimableDimensions", defaultConfig.getClaimableDimensions());
     }
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeBool("shouldProtectWilderness", defaultConfig.shouldProtectWilderness());
+        buffer.writeBool("protectWilderness", defaultConfig.shouldProtectWilderness());
         buffer.writeShort("minimumWildernessY", defaultConfig.getMinimumWildernessY());
         buffer.writeStringList("claimableDimensions", defaultConfig.getClaimableDimensions());
     }
 
     @Override
     public boolean shouldProtectWilderness() {
-        return shouldProtectWilderness;
+        return protectWilderness;
     }
 
-    public void setShouldProtectWilderness(boolean shouldProtectWilderness) {
-        this.shouldProtectWilderness = shouldProtectWilderness;
+    public void setProtectWilderness(boolean protectWilderness) {
+        this.protectWilderness = protectWilderness;
     }
 
     @Override

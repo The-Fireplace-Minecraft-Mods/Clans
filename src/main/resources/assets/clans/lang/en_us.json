@@ -124,5 +124,13 @@
   "text.config.clans.raidEconomics.increasedWeaknessFactorFormula": "Increased Weakness Factor (Formula)",
   "text.config.clans.raidEconomics.increasedWeaknessFactorFormula.desc": "Formula to set the clan's weakness factor after it loses to raiders.",
   "text.config.clans.raidEconomics.decreasedWeaknessFactorFormula": "Decreased Weakness Factor (Formula)",
-  "text.config.clans.raidEconomics.decreasedWeaknessFactorFormula.desc": "Formula to set the clan's weakness factor after it wins against raiders."
+  "text.config.clans.raidEconomics.decreasedWeaknessFactorFormula.desc": "Formula to set the clan's weakness factor after it wins against raiders.",
+  "text.config.clans.worldProtection.protectWilderness": "Protect Wilderness",
+  "text.config.clans.worldProtection.protectWilderness.desc": "Protect the wilderness from damage above a specific Y level.",
+  "text.config.clans.worldProtection.minimumWildernessY": "Minimum Wilderness Y",
+  "text.config.clans.worldProtection.minimumWildernessY.desc": "Minimum Y level to protect, inclusive.",
+  "text.config.clans.worldProtection.claimableDimensions": "Claimable Dimensions",
+  "text.config.clans.worldProtection.claimableDimensions.desc[0]": "A list of dimensions players are allowed to claim in.",
+  "text.config.clans.worldProtection.claimableDimensions.desc[1]": "If it contains a *, this list is for blocked dimensions.",
+  "text.config.clans.worldProtection.claimableDimensions.desc[2]": "Otherwise, it is for allowed dimensions."
 }

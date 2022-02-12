@@ -468,7 +468,42 @@ public final class ClansConfigScreenFactory
     }
 
     private void addRaidEconomicsCategoryEntries() {
-
+        this.addFormulaField(
+            RAID_ECONOMICS_TRANSLATION_BASE + "startCostFormula",
+            raidEconomicsState.getStartCostFormula(),
+            raidEconomicsDefaults.getStartCostFormula(),
+            raidEconomicsState::setStartCostFormula
+        );
+        this.addFormulaField(
+            RAID_ECONOMICS_TRANSLATION_BASE + "winRewardFormula",
+            raidEconomicsState.getWinRewardFormula(),
+            raidEconomicsDefaults.getWinRewardFormula(),
+            raidEconomicsState::setWinRewardFormula
+        );
+        this.configScreenBuilder.addBoolToggle(
+            RAID_ECONOMICS_TRANSLATION_BASE + "increasingRewards",
+            raidEconomicsState.isIncreasingRewards(),
+            raidEconomicsDefaults.isIncreasingRewards(),
+            raidEconomicsState::setIncreasingRewards
+        );
+        this.configScreenBuilder.addDoubleField(
+            RAID_ECONOMICS_TRANSLATION_BASE + "minimumWinLossRatioForWeaknessFactorReduction",
+            raidEconomicsState.getMinimumWinLossRatioForWeaknessFactorReduction(),
+            raidEconomicsDefaults.getMinimumWinLossRatioForWeaknessFactorReduction(),
+            raidEconomicsState::setMinimumWinLossRatioForWeaknessFactorReduction
+        ).setMinimum(0.0).setDescriptionRowCount((byte) 4);
+        this.addFormulaField(
+            RAID_ECONOMICS_TRANSLATION_BASE + "increasedWeaknessFactorFormula",
+            raidEconomicsState.getIncreasedWeaknessFactorFormula(),
+            raidEconomicsDefaults.getIncreasedWeaknessFactorFormula(),
+            raidEconomicsState::setIncreasedWeaknessFactorFormula
+        );
+        this.addFormulaField(
+            RAID_ECONOMICS_TRANSLATION_BASE + "decreasedWeaknessFactorFormula",
+            raidEconomicsState.getDecreasedWeaknessFactorFormula(),
+            raidEconomicsDefaults.getDecreasedWeaknessFactorFormula(),
+            raidEconomicsState::setDecreasedWeaknessFactorFormula
+        );
     }
 
     private void addWorldProtectionCategoryEntries() {
