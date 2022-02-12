@@ -16,10 +16,9 @@ public final class DynmapConfigState extends ClansConfigState implements DynmapC
 {
     private final DynmapConfig defaultConfig;
 
-    private int dynmapBorderWeight;
-    private double dynmapBorderOpacity;
-    private double dynmapFillOpacity;
-    private int maxDisplayedConnectedClaims;
+    private int borderWeight;
+    private double borderOpacity;
+    private double fillOpacity;
 
     @Inject
     public DynmapConfigState(ConfigStateManager configStateManager, @Named("default") DynmapConfig defaultConfig) {
@@ -34,53 +33,42 @@ public final class DynmapConfigState extends ClansConfigState implements DynmapC
 
     @Override
     public void readFrom(StorageReadBuffer buffer) {
-        dynmapBorderWeight = buffer.readInt("dynmapBorderWeight", defaultConfig.getDynmapBorderWeight());
-        dynmapBorderOpacity = buffer.readDouble("dynmapBorderOpacity", defaultConfig.getDynmapBorderOpacity());
-        dynmapFillOpacity = buffer.readDouble("dynmapFillOpacity", defaultConfig.getDynmapFillOpacity());
-        maxDisplayedConnectedClaims = buffer.readInt("maxDisplayedConnectedClaims", defaultConfig.getMaxDisplayedConnectedClaims());
+        borderWeight = buffer.readInt("borderWeight", defaultConfig.getBorderWeight());
+        borderOpacity = buffer.readDouble("borderOpacity", defaultConfig.getBorderOpacity());
+        fillOpacity = buffer.readDouble("fillOpacity", defaultConfig.getFillOpacity());
     }
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeInt("dynmapBorderWeight", defaultConfig.getDynmapBorderWeight());
-        buffer.writeDouble("dynmapBorderOpacity", defaultConfig.getDynmapBorderOpacity());
-        buffer.writeDouble("dynmapFillOpacity", defaultConfig.getDynmapFillOpacity());
-        buffer.writeInt("maxDisplayedConnectedClaims", defaultConfig.getMaxDisplayedConnectedClaims());
+        buffer.writeInt("borderWeight", defaultConfig.getBorderWeight());
+        buffer.writeDouble("borderOpacity", defaultConfig.getBorderOpacity());
+        buffer.writeDouble("fillOpacity", defaultConfig.getFillOpacity());
     }
 
     @Override
-    public int getDynmapBorderWeight() {
-        return dynmapBorderWeight;
+    public int getBorderWeight() {
+        return borderWeight;
     }
 
-    public void setDynmapBorderWeight(int dynmapBorderWeight) {
-        this.dynmapBorderWeight = dynmapBorderWeight;
-    }
-
-    @Override
-    public double getDynmapBorderOpacity() {
-        return dynmapBorderOpacity;
-    }
-
-    public void setDynmapBorderOpacity(double dynmapBorderOpacity) {
-        this.dynmapBorderOpacity = dynmapBorderOpacity;
+    public void setBorderWeight(int borderWeight) {
+        this.borderWeight = borderWeight;
     }
 
     @Override
-    public double getDynmapFillOpacity() {
-        return dynmapFillOpacity;
+    public double getBorderOpacity() {
+        return borderOpacity;
     }
 
-    public void setDynmapFillOpacity(double dynmapFillOpacity) {
-        this.dynmapFillOpacity = dynmapFillOpacity;
+    public void setBorderOpacity(double borderOpacity) {
+        this.borderOpacity = borderOpacity;
     }
 
     @Override
-    public int getMaxDisplayedConnectedClaims() {
-        return maxDisplayedConnectedClaims;
+    public double getFillOpacity() {
+        return fillOpacity;
     }
 
-    public void setMaxDisplayedConnectedClaims(int maxDisplayedConnectedClaims) {
-        this.maxDisplayedConnectedClaims = maxDisplayedConnectedClaims;
+    public void setFillOpacity(double fillOpacity) {
+        this.fillOpacity = fillOpacity;
     }
 }

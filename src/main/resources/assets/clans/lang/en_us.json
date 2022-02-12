@@ -132,5 +132,11 @@
   "text.config.clans.worldProtection.claimableDimensions": "Claimable Dimensions",
   "text.config.clans.worldProtection.claimableDimensions.desc[0]": "A list of dimensions players are allowed to claim in.",
   "text.config.clans.worldProtection.claimableDimensions.desc[1]": "If it contains a *, this list is for blocked dimensions.",
-  "text.config.clans.worldProtection.claimableDimensions.desc[2]": "Otherwise, it is for allowed dimensions."
+  "text.config.clans.worldProtection.claimableDimensions.desc[2]": "Otherwise, it is for allowed dimensions.",
+  "text.config.clans.dynmap.borderWeight": "Border Weight",
+  "text.config.clans.dynmap.borderWeight.desc": "The weight of the border shown around a claimed area.",
+  "text.config.clans.dynmap.borderOpacity": "Border Opacity",
+  "text.config.clans.dynmap.borderOpacity.desc": "The opacity of the border shown around a claimed area.",
+  "text.config.clans.dynmap.fillOpacity": "Fill Opacity",
+  "text.config.clans.dynmap.fillOpacity.desc": "The opacity of the claimed area."
 }

@@ -7,22 +7,17 @@ import dev.the_fireplace.clans.api.config.injectables.DynmapConfig;
 public final class DynmapConfigDefaults implements DynmapConfig
 {
     @Override
-    public int getDynmapBorderWeight() {
+    public int getBorderWeight() {
         return 0;
     }
 
     @Override
-    public double getDynmapBorderOpacity() {
+    public double getBorderOpacity() {
         return 0.9;
     }
 
     @Override
-    public double getDynmapFillOpacity() {
+    public double getFillOpacity() {
         return 0.75;
-    }
-
-    @Override
-    public int getMaxDisplayedConnectedClaims() {
-        return Integer.MAX_VALUE;
     }
 }

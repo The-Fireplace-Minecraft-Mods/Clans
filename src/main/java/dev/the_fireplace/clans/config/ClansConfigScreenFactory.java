@@ -248,7 +248,28 @@ public final class ClansConfigScreenFactory
     }
 
     private void addDynmapCategoryEntries() {
-
+        this.configScreenBuilder.addIntField(
+            DYNMAP_TRANSLATION_BASE + "borderWeight",
+            dynmapState.getBorderWeight(),
+            dynmapDefaults.getBorderWeight(),
+            dynmapState::setBorderWeight
+        ).setMinimum(0);
+        this.configScreenBuilder.addDoubleSlider(
+            DYNMAP_TRANSLATION_BASE + "borderOpacity",
+            dynmapState.getBorderOpacity(),
+            dynmapDefaults.getBorderOpacity(),
+            dynmapState::setBorderOpacity,
+            0.0,
+            1.0
+        ).enablePercentMode();
+        this.configScreenBuilder.addDoubleSlider(
+            DYNMAP_TRANSLATION_BASE + "fillOpacity",
+            dynmapState.getFillOpacity(),
+            dynmapDefaults.getFillOpacity(),
+            dynmapState::setFillOpacity,
+            0.0,
+            1.0
+        ).enablePercentMode();
     }
 
     private void addPerClanCategoryEntries() {
@@ -507,7 +528,24 @@ public final class ClansConfigScreenFactory
     }
 
     private void addWorldProtectionCategoryEntries() {
-
+        this.configScreenBuilder.addBoolToggle(
+            WORLD_PROTECTION_TRANSLATION_BASE + "protectWilderness",
+            worldProtectionState.shouldProtectWilderness(),
+            worldProtectionDefaults.shouldProtectWilderness(),
+            worldProtectionState::setProtectWilderness
+        );
+        this.configScreenBuilder.addShortField(
+            WORLD_PROTECTION_TRANSLATION_BASE + "minimumWildernessY",
+            worldProtectionState.getMinimumWildernessY(),
+            worldProtectionDefaults.getMinimumWildernessY(),
+            worldProtectionState::setMinimumWildernessY
+        );
+        this.configScreenBuilder.addStringListField(
+            WORLD_PROTECTION_TRANSLATION_BASE + "claimableDimensions",
+            worldProtectionState.getClaimableDimensions(),
+            worldProtectionDefaults.getClaimableDimensions(),
+            worldProtectionState::setClaimableDimensions
+        ).setDescriptionRowCount((byte) 3);
     }
 
     private boolean hasEconomy() {

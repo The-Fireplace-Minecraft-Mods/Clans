@@ -2,11 +2,9 @@ package dev.the_fireplace.clans.api.config.injectables;
 
 public interface DynmapConfig
 {
-    int getDynmapBorderWeight();
+    int getBorderWeight();
 
-    double getDynmapBorderOpacity();
+    double getBorderOpacity();
 
-    double getDynmapFillOpacity();
-
-    int getMaxDisplayedConnectedClaims();
+    double getFillOpacity();
 }
