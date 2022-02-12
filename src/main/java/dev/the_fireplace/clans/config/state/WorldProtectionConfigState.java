@@ -1,7 +1,7 @@
 package dev.the_fireplace.clans.config.state;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
-import dev.the_fireplace.clans.domain.config.WorldProtectionConfig;
+import dev.the_fireplace.clans.api.config.injectables.WorldProtectionConfig;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageWriteBuffer;
 import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;

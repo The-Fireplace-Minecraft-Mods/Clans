@@ -2,7 +2,7 @@ package dev.the_fireplace.clans.config.defaults;
 
 import com.google.common.collect.Lists;
 import dev.the_fireplace.annotateddi.api.di.Implementation;
-import dev.the_fireplace.clans.domain.config.WorldProtectionConfig;
+import dev.the_fireplace.clans.api.config.injectables.WorldProtectionConfig;
 
 import java.util.List;
 

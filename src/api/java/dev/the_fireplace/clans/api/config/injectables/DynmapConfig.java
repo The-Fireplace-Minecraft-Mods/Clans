@@ -1,4 +1,4 @@
-package dev.the_fireplace.clans.domain.config;
+package dev.the_fireplace.clans.api.config.injectables;
 
 public interface DynmapConfig
 {

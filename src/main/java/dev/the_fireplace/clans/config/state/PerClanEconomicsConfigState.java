@@ -74,7 +74,7 @@ public final class PerClanEconomicsConfigState extends ClansConfigState implemen
         return chunkClaimCostFormula;
     }
 
-    public void setChunkClaimCostFormula(String chunkClaimCostFormula) {
+    public void setClaimChunkCostFormula(String chunkClaimCostFormula) {
         this.chunkClaimCostFormula = chunkClaimCostFormula;
     }
 

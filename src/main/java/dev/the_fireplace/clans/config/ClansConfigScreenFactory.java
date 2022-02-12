@@ -1,8 +1,11 @@
 package dev.the_fireplace.clans.config;
 
 import dev.the_fireplace.clans.ClansConstants;
+import dev.the_fireplace.clans.api.config.injectables.*;
 import dev.the_fireplace.clans.config.state.*;
-import dev.the_fireplace.clans.domain.config.*;
+import dev.the_fireplace.clans.domain.config.PerClanConfig;
+import dev.the_fireplace.clans.domain.config.PerClanEconomicsConfig;
+import dev.the_fireplace.clans.domain.config.PerClanProtectionConfig;
 import dev.the_fireplace.lib.api.chat.injectables.TranslatorFactory;
 import dev.the_fireplace.lib.api.chat.interfaces.Translator;
 import dev.the_fireplace.lib.api.client.injectables.ConfigScreenBuilderFactory;
@@ -285,7 +288,39 @@ public final class ClansConfigScreenFactory
     }
 
     private void addPerClanEconomicsCategoryEntries() {
-
+        this.addFormulaField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "claimChunkCostFormula",
+            perClanEconomicsState.getClaimChunkCostFormula(),
+            perClanEconomicsDefaults.getClaimChunkCostFormula(),
+            perClanEconomicsState::setClaimChunkCostFormula,
+            (byte) 1
+        );
+        this.configScreenBuilder.addIntField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "chargeUpkeepFrequencyInDays",
+            perClanEconomicsState.getChargeUpkeepFrequencyInDays(),
+            perClanEconomicsDefaults.getChargeUpkeepFrequencyInDays(),
+            perClanEconomicsState::setChargeUpkeepFrequencyInDays
+        ).setMinimum(0);
+        this.addFormulaField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "upkeepCostFormula",
+            perClanEconomicsState.getUpkeepCostFormula(),
+            perClanEconomicsDefaults.getUpkeepCostFormula(),
+            perClanEconomicsState::setUpkeepCostFormula,
+            (byte) 1
+        );
+        this.configScreenBuilder.addIntField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "chargeRentFrequencyInDays",
+            perClanEconomicsState.getChargeRentFrequencyInDays(),
+            perClanEconomicsDefaults.getChargeRentFrequencyInDays(),
+            perClanEconomicsState::setChargeRentFrequencyInDays
+        ).setMinimum(0);
+        this.addFormulaField(
+            PER_CLAN_ECONOMICS_TRANSLATION_BASE + "maxRentFormula",
+            perClanEconomicsState.getMaxRentFormula(),
+            perClanEconomicsDefaults.getMaxRentFormula(),
+            perClanEconomicsState::setMaxRentFormula,
+            (byte) 1
+        );
     }
 
     private void addPerClanProtectionCategoryEntries() {

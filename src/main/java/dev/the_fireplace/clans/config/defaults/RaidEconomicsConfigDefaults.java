@@ -1,7 +1,7 @@
 package dev.the_fireplace.clans.config.defaults;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
-import dev.the_fireplace.clans.domain.config.RaidEconomicsConfig;
+import dev.the_fireplace.clans.api.config.injectables.RaidEconomicsConfig;
 
 @Implementation(name = "default")
 public final class RaidEconomicsConfigDefaults implements RaidEconomicsConfig

@@ -1,7 +1,7 @@
 package dev.the_fireplace.clans.config.defaults;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
-import dev.the_fireplace.clans.domain.config.GlobalClanConfig;
+import dev.the_fireplace.clans.api.config.injectables.GlobalClanConfig;
 
 @Implementation(name = "default")
 public final class GlobalClanConfigDefaults implements GlobalClanConfig

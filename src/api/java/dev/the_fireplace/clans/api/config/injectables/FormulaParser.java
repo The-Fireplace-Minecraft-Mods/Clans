@@ -1,4 +1,4 @@
-package dev.the_fireplace.clans.api.config.injectable;
+package dev.the_fireplace.clans.api.config.injectables;
 
 import java.util.UUID;
 
