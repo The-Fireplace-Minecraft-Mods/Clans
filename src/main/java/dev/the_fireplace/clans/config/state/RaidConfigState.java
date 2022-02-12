@@ -9,7 +9,6 @@ import dev.the_fireplace.lib.api.lazyio.injectables.ConfigStateManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.List;
 
 @Implementation
 @Singleton
@@ -18,18 +17,17 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
     private final RaidConfig defaultConfig;
 
     private String maxRaidersFormula;
-    private String maxRaidDurationFormula;
-    private String raidPreparationTimeFormula;
-    private String remainingTimeToGlowFormula;
+    private String maxDurationFormula;
+    private String preparationTimeFormula;
+    private String defenderGlowTimeFormula;
     private String maxAttackerAbandonmentTimeFormula;
     private String maxDefenderDesertionTimeFormula;
     private String shieldAfterRaidFormula;
     private int initialShield;
-    private boolean allowReclaimingTNT;
-    private boolean enableRaidRollback;
+    private boolean preventReclaimingTnt;
+    private boolean enableRollback;
     private boolean enableStealing;
-    private double raidBreakSpeedMultiplier;
-    private List<String> raidItemList;
+    private double breakSpeedMultiplier;
     private boolean teleportToRaidStart;
 
     @Inject
@@ -46,36 +44,34 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
     @Override
     public void readFrom(StorageReadBuffer buffer) {
         maxRaidersFormula = buffer.readString("maxRaidersFormula", defaultConfig.getMaxRaidersFormula());
-        maxRaidDurationFormula = buffer.readString("maxRaidDurationFormula", defaultConfig.getMaxRaidDurationFormula());
-        raidPreparationTimeFormula = buffer.readString("raidPreparationTimeFormula", defaultConfig.getRaidPreparationTimeFormula());
-        remainingTimeToGlowFormula = buffer.readString("remainingTimeToGlowFormula", defaultConfig.getRemainingTimeToGlowFormula());
+        maxDurationFormula = buffer.readString("maxDurationFormula", defaultConfig.getMaxDurationFormula());
+        preparationTimeFormula = buffer.readString("preparationTimeFormula", defaultConfig.getPreparationTimeFormula());
+        defenderGlowTimeFormula = buffer.readString("defenderGlowTimeFormula", defaultConfig.getDefenderGlowTimeFormula());
         maxAttackerAbandonmentTimeFormula = buffer.readString("maxAttackerAbandonmentTimeFormula", defaultConfig.getMaxAttackerAbandonmentTimeFormula());
         maxDefenderDesertionTimeFormula = buffer.readString("maxDefenderDesertionTimeFormula", defaultConfig.getMaxDefenderDesertionTimeFormula());
         shieldAfterRaidFormula = buffer.readString("shieldAfterRaidFormula", defaultConfig.getShieldAfterRaidFormula());
         initialShield = buffer.readInt("initialShield", defaultConfig.getInitialShield());
-        allowReclaimingTNT = buffer.readBool("allowReclaimingTNT", defaultConfig.allowReclaimingTNT());
-        enableRaidRollback = buffer.readBool("enableRaidRollback", defaultConfig.isEnableRaidRollback());
+        preventReclaimingTnt = buffer.readBool("preventReclaimingTnt", defaultConfig.preventReclaimingTNT());
+        enableRollback = buffer.readBool("enableRollback", defaultConfig.isEnableRollback());
         enableStealing = buffer.readBool("enableStealing", defaultConfig.isEnableStealing());
-        raidBreakSpeedMultiplier = buffer.readDouble("raidBreakSpeedMultiplier", defaultConfig.getRaidBreakSpeedMultiplier());
-        raidItemList = buffer.readStringList("raidItemList", defaultConfig.getRaidItemList());
+        breakSpeedMultiplier = buffer.readDouble("breakSpeedMultiplier", defaultConfig.getBreakSpeedMultiplier());
         teleportToRaidStart = buffer.readBool("teleportToRaidStart", defaultConfig.isTeleportToRaidStart());
     }
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
         buffer.writeString("maxRaidersFormula", maxRaidersFormula);
-        buffer.writeString("maxRaidDurationFormula", maxRaidDurationFormula);
-        buffer.writeString("raidPreparationTimeFormula", raidPreparationTimeFormula);
-        buffer.writeString("remainingTimeToGlowFormula", remainingTimeToGlowFormula);
+        buffer.writeString("maxDurationFormula", maxDurationFormula);
+        buffer.writeString("preparationTimeFormula", preparationTimeFormula);
+        buffer.writeString("defenderGlowTimeFormula", defenderGlowTimeFormula);
         buffer.writeString("maxAttackerAbandonmentTimeFormula", maxAttackerAbandonmentTimeFormula);
         buffer.writeString("maxDefenderDesertionTimeFormula", maxDefenderDesertionTimeFormula);
         buffer.writeString("shieldAfterRaidFormula", shieldAfterRaidFormula);
         buffer.writeInt("initialShield", initialShield);
-        buffer.writeBool("allowReclaimingTNT", allowReclaimingTNT);
-        buffer.writeBool("enableRaidRollback", enableRaidRollback);
+        buffer.writeBool("preventReclaimingTnt", preventReclaimingTnt);
+        buffer.writeBool("enableRollback", enableRollback);
         buffer.writeBool("enableStealing", enableStealing);
-        buffer.writeDouble("raidBreakSpeedMultiplier", raidBreakSpeedMultiplier);
-        buffer.writeStringList("raidItemList", raidItemList);
+        buffer.writeDouble("breakSpeedMultiplier", breakSpeedMultiplier);
         buffer.writeBool("teleportToRaidStart", teleportToRaidStart);
     }
 
@@ -89,30 +85,30 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
     }
 
     @Override
-    public String getMaxRaidDurationFormula() {
-        return maxRaidDurationFormula;
+    public String getMaxDurationFormula() {
+        return maxDurationFormula;
     }
 
-    public void setMaxRaidDurationFormula(String maxRaidDurationFormula) {
-        this.maxRaidDurationFormula = maxRaidDurationFormula;
-    }
-
-    @Override
-    public String getRaidPreparationTimeFormula() {
-        return raidPreparationTimeFormula;
-    }
-
-    public void setRaidPreparationTimeFormula(String raidPreparationTimeFormula) {
-        this.raidPreparationTimeFormula = raidPreparationTimeFormula;
+    public void setMaxDurationFormula(String maxDurationFormula) {
+        this.maxDurationFormula = maxDurationFormula;
     }
 
     @Override
-    public String getRemainingTimeToGlowFormula() {
-        return remainingTimeToGlowFormula;
+    public String getPreparationTimeFormula() {
+        return preparationTimeFormula;
     }
 
-    public void setRemainingTimeToGlowFormula(String remainingTimeToGlowFormula) {
-        this.remainingTimeToGlowFormula = remainingTimeToGlowFormula;
+    public void setPreparationTimeFormula(String preparationTimeFormula) {
+        this.preparationTimeFormula = preparationTimeFormula;
+    }
+
+    @Override
+    public String getDefenderGlowTimeFormula() {
+        return defenderGlowTimeFormula;
+    }
+
+    public void setDefenderGlowTimeFormula(String defenderGlowTimeFormula) {
+        this.defenderGlowTimeFormula = defenderGlowTimeFormula;
     }
 
     @Override
@@ -152,21 +148,21 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
     }
 
     @Override
-    public boolean allowReclaimingTNT() {
-        return allowReclaimingTNT;
+    public boolean preventReclaimingTNT() {
+        return preventReclaimingTnt;
     }
 
-    public void setAllowReclaimingTNT(boolean allowReclaimingTNT) {
-        this.allowReclaimingTNT = allowReclaimingTNT;
+    public void setPreventReclaimingTnt(boolean preventReclaimingTnt) {
+        this.preventReclaimingTnt = preventReclaimingTnt;
     }
 
     @Override
-    public boolean isEnableRaidRollback() {
-        return enableRaidRollback;
+    public boolean isEnableRollback() {
+        return enableRollback;
     }
 
-    public void setEnableRaidRollback(boolean enableRaidRollback) {
-        this.enableRaidRollback = enableRaidRollback;
+    public void setEnableRollback(boolean enableRollback) {
+        this.enableRollback = enableRollback;
     }
 
     @Override
@@ -179,21 +175,12 @@ public final class RaidConfigState extends ClansConfigState implements RaidConfi
     }
 
     @Override
-    public double getRaidBreakSpeedMultiplier() {
-        return raidBreakSpeedMultiplier;
+    public double getBreakSpeedMultiplier() {
+        return breakSpeedMultiplier;
     }
 
-    public void setRaidBreakSpeedMultiplier(double raidBreakSpeedMultiplier) {
-        this.raidBreakSpeedMultiplier = raidBreakSpeedMultiplier;
-    }
-
-    @Override
-    public List<String> getRaidItemList() {
-        return raidItemList;
-    }
-
-    public void setRaidItemList(List<String> raidItemList) {
-        this.raidItemList = raidItemList;
+    public void setBreakSpeedMultiplier(double breakSpeedMultiplier) {
+        this.breakSpeedMultiplier = breakSpeedMultiplier;
     }
 
     @Override

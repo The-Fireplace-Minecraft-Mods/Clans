@@ -1,10 +1,7 @@
 package dev.the_fireplace.clans.config.defaults;
 
-import com.google.common.collect.Lists;
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.clans.api.config.injectables.RaidConfig;
-
-import java.util.List;
 
 @Implementation(name = "default")
 public final class RaidConfigDefaults implements RaidConfig
@@ -15,17 +12,17 @@ public final class RaidConfigDefaults implements RaidConfig
     }
 
     @Override
-    public String getMaxRaidDurationFormula() {
+    public String getMaxDurationFormula() {
         return "30 * 60";
     }
 
     @Override
-    public String getRaidPreparationTimeFormula() {
+    public String getPreparationTimeFormula() {
         return "90";
     }
 
     @Override
-    public String getRemainingTimeToGlowFormula() {
+    public String getDefenderGlowTimeFormula() {
         return "10 * 60";
     }
 
@@ -50,12 +47,12 @@ public final class RaidConfigDefaults implements RaidConfig
     }
 
     @Override
-    public boolean allowReclaimingTNT() {
+    public boolean preventReclaimingTNT() {
         return false;
     }
 
     @Override
-    public boolean isEnableRaidRollback() {
+    public boolean isEnableRollback() {
         return true;
     }
 
@@ -65,16 +62,8 @@ public final class RaidConfigDefaults implements RaidConfig
     }
 
     @Override
-    public double getRaidBreakSpeedMultiplier() {
+    public double getBreakSpeedMultiplier() {
         return 1;
-    }
-
-    @Override
-    public List<String> getRaidItemList() {
-        return Lists.newArrayList(
-            "*",
-            "minecraft:bedrock"
-        );
     }
 
     @Override

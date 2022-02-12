@@ -387,7 +387,84 @@ public final class ClansConfigScreenFactory
     }
 
     private void addRaidCategoryEntries() {
-
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "maxRaidersFormula",
+            raidState.getMaxRaidersFormula(),
+            raidDefaults.getMaxRaidersFormula(),
+            raidState::setMaxRaidersFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "maxDurationFormula",
+            raidState.getMaxDurationFormula(),
+            raidDefaults.getMaxDurationFormula(),
+            raidState::setMaxDurationFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "preparationTimeFormula",
+            raidState.getPreparationTimeFormula(),
+            raidDefaults.getPreparationTimeFormula(),
+            raidState::setPreparationTimeFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "defenderGlowTimeFormula",
+            raidState.getDefenderGlowTimeFormula(),
+            raidDefaults.getDefenderGlowTimeFormula(),
+            raidState::setDefenderGlowTimeFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "maxAttackerAbandonmentTimeFormula",
+            raidState.getMaxAttackerAbandonmentTimeFormula(),
+            raidDefaults.getMaxAttackerAbandonmentTimeFormula(),
+            raidState::setMaxAttackerAbandonmentTimeFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "maxDefenderDesertionTimeFormula",
+            raidState.getMaxDefenderDesertionTimeFormula(),
+            raidDefaults.getMaxDefenderDesertionTimeFormula(),
+            raidState::setMaxDefenderDesertionTimeFormula
+        );
+        this.addFormulaField(
+            RAID_TRANSLATION_BASE + "shieldAfterRaidFormula",
+            raidState.getShieldAfterRaidFormula(),
+            raidDefaults.getShieldAfterRaidFormula(),
+            raidState::setShieldAfterRaidFormula
+        );
+        this.configScreenBuilder.addIntField(
+            RAID_TRANSLATION_BASE + "initialShield",
+            raidState.getInitialShield(),
+            raidDefaults.getInitialShield(),
+            raidState::setInitialShield
+        );
+        this.configScreenBuilder.addBoolToggle(
+            RAID_TRANSLATION_BASE + "preventReclaimingTnt",
+            raidState.preventReclaimingTNT(),
+            raidDefaults.preventReclaimingTNT(),
+            raidState::setPreventReclaimingTnt
+        );
+        this.configScreenBuilder.addBoolToggle(
+            RAID_TRANSLATION_BASE + "enableRollback",
+            raidState.isEnableRollback(),
+            raidDefaults.isEnableRollback(),
+            raidState::setEnableRollback
+        );
+        this.configScreenBuilder.addBoolToggle(
+            RAID_TRANSLATION_BASE + "enableStealing",
+            raidState.isEnableStealing(),
+            raidDefaults.isEnableStealing(),
+            raidState::setEnableStealing
+        ).setDescriptionRowCount((byte) 2);
+        this.configScreenBuilder.addDoubleField(
+            RAID_TRANSLATION_BASE + "breakSpeedMultiplier",
+            raidState.getBreakSpeedMultiplier(),
+            raidDefaults.getBreakSpeedMultiplier(),
+            raidState::setBreakSpeedMultiplier
+        ).setMinimum(0.0);
+        this.configScreenBuilder.addBoolToggle(
+            RAID_TRANSLATION_BASE + "teleportToRaidStart",
+            raidState.isTeleportToRaidStart(),
+            raidDefaults.isTeleportToRaidStart(),
+            raidState::setTeleportToRaidStart
+        );
     }
 
     private void addRaidEconomicsCategoryEntries() {

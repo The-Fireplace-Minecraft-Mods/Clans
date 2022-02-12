@@ -1,16 +1,14 @@
 package dev.the_fireplace.clans.api.config.injectables;
 
-import java.util.List;
-
 public interface RaidConfig
 {
     String getMaxRaidersFormula();
 
-    String getMaxRaidDurationFormula();
+    String getMaxDurationFormula();
 
-    String getRaidPreparationTimeFormula();
+    String getPreparationTimeFormula();
 
-    String getRemainingTimeToGlowFormula();
+    String getDefenderGlowTimeFormula();
 
     String getMaxAttackerAbandonmentTimeFormula();
 
@@ -20,15 +18,13 @@ public interface RaidConfig
 
     int getInitialShield();
 
-    boolean allowReclaimingTNT();
+    boolean preventReclaimingTNT();
 
-    boolean isEnableRaidRollback();
+    boolean isEnableRollback();
 
     boolean isEnableStealing();
 
-    double getRaidBreakSpeedMultiplier();
-
-    List<String> getRaidItemList();
+    double getBreakSpeedMultiplier();
 
     boolean isTeleportToRaidStart();
 }
