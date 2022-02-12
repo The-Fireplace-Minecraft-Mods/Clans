@@ -110,6 +110,19 @@
   "text.config.clans.raid.breakSpeedMultiplier.desc": "Multiplies the breaking speed of blocks by this amount when raiding.",
   "text.config.clans.raid.teleportToRaidStart": "Teleport raiders to clan",
   "text.config.clans.raid.teleportToRaidStart.desc": "Teleports raiders outside the target clan's home territory when the raid starts.",
-  "text.config.clans.raidEconomics.raidStartCost": "Raid Start Cost (Formula)",
-  "text.config.clans.raidEconomics.raidStartCost.desc": "The cost of starting a raid."
+  "text.config.clans.raidEconomics.startCostFormula": "Start Cost (Formula)",
+  "text.config.clans.raidEconomics.startCostFormula.desc": "The cost of starting a raid.",
+  "text.config.clans.raidEconomics.winRewardFormula": "Win Reward (Formula)",
+  "text.config.clans.raidEconomics.winRewardFormula.desc": "The reward for winning a raid.",
+  "text.config.clans.raidEconomics.increasingRewards": "Increasing Rewards",
+  "text.config.clans.raidEconomics.increasingRewards.desc": "Rewards will increase as a clan gets repeatedly defeated, using the clan's weakness factor.",
+  "text.config.clans.raidEconomics.minimumWinLossRatioForWeaknessFactorReduction": "Win-Loss Ratio Reduction Threshold",
+  "text.config.clans.raidEconomics.minimumWinLossRatioForWeaknessFactorReduction.desc[0]": "Minimum Win-Loss Ratio of the raiding party needed",
+  "text.config.clans.raidEconomics.minimumWinLossRatioForWeaknessFactorReduction.desc[1]": "to decrease the clan's weakness factor when defeated.",
+  "text.config.clans.raidEconomics.minimumWinLossRatioForWeaknessFactorReduction.desc[2]": "Helps prevent rich clans from hiring people to purposely",
+  "text.config.clans.raidEconomics.minimumWinLossRatioForWeaknessFactorReduction.desc[3]": "fail a raid and reduce their reward multiplier.",
+  "text.config.clans.raidEconomics.increasedWeaknessFactorFormula": "Increased Weakness Factor (Formula)",
+  "text.config.clans.raidEconomics.increasedWeaknessFactorFormula.desc": "Formula to set the clan's weakness factor after it loses to raiders.",
+  "text.config.clans.raidEconomics.decreasedWeaknessFactorFormula": "Decreased Weakness Factor (Formula)",
+  "text.config.clans.raidEconomics.decreasedWeaknessFactorFormula.desc": "Formula to set the clan's weakness factor after it wins against raiders."
 }

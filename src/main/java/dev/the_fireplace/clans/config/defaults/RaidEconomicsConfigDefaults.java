@@ -7,12 +7,12 @@ import dev.the_fireplace.clans.api.config.injectables.RaidEconomicsConfig;
 public final class RaidEconomicsConfigDefaults implements RaidEconomicsConfig
 {
     @Override
-    public String getStartRaidCostFormula() {
+    public String getStartCostFormula() {
         return "0";
     }
 
     @Override
-    public String getWinRaidRewardFormula() {
+    public String getWinRewardFormula() {
         return "0";
     }
 

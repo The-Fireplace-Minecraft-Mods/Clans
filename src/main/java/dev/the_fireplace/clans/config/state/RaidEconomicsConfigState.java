@@ -16,8 +16,8 @@ public final class RaidEconomicsConfigState extends ClansConfigState implements 
 {
     private final RaidEconomicsConfig defaultConfig;
 
-    private String startRaidCostFormula;
-    private String winRaidRewardFormula;
+    private String startCostFormula;
+    private String winRewardFormula;
     private boolean increasingRewards;
     private double minimumWinLossRatioForWeaknessFactorReduction;
     private String increasedWeaknessFactorFormula;
@@ -36,8 +36,8 @@ public final class RaidEconomicsConfigState extends ClansConfigState implements 
 
     @Override
     public void readFrom(StorageReadBuffer buffer) {
-        startRaidCostFormula = buffer.readString("startRaidCostFormula", defaultConfig.getStartRaidCostFormula());
-        winRaidRewardFormula = buffer.readString("winRaidRewardFormula", defaultConfig.getWinRaidRewardFormula());
+        startCostFormula = buffer.readString("startCostFormula", defaultConfig.getStartCostFormula());
+        winRewardFormula = buffer.readString("winRewardFormula", defaultConfig.getWinRewardFormula());
         increasingRewards = buffer.readBool("increasingRewards", defaultConfig.isIncreasingRewards());
         minimumWinLossRatioForWeaknessFactorReduction = buffer.readDouble("minimumWinLossRatioForWeaknessFactorReduction", defaultConfig.getMinimumWinLossRatioForWeaknessFactorReduction());
         increasedWeaknessFactorFormula = buffer.readString("increasedWeaknessFactorFormula", defaultConfig.getIncreasedWeaknessFactorFormula());
@@ -46,8 +46,8 @@ public final class RaidEconomicsConfigState extends ClansConfigState implements 
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeString("startRaidCostFormula", startRaidCostFormula);
-        buffer.writeString("winRaidRewardFormula", winRaidRewardFormula);
+        buffer.writeString("startCostFormula", startCostFormula);
+        buffer.writeString("winRewardFormula", winRewardFormula);
         buffer.writeBool("increasingRewards", increasingRewards);
         buffer.writeDouble("minimumWinLossRatioForWeaknessFactorReduction", minimumWinLossRatioForWeaknessFactorReduction);
         buffer.writeString("increasedWeaknessFactorFormula", increasedWeaknessFactorFormula);
@@ -55,21 +55,21 @@ public final class RaidEconomicsConfigState extends ClansConfigState implements 
     }
 
     @Override
-    public String getStartRaidCostFormula() {
-        return startRaidCostFormula;
+    public String getStartCostFormula() {
+        return startCostFormula;
     }
 
-    public void setStartRaidCostFormula(String startRaidCostFormula) {
-        this.startRaidCostFormula = startRaidCostFormula;
+    public void setStartCostFormula(String startCostFormula) {
+        this.startCostFormula = startCostFormula;
     }
 
     @Override
-    public String getWinRaidRewardFormula() {
-        return winRaidRewardFormula;
+    public String getWinRewardFormula() {
+        return winRewardFormula;
     }
 
-    public void setWinRaidRewardFormula(String winRaidRewardFormula) {
-        this.winRaidRewardFormula = winRaidRewardFormula;
+    public void setWinRewardFormula(String winRewardFormula) {
+        this.winRewardFormula = winRewardFormula;
     }
 
     @Override

@@ -2,9 +2,9 @@ package dev.the_fireplace.clans.api.config.injectables;
 
 public interface RaidEconomicsConfig
 {
-    String getStartRaidCostFormula();
+    String getStartCostFormula();
 
-    String getWinRaidRewardFormula();
+    String getWinRewardFormula();
 
     boolean isIncreasingRewards();
 
