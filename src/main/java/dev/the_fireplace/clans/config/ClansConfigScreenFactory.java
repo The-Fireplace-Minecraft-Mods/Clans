@@ -252,7 +252,7 @@ public final class ClansConfigScreenFactory
     }
 
     private void addPerClanCategoryEntries() {
-        this.configScreenBuilder.addIntField(
+        OptionBuilder<Integer> homeTeleportWarmupTime = this.configScreenBuilder.addIntField(
             PER_CLAN_TRANSLATION_BASE + "homeTeleportWarmupTime",
             perClanState.getHomeTeleportWarmupTime(),
             perClanDefaults.getHomeTeleportWarmupTime(),
@@ -263,7 +263,7 @@ public final class ClansConfigScreenFactory
             perClanState.getHomeTeleportCooldownTime(),
             perClanDefaults.getHomeTeleportCooldownTime(),
             perClanState::setHomeTeleportCooldownTime
-        ).setMinimum(0).setDescriptionRowCount((byte) 2);
+        ).setMinimum(0).setDescriptionRowCount((byte) 2).addDependency(homeTeleportWarmupTime, warmupTime -> warmupTime >= 0);
         this.addFormulaField(
             PER_CLAN_TRANSLATION_BASE + "maxClaimCountFormula",
             perClanState.getMaxClaimCountFormula(),
@@ -354,7 +354,36 @@ public final class ClansConfigScreenFactory
     }
 
     private void addPerClanProtectionCategoryEntries() {
-
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_PROTECTION_TRANSLATION_BASE + "forceConnectedClaims",
+            perClanProtectionState.isForceConnectedClaims(),
+            perClanProtectionDefaults.isForceConnectedClaims(),
+            perClanProtectionState::setForceConnectedClaims
+        );
+        OptionBuilder<Boolean> enableBorderlands = this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_PROTECTION_TRANSLATION_BASE + "enableBorderlands",
+            perClanProtectionState.isEnableBorderlands(),
+            perClanProtectionDefaults.isEnableBorderlands(),
+            perClanProtectionState::setEnableBorderlands
+        ).setDescriptionRowCount((byte) 3);
+        OptionBuilder<Boolean> preventMobsOnClaims = this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_PROTECTION_TRANSLATION_BASE + "preventMobsOnClaims",
+            perClanProtectionState.isPreventMobsOnClaims(),
+            perClanProtectionDefaults.isPreventMobsOnClaims(),
+            perClanProtectionState::setPreventMobsOnClaims
+        );
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_PROTECTION_TRANSLATION_BASE + "preventMobsOnBorderlands",
+            perClanProtectionState.isPreventMobsOnBorderlands(),
+            perClanProtectionDefaults.isPreventMobsOnBorderlands(),
+            perClanProtectionState::setPreventMobsOnBorderlands
+        ).addDependency(enableBorderlands).addDependency(preventMobsOnClaims);
+        this.configScreenBuilder.addBoolToggle(
+            PER_CLAN_PROTECTION_TRANSLATION_BASE + "allowTntChainingOnClaims",
+            perClanProtectionState.isAllowTntChainingOnClaims(),
+            perClanProtectionDefaults.isAllowTntChainingOnClaims(),
+            perClanProtectionState::setAllowTntChainingOnClaims
+        );
     }
 
     private void addRaidCategoryEntries() {

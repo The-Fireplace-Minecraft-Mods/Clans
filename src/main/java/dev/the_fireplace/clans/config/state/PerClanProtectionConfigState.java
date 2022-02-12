@@ -56,9 +56,17 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
         return forceConnectedClaims;
     }
 
+    public void setForceConnectedClaims(boolean forceConnectedClaims) {
+        this.forceConnectedClaims = forceConnectedClaims;
+    }
+
     @Override
     public boolean isEnableBorderlands() {
         return enableBorderlands;
+    }
+
+    public void setEnableBorderlands(boolean enableBorderlands) {
+        this.enableBorderlands = enableBorderlands;
     }
 
     @Override
@@ -66,13 +74,25 @@ public final class PerClanProtectionConfigState extends ClansConfigState impleme
         return preventMobsOnClaims;
     }
 
+    public void setPreventMobsOnClaims(boolean preventMobsOnClaims) {
+        this.preventMobsOnClaims = preventMobsOnClaims;
+    }
+
     @Override
     public boolean isPreventMobsOnBorderlands() {
         return preventMobsOnBorderlands;
     }
 
+    public void setPreventMobsOnBorderlands(boolean preventMobsOnBorderlands) {
+        this.preventMobsOnBorderlands = preventMobsOnBorderlands;
+    }
+
     @Override
     public boolean isAllowTntChainingOnClaims() {
         return allowTntChainingOnClaims;
+    }
+
+    public void setAllowTntChainingOnClaims(boolean allowTntChainingOnClaims) {
+        this.allowTntChainingOnClaims = allowTntChainingOnClaims;
     }
 }
