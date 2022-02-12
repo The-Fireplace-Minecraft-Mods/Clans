@@ -1,0 +1,14 @@
+{
+  "allowItemsByDefault": true,
+  "allowedItemOverrides": [
+  ],
+  "deniedItemOverrides": [
+    "minecraft:bedrock",
+    "minecraft:barrier"
+  ],
+  "allowEnchantmentsByDefault": true,
+  "allowedEnchantmentOverrides": [
+  ],
+  "deniedEnchantmentOverrides": [
+  ]
+}
