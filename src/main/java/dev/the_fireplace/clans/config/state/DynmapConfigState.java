@@ -40,9 +40,9 @@ public final class DynmapConfigState extends ClansConfigState implements DynmapC
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeInt("borderWeight", defaultConfig.getBorderWeight());
-        buffer.writeDouble("borderOpacity", defaultConfig.getBorderOpacity());
-        buffer.writeDouble("fillOpacity", defaultConfig.getFillOpacity());
+        buffer.writeInt("borderWeight", borderWeight);
+        buffer.writeDouble("borderOpacity", borderOpacity);
+        buffer.writeDouble("fillOpacity", fillOpacity);
     }
 
     @Override

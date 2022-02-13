@@ -39,6 +39,7 @@ public final class ClansConfigScreenFactory
     private static final String RAID_TRANSLATION_BASE = TRANSLATION_BASE + "raid.";
     private static final String RAID_ECONOMICS_TRANSLATION_BASE = TRANSLATION_BASE + "raidEconomics.";
     private static final String WORLD_PROTECTION_TRANSLATION_BASE = TRANSLATION_BASE + "worldProtection.";
+    private static final String CHAT_CENSOR_TRANSLATION_BASE = TRANSLATION_BASE + "chatCensor.";
 
     private static final String ECONOMICS_TRANSLATION_KEY = TRANSLATION_BASE + "economics";
     private static final String FORMULA_SUFFIX_TRANSLATION_KEY = TRANSLATION_BASE + "formula";
@@ -64,6 +65,8 @@ public final class ClansConfigScreenFactory
     private final RaidEconomicsConfig raidEconomicsDefaults;
     private final WorldProtectionConfigState worldProtectionState;
     private final WorldProtectionConfig worldProtectionDefaults;
+    private final ChatCensorConfigState chatCensorState;
+    private final ChatCensorConfig chatCensorDefaults;
 
     private ConfigScreenBuilder configScreenBuilder;
 
@@ -88,7 +91,9 @@ public final class ClansConfigScreenFactory
         RaidEconomicsConfigState raidEconomicsState,
         @Named("default") RaidEconomicsConfig raidEconomicsDefaults,
         WorldProtectionConfigState worldProtectionState,
-        @Named("default") WorldProtectionConfig worldProtectionDefaults
+        @Named("default") WorldProtectionConfig worldProtectionDefaults,
+        ChatCensorConfigState chatCensorState,
+        @Named("default") ChatCensorConfig chatCensorDefaults
     ) {
         this.translator = translatorFactory.getTranslator(ClansConstants.MODID);
         this.configStateManager = configStateManager;
@@ -110,6 +115,8 @@ public final class ClansConfigScreenFactory
         this.raidEconomicsDefaults = raidEconomicsDefaults;
         this.worldProtectionState = worldProtectionState;
         this.worldProtectionDefaults = worldProtectionDefaults;
+        this.chatCensorState = chatCensorState;
+        this.chatCensorDefaults = chatCensorDefaults;
     }
 
     public Screen getConfigScreen(Screen parent) {
@@ -157,6 +164,11 @@ public final class ClansConfigScreenFactory
         if (hasDynmap()) {
             this.configScreenBuilder.startCategory(TRANSLATION_BASE + "dynmap");
             addDynmapCategoryEntries();
+        }
+        // Chat Censor tab
+        if (hasChatCensor()) {
+            this.configScreenBuilder.startCategory(TRANSLATION_BASE + "chatCensor");
+            addChatCensorCategoryEntries();
         }
 
         return this.configScreenBuilder.build();
@@ -548,6 +560,29 @@ public final class ClansConfigScreenFactory
         ).setDescriptionRowCount((byte) 3);
     }
 
+    private void addChatCensorCategoryEntries() {
+        this.configScreenBuilder.addBoolToggle(
+            CHAT_CENSOR_TRANSLATION_BASE + "censorClanNames",
+            chatCensorState.censorClanNames(),
+            chatCensorDefaults.censorClanNames(),
+            chatCensorState::setCensorClanNames
+        );
+        this.configScreenBuilder.addBoolToggle(
+            CHAT_CENSOR_TRANSLATION_BASE + "censorClanDescriptions",
+            chatCensorState.censorClanDescriptions(),
+            chatCensorDefaults.censorClanDescriptions(),
+            chatCensorState::setCensorClanDescriptions
+        );
+        if (hasDynmap()) {
+            this.configScreenBuilder.addBoolToggle(
+                CHAT_CENSOR_TRANSLATION_BASE + "censorDynmapDetails",
+                chatCensorState.censorDynmapDetails(),
+                chatCensorDefaults.censorDynmapDetails(),
+                chatCensorState::setCensorDynmapDetails
+            );
+        }
+    }
+
     private boolean hasEconomy() {
         return FabricLoader.getInstance().isModLoaded("grandeconomy");
     }
@@ -555,5 +590,9 @@ public final class ClansConfigScreenFactory
     private boolean hasDynmap() {
         //TODO is this the right ID?
         return FabricLoader.getInstance().isModLoaded("dynmap");
+    }
+
+    private boolean hasChatCensor() {
+        return FabricLoader.getInstance().isModLoaded("chatcensor");
     }
 }

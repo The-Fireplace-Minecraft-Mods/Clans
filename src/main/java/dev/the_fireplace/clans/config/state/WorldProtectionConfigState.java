@@ -41,9 +41,9 @@ public final class WorldProtectionConfigState extends ClansConfigState implement
 
     @Override
     public void writeTo(StorageWriteBuffer buffer) {
-        buffer.writeBool("protectWilderness", defaultConfig.shouldProtectWilderness());
-        buffer.writeShort("minimumWildernessY", defaultConfig.getMinimumWildernessY());
-        buffer.writeStringList("claimableDimensions", defaultConfig.getClaimableDimensions());
+        buffer.writeBool("protectWilderness", protectWilderness);
+        buffer.writeShort("minimumWildernessY", minimumWildernessY);
+        buffer.writeStringList("claimableDimensions", claimableDimensions);
     }
 
     @Override
