@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.the_fireplace.clans.domain.datastructure.EmptyConcurrentMap;
 import dev.the_fireplace.clans.io.FileToJsonObject;
 import dev.the_fireplace.clans.io.JsonWritable;
 import dev.the_fireplace.clans.legacy.ClansModContainer;

@@ -1,4 +1,4 @@
-package dev.the_fireplace.clans.legacy.data;
+package dev.the_fireplace.clans.domain.datastructure;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
