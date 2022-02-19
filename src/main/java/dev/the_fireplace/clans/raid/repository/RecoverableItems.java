@@ -2,7 +2,6 @@ package dev.the_fireplace.clans.raid.repository;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.clans.api.raid.injectables.RecoverableItemRepository;
-import dev.the_fireplace.lib.api.io.injectables.SaveBasedStorageWriter;
 import dev.the_fireplace.lib.api.lazyio.injectables.SaveDataStateManager;
 import net.minecraft.item.ItemStack;
 
@@ -17,38 +16,57 @@ import java.util.concurrent.ConcurrentHashMap;
 @Implementation
 public final class RecoverableItems implements RecoverableItemRepository
 {
-    private final Map<UUID, PlayerRecoverableItems> recoverableItemsByPlayer = new ConcurrentHashMap<>();
+    private final Map<UUID, ItemRecoveryData> recoverableItemsByPlayer = new ConcurrentHashMap<>();
     private final SaveDataStateManager saveDataStateManager;
-    private final SaveBasedStorageWriter saveBasedStorageWriter;
 
     @Inject
-    public RecoverableItems(SaveDataStateManager saveDataStateManager, SaveBasedStorageWriter saveBasedStorageWriter) {
+    public RecoverableItems(SaveDataStateManager saveDataStateManager) {
         this.saveDataStateManager = saveDataStateManager;
-        this.saveBasedStorageWriter = saveBasedStorageWriter;
     }
 
     @Override
     public boolean hasItems(UUID playerId) {
-        return false;
+        return getRecoveryData(playerId).hasItems();
     }
 
     @Override
     public Collection<ItemStack> getItems(UUID playerId) {
-        return null;
+        return getRecoveryData(playerId).getRecoverableItems();
     }
 
     @Override
     public void storeItem(UUID playerId, ItemStack itemStack) {
-
+        getRecoveryData(playerId).addStack(itemStack);
     }
 
     @Override
     public void removeItems(UUID playerId, Collection<ItemStack> itemStacks) {
-
+        ItemRecoveryData recoveryData = getRecoveryData(playerId);
+        for (ItemStack stack : itemStacks) {
+            recoveryData.removeStack(stack);
+        }
     }
 
-    private class PlayerRecoverableItems
-    {
+    private ItemRecoveryData getRecoveryData(UUID playerId) {
+        if (recoverableItemsByPlayer.containsKey(playerId)) {
+            return recoverableItemsByPlayer.get(playerId);
+        }
 
+        return initializeRecoveryData(playerId);
+    }
+
+    private ItemRecoveryData initializeRecoveryData(UUID playerId) {
+        ItemRecoveryData recoverableItemData = new ItemRecoveryData(playerId);
+        saveDataStateManager.initializeWithAutosave(recoverableItemData, (short) 5);
+        recoverableItemsByPlayer.put(playerId, recoverableItemData);
+        return recoverableItemData;
+    }
+
+    //TODO when player disconnects
+    public void tearDown(UUID playerId) {
+        ItemRecoveryData recoverableItemData = recoverableItemsByPlayer.remove(playerId);
+        if (recoverableItemData != null) {
+            this.saveDataStateManager.tearDown(recoverableItemData);
+        }
     }
 }
