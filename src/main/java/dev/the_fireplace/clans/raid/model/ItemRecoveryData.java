@@ -1,4 +1,4 @@
-package dev.the_fireplace.clans.raid.repository;
+package dev.the_fireplace.clans.raid.model;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.the_fireplace.clans.ClansConstants;
@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-final class ItemRecoveryData implements SaveData {
+public final class ItemRecoveryData implements SaveData
+{
     private final UUID playerId;
     private final List<ItemStack> recoverableItems = new ArrayList<>();
 
-    ItemRecoveryData(UUID playerId) {
+    public ItemRecoveryData(UUID playerId) {
         this.playerId = playerId;
     }
 
@@ -58,7 +59,7 @@ final class ItemRecoveryData implements SaveData {
         List<String> serializedStacks = buffer.readStringList("recoverableStacks", new ArrayList<>());
         for (String serializedStack : serializedStacks) {
             try {
-                recoverableItems.add(ItemStack.fromNbt(StringNbtReader.parse(serializedStack)));//TODO
+                recoverableItems.add(ItemStack.fromNbt(StringNbtReader.parse(serializedStack)));
             } catch (CommandSyntaxException e) {
                 ClansConstants.LOGGER.error("Unable to parse recoverable itemstack! " + serializedStack, e);
             }

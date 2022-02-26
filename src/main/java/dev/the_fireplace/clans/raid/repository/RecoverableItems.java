@@ -2,6 +2,7 @@ package dev.the_fireplace.clans.raid.repository;
 
 import dev.the_fireplace.annotateddi.api.di.Implementation;
 import dev.the_fireplace.clans.api.raid.injectables.RecoverableItemRepository;
+import dev.the_fireplace.clans.raid.model.ItemRecoveryData;
 import dev.the_fireplace.lib.api.lazyio.injectables.SaveDataStateManager;
 import net.minecraft.item.ItemStack;
 
