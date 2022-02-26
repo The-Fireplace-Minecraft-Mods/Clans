@@ -57,8 +57,7 @@ public final class RecoverableItems implements RecoverableItemRepository
     }
 
     private ItemRecoveryData initializeRecoveryData(UUID playerId) {
-        ItemRecoveryData recoverableItemData = new ItemRecoveryData(playerId);
-        saveDataStateManager.initializeWithAutosave(recoverableItemData, (short) 5);
+        ItemRecoveryData recoverableItemData = new ItemRecoveryData(saveDataStateManager, playerId);
         recoverableItemsByPlayer.put(playerId, recoverableItemData);
         return recoverableItemData;
     }

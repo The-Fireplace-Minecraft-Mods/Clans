@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.the_fireplace.clans.ClansConstants;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageWriteBuffer;
+import dev.the_fireplace.lib.api.lazyio.injectables.SaveDataStateManager;
 import dev.the_fireplace.lib.api.lazyio.interfaces.SaveData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -15,11 +16,14 @@ import java.util.UUID;
 
 public final class ItemRecoveryData implements SaveData
 {
+    private final SaveDataStateManager saveDataStateManager;
     private final UUID playerId;
     private final List<ItemStack> recoverableItems = new ArrayList<>();
 
-    public ItemRecoveryData(UUID playerId) {
+    public ItemRecoveryData(SaveDataStateManager saveDataStateManager, UUID playerId) {
+        this.saveDataStateManager = saveDataStateManager;
         this.playerId = playerId;
+        this.saveDataStateManager.initializeWithAutosave(this, (short) 5);
     }
 
     public List<ItemStack> getRecoverableItems() {
@@ -32,26 +36,33 @@ public final class ItemRecoveryData implements SaveData
 
     public void addStack(ItemStack stack) {
         this.recoverableItems.add(stack);
+        this.saveDataStateManager.markChanged(this);
     }
 
     public void removeStack(ItemStack removeStack) {
+        boolean completedRemoval = false;
         removeStack = removeStack.copy();
         for (ItemStack recoverableStack : recoverableItems) {
             if (ItemStack.canCombine(removeStack, recoverableStack)) {
                 if (recoverableStack.getCount() > removeStack.getCount()) {
                     recoverableStack.decrement(removeStack.getCount());
-                    return;
+                    completedRemoval = true;
+                    break;
                 } else if (recoverableStack.getCount() < removeStack.getCount()) {
                     removeStack.decrement(recoverableStack.getCount());
                     recoverableStack.setCount(0);
                     recoverableItems.remove(recoverableStack);
                 } else {
                     recoverableItems.remove(recoverableStack);
-                    return;
+                    completedRemoval = true;
+                    break;
                 }
             }
         }
-        ClansConstants.LOGGER.warn("Didn't remove enough items from recoverable item repo! Remaining: {}", removeStack.getCount());
+        this.saveDataStateManager.markChanged(this);
+        if (!completedRemoval) {
+            ClansConstants.LOGGER.warn("Didn't remove enough items from recoverable item repo! Remaining: {}", removeStack.getCount());
+        }
     }
 
     @Override
