@@ -15,6 +15,7 @@ import java.util.Map;
 
 public final class DimensionRecoveryData implements SaveData
 {
+    private final SaveDataStateManager saveDataStateManager;
     private final Identifier dimensionId;
     private final ChunkedPositionMap<String> blocksToAdd;
     private final ChunkedPositionMap<String> blocksToRemove;
@@ -24,18 +25,67 @@ public final class DimensionRecoveryData implements SaveData
         ChunkedPositionMapFactory chunkedPositionMapFactory,
         Identifier dimensionId
     ) {
+        this.saveDataStateManager = saveDataStateManager;
         this.dimensionId = dimensionId;
         this.blocksToAdd = chunkedPositionMapFactory.create(ChunkedPositionMapFactory.WORLD_CHUNK_SECTION_WIDTH);
         this.blocksToRemove = chunkedPositionMapFactory.create(ChunkedPositionMapFactory.WORLD_CHUNK_SECTION_WIDTH);
-        saveDataStateManager.initializeWithAutosave(this, (short) 2);
+        this.saveDataStateManager.initializeWithAutosave(this, (short) 2);
+    }
+
+    public boolean hasChunkRecoveryData(int chunkX, int chunkZ) {
+        return !blocksToAdd.getChunkValues(chunkX, chunkZ).isEmpty() || !blocksToRemove.getChunkValues(chunkX, chunkZ).isEmpty();
+    }
+
+    public Map<Vec3i, String> popChunkBlocksToAdd(int chunkX, int chunkZ) {
+        Map<Vec3i, String> blocksToAdd = this.blocksToAdd.popChunkValues(chunkX, chunkZ);
+        if (!blocksToAdd.isEmpty()) {
+            markChanged();
+        }
+        return blocksToAdd;
+    }
+
+    public Map<Vec3i, String> popChunkBlocksToRemove(int chunkX, int chunkZ) {
+        Map<Vec3i, String> blocksToRemove = this.blocksToRemove.popChunkValues(chunkX, chunkZ);
+        if (!blocksToRemove.isEmpty()) {
+            markChanged();
+        }
+        return blocksToRemove;
     }
 
     public void setBlockToAdd(Vec3i position, String block) {
-        blocksToAdd.put(position, block);
+        String previousValue = blocksToAdd.put(position, block);
+        markChanged();
+        if (previousValue != null) {
+            ClansConstants.LOGGER.warn("Block to add at " + position.toShortString() + " overwrites previous value " + previousValue);
+        }
+    }
+
+    public boolean hasBlockToAdd(Vec3i position, String blockId) {
+        return blockId.equals(blocksToAdd.get(position));
+    }
+
+    public void clearBlockToAdd(Vec3i position) {
+        if (blocksToAdd.remove(position) != null) {
+            markChanged();
+        }
     }
 
     public void setBlockToRemove(Vec3i position, String block) {
-        blocksToRemove.put(position, block);
+        String previousValue = blocksToRemove.put(position, block);
+        markChanged();
+        if (previousValue != null) {
+            ClansConstants.LOGGER.warn("Block to remove at " + position.toShortString() + " overwrites previous value " + previousValue);
+        }
+    }
+
+    public boolean hasBlockToRemove(Vec3i position) {
+        return blocksToRemove.containsKey(position);
+    }
+
+    public void clearBlockToRemove(Vec3i position) {
+        if (blocksToRemove.remove(position) != null) {
+            markChanged();
+        }
     }
 
     @Override
@@ -97,5 +147,9 @@ public final class DimensionRecoveryData implements SaveData
     @Override
     public String getId() {
         return dimensionId.toUnderscoreSeparatedString();
+    }
+
+    private void markChanged() {
+        this.saveDataStateManager.markChanged(this);
     }
 }

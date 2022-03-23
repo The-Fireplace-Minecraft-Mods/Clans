@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3i;
 
 import java.util.List;
 
-public interface ChunkRestorationRepository
+public interface ChunkRestorationTracker
 {
     void trackAddedBlock(Identifier dimensionId, Vec3i position, String blockId);
 

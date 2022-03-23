@@ -5,6 +5,7 @@ import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +14,14 @@ public abstract class ChunkedPositionMap<T> implements Map<Vec3i, T>
 {
     public Map<Vec3i, T> getChunkValues(int chunkX, int chunkZ) {
         return Maps.newHashMap(getChunkMap(chunkX, chunkZ));
+    }
+
+    public Map<Vec3i, T> popChunkValues(int chunkX, int chunkZ) {
+        Map<Vec3i, T> chunkMap = getChunkMap(chunkX, chunkZ);
+        HashMap<Vec3i, T> chunkMapClone = Maps.newHashMap(chunkMap);
+        chunkMap.clear();
+
+        return chunkMapClone;
     }
 
     protected abstract Map<Vec3i, T> getOrCreateChunkMap(Vec3i blockPosition);

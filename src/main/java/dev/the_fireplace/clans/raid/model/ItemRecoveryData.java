@@ -1,5 +1,6 @@
 package dev.the_fireplace.clans.raid.model;
 
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.the_fireplace.clans.ClansConstants;
 import dev.the_fireplace.lib.api.io.interfaces.access.StorageReadBuffer;
@@ -27,7 +28,7 @@ public final class ItemRecoveryData implements SaveData
     }
 
     public List<ItemStack> getRecoverableItems() {
-        return recoverableItems;
+        return Lists.newArrayList(recoverableItems);
     }
 
     public boolean hasItems() {
@@ -36,7 +37,7 @@ public final class ItemRecoveryData implements SaveData
 
     public void addStack(ItemStack stack) {
         this.recoverableItems.add(stack);
-        this.saveDataStateManager.markChanged(this);
+        markChanged();
     }
 
     public void removeStack(ItemStack removeStack) {
@@ -59,7 +60,7 @@ public final class ItemRecoveryData implements SaveData
                 }
             }
         }
-        this.saveDataStateManager.markChanged(this);
+        markChanged();
         if (!completedRemoval) {
             ClansConstants.LOGGER.warn("Didn't remove enough items from recoverable item repo! Remaining: {}", removeStack.getCount());
         }
@@ -99,5 +100,9 @@ public final class ItemRecoveryData implements SaveData
     @Override
     public String getId() {
         return playerId.toString();
+    }
+
+    private void markChanged() {
+        this.saveDataStateManager.markChanged(this);
     }
 }
