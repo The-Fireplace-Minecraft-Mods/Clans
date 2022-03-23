@@ -39,6 +39,11 @@ public final class ChunkRestorationTrackerImpl implements ChunkRestorationTracke
     }
 
     @Override
+    public void trackReplacedBlock(Identifier dimensionId, Vec3i position, String oldBlockId, String newBlockId) {
+        getBlockMover(dimensionId).trackReplacedBlock(position, oldBlockId, newBlockId);
+    }
+
+    @Override
     public boolean hasRestorationData(Identifier dimensionId, int chunkX, int chunkZ) {
         return getRecoveryData(dimensionId).hasChunkRecoveryData(chunkX, chunkZ);
     }

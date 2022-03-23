@@ -14,6 +14,8 @@ public interface ChunkRestorationTracker
 
     void trackShiftedBlock(Identifier dimensionId, Vec3i oldPosition, Vec3i newPosition, String blockId);
 
+    void trackReplacedBlock(Identifier dimensionId, Vec3i position, String oldBlockId, String newBlockId);
+
     boolean hasRestorationData(Identifier dimensionId, int chunkX, int chunkZ);
 
     List<RestorationStep> popRestorationData(Identifier dimensionId, int chunkX, int chunkZ);
