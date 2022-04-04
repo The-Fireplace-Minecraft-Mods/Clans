@@ -1,17 +1,8 @@
 package dev.the_fireplace.clans.legacy.model;
 
-import com.google.common.collect.Maps;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.the_fireplace.clans.legacy.ClansModContainer;
 import dev.the_fireplace.clans.legacy.api.ClaimAccessor;
-import dev.the_fireplace.clans.legacy.data.ClaimData;
 import net.minecraft.world.chunk.Chunk;
-
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A ChunkPosition with data attached. Note that because of the way these are stored and loaded, the attached data is wiped when a chunk is abandoned or changes owners. This is intentional.
@@ -20,11 +11,6 @@ import java.util.Map;
 public class ChunkPositionWithData extends ChunkPosition
 {
     private boolean isBorderland;
-    private Map<String, Object> addonData = Maps.newHashMap();
-
-    public Map<String, Object> getAddonData() {
-        return addonData;
-    }
 
     public ChunkPositionWithData(int x, int z, int d) {
         super(x, z, d);
@@ -40,28 +26,6 @@ public class ChunkPositionWithData extends ChunkPosition
 
     public ChunkPositionWithData offset(int x, int z) {
         return new ChunkPositionWithData(getPosX() + x, getPosZ() + z, getDim());
-    }
-
-    /**
-     * Sets addon data for this chunk
-     *
-     * @param key   The key you are giving this data. It should be unique
-     * @param value The data itself. This should be a primitive, string, a list or map containg only lists/maps/primitives/strings, or a JsonElement. If not, your data may not save/load properly. All lists will be loaded as ArrayLists. All maps will be loaded as HashMaps.
-     */
-    public void setCustomData(String key, Object value) {
-        if (!value.getClass().isPrimitive() && !value.getClass().isAssignableFrom(BigDecimal.class) && !value.getClass().isAssignableFrom(List.class) && !value.getClass().isAssignableFrom(Map.class) && !value.getClass().isAssignableFrom(JsonElement.class)) {
-            ClansModContainer.getMinecraftHelper().getLogger().warn("Custom data may not be properly saved and loaded, as it is not assignable from any supported json deserialization. Key: {}, Value: {}", key, value);
-        }
-        addonData.put(key, value);
-        ClaimData.ClaimStoredData dat = ClaimData.INSTANCE.getChunkClaimData(this);
-        if (dat != null) {
-            dat.markChanged();
-        }
-    }
-
-    @Nullable
-    public Object getCustomData(String key) {
-        return addonData.get(key);
     }
 
     /**
@@ -132,7 +96,6 @@ public class ChunkPositionWithData extends ChunkPosition
         ChunkPositionWithData data = ClaimAccessor.getInstance().getChunkPositionData(this);
         if (data != null) {
             this.isBorderland = data.isBorderland;
-            this.addonData = data.addonData;
         }
         return this;
     }
