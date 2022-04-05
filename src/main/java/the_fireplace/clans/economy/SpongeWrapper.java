@@ -40,7 +40,7 @@ class SpongeWrapper implements ExternalEconomy
         if (hasAccount(uuid)) {
             return getAccount(uuid).deposit(getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansModContainer.MODID)).getResult().equals(ResultType.SUCCESS);
         }
-        return false;
+        return !isPresent();
     }
 
     @Override
@@ -48,7 +48,7 @@ class SpongeWrapper implements ExternalEconomy
         if (hasAccount(uuid)) {
             return getAccount(uuid).withdraw(getDefaultCurrency(), BigDecimal.valueOf(amount), Cause.of(EventContext.empty(), ClansModContainer.MODID)).getResult().equals(ResultType.SUCCESS);
         }
-        return false;
+        return !isPresent();
     }
 
     private boolean hasAccount(UUID uuid) {

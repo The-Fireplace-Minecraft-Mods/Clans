@@ -1,6 +1,4 @@
 Changes:
-Added an option to work around a crash displaying very large claimed areas on Dynmap
 
 Fixes/Internal Changes:
-Fixed dimension settings being ignored for radius claim
-Fixed existing borderlands not clearing when turning the option off.
+Fixed Sponge economy issues when SpongeForge is present without an economy
