@@ -224,31 +224,31 @@ commands.clan.autodecline.off=Non stai più rifiutando automaticamente tutti gli
 commands.clan.autodecline.off_clan=Non stai più rifiutando automaticamente gli inviti da %s.
 
 commands.clan.demote.usage=/clan demote <player>
-commands.clan.demote.description=Declassa un giocatore del tuo clan, Leader ad Amministratore o Amministratore a Membro.
+commands.clan.demote.description=Declassa un player del tuo clan, Leader ad Amministratore o Amministratore a Membro.
 commands.clan.demote.success=Hai retrocesso %s a %s in %s.
 commands.clan.demote.demoted=Sei stato retrocesso da %s a %s da %s.
-commands.clan.demote.error=Il giocatore %s non può essere retrocesso.
+commands.clan.demote.error=Il player %s non può essere retrocesso.
 
-commands.clan.invite.usage=/clan invite <send|revoke|list> <giocatore>|[pagina]
-commands.clan.invite.description=Invita un giocatore nel tuo clan, revoca un invito a un giocatore o elenca tutti i giocatori che il tuo clan ha invitato.
+commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[pagina]
+commands.clan.invite.description=Invita un player nel tuo clan, revoca un invito a un player o elenca tutti i players che il tuo clan ha invitato.
 commands.clan.invite.success=Hai invitato %s a unirsi a %s.
 commands.clan.invite.invited=Sei stato invitato a unirti a %1$s. Per unirti a %1$s, digita /clan accept. Per rifiutare, digitare /clan declina.
-commands.clan.invite.pending=Il giocatore %s è già stato invitato a unirsi a %s.
-commands.clan.invite.already_in_this=Il giocatore %s è già in %s.
-commands.clan.invite.already_in_any=Il giocatore %s è già in un clan.
-commands.clan.invite.blocking=Il giocatore %s non accetta inviti da %s.
-commands.clan.invite.blocking_all=Il giocatore %s non accetta gli inviti.
+commands.clan.invite.pending=Il player %s è già stato invitato a unirsi a %s.
+commands.clan.invite.already_in_this=Il player %s è già in %s.
+commands.clan.invite.already_in_any=Il player %s è già in un clan.
+commands.clan.invite.blocking=Il player %s non accetta inviti da %s.
+commands.clan.invite.blocking_all=Il player %s non accetta gli inviti.
 commands.clan.invite.revoked=Il clan %s ha revocato l'invito a farti entrare.
 commands.clan.invite.revoke_success=Hai revocato l'invito a %s per unirsi a %s.
 
-commands.clan.kick.usage=/clan kick <giocatore>
-commands.clan.kick.description=Escludi un giocatore dal tuo clan.
+commands.clan.kick.usage=/clan kick <player>
+commands.clan.kick.description=Escludi un player dal tuo clan.
 commands.clan.kick.leave=Per lasciare un clan, usa /clan leave.
 commands.clan.kick.authority=Non hai l'autorizzazione per espellere %s.
 commands.clan.kick.success=Hai espulso %s da %s.
 commands.clan.kick.kicked=Sei stato espulso da %s da %s.
 commands.clan.kick.kicked_other=%s è stato espulso da %s da %s.
-commands.clan.kick.fail=Il giocatore %s non può essere espulso da %s. Se %1$s è l'unico leader di %2$s, un altro leader dovrebbe essere promosso a leader prima di tentare di espellere %1$s.
+commands.clan.kick.fail=Il player %s non può essere espulso da %s. Se %1$s è l'unico leader di %2$s, un altro leader dovrebbe essere promosso a leader prima di tentare di espellere %1$s.
 
 commands.clan.leave.usage=/clan leave
 commands.clan.leave.description=Lascia il tuo clan.
@@ -258,12 +258,12 @@ commands.clan.leave.success=Hai lasciato %s.
 commands.clan.leave.left=%s ha lasciato %s.
 commands.clan.leave.error=Errore interno: non sei riuscito a essere rimosso da %s. Proprietari di server, segnalalo.
 
-commands.clan.promote.usage=/clan promote <giocatore>
-commands.clan.promote.description=Promuovi un giocatore nel tuo clan. Da membro ad amministratore o da amministratore a leader.
+commands.clan.promote.usage=/clan promote <player>
+commands.clan.promote.description=Promuovi un player nel tuo clan. Da membro ad amministratore o da amministratore a leader.
 commands.clan.promote.success=Hai promosso %s a %s in %s.
 commands.clan.promote.notify=%s è stato promosso a %s in %s da %s.
 commands.clan.promote.promoted=Sei stato promosso da %s a %s da %s.
-commands.clan.promote.error=Il giocatore %s non può essere promosso.
+commands.clan.promote.error=Il player %s non può essere promosso.
 
 commands.clan.home.usage=/clan home
 commands.clan.home.description=Teletrasportati alla home del tuo clan.
@@ -294,16 +294,16 @@ commands.clan.trapped.fail=No, non sei intrappolato nei claim di qualcun altro.
 commands.clan.permissions.usage=/clan permissions [pagina]
 commands.clan.permissions.description=Guarda come sono attualmente impostati i permessi del tuo clan.
 commands.clan.permissions.format=%s: %s
-commands.clan.permissions.override=Sostituzione giocatore: %s: %s
+commands.clan.permissions.override=Sostituzione player: %s: %s
 
-commands.clan.set.usage=/clan set <permesso> [giocatore] <valore>
-commands.clan.set.description=Imposta i valori per i permessi del tuo clan. Con un giocatore, il valore è vero o falso. Altrimenti, stai impostando il grado che ha accesso e le tue opzioni sono MEMBRO, AMMINISTRATORE, LEADER o QUALSIASI. Nota che ogni grado include gradi più alti e QUALSIASI consente ai giocatori che non fanno parte del clan. Per vedere i tuoi permessi attuali, usa i permessi /clan.
+commands.clan.set.usage=/clan set <permesso> [player] <valore>
+commands.clan.set.description=Imposta i valori per i permessi del tuo clan. Con un player, il valore è vero o falso. Altrimenti, stai impostando il grado che ha accesso e le tue opzioni sono MEMBRO, AMMINISTRATORE, LEADER o QUALSIASI. Nota che ogni grado include gradi più alti e QUALSIASI consente ai players che non fanno parte del clan. Per vedere i tuoi permessi attuali, usa i permessi /clan.
 commands.clan.set.invalid_perm=Autorizzazione non valida: %s
 commands.clan.set.invalid_rank=Classificazione non valida: %s
 commands.clan.set.success=Impostazione di autorizzazioni riuscita!
 
 commands.clan.lock.usage=/clan lock [private|clan|open]
-commands.clan.lock.description=Blocca il blocco che stai guardando. Modalità: privato (predefinito): privato al giocatore che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai giocatori che non fanno parte del clan
+commands.clan.lock.description=Blocca il blocco che stai guardando. Modalità: privato (predefinito): privato al player che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai players che non fanno parte del clan
 commands.clan.lock.locked=Questo blocco è già bloccato da %s.
 commands.clan.lock.failed=Non puoi bloccarlo. Se ritieni che si tratti di un errore, contatta l'amministratore del tuo server.
 commands.clan.lock.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per bloccarlo.
@@ -312,30 +312,30 @@ commands.clan.lock.success=Hai bloccato con successo il blocco che stai guardand
 commands.clan.lock.permission=%s non ti permette di usare il tipo di blocco %s.
 
 commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
-commands.clan.lockchunk.description=Blocca tutti i blocchi bloccabili sbloccati nel blocco. Modalità: privato (predefinito): privato al giocatore che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai giocatori che non fanno parte del clan
+commands.clan.lockchunk.description=Blocca tutti i blocchi bloccabili sbloccati nel blocco. Modalità: privato (predefinito): privato al player che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai players che non fanno parte del clan
 commands.clan.lockchunk.success=Hai bloccato con successo tutti i blocchi bloccabili nel blocco.
 
 commands.clan.unlock.usage=/clan unlock
-commands.clan.unlock.description=Sblocca il blocco che stai guardando. Solo il giocatore che l'ha bloccato o i giocatori con il permesso del clan "lockadmin" possono farlo.
+commands.clan.unlock.description=Sblocca il blocco che stai guardando. Solo il player che l'ha bloccato o i players con il permesso del clan "lockadmin" possono farlo.
 commands.clan.unlock.locked=Non puoi sbloccare questo blocco perché è bloccato da %s.
 commands.clan.unlock.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per sbloccarlo.
 commands.clan.unlock.success=Hai sbloccato con successo il blocco che stai guardando.
 
-commands.clan.unlockchunk.usage=/clan unlockchunk [giocatore|tutto]
-commands.clan.unlockchunk.description=Sblocca tutti i tuoi blocchi bloccati nel blocco. Solo i giocatori con l'autorizzazione del clan "lockadmin" possono utilizzare l'opzione giocatore|tutto, impostando un giocatore che cancella i blocchi dal giocatore specificato, dicendo che tutti cancella tutti i blocchi.
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|tutto]
+commands.clan.unlockchunk.description=Sblocca tutti i tuoi blocchi bloccati nel blocco. Solo i players con l'autorizzazione del clan "lockadmin" possono utilizzare l'opzione player|tutto, impostando un player che cancella i blocchi dal player specificato, dicendo che tutti cancella tutti i blocchi.
 commands.clan.unlockchunk.success=Hai sbloccato con successo tutti i blocchi bloccati nel blocco.
 commands.clan.unlockchunk.success_player=Hai sbloccato con successo tutti i blocchi bloccati di %s nel blocco.
 commands.clan.unlockchunk.success_all=Hai sbloccato con successo tutti i blocchi bloccati nel blocco.
-commands.clan.unlockchunk.failed=Non hai il permesso per sbloccare i blocchi di altri giocatori in questo clan.
+commands.clan.unlockchunk.failed=Non hai il permesso per sbloccare i blocchi di altri players in questo clan.
 
-commands.clan.grantaccess.usage=/clan grantaccess <giocatore>
-commands.clan.grantaccess.description=Concedi a un giocatore l'accesso al blocco bloccato che stai guardando. Puoi concedere l'accesso ai blocchi solo se sei il giocatore che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Concedi a un player l'accesso al blocco bloccato che stai guardando. Puoi concedere l'accesso ai blocchi solo se sei il player che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
 commands.clan.grantaccess.locked=Non puoi concedere l'accesso a questo blocco perché è bloccato da %s.
 commands.clan.grantaccess.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per concedervi l'accesso.
 commands.clan.grantaccess.success=Hai concesso con successo l'accesso a %s al blocco che stai guardando.
 
-commands.clan.denyaccess.usage=/clan denyaccess <giocatore>
-commands.clan.denyaccess.description=Nega a un giocatore l'accesso al blocco bloccato che stai guardando. Puoi negare l'accesso ai blocchi solo se sei il giocatore che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Nega a un player l'accesso al blocco bloccato che stai guardando. Puoi negare l'accesso ai blocchi solo se sei il player che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
 commands.clan.denyaccess.locked=Non puoi negare l'accesso a questo blocco perché è bloccato da %s.
 commands.clan.denyaccess.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per negare l'accesso ad esso.
 commands.clan.denyaccess.success=Hai negato con successo l'accesso a %s al blocco che stai guardando.
@@ -379,8 +379,8 @@ commands.opclan.buildadmin.off=Non sei più in modalità Amministratore build.
 commands.opclan.claim.usage=/opclan claim <clan>
 commands.opclan.claim.description=Claima un chunk 16x16 per il clan bersaglio, indipendentemente da chi lo possiede attualmente.
 
-commands.opclan.setrank.usage=/opclan setrank <clan> <membro|admin|leader> <giocatore>
-commands.opclan.setrank.description=Rendi un giocatore un grado in un clan.
+commands.opclan.setrank.usage=/opclan setrank <clan> <membro|admin|leader> <player>
+commands.opclan.setrank.description=Rendi un player un grado in un clan.
 commands.opclan.setrank.success=Hai fatto %sa %s in %s.
 commands.opclan.setrank.set=Sei stato nominato %s in %s da %s.
 
@@ -427,8 +427,8 @@ commands.raid.collect.success=Raccolta riuscita.
 commands.raid.collect.empty=Non hai niente da raccogliere.
 commands.raid.collect.raiding=Non puoi raccogliere oggetti durante il raid.
 
-commands.raid.invite.usage=/raid invite <giocatore>
-commands.raid.invite.description=Invita un giocatore a unirsi al gruppo di raid in cui ti trovi.
+commands.raid.invite.usage=/raid invite <player>
+commands.raid.invite.description=Invita un player a unirsi al gruppo di raid in cui ti trovi.
 commands.raid.invite.invited=Sei stato invitato a un raid contro %1$s. Per partecipare, digita /raid join %1$s.
 commands.raid.invite.success=Hai invitato con successo %s al gruppo dell'incursione.
 commands.raid.invite.inclan=Non puoi invitare qualcuno a fare irruzione in un clan di cui fa parte.
@@ -492,7 +492,7 @@ clans.territory.clanterritory=Territorio di %s
 clans.territory.borderland=I claim di confine di %s
 
 clans.raid.glowing.defender=Il raid contro %s ha %s minuti rimanenti. Brillerai fino alla fine del raid. Ci sono %s predoni ancora vivi.
-clans.raid.glowing.attacker=Il raid contro %s ha %s minuti rimanenti. I %s giocatori in difesa rimanenti si illumineranno fino al termine del raid.
+clans.raid.glowing.attacker=Il raid contro %s ha %s minuti rimanenti. I %s players in difesa rimanenti si illumineranno fino al termine del raid.
 
 clans.raid.rmtimer.rm_attacker=Sei stato rimosso dal tuo raid perché hai trascorso troppo tempo fuori dal territorio di %s.
 clans.raid.rmtimer.rm_defender=Ora sei considerato ucciso ai fini della determinazione della vittoria del raid perché hai trascorso troppo tempo fuori dal territorio di %s.
