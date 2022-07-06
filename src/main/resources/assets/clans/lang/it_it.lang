@@ -1,0 +1,515 @@
+clan.default_description=Questo è un nuovo clan.
+
+clans.error.no_clan_econ_acct=Errore interno: account economia del clan non trovato. Per favore segnalalo al creatore del plugin.
+clans.error.no_player_econ_acct=Errore interno: account economia del player non trovato. Per favore segnalalo al creatore del plugin.
+clans.error.nullserver=Errore interno: il server era nullo! Per favore segnalalo al creatore del plugin.
+
+commands.clan.usage=/clan [clan] <comando> [parametri]
+
+commands.opclan.usage=/opclan <comando> [parametri]
+
+commands.raid.usage=/raid <comando> [parametri]
+commands.raid.disabled=Il raid è disabilitato su questo server.
+
+commands.clan.help.usage=/clan help [pagina|sottocomando]
+commands.clan.help.description=Il comando di aiuto del clan.
+
+commands.opclan.help.usage=/opclan help [pagina|sottocomando]
+commands.opclan.help.description=Il comando di aiuto di opclan.
+
+commands.raid.help.usage=/raid help [pagina|sottocomando]
+commands.raid.help.description=Il comando di aiuto del raid.
+
+commands.clan.common.player=Devi essere un player per farlo.
+commands.clan.common.not_in_clan=Non sei in %s.
+commands.clan.common.notfound=Il clan %s non è stato trovato.
+commands.clan.common.playernotfound=Il player %s non è stato trovato.
+commands.clan.common.insufficient_funds=Non hai abbastanza fondi per farlo.
+commands.clan.common.insufficient_clan_funds=%s non ha fondi sufficienti per farlo.
+commands.clan.common.not_leader=Non sei un leader di %s.
+commands.clan.common.not_admin=Non sei un admin di %s.
+commands.clan.common.player_not_in_clan=Il player %s non è in %s.
+commands.clan.common.not_on_server=Non puoi usare %s su %s perché è un clan di server.
+commands.clan.common.not_boolean=%s non può essere identificato come booleano.
+commands.clan.common.not_locked=Il blocco che stai guardando non è bloccato.
+commands.clan.common.invalid_lock_type=Il tipo di blocco '%s' non è valido.
+commands.clan.common.not_claimed_by=Il chunk in cui ti trovi non è claimato da %s.
+
+commands.clan.common.help_format=%s: %s
+commands.clan.common.invalid_help=Parametro della guida non valido: %s. Inserisci un numero di pagina o un sottocomando.
+
+commands.clan.banner.usage=/clan banner
+commands.clan.banner.description=Trasforma lo stendardo che stai tenendo nello stendardo del clan.
+commands.clan.banner.clan_nobanner=%s non ha un banner.
+commands.clan.banner.player_nobanner=Non stai tenendo uno stendardo.
+
+commands.clan.clanchat.usage=/clan clanchat
+commands.clan.clanchat.description=Cambia se stai parlando nella chat del clan.
+
+commands.clan.details.usage=/clan details [clan]
+commands.clan.details.description=Visualizza i dettagli su un clan.
+commands.clan.details.noclan=Non sei in un clan. Usa %s per ottenere i dettagli di un altro clan.
+commands.clan.details.console=Devi specificare un clan quando visualizzi i dettagli dalla console. Usa %s per ottenere i dettagli di un clan.
+commands.clan.details.notfound=Il clan di destinazione %s non è stato trovato.
+commands.clan.details.name=Nome del clan: %s
+commands.clan.details.desc=Descrizione del clan: %s
+commands.clan.details.claimcount=Numero di claim: %s
+commands.clan.details.membercount=Numero di membri: %s
+commands.clan.details.members=Membri:
+commands.clan.details.leader=Leader %s (WLR %s, ultimo on %s)
+commands.clan.details.admin=Admin %s (WLR %s, ultimo on %s)
+commands.clan.details.member=%s (WLR %s, ultimo on %s)
+commands.clan.details.no_members=%s non ha membri.
+commands.clan.details.upkeep=Il mantenimento del clan (spese) è di %s ogni %s giorni.
+commands.clan.details.rent=L'affitto (reddito) del clan è di %s ogni %s giorni.
+commands.clan.details.rent_individual=L'affitto individuale è di %s ogni %s giorni.
+commands.clan.details.trend=Il trend finanziario approssimativo è di %s ogni giorno.
+commands.clan.details.increase_rent=Potresti voler aumentare l'affitto a %s e/o trovare un modo per ridurre il mantenimento.
+commands.clan.details.reduce_upkeep=Puoi trovare un modo per ridurre il mantenimento.
+commands.clan.details.breaking_even=%s non sta guadagnando o perdendo denaro.
+commands.clan.details.rentdue=L'affitto scade tra %s ore.
+commands.clan.details.upkeepdue=Il mantenimento scade tra %s ore.
+commands.clan.details.server=Questo clan è un clan del server.
+commands.clan.details.multiplier=Fattore di debolezza del raid: %s
+
+commands.clan.disband.usage=/clan disband
+commands.clan.disband.description=Sciogli il tuo clan.
+commands.clan.disband.success=Hai sciolto %s.
+commands.clan.disband.disbanded=%s è stato sciolto da %s.
+commands.clan.disband.server=Non puoi sciogliere %1$s usando /clan disband perché è un clan di server. Usa /opclan disband %1$s per scioglierlo.
+commands.clan.disband.insufficient_funds=%s non ha fondi sufficienti per sciogliersi. Requisito attuale: %s.
+
+commands.clan.form.usage=/clan form <nome>
+commands.clan.form.description=Forma un nuovo clan.
+commands.clan.form.success=Clan formato.
+commands.clan.form.insufficient_funds=Non hai fondi sufficienti per formare un clan. Costa %s
+commands.clan.form.already_in_clan=Sei già in un clan.
+
+commands.clan.list.usage=/clan list [ordina|inviti] [pagina]
+commands.clan.list.description=Visualizza un elenco di clan. Usa 'inviti' per vedere quali clan ti hanno invitato a unirti, o ordina per [money|land|members|rewardmult], qualsiasi altro tipo è in ordine alfabetico.
+commands.clan.list.clans=Clan su questo server:
+commands.clan.list.listitem=(%s) %s - %s
+commands.clan.list.listitem_alphabetical=%s - %s
+commands.clan.list.noclans=Non ci sono clan su questo server.
+commands.clan.list.no_invites=Non hai nessun invito in sospeso.
+
+commands.clan.playerinfo.usage=/clan playerinfo [player]
+commands.clan.playerinfo.description=Visualizza in quali clan si trova un player.
+commands.clan.playerinfo.console=Devi specificare un player quando visualizzi i dettagli dalla console. Usa %s per ottenere i dettagli di un player.
+commands.clan.playerinfo.notfound=Il player bersaglio %s non è stato trovato.
+commands.clan.playerinfo.name=Nome player: %s
+commands.clan.playerinfo.clans=Clan:
+commands.clan.playerinfo.leader=Leader di %s
+commands.clan.playerinfo.admin=Admin di %s
+commands.clan.playerinfo.member=Membro di %s
+commands.clan.playerinfo.noclans=%s non fa parte di nessun clan.
+commands.clan.playerinfo.wlr=Rapporto vittorie-sconfitte: %s
+commands.clan.playerinfo.last_seen=Ultimo on: %s
+
+commands.clan.setbanner.usage=/clan setbanner [banner]
+commands.clan.setbanner.description=Imposta lo stendardo del tuo clan su quello che hai in mano, o digita il modulo NBT dello stendardo.
+commands.clan.setbanner.invalid=Il banner del clan che hai specificato non è valido.
+commands.clan.setbanner.taken=Il banner del clan che hai specificato è già preso.
+commands.clan.setbanner.success=Banner del clan per %s impostato.
+commands.clan.setbanner.notheld=Non stai tenendo un banner.
+
+commands.clan.setcolor.usage=/clan setcolor <colore>
+commands.clan.setcolor.description=Imposta il colore del clan per la chat del clan, fancymap, Dynmap, ecc. Sono supportati i nomi dei colori di base, i colori esadecimali (0x######) e gli Int RGB.
+commands.clan.setcolor.success=Set di colori di %s
+commands.clan.setcolor.invalid=Il colore %s non è valido.
+
+commands.clan.setdefault.usage=/clan setdefault <clan>
+commands.clan.setdefault.description=Imposta il clan da usare quando non digiti /clan [nomeclan] <sottocomando> [args...].
+commands.clan.setdefault.success=Il tuo clan predefinito è stato impostato su %s.
+
+commands.clan.setdescription.usage=/clan setdescription <nuova descrizione>
+commands.clan.setdescription.description=Imposta la descrizione del tuo clan.
+commands.clan.setdescription.success=Descrizione del clan per %s settata.
+
+commands.clan.setname.usage=/clan setname <nuovo nome>
+commands.clan.setname.description=Imposta il nome del tuo clan.
+commands.clan.setname.toolong=Il nome del clan %s è troppo lungo. La lunghezza massima del nome di questo server è di %s caratteri.
+commands.clan.setname.taken=Il nome del clan %s è già preso.
+commands.clan.setname.success=Hai rinominato %s in %s.
+
+commands.clan.addfunds.usage=/clan addfunds <importo>
+commands.clan.addfunds.description=Aggiunge fondi dal tuo conto economico al conto economico del clan.
+commands.clan.addfunds.format=Importo formattato in modo errato.
+commands.clan.addfunds.success=Hai aggiunto %s al saldo di %s.
+commands.clan.addfunds.added=%s ha aggiunto %s al saldo di %s.
+
+commands.clan.balance.usage=/clan balance
+commands.clan.balance.description=Visualizza il saldo attuale del clan.
+commands.clan.balance.balance=Saldo di %s: %s
+
+commands.clan.setrent.usage=/clan setrent <importo>
+commands.clan.setrent.description=Imposta l'importo dell'affitto da addebitare ai membri del tuo clan.
+commands.clan.setrent.success=L'affitto del clan per %s è impostato su %s.
+commands.clan.setrent.overmax=Impossibile impostare l'affitto al di sopra del massimo corrente di %s (%s).
+commands.clan.setrent.negative=Impossibile impostare l'affitto negativo.
+commands.clan.setrent.disabled=/clan setrent è disabilitato su questo server.
+
+commands.clan.takefunds.usage=/clan takefunds <importo>
+commands.clan.takefunds.description=Preleva fondi dal conto economico del clan.
+commands.clan.takefunds.disabled=/clan takefunds è disabilitato su questo server.
+commands.clan.takefunds.success=Hai preso %s dal saldo di %s.
+commands.clan.takefunds.taken=%s ha preso %s dal saldo di %s.
+
+commands.clan.abandonclaim.usage=/clan abandonclaim
+commands.clan.abandonclaim.description=Abbandona il chunk in cui ti trovi attualmente.
+commands.clan.abandonclaim.success=Claim abbandonato da %s.
+commands.clan.abandonclaim.wrongclan=Questo chunk non appartiene a %s.
+commands.clan.abandonclaim.notclaimed=Questo chunk non è claimato.
+commands.clan.abandonclaim.disconnected=Non puoi abbandonare questo chunk perché creerebbe un claim disconnesso.
+
+commands.clan.abandonall.usage=/clanabbandonoall
+commands.clan.abandonall.description=Abbandona tutti i chunks claimati dal tuo clan.
+commands.clan.abandonall.success=Tutti i chunks sono stati abbandonati con successo per %s.
+
+commands.clan.claim.usage=/clan claim [raggio]
+commands.clan.claim.description=Claima il chunk in cui ti trovi attualmente.
+commands.clan.claim.taken=%s ha già claimato questo chunk.
+commands.clan.claim.taken_other=Un altro clan (%s) ha già claimato questo chunk.
+commands.clan.claim.taken_other_r=Un altro clan (%s) ha già claimato i chunks entro il raggio specificato.
+commands.clan.claim.proximity_error=Non puoi claimare questo chunk perché è troppo vicino alla home di un altro clan. Assicurati di trovarti ad almeno %s isolati di distanza dalle case di altri clan prima di riprovare. Prova a usare /clan fancymap per determinare dove si trovano gli altri clan.
+commands.clan.claim.proximity_error_r=Non puoi claimare questo chunk perché sarebbe troppo vicino alla home di un altro clan. Assicurati che tutti i claim siano almeno a %s isolati dalle case degli altri clan prima di riprovare. Prova a usare /clan fancymap per determinare dove si trovano gli altri clan.
+commands.clan.claim.proximity_warning=Si raccomanda di non claimare questo chunk perché si trova entro %s isolati dalla home di un altro clan. Digita di nuovo /clan claim per claimare comunque questo chunk. Prova a usare /clan fancymap per determinare dove si trovano gli altri clan.
+commands.clan.claim.proximity_warning_r=Si raccomanda di non claimare questo chunk perché si troverebbe entro %s isolati dalla home di un altro clan. Digita di nuovo /clan claim per claimare comunque questo chunk. Prova a usare /clan fancymap per determinare dove si trovano gli altri clan.
+commands.clan.claim.maxed=%s è già pari o superiore al numero massimo di attestazioni corrente di %s.
+commands.clan.claim.maxed_r=claimare %s blocchi porterebbe %s al di sopra del numero massimo di richieste di %s. Attualmente ha claimato %s blocchi.
+commands.clan.claim.disconnected=Non puoi claimare questo chunk perché non è vicino a un altro dei claim di %s.
+commands.clan.claim.disconnected_r=Non puoi claimare questo chunk perché non si collegherebbe a un'altra delle rivendicazioni di %s.
+commands.clan.claim.success=Chunk claimato per %s.
+commands.clan.claim.insufficient_funds=Fondo insufficiente nell'account di %s per richiedere la parte. Costa %s.
+commands.clan.claim.insufficient_funds_r=Fondo insufficiente nell'account di %s per richiedere %s pezzi. Costa %s.
+commands.clan.claim.start_r=Iniziando a claimare tutto entro il raggio che hai richiesto, attendi...
+commands.clan.claim.check_r=Verificando se puoi claimare il raggio che hai richiesto, attendi...
+commands.clan.claim.dimension=Non puoi claimare i chunk in questa dimensione.
+
+commands.clan.autoabandon.usage=/clan autoabandon
+commands.clan.autoabandon.description=Abbandona automaticamente i claim mentre li inserisci.
+commands.clan.autoabandon.start=Ora stai abbandonando automaticamente i claim per %s.
+commands.clan.autoabandon.stop=Non stai più abbandonando automaticamente i claim per %s.
+
+commands.clan.autoclaim.usage=/clan autoclaim
+commands.clan.autoclaim.description=Claima automaticamente i chunks non appena ci entri.
+commands.clan.autoclaim.start=Ora stai claimando automaticamente i chunk per %s.
+commands.clan.autoclaim.stop=Non stai più claimando automaticamente i claim per %s.
+
+commands.clan.fancymap.usage=/clan fancymap
+commands.clan.fancymap.description=Visualizza una mappa dei claim di grandi dimensioni codificata a colori usando i colori del clan.
+
+commands.clan.map.usage=/clan map
+commands.clan.map.description=Visualizza una piccola mappa dei claim codificata a colori dai clan in cui ti trovi.
+
+commands.clan.seechunk.usage=/clan seechunk [on|off]
+commands.clan.seechunk.description=Guarda i bordi del chunk in cui ti trovi attualmente. Attivazione e disattivazione servono per alternare se ciò accade mentre cammini.
+
+commands.clan.accept.usage=/clan accept <clan>
+commands.clan.accept.description=Accetta un invito a unirti a un clan.
+commands.clan.accept.success=Ti sei unito a %s.
+commands.clan.accept.accepted=%s si è unito a %s.
+commands.clan.accept.not_invited=Non sei stato invitato a unirti a %s.
+
+commands.clan.decline.usage=/clan decline <clan> [blocco]
+commands.clan.decline.description=Rifiuta un invito a unirsi a un clan.
+commands.clan.decline.success=Hai rifiutato l'invito a unirti a %s.
+commands.clan.decline.declined=%s ha rifiutato un invito a unirsi a %s.
+
+commands.clan.autodecline.usage=/clan autodecline [clan]
+commands.clan.autodecline.description=Rifiuta automaticamente gli inviti da qualsiasi clan o clan da te specificato.
+commands.clan.autodecline.on=Ora stai rifiutando automaticamente tutti gli inviti.
+commands.clan.autodecline.on_clan=Ora stai rifiutando automaticamente gli inviti da %s.
+commands.clan.autodecline.off=Non stai più rifiutando automaticamente tutti gli inviti.
+commands.clan.autodecline.off_clan=Non stai più rifiutando automaticamente gli inviti da %s.
+
+commands.clan.demote.usage=/clan demote <player>
+commands.clan.demote.description=Declassa un player del tuo clan, Leader ad Amministratore o Amministratore a Membro.
+commands.clan.demote.success=Hai retrocesso %s a %s in %s.
+commands.clan.demote.demoted=Sei stato retrocesso da %s a %s da %s.
+commands.clan.demote.error=Il player %s non può essere retrocesso.
+
+commands.clan.invite.usage=/clan invite <send|revoke|list> <player>|[pagina]
+commands.clan.invite.description=Invita un player nel tuo clan, revoca un invito a un player o elenca tutti i players che il tuo clan ha invitato.
+commands.clan.invite.success=Hai invitato %s a unirsi a %s.
+commands.clan.invite.invited=Sei stato invitato a unirti a %1$s. Per unirti a %1$s, digita /clan accept. Per rifiutare, digitare /clan declina.
+commands.clan.invite.pending=Il player %s è già stato invitato a unirsi a %s.
+commands.clan.invite.already_in_this=Il player %s è già in %s.
+commands.clan.invite.already_in_any=Il player %s è già in un clan.
+commands.clan.invite.blocking=Il player %s non accetta inviti da %s.
+commands.clan.invite.blocking_all=Il player %s non accetta gli inviti.
+commands.clan.invite.revoked=Il clan %s ha revocato l'invito a farti entrare.
+commands.clan.invite.revoke_success=Hai revocato l'invito a %s per unirsi a %s.
+
+commands.clan.kick.usage=/clan kick <player>
+commands.clan.kick.description=Escludi un player dal tuo clan.
+commands.clan.kick.leave=Per lasciare un clan, usa /clan leave.
+commands.clan.kick.authority=Non hai l'autorizzazione per espellere %s.
+commands.clan.kick.success=Hai espulso %s da %s.
+commands.clan.kick.kicked=Sei stato espulso da %s da %s.
+commands.clan.kick.kicked_other=%s è stato espulso da %s da %s.
+commands.clan.kick.fail=Il player %s non può essere espulso da %s. Se %1$s è l'unico leader di %2$s, un altro leader dovrebbe essere promosso a leader prima di tentare di espellere %1$s.
+
+commands.clan.leave.usage=/clan leave
+commands.clan.leave.description=Lascia il tuo clan.
+commands.clan.leave.disband=Sei l'ultimo membro di %s. Per scioglierlo, usa /clan disband.
+commands.clan.leave.promote=Non puoi lasciare %s senza un leader. Promuovi qualcun altro a essere un leader prima di partire.
+commands.clan.leave.success=Hai lasciato %s.
+commands.clan.leave.left=%s ha lasciato %s.
+commands.clan.leave.error=Errore interno: non sei riuscito a essere rimosso da %s. Proprietari di server, segnalalo.
+
+commands.clan.promote.usage=/clan promote <player>
+commands.clan.promote.description=Promuovi un player nel tuo clan. Da membro ad amministratore o da amministratore a leader.
+commands.clan.promote.success=Hai promosso %s a %s in %s.
+commands.clan.promote.notify=%s è stato promosso a %s in %s da %s.
+commands.clan.promote.promoted=Sei stato promosso da %s a %s da %s.
+commands.clan.promote.error=Il player %s non può essere promosso.
+
+commands.clan.home.usage=/clan home
+commands.clan.home.description=Teletrasportati alla home del tuo clan.
+commands.clan.home.nohome=%s non ha una home. Un capo clan dovrebbe usare /clan sethome per impostarne uno.
+commands.clan.home.warmup=Preparandoti a teletrasportarti alla home del clan %s. Rimani fermo ed evita danni per %s secondi.
+commands.clan.home.cancelled=Il teletrasporto di home del tuo clan è stato cancellato.
+commands.clan.home.cooldown=Non puoi usare questo comando fino a quando il tempo di recupero non si esaurisce in %s secondi.
+commands.clan.home.blocked=Errore durante il teletrasporto alla home del clan. Assicurati che non sia bloccato.
+commands.clan.home.return_dim=Errore durante il teletrasporto nella dimensione in cui ti trovavi.
+commands.clan.home.dim_error=Errore durante il teletrasporto nella dimensione home del clan.
+commands.clan.home.disabled=/la home del clan è disabilitata su questo server.
+
+commands.clan.sethome.usage=/clan sethome
+commands.clan.sethome.description=Imposta la home del tuo clan.
+commands.clan.sethome.proximity=Sei troppo vicino alla home di un altro clan. Devi essere almeno a %s isolati di distanza dalle case di altri clan per impostare la home del tuo clan. Usa /clan fancymap per vedere dove si trovano i clan vicini.
+commands.clan.sethome.success=Insieme principale di %s.
+commands.clan.sethome.territory=La home del clan può essere impostata solo nel territorio del clan.
+
+commands.clan.unsethome.usage=/clan unsethome
+commands.clan.unsethome.description=Rimuovi la home del tuo clan.
+commands.clan.unsethome.success=%s home rimossa.
+commands.clan.unsethome.failed=%s non ha una home.
+
+commands.clan.trapped.usage=/clan trapped
+commands.clan.trapped.description=Teletrasporta fuori dal territorio di un altro clan se sei bloccato.
+commands.clan.trapped.fail=No, non sei intrappolato nei claim di qualcun altro.
+
+commands.clan.permissions.usage=/clan permissions [pagina]
+commands.clan.permissions.description=Guarda come sono attualmente impostati i permessi del tuo clan.
+commands.clan.permissions.format=%s: %s
+commands.clan.permissions.override=Sostituzione player: %s: %s
+
+commands.clan.set.usage=/clan set <permesso> [player] <valore>
+commands.clan.set.description=Imposta i valori per i permessi del tuo clan. Con un player, il valore è vero o falso. Altrimenti, stai impostando il grado che ha accesso e le tue opzioni sono MEMBRO, AMMINISTRATORE, LEADER o QUALSIASI. Nota che ogni grado include gradi più alti e QUALSIASI consente ai players che non fanno parte del clan. Per vedere i tuoi permessi attuali, usa i permessi /clan.
+commands.clan.set.invalid_perm=Autorizzazione non valida: %s
+commands.clan.set.invalid_rank=Classificazione non valida: %s
+commands.clan.set.success=Impostazione di autorizzazioni riuscita!
+
+commands.clan.lock.usage=/clan lock [private|clan|open]
+commands.clan.lock.description=Blocca il blocco che stai guardando. Modalità: privato (predefinito): privato al player che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai players che non fanno parte del clan
+commands.clan.lock.locked=Questo blocco è già bloccato da %s.
+commands.clan.lock.failed=Non puoi bloccarlo. Se ritieni che si tratti di un errore, contatta l'amministratore del tuo server.
+commands.clan.lock.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per bloccarlo.
+commands.clan.lock.wrong_owner=Il blocco che stai guardando non è claimato da %s.
+commands.clan.lock.success=Hai bloccato con successo il blocco che stai guardando.
+commands.clan.lock.permission=%s non ti permette di usare il tipo di blocco %s.
+
+commands.clan.lockchunk.usage=/clan lockchunk [private|clan|open]
+commands.clan.lockchunk.description=Blocca tutti i blocchi bloccabili sbloccati nel blocco. Modalità: privato (predefinito): privato al player che lo ha bloccato; clan: accessibile a tutto il clan; aperto: accessibile a chiunque, anche ai players che non fanno parte del clan
+commands.clan.lockchunk.success=Hai bloccato con successo tutti i blocchi bloccabili nel blocco.
+
+commands.clan.unlock.usage=/clan unlock
+commands.clan.unlock.description=Sblocca il blocco che stai guardando. Solo il player che l'ha bloccato o i players con il permesso del clan "lockadmin" possono farlo.
+commands.clan.unlock.locked=Non puoi sbloccare questo blocco perché è bloccato da %s.
+commands.clan.unlock.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per sbloccarlo.
+commands.clan.unlock.success=Hai sbloccato con successo il blocco che stai guardando.
+
+commands.clan.unlockchunk.usage=/clan unlockchunk [player|tutto]
+commands.clan.unlockchunk.description=Sblocca tutti i tuoi blocchi bloccati nel blocco. Solo i players con l'autorizzazione del clan "lockadmin" possono utilizzare l'opzione player|tutto, impostando un player che cancella i blocchi dal player specificato, dicendo che tutti cancella tutti i blocchi.
+commands.clan.unlockchunk.success=Hai sbloccato con successo tutti i blocchi bloccati nel blocco.
+commands.clan.unlockchunk.success_player=Hai sbloccato con successo tutti i blocchi bloccati di %s nel blocco.
+commands.clan.unlockchunk.success_all=Hai sbloccato con successo tutti i blocchi bloccati nel blocco.
+commands.clan.unlockchunk.failed=Non hai il permesso per sbloccare i blocchi di altri players in questo clan.
+
+commands.clan.grantaccess.usage=/clan grantaccess <player>
+commands.clan.grantaccess.description=Concedi a un player l'accesso al blocco bloccato che stai guardando. Puoi concedere l'accesso ai blocchi solo se sei il player che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
+commands.clan.grantaccess.locked=Non puoi concedere l'accesso a questo blocco perché è bloccato da %s.
+commands.clan.grantaccess.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per concedervi l'accesso.
+commands.clan.grantaccess.success=Hai concesso con successo l'accesso a %s al blocco che stai guardando.
+
+commands.clan.denyaccess.usage=/clan denyaccess <player>
+commands.clan.denyaccess.description=Nega a un player l'accesso al blocco bloccato che stai guardando. Puoi negare l'accesso ai blocchi solo se sei il player che li ha bloccati o hai l'autorizzazione del clan "lockadmin".
+commands.clan.denyaccess.locked=Non puoi negare l'accesso a questo blocco perché è bloccato da %s.
+commands.clan.denyaccess.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per negare l'accesso ad esso.
+commands.clan.denyaccess.success=Hai negato con successo l'accesso a %s al blocco che stai guardando.
+
+commands.clan.lockinfo.usage=/clan lockinfo
+commands.clan.lockinfo.description=Visualizza le informazioni sul blocco sul blocco che stai guardando.
+commands.clan.lockinfo.locked_by=Proprietario: %s
+commands.clan.lockinfo.type=Tipo: %s
+commands.clan.lockinfo.overrides=Sostituzioni:
+commands.clan.lockinfo.allowed=%s: consentito
+commands.clan.lockinfo.denied=%s: negato
+commands.clan.lockinfo.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per visualizzare le informazioni sul blocco.
+
+commands.clan.territorymessagemode.usage=/clan territorymessagemode <chat|action_bar|off> [showdescription: true|false]
+commands.clan.territorymessagemode.description=Imposta come verranno visualizzati i messaggi del territorio per te. Chat lo mostra nella chat, la barra delle azioni lo mostra nella barra delle azioni e off li disattiva. showdescription fa la differenza solo quando si usa la chat; le descrizioni non possono essere visualizzate nella barra delle azioni.
+commands.clan.territorymessagemode.success=Hai aggiornato con successo la tua modalità messaggio del territorio.
+
+commands.clan.undergroundmessages.usage=/clan undergroundmessages <on|off>
+commands.clan.undergroundmessages.description=Imposta se visualizzi messaggi quando ti muovi tra l'essere sopra terra e sotto terra per scopi di Wilderness.
+commands.clan.undergroundmessages.success=Hai aggiornato con successo la tua modalità di messaggi sotterranei.
+
+commands.opclan.abandonclaim.usage=/opclan abandonclaim
+commands.opclan.abandonclaim.description=Abbandona un reclamo, indipendentemente da chi lo possiede.
+
+commands.opclan.addfunds.usage=/opclan addfunds <clan> <importo>
+commands.opclan.addfunds.description=Aggiungi fondi al saldo di qualsiasi clan.
+
+commands.opclan.autoabandon.usage=/opclan autoabandon
+commands.opclan.autoabandon.description=Abbandona automaticamente le rivendicazioni mentre vai in giro, indipendentemente da chi le possiede.
+commands.opclan.autoabandon.start=Ora stai abbandonando automaticamente i claim per tutti.
+commands.opclan.autoabandon.stop=Non stai più abbandonando automaticamente i claim per tutti.
+
+commands.opclan.autoclaim.usage=/opclan autoclaim <clan>
+commands.opclan.autoclaim.description=Claima automaticamente i claim per un clan mentre cammini, indipendentemente da chi la possiede attualmente.
+
+commands.opclan.buildadmin.usage=/opclan buildadmin
+commands.opclan.buildadmin.description=Entra in modalità amministratore, che ti permette di costruire/distruggere/interagire/attaccare sul territorio di qualsiasi clan.
+commands.opclan.buildadmin.on=Ora sei in modalità Amministratore build.
+commands.opclan.buildadmin.off=Non sei più in modalità Amministratore build.
+
+commands.opclan.claim.usage=/opclan claim <clan>
+commands.opclan.claim.description=Claima un chunk 16x16 per il clan bersaglio, indipendentemente da chi lo possiede attualmente.
+
+commands.opclan.setrank.usage=/opclan setrank <clan> <membro|admin|leader> <player>
+commands.opclan.setrank.description=Rendi un player un grado in un clan.
+commands.opclan.setrank.success=Hai fatto %sa %s in %s.
+commands.opclan.setrank.set=Sei stato nominato %s in %s da %s.
+
+commands.opclan.disband.usage=/opclan sciogliere <clan>
+commands.opclan.disband.description=Sciogli qualsiasi clan.
+
+commands.opclan.kick.usage=/opclan kick <clan> <membro>
+commands.opclan.kick.description=Escludi un membro da qualsiasi clan.
+
+commands.opclan.setcolor.usage=/opclan setcolor <clan> <colore>
+commands.opclan.setcolor.description=Cambia il colore di qualsiasi clan.
+
+commands.opclan.setdescription.usage=/opclan setdescription <clan> <nuova descrizione>
+commands.opclan.setdescription.description=Imposta la descrizione di qualsiasi clan.
+
+commands.opclan.setname.usage=/opclan setname <clan> <nuovo nome>
+commands.opclan.setname.description=Imposta il nome di qualsiasi clan.
+
+commands.opclan.setshield.usage=/opclan setshield <clan> <durata>
+commands.opclan.setshield.description=Imposta la quantità di scudo per qualsiasi clan, in pochi minuti.
+commands.opclan.setshield.format=Durata dello scudo formattata in modo errato.
+commands.opclan.setshield.success=Scudo del clan per %s impostato su %s minuti.
+
+commands.opclan.setserver.usage=/opclan setserver <clan> <true|1|false|0>
+commands.opclan.setserver.description=Imposta se un clan è un clan server. I clan di server non possono essere razziati e non utilizzano funzioni economiche.
+commands.opclan.setserver.success_t=Hai creato %sa server clan.
+commands.opclan.setserver.success_f=Hai rimosso lo stato del server da %s.
+
+commands.opclan.setoption.usage=/opclan set <clan> <opzione> <valore>
+commands.opclan.setoption.description=Imposta varie opzioni per un clan. Le opzioni valide sono maxclaims, mobspawning, claimcost, mobdamage, upkeepexemption, dynmapvisible, server, pvp.
+commands.opclan.setoption.success=Hai impostato correttamente l'opzione %s per %s su %s.
+commands.opclan.setoption.failed=L'opzione %s non è stata trovata.
+
+commands.opclan.tp.usage=/opclan tp <clan>
+commands.opclan.tp.description=Teletrasporta alla home di un clan.
+
+commands.raid.common.notinparty=Non sei in un gruppo di raid.
+commands.raid.common.not_raiding=Non sei in un raid attivo.
+
+commands.raid.collect.usage=/raid collect
+commands.raid.collect.description=Raccogli i tuoi blocchi posizionati/oggetti proibiti durante un raid.
+commands.raid.collect.makespace=Hai finito lo spazio per la raccolta. Fai spazio nel tuo inventario e riprova.
+commands.raid.collect.success=Raccolta riuscita.
+commands.raid.collect.empty=Non hai niente da raccogliere.
+commands.raid.collect.raiding=Non puoi raccogliere oggetti durante il raid.
+
+commands.raid.invite.usage=/raid invite <player>
+commands.raid.invite.description=Invita un player a unirsi al gruppo di raid in cui ti trovi.
+commands.raid.invite.invited=Sei stato invitato a un raid contro %1$s. Per partecipare, digita /raid join %1$s.
+commands.raid.invite.success=Hai invitato con successo %s al gruppo dell'incursione.
+commands.raid.invite.inclan=Non puoi invitare qualcuno a fare irruzione in un clan di cui fa parte.
+commands.raid.invite.limit=Il tuo gruppo di razziatori non può contenere più persone. Ha %s predoni e il limite è attualmente %s.
+
+commands.raid.join.usage=/raid join <nome clan>
+commands.raid.join.description=Unisciti a un gruppo di raid contro il clan bersaglio. Uno si formerà se non esiste.
+commands.raid.join.created=Hai creato con successo un raid contro %s.
+commands.raid.join.create_fail=%s non ha abbastanza membri online per essere attaccato.
+commands.raid.join.shield=%s è attualmente protetto. Riprova tra %s ore.
+commands.raid.join.success=Ti sei unito con successo al gruppo di raid contro %s.
+commands.raid.join.limit=Il gruppo di raid contro %s non può contenere più persone. Ha %s predoni e il limite è attualmente %s.
+commands.raid.join.inclan=Non puoi razziare un clan in cui ti trovi.
+commands.raid.join.inparty=Sei già in un gruppo di raid e non puoi unirti a un altro se non esci da quello in cui ti trovi attualmente.
+commands.raid.join.unraidable=Un amministratore del server ha impedito a %s di subire un raid.
+
+commands.raid.leave.usage=/raid leave
+commands.raid.leave.description=Lascia il gruppo di raid in cui ti trovi.
+commands.raid.leave.success=Hai lasciato con successo il gruppo di raid contro %s.
+
+commands.raid.start.usage=/raid start
+commands.raid.start.description=Avvia il raid. Ti verrà addebitato il costo per farlo, se presente.
+commands.raid.start.success=Hai avviato con successo il raid contro %s.
+commands.raid.start.insufficient_funds=Non hai fondi sufficienti per iniziare il raid contro %s. Costa %s.
+commands.raid.start.raiding=Il raid è già stato avviato.
+commands.raid.start.error=Errore interno: un altro gruppo di raid sta facendo irruzione in questo clan in questo momento. Riprova tra %s ore. Proprietari di server, segnalalo.
+
+commands.raid.thru.usage=/raid thru
+commands.raid.thru.description=Passa attraverso i blocchi protetti
+commands.raid.thru.not_block=Non stai guardando un blocco o sei troppo lontano dal blocco per visualizzare le informazioni sul blocco.
+commands.raid.thru.wrong_pos_owner=Il blocco che stai guardando non è nel territorio di %s.
+commands.raid.thru.failed=Non c'è nessun posto dall'altra parte di questo per teletrasportarsi in sicurezza.
+
+clans.protection.break.claimed=Non puoi rompere blocchi nel territorio di un altro clan.
+clans.protection.break.borderland=Non puoi rompere blocchi così vicino al territorio di un altro clan.
+clans.protection.break.raid=Non puoi rompere questo blocco durante un raid. Attendi fino al completamento del raid e riprova.
+clans.protection.break.claimed_raid=Non puoi rompere questo blocco mentre sei nel territorio di un altro clan.
+clans.protection.break.wilderness=Non puoi rompere i blocchi in Wilderness.
+clans.protection.break.locked=Non puoi rompere questo blocco perché è bloccato da %s.
+
+clans.protection.place.territory=Non puoi piazzare blocchi nel territorio di un altro clan.
+clans.protection.place.borderland=Non puoi piazzare blocchi così vicino al territorio di un altro clan.
+clans.protection.place.wilderness=Non puoi piazzare blocchi in Wilderness.
+
+clans.protection.interact.territory=Non puoi interagire con i blocchi nel territorio di un altro clan.
+clans.protection.interact.borderland=Non puoi interagire con blocchi così vicini al territorio di un altro clan.
+clans.protection.interact.locked=Non puoi interagire con questo blocco perché è bloccato da %s.
+
+clans.rent.kicked=Sei stato espulso da %s a causa dell'impossibilità di pagare l'affitto.
+
+clans.upkeep.disbanded=%s è stato sciolto a causa dell'impossibilità di pagare i costi di mantenimento.
+
+clans.wilderness=Wilderness
+clans.underground=Sotterraneo
+
+clans.territory.entry=Stai inserendo %s.
+clans.territory.entrydesc=~%s
+clans.territory.unclaimed=Questa terra non viene claimata.
+clans.territory.protected=Questa terra non è claimata ed è protetta.
+clans.territory.clanterritory=Territorio di %s
+clans.territory.borderland=I claim di confine di %s
+
+clans.raid.glowing.defender=Il raid contro %s ha %s minuti rimanenti. Brillerai fino alla fine del raid. Ci sono %s predoni ancora vivi.
+clans.raid.glowing.attacker=Il raid contro %s ha %s minuti rimanenti. I %s players in difesa rimanenti si illumineranno fino al termine del raid.
+
+clans.raid.rmtimer.rm_attacker=Sei stato rimosso dal tuo raid perché hai trascorso troppo tempo fuori dal territorio di %s.
+clans.raid.rmtimer.rm_defender=Ora sei considerato ucciso ai fini della determinazione della vittoria del raid perché hai trascorso troppo tempo fuori dal territorio di %s.
+clans.raid.rmtimer.warn_attacker=Non sei nel territorio di %s. Se rimani fuori per più di %s secondi, verrai rimosso dal raid.
+clans.raid.rmtimer.warn_defender=Non sei nel territorio di %s. Se rimani fuori per più di %s secondi, sarai considerato ucciso quando determini la vittoria del raid.
+
+clans.raid.confiscated=Il seguente oggetto non è consentito durante i raid ed è stato confiscato: %s. Puoi recuperarlo quando il raid finisce con /raid collect.
+
+clans.raid.init.defender=Un gruppo di razziatori con %s membri si sta preparando a razziare %s. Il raid inizierà tra %s secondi.
+clans.raid.init.attacker=Il tuo gruppo di razziatori, con %s membri, si sta preparando a razziare %s. Il raid inizierà tra %s secondi.
+
+clans.raid.activate=Il raid contro %s è iniziato!
+clans.raid.end=Il raid contro %s è terminato!
+clans.raid.victory.raider=I predoni hanno vinto contro %s!
+clans.raid.victory.clan=%s ha vinto contro i predoni!
+
+clans.chat.prefix=<%s Chat>
+clans.chat.page.next=[Avanti]
+clans.chat.page.prev=[Precedente]
+clans.chat.page.num=Pagina: %s/%s
