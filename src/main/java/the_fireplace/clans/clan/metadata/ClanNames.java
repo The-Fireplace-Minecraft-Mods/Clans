@@ -40,6 +40,7 @@ public class ClanNames extends ClanData
     public static void delete(UUID clan) {
         ClanNames name = NAME_INSTANCES.remove(clan);
         if (name != null) {
+            uncacheName(name.getName());
             name.delete();
         }
     }
