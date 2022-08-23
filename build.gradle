@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 archivesBaseName = "Clans"
-version = "2.1.6+1.12.2"
+version = "2.1.8+1.12.2"
 group = "dev.the-fireplace"
 
 allprojects {
@@ -121,8 +121,6 @@ if (hasProperty('curseForgeApiKey')) {
             changelog = file('changelog.txt')
             releaseType = 'release'
             addGameVersion '1.12.2'
-            addGameVersion '1.12.1'
-            addGameVersion '1.12'
             addGameVersion 'Java 8'
             mainArtifact(new File(new File(buildDir, "libs"), "$archivesBaseName-${version}.jar")) {
                 displayName = jar.archiveName.replace(".jar", "")
