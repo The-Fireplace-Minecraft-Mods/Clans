@@ -55,6 +55,7 @@ public abstract class ClanSubCommand extends CommandBase
         }
 
         EnumRank playerRank = PlayerClans.getPlayerRank(Objects.requireNonNull(sender.getCommandSenderEntity()).getUniqueID(), selectedClan);
+
         switch (requiredRank) {
             case LEADER:
             case ADMIN:
@@ -99,6 +100,7 @@ public abstract class ClanSubCommand extends CommandBase
             throwWrongUsage(sender);
         }
         boolean hasClanName = !Objects.equals(args[0], ClanNames.NULL_CLAN_NAME);
+
         if (hasClanName) {
             UUID playerClan = ClanNames.getClanByName(args[0]);
             if (sender instanceof EntityPlayerMP) {
@@ -111,6 +113,9 @@ public abstract class ClanSubCommand extends CommandBase
             //noinspection ConstantConditions
             this.selectedClan = playerClan;
             this.selectedClanName = args[0];
+        } else {
+            this.selectedClan = null;
+            this.selectedClanName = null;
         }
         String[] args2;
         //If this is a clan command, remove clan name from the args, and if the command is greedy, remove the subcommand tag as well
