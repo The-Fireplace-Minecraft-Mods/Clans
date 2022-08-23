@@ -1,4 +1,5 @@
 Changes:
 
 Fixes/Internal Changes:
-Fixed Sponge economy issues when SpongeForge is present without an economy
+Fix 'Couldn't process command: clan balance' NullPointerException (onTheHoro on GitHub)
+Fix clan disband not clearing name cache (onTheHoro on GitHub)
