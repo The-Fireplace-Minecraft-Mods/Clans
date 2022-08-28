@@ -92,9 +92,13 @@ public class CommandDetails extends ClanSubCommand
 
     @SuppressWarnings("ConstantConditions")
     private void showDetails(MinecraftServer server, ICommandSender sender, UUID clan) throws CommandException {
+        long claimCount = ClanClaimCount.get(clan).getClaimCount();
+        if (claimCount > 1) {
+            claimCount--;
+        }
         sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.name", ClanNames.get(clan).getName()).setStyle(TextStyles.GREEN));
         sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.desc", ClanDescriptions.get(clan).getDescription()).setStyle(TextStyles.GREEN));
-        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", ClanClaimCount.get(clan).getClaimCount()).setStyle(TextStyles.GREEN));
+        sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.claimcount", claimCount).setStyle(TextStyles.GREEN));
         sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.membercount", ClanMembers.get(clan).getMemberCount()).setStyle(TextStyles.GREEN));
         if (ClansModContainer.getConfig().isIncreasingRewards() && !AdminControlledClanSettings.get(clan).isServerOwned()) {
             sender.sendMessage(TranslationUtil.getTranslation(sender, "commands.clan.details.multiplier", ClanWeaknessFactor.get(clan).getWeaknessFactor()).setStyle(TextStyles.GREEN));

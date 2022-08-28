@@ -42,6 +42,9 @@ public class ClanClaimCosts
     }
 
     public boolean payForClaim() {
+        if (ClanClaimCount.get(clan).getClaimCount() == 0) {
+            ClanClaimCount.get(clan).incrementCachedClaimCount();
+        }
         return Economy.deductAmount(getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()), clan);
     }
 }
