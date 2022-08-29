@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 archivesBaseName = "Clans"
-version = "2.1.8+1.12.2"
+version = "2.1.9+1.12.2"
 group = "dev.the-fireplace"
 
 allprojects {

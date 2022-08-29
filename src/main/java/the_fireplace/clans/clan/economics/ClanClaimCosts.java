@@ -21,27 +21,34 @@ public class ClanClaimCosts
     }
 
     /**
-     * Gets the cost of one claim when the clan has a certain number of claims
+     * Gets the cost of the given claim number (e.g. the first claim is claim number 1, the second is 2, etc.)
      */
-    public double getNextClaimCost(long currentClaimCount) {
+    public double getClaimCost(long claimNumber) {
         AdminControlledClanSettings clanSettings = AdminControlledClanSettings.get(clan);
         if (clanSettings.hasCustomClaimCost()) {
             return clanSettings.getCustomClaimCost();
         }
-        return shouldUseReducedClaimCost(currentClaimCount)
+
+        FormulaParser.Overrides overrides = new FormulaParser.Overrides().setClaimCount(claimNumber);
+
+        return shouldUseReducedClaimCost(claimNumber)
             ? ClansModContainer.getConfig().getReducedChunkClaimCost()
-            : FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), clan, 0);
+            : FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), clan, null, 0, overrides);
     }
 
-    private boolean shouldUseReducedClaimCost(long currentClaimCount) {
-        return currentClaimCount < ClansModContainer.getConfig().getReducedCostClaimCount();
+    private boolean shouldUseReducedClaimCost(long claimNumber) {
+        return claimNumber <= ClansModContainer.getConfig().getReducedCostClaimCount();
     }
 
-    public void refundClaim() {
-        Economy.addAmount(getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()), clan);
+    public void refundClaimBeforeOwnershipChange() {
+        long claimNumber = ClanClaimCount.get(clan).getClaimCount();
+        double claimCost = getClaimCost(claimNumber);
+        Economy.addAmount(claimCost, clan);
     }
 
-    public boolean payForClaim() {
-        return Economy.deductAmount(getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()), clan);
+    public boolean attemptPayForClaimBeforeClaiming() {
+        long claimNumber = ClanClaimCount.get(clan).getClaimCount() + 1;
+        double claimCost = getClaimCost(claimNumber);
+        return Economy.deductAmount(claimCost, clan);
     }
 }

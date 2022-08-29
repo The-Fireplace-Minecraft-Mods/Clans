@@ -11,14 +11,17 @@ import the_fireplace.clans.legacy.model.Raid;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public final class FormulaParser
-{
+public final class FormulaParser {
     public static double eval(String formula, UUID clan, double min) {
         return eval(formula, clan, RaidingParties.getActiveRaid(clan), min);
     }
 
     public static double eval(String formula, UUID clan, @Nullable Raid raid, double min) {
-        formula = getFilteredFormula(formula, clan, raid);
+        return eval(formula, clan, raid, min, new Overrides());
+    }
+
+    public static double eval(String formula, UUID clan, @Nullable Raid raid, double min, Overrides overrides) {
+        formula = getFilteredFormula(formula, clan, raid, overrides);
         try {
             return Math.max(min, Double.parseDouble(String.valueOf(eval(formula))));
         } catch (ClassCastException | NullPointerException | NumberFormatException e) {
@@ -32,14 +35,17 @@ public final class FormulaParser
      * Don't forget to update this link when updating the formula parser
      * https://gist.github.com/The-Fireplace/2b6e21b1892bc5eafc4c70ab49ed3505
      */
-    private static String getFilteredFormula(String formula, UUID clan, @Nullable Raid raid) {
+    private static String getFilteredFormula(String formula, UUID clan, @Nullable Raid raid, Overrides overrides) {
         //noinspection RegExpRedundantEscape
         formula = formula.replaceAll("[^cdmfpw\\.\\+\\-\\*\\/\\(\\)\\^0-9]", "");
         //Deal with multiplication that doesn't use a sign
         formula = formula.replaceAll("([0-9cdmfpw])([cdmfpw])|([cdmfpw])([0-9cdmfpw])", "\\1*\\2");
         //Deal with the old method of exponentiation
         formula = formula.replaceAll("\\*\\*", "\\^");
-        formula = formula.replaceAll("c", String.valueOf(ClanClaimCount.get(clan).getClaimCount()));
+        formula = formula.replaceAll("c", String.valueOf(overrides.hasClaimCount()
+            ? overrides.getClaimCount()
+            : ClanClaimCount.get(clan).getClaimCount()
+        ));
         formula = formula.replaceAll("m", String.valueOf(getWeaknessFactor(clan)));
         formula = formula.replaceAll("f", String.valueOf(Economy.getBalance(clan)));
         formula = formula.replaceAll("p", String.valueOf(ClanMembers.get(clan).getMemberCount()));
@@ -68,12 +74,28 @@ public final class FormulaParser
         return new MathParser(formula).parse();
     }
 
+    public static class Overrides {
+        private Long claimCount = null;
+
+        public Overrides setClaimCount(long claimCount) {
+            this.claimCount = claimCount;
+            return this;
+        }
+
+        private boolean hasClaimCount() {
+            return claimCount != null;
+        }
+
+        private long getClaimCount() {
+            return claimCount;
+        }
+    }
+
     /**
      * Formula parse code taken and modified from https://stackoverflow.com/a/26227947
      * Use this instead of javascript to avoid any problems with Minecraft's built in Java version not having a JavaScript engine.
      */
-    private static class MathParser
-    {
+    private static class MathParser {
         int pos = -1, ch;
         private final String formula;
 

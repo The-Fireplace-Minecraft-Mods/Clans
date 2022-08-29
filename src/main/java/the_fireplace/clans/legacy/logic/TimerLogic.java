@@ -11,10 +11,9 @@ import the_fireplace.clans.clan.ClanDisbander;
 import the_fireplace.clans.clan.ClanIdRegistry;
 import the_fireplace.clans.clan.ClanSaver;
 import the_fireplace.clans.clan.admin.AdminControlledClanSettings;
-import the_fireplace.clans.clan.economics.ClanClaimCosts;
+import the_fireplace.clans.clan.economics.ClanEconomicFunctions;
 import the_fireplace.clans.clan.economics.ClanRent;
 import the_fireplace.clans.clan.economics.ClanUpkeep;
-import the_fireplace.clans.clan.land.ClanClaimCount;
 import the_fireplace.clans.clan.membership.ClanMembers;
 import the_fireplace.clans.clan.membership.PlayerClans;
 import the_fireplace.clans.clan.metadata.ClanDescriptions;
@@ -84,7 +83,10 @@ public class TimerLogic
         if (ClansModContainer.getConfig().getClanUpkeepDays() > 0 && !AdminControlledClanSettings.get(clan).isUpkeepExempt() && System.currentTimeMillis() >= ClanUpkeep.get(clan).getNextUpkeepTimestamp()) {
             ClansModContainer.getMinecraftHelper().getLogger().debug("Charging upkeep for {}.", ClanNames.get(clan).getName());
             double upkeep = FormulaParser.eval(ClansModContainer.getConfig().getClanUpkeepCostFormula(), clan, 0);
-            if (ClansModContainer.getConfig().isDisbandNoUpkeep() && upkeep > Economy.getBalance(clan) && upkeep <= Economy.getBalance(clan) + ClanClaimCosts.get(clan).getNextClaimCost(ClanClaimCount.get(clan).getClaimCount()) * ClanClaimCount.get(clan).getClaimCount()) {
+            if (ClansModContainer.getConfig().isDisbandNoUpkeep()
+                && upkeep > Economy.getBalance(clan)
+                && upkeep <= ClanEconomicFunctions.get(clan).getLiquidValue()
+            ) {
                 while (upkeep > Economy.getBalance(clan)) {
                     ArrayList<ChunkPositionWithData> chunks = Lists.newArrayList(ClaimAccessor.getInstance().getClaimedChunks(clan));
                     if (chunks.isEmpty())//This _should_ always be false, but just in case...

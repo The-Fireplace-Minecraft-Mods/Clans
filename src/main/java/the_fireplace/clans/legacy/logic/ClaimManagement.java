@@ -84,7 +84,9 @@ public class ClaimManagement
     private static boolean unableToAffordClaims(EntityPlayerMP claimingPlayer, UUID claimingClan, int chunkCount, long previousClaimCount) {
         double cost;
         long reducedCostCount = ClansModContainer.getConfig().getReducedCostClaimCount() - previousClaimCount;
-        double customCost = AdminControlledClanSettings.get(claimingClan).hasCustomClaimCost() ? ClanClaimCosts.get(claimingClan).getNextClaimCost(ClanClaimCount.get(claimingClan).getClaimCount()) : -1;
+        double customCost = AdminControlledClanSettings.get(claimingClan).hasCustomClaimCost()
+            ? ClanClaimCosts.get(claimingClan).getClaimCost(ClanClaimCount.get(claimingClan).getClaimCount())
+            : -1;
 
         if (customCost >= 0) {
             cost = customCost;
@@ -288,7 +290,7 @@ public class ClaimManagement
             && !claimChunk.isBorderland()
             && !AdminControlledClanSettings.get(claimOwner).isServerOwned()
         ) {
-            ClanClaimCosts.get(claimOwner).refundClaim();
+            ClanClaimCosts.get(claimOwner).refundClaimBeforeOwnershipChange();
         }
     }
 
@@ -330,7 +332,7 @@ public class ClaimManagement
     }
 
     private static boolean claimChunk(EntityPlayerMP claimingPlayer, ChunkPositionWithData claimChunk, UUID claimingClan, boolean noClaimCost, boolean showMessage) {
-        if (!noClaimCost && !ClanClaimCosts.get(claimingClan).payForClaim()) {
+        if (!noClaimCost && !ClanClaimCosts.get(claimingClan).attemptPayForClaimBeforeClaiming()) {
             claimingPlayer.sendMessage(TranslationUtil.getTranslation(claimingPlayer.getUniqueID(), "commands.clan.claim.insufficient_funds", ClanNames.get(claimingClan).getName(), Economy.getFormattedCurrency(FormulaParser.eval(ClansModContainer.getConfig().getClaimChunkCostFormula(), claimingClan, 0))).setStyle(TextStyles.RED));
             return false;
         }
@@ -408,11 +410,11 @@ public class ClaimManagement
             && ClanHomes.get(chunkOwner).toBlockPos().getZ() <= pos.getZEnd()) {
             ClanHomes.delete(chunkOwner);
         }
+        if (!AdminControlledClanSettings.get(chunkOwner).isServerOwned()) {
+            ClanClaimCosts.get(chunkOwner).refundClaimBeforeOwnershipChange();
+        }
 
         ClaimAccessor.getInstance().delChunk(chunkOwner, new ChunkPositionWithData(chunkX, chunkZ, dim));
-        if (!AdminControlledClanSettings.get(chunkOwner).isServerOwned()) {
-            ClanClaimCosts.get(chunkOwner).refundClaim();
-        }
     }
 
     public static boolean abandonClaimWithAdjacencyCheck(EntityPlayerMP abandoningPlayer, Chunk c, UUID chunkOwner) {

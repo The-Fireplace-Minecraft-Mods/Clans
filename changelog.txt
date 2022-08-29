@@ -1,5 +1,4 @@
 Changes:
 
 Fixes/Internal Changes:
-Fix 'Couldn't process command: clan balance' NullPointerException (onTheHoro on GitHub)
-Fix clan disband not clearing name cache (onTheHoro on GitHub)
+Fix a few issues with claim cost based on count

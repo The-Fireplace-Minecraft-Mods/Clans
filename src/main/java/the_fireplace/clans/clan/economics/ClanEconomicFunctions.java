@@ -21,9 +21,18 @@ public class ClanEconomicFunctions
 
     public double getLiquidValue() {
         double value = Economy.getBalance(clan);
-        for (int claimIndex = 0; claimIndex < ClanClaimCount.get(clan).getClaimCount(); claimIndex++) {
-            value += ClanClaimCosts.get(clan).getNextClaimCost(claimIndex);
+        value += getTotalClaimValue();
+
+        return value;
+    }
+
+    private double getTotalClaimValue() {
+        double value = 0;
+        ClanClaimCosts clanClaimCosts = ClanClaimCosts.get(clan);
+        for (int claimNumber = 1; claimNumber <= ClanClaimCount.get(clan).getClaimCount(); claimNumber++) {
+            value += clanClaimCosts.getClaimCost(claimNumber);
         }
+
         return value;
     }
 
